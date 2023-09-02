@@ -1,0 +1,19 @@
+{
+    "name": "ptdi/mpub",
+    "description": "processing csdb object",
+    "autoload": {
+        "psr-4": {
+            "Ptdi\\Mpub\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ferdi Saptoko",
+            "email": "ferdisaptoko@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+      "symfony/var-dumper": "^6.3"
+    }
+}
