@@ -2,7 +2,7 @@
 
 namespace Ptdi\Mpub\Schema;
 
-use Ptdi\Mpub\Core\CSDB;
+use Ptdi\Mpub\CSDB;
 
 class Schema {
 

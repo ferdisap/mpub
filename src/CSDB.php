@@ -1,15 +1,11 @@
 <?php 
 
-namespace Ptdi\Mpub\Core;
+namespace Ptdi\Mpub;
 
 use Exception;
 
 abstract class CSDB {
-
-  public $verificator;
-  public $validator;
-  public $techpub;
-
+  
   /**
    * Load CSDB object
    * 
@@ -31,11 +27,21 @@ abstract class CSDB {
     }
   }
 
+  /**
+   * Load xml document from local
+   * 
+   * @param string $filename The xml file
+   * 
+   * @return \DOMDocument document or false
+   */
   private static function loadXmlDoc(String $filename)
   {
-    // dd(__DIR__, __NAMESPACE__);
     $doc = new \DOMDocument();
-    $doc->load($filename, LIBXML_PARSEHUGE);
-    return $doc;
+    try {
+      $doc->load($filename, LIBXML_PARSEHUGE);
+      return $doc;
+    } catch (\Throwable $th) {
+      return false;
+    }
   }  
 }
