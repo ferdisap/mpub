@@ -6,3 +6,7 @@ $dmodule = new DModule("demo12.xml");
 $dmodule::validateToSchema($dmodule->getDOMDocument());
 
 dd($dmodule);
+
+
+you can resolve data module name by:
+DModule::resolveDMName($dmodule, 1);
