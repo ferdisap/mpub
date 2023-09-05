@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <dmodule  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Schema/appliccrossreftable.xsd"> -->
+<dmodule  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../mpub/src/Schema/appliccrossreftable.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N219" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+        <language languageIsoCode="en" countryIsoCode="US" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate day="01" month="01" year="2016" />
+        <dmTitle>
+          <techName>N219</techName>
+          <infoName>Applicability Cross Reference Table</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus issueType="new">
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <displayText>
+          <simplePara>N219 All</simplePara>
+        </displayText>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+						<issueInfo issueNumber="001" inWork="00"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <firstVerification verificationType="tabtop" />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <applicCrossRefTable>
+      <productAttributeList>
+        <productAttribute id="aircraft">
+          <name>N219</name>
+          <displayName>N219</displayName>
+          <descr>The name of the Aircraft</descr>
+          <enumeration applicPropertyValues="N219|N220" />
+          <!-- <enumeration applicPropertyValues="3~5|10~15" /> -->
+        </productAttribute>
+        <productAttribute id="serialnumber">
+          <name>Serial Number</name>
+          <displayName>SN</displayName>
+          <descr>Serial Number of Aircraft</descr>
+          <!-- <enumeration applicPropertyValues="N001" /> -->
+          <enumeration applicPropertyValues="3~5|10~15" />
+        </productAttribute>
+      </productAttributeList>
+      <condCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01"/>
+          </dmRefIdent>
+        </dmRef>
+      </condCrossRefTableRef>
+      <productCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00Q" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01"/>
+          </dmRefIdent>
+        </dmRef>
+      </productCrossRefTableRef>
+    </applicCrossRefTable>
+  </content>
+
+</dmodule>

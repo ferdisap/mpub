@@ -14,6 +14,12 @@ after:
 These rule has not been included in BRDP/BREX because project/organization is forbidden to ovverride S1000D rules.
 But this is important because our system still or have not been capable to handle the external entity (such as figure, video) in XML.
 So, we change the schema data-type of @infoEntityIdent into "entity" (figure, video) file name and resolve it into URL in xslt.
+
+schema_changed:
+descript.xsd, 
+appliccrossreftable.xsd,
+condcrossreftable.xsd
+prdcrossreftable.xsd
 ###
 
 ###
@@ -56,4 +62,9 @@ after:
 <!-- <xs:attributeGroup ref="xlink:XLINKATT0"/> -->
 <!-- <xs:attributeGroup ref="xlink:XLINKATT2"/> -->
 <!-- <xs:attributeGroup ref="xlink:XLINKATT0"/> -->
+
+schema_changed:
+descript.xsd, 
+appliccrossreftable.xsd,
+condcrossreftable.xsd
 ###

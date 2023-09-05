@@ -5,7 +5,10 @@ namespace Ptdi\Mpub\Object;
 use DOMXPath;
 use Error;
 use Exception;
+use Ptdi\Mpub\Object\ACT;
 use Ptdi\Mpub\CSDB;
+use Ptdi\Mpub\Publisher\Element;
+use Ptdi\Mpub\Publisher\ElementList;
 use Ptdi\Mpub\Schema\Schema;
 
 class DModule extends CSDB
@@ -16,13 +19,15 @@ class DModule extends CSDB
 
   /**
    * @param string $filename the name of the data module file, with format extension
-   * @param string $prefix the data module name prefix, DMC or PMC.
+   * @param string $prefix the data module name prefix, DMC or PMC. Used to resolve DM Name
    */
   public function __construct(string $filename, string $prefix = "DMC")
   {
     $doc = parent::load($filename);
     $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
-    $this->schemaValidate = $this->validateToSchema($this->DOMDocument);
+    // dd($this->DOMDocument->firstElementChild);
+    // dd($this->getSchemaName($this->DOMDocument->firstElementChild), 'aaa');
+    $this->schemaValidate = $this->validateToSchema($this->DOMDocument, $this->getSchemaName($this->DOMDocument->firstElementChild));
     $this->prefix = $prefix;
     return $this;
   }
@@ -37,7 +42,10 @@ class DModule extends CSDB
     }
   }
 
-  public static function getSchemaName(\DOMElement $element)
+  /**
+   * get schema name without extension .xsd
+   */
+  public static function getSchemaName(\DOMElement $element = null)
   {
     $schema_path = self::getSchemaPath($element);
     preg_match('/[a-z]+(?=.xsd)/', $schema_path, $matches, PREG_OFFSET_CAPTURE, 0);
@@ -57,8 +65,7 @@ class DModule extends CSDB
   public static function validateToSchema(\DOMDocument $document, string $schemaName = null)
   {
     libxml_use_internal_errors(true);
-    
-    $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName) : Schema::getSchemaString(self::getSchemaPath($document->firstElementChild));
+    $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName.".xsd") : Schema::getSchemaString(self::getSchemaName($document->firstElementChild).".xsd");
     $status = $document->schemaValidateSource($schemaString, LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
     return ["status"=> $status, "errors" => $errors];
@@ -70,29 +77,30 @@ class DModule extends CSDB
   }
 
   /**
-   * @param DModule $dmodule is as source
-   * @param int $dmType is data module type
+   * @param \DOMDocument $doc is as source
+   * @param int $dmType is data module type that want to get
    * 
    * @return string data module name
    */
-  public static function resolveDMName(DModule $dmodule, int $dmType = 0)
+  // public static function getDMName(DModule $dmodule, int $dmType = 0)
+  public static function getDMName(\DOMDocument $doc, int $dmType = 0)
   {
-    require_once "dmType.php";
-    if(!isset($resolveDMName[$dmType])){
+    require "dmType.php";
+    // dump(DModule::getSchemaName($doc->firstElementChild),$getDMName);
+    if(!isset($getDMName[$dmType])){
       throw new Exception("No such dmType");      
     }
-    $doc = $dmodule->getDOMDocument();
     $domXpath = new DOMXPath($doc);
 
-    $query_dmCode = $resolveDMName[$dmType]['xpath']['dmCode'];
-    $query_issueInfo = $resolveDMName[$dmType]['xpath']['issueInfo'];
-
+    $query_dmCode = $getDMName[$dmType]['xpath']['dmCode'];
+    $query_issueInfo = $getDMName[$dmType]['xpath']['issueInfo'];
     
     $dmCode = $domXpath->evaluate($query_dmCode);
     $dmCode = get_class($dmCode) == "DOMNodeList" ? $dmCode->item(0) : throw new Error("Data module name cannot be resolved");
     $issueInfo = $domXpath->evaluate($query_issueInfo);
     $issueInfo = get_class($issueInfo) == "DOMNodeList" ? $issueInfo->item(0) : throw new Error("Data module name cannot be resolved");
 
+    // dump(DModule::getSchemaName($doc->firstElementChild), $dmCode, $dmType);
     $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
     $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
     $systemCode = $dmCode->getAttribute('systemCode');
@@ -108,7 +116,7 @@ class DModule extends CSDB
     $issueNumber = $issueInfo->getAttribute('issueNumber');
     $inWork = $issueInfo->getAttribute('inWork');
 
-    $name = (($prefix = $resolveDMName[$dmType]["prefix"]) ? $prefix : $doc->prefix)."-".
+    $name = (($prefix = $getDMName[$dmType]["prefix"]) ? $prefix : $doc->prefix)."-".
     $modelIdentCode."-".$systemDiffCode."-".
     $systemCode."-".$subSystemCode.$subSubSystemCode."-".
     $assyCode."-".$disassyCode.$disassyCodeVariant."-".
@@ -117,4 +125,48 @@ class DModule extends CSDB
 
     return $name;
   }
+
+  public function resolve(array $objectResolves = ['applicability'])
+  {
+    foreach ($objectResolves as $objectResolve)
+    {
+      $this->{"resolve".ucfirst($objectResolve)}();
+    }
+  }
+
+  private function resolveApplicability()
+  {
+    $actdm_filename = DModule::getDMName($this->getDOMDocument(),1).".xml";
+    $act = new ACT($actdm_filename);
+
+    $applics = $this->getElementList("//applic");
+    
+    // dd($applics->item(0),__LINE__);
+    // $id = $applics->item(0)->id;
+    // dd($id);
+
+    for ($i=0; $i < $applics->count(); $i++) { 
+      $applics->item($i)->resolve($act);
+    }
+    // lanjut di sini
+    
+  }
+
+  public function getElementList(string $xpathQuery)
+  {
+    $domXpath = new DOMXPath($this->getDOMDocument());
+
+    $result = $domXpath->evaluate($xpathQuery);
+
+    $elements = [];
+    foreach ($result as $node) {
+      if($node instanceof \DOMElement){
+        array_push($elements, $node);
+      }
+    }
+
+    return ElementList::createList($elements); 
+  }
+
+
 }

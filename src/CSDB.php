@@ -13,9 +13,7 @@ abstract class CSDB {
    */
   public static function load(string $filename)
   {
-    // dd($filename);
     $mime = mime_content_type($filename);
-    // echo $mime;
     switch ($mime) {
       case 'text/xml':
         return self::loadXmlDoc($filename);

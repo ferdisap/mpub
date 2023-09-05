@@ -21,10 +21,27 @@ $applicCrossRefTable = [
   ]
 ];
 
+$condCrossRefTable = [
+  "prefix" => "DMC",
+  "xpath" => [
+    'dmCode' => "//content//condCrossRefTableRef/dmRef/dmRefIdent/dmCode",
+    'issueInfo' => "//content//condCrossRefTableRef/dmRef/dmRefIdent/issueInfo",
+  ]
+];
+$productCrossRefTable = [
+  "prefix" => "DMC",
+  "xpath" => [
+    'dmCode' => "//content//productCrossRefTableRef/dmRef/dmRefIdent/dmCode",
+    'issueInfo' => "//content//productCrossRefTableRef/dmRef/dmRefIdent/issueInfo",
+  ]
+];
+
 /**
  * Array for resolving data module name
  */
-$resolveDMName = [
+$getDMName = [
   0 => $default,
   1 => $applicCrossRefTable,
+  2 => $condCrossRefTable,
+  3 => $productCrossRefTable,
 ];
