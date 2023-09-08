@@ -36,6 +36,7 @@ trait Applicability
    * 2. Untuk menggunakan fungsi ini, pastikan attribute @valuePattern di data module memiliki capturing Group untuk di iterate/tidak. Misal /(N219)/ match with string "N219", otherwise if not grouped, it will abandoned even regex is matched.
    * 
    * @return mixed value for ranging/iterate. Bisa integer bisa juga string untuk di iterate
+   * @return false jika pattern tidak ada padahal wajib ada atau jika subject tidak sesuai dengan pattern
    */
   public function validateTowardsPattern(string $applicPropertyIdent, string $subject, $valueDataType = 'string'){
     $valueDataType = $valueDataType ?: 'string';
@@ -50,6 +51,9 @@ trait Applicability
       $value = $matches[0][1];
       if ($match) {
         return $value;
+      } else {
+        Message::generate(300, "@applicPropertyValues is not comply with @valuePattern");
+        return false;
       }
     }
     Message::generate(300, "attribute @valuePattern should be exist");
