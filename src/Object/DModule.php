@@ -16,6 +16,7 @@ class DModule extends CSDB
   private \DOMDocument $DOMDocument;
   public array $schemaValidate;
   public string $prefix;
+  public string $filename;
 
   /**
    * @param string $filename the name of the data module file, with format extension
@@ -24,6 +25,7 @@ class DModule extends CSDB
   public function __construct(string $filename, string $prefix = "DMC")
   {
     $doc = parent::load($filename);
+    $this->filename = ($doc ? $filename : null);
     $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
     // dd($this->DOMDocument->firstElementChild);
     // dd($this->getSchemaName($this->DOMDocument->firstElementChild), 'aaa');
@@ -136,6 +138,7 @@ class DModule extends CSDB
 
   private function resolveApplicability()
   {
+    // dd($this->getSchemaName($this->getDOMDocument()->firstElementChild));
     $actdm_filename = DModule::getDMName($this->getDOMDocument(),1).".xml";
     $act = new ACT($actdm_filename);
 
@@ -148,6 +151,10 @@ class DModule extends CSDB
     for ($i=0; $i < $applics->count(); $i++) { 
       $applics->item($i)->resolve($act);
     }
+    dd($applics);
+    // $applics->item(0)->resolve($act);
+    // dd($applics->item(0)->resolve($act), $applics->item(0));
+    dd($this,__CLASS__, __LINE__);
     // lanjut di sini
     
   }
@@ -158,14 +165,14 @@ class DModule extends CSDB
 
     $result = $domXpath->evaluate($xpathQuery);
 
-    $elements = [];
+    $list_elements = [];
     foreach ($result as $node) {
       if($node instanceof \DOMElement){
-        array_push($elements, $node);
+        array_push($list_elements, $node);
       }
     }
 
-    return ElementList::createList($elements); 
+    return ElementList::createList($list_elements); 
   }
 
 

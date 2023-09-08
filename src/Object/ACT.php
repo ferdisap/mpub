@@ -2,10 +2,12 @@
 
 namespace Ptdi\Mpub\Object;
 
+use DOMXPath;
 use Exception;
 use Ptdi\Mpub\Object\DModule;
 
 class ACT extends DModule {
+  use Applicability;
 
   public $CCT;
   public $PCT;
@@ -30,9 +32,30 @@ class ACT extends DModule {
   private function getCCTnPCT_name(int $dmType)
   {
     return parent::getDMName($this->getDOMDocument(), $dmType);
-    // dd($this->getDOMDocument());
-    // dd(parent::getDMName($this->getDOMDocument(), 2));
-    // return $cctOrPct == 'pct' ? new PCT(parent::getDMName($this).'.xml') : 
-    // dd($this->getDOMDocument(), 'getCCTName');
   }
+
+  /**
+   * @return \DOMElement 
+   */
+  public function getProductAttribute(string $applicPropertyIdent){
+    $domXpath = new DOMXPath($this->getDOMDocument());
+    $query_productAttribute = "//productAttribute[@id = '{$applicPropertyIdent}']";
+
+    $productAttribute = $domXpath->evaluate($query_productAttribute);
+    if($productAttribute){
+      return $productAttribute[0] ? $productAttribute[0] : null;
+    } else {
+      return null;
+    }
+  }
+
+  // /**
+  //  * @return string
+  //  * @return null
+  //  */
+  // public function getValueDataType(string $applicPropertyIdent){
+  //   $productAttribute = $this->getProductAttribute($applicPropertyIdent);
+  //   $valueDataType = $productAttribute ? $productAttribute->getAttribute('valueDataType') : null;
+  //   return $valueDataType;
+  // }
 }

@@ -59,19 +59,20 @@
   <content>
     <applicCrossRefTable>
       <productAttributeList>
-        <productAttribute id="aircraft">
+        <productAttribute id="aircraft" valuePattern="/(N219)/">
+        <!-- <productAttribute id="aircraft"> -->
           <name>N219</name>
           <displayName>N219</displayName>
           <descr>The name of the Aircraft</descr>
-          <enumeration applicPropertyValues="N219|N220" />
+          <enumeration applicPropertyValues="N219" />
           <!-- <enumeration applicPropertyValues="3~5|10~15" /> -->
         </productAttribute>
-        <productAttribute id="serialnumber">
+        <productAttribute id="serialnumber" valueDataType="string" valuePattern="/N([0-9]{3})/">
           <name>Serial Number</name>
           <displayName>SN</displayName>
           <descr>Serial Number of Aircraft</descr>
           <!-- <enumeration applicPropertyValues="N001" /> -->
-          <enumeration applicPropertyValues="3~5|10~15" />
+          <enumeration applicPropertyValues="N001~N010|N011~N015" />
         </productAttribute>
       </productAttributeList>
       <condCrossRefTableRef>

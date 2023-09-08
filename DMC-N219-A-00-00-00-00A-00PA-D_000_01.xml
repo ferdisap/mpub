@@ -61,13 +61,22 @@
         <condType id="SB">
           <name>Service Bulettin</name>
           <descr>Changes information for in-service aircraft</descr>
-          <enumeration applicPropertyValues="PRE|POST" />
+          <enumeration applicPropertyValues="pre|post" />
+        </condType>
+        <condType id="is_military" valueDataType="boolean">
+          <name>Aircraft Military Certified</name>
+          <descr>This aircraft is certified by using the military regulatory</descr>
+          <enumeration applicPropertyValues="true|false" />
         </condType>
       </condTypeList>
       <condList>
         <cond id="SB-001" condTypeRefId="SB">
           <name>Service Bulettin 001</name>
           <descr>Change Door</descr>
+        </cond>
+        <cond id="military" condTypeRefId="is_military">
+          <name>Aircraft Military Certified</name>
+          <descr>Wheter the aircraft is Military Certified or not.</descr>
         </cond>
       </condList>
     </condCrossRefTable>

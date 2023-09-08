@@ -14,6 +14,7 @@ class Element {
   public $nodeName;
   public array $attributes; // [0] = attribute name, [1] = attribute value
   public array $inner;
+  
 
   /**
    * 
@@ -28,6 +29,9 @@ class Element {
   }
 
 
+  /**
+   * @param mixed create Element by the allowable source such array, string xml, or DOMElement
+   */
   public static function createElement(mixed $source)
   {
     $tagName = null;
@@ -78,14 +82,15 @@ class Element {
     return $element;
   }
 
-  public function __set(string $name, mixed $value){
+  public function __set($name, mixed $value){
     $this->{$name} = $value;
   }
 
   /**
    * intended to get $attribute
    */
-  public function __get(string $name){
+  public function __get($name){
+    // dd($name, __CLASS__,__LINE__  );
     if (!$this->{$name}){
       foreach ($this->attributes as $attribute){
         if($attribute[0] == $name)
@@ -95,6 +100,41 @@ class Element {
       return $this->{$name};
     }
   }
+
+  public function getNodeName(){
+    $reflex = new ReflectionClass($this);
+    return $reflex;
+    // return $this->nodeName;
+  }
+
+  // public static function getSimpleStructureFromSchema(string $schema_name, string $node_name){
+  //   $schema_string = Schema::getSchemaString($schema_name);
+  //   $domSchema = (new DOMDocument())->loadXML($schema_string);
+
+  //   $domXpath = new DOMXPath($domSchema);
+  //   $node = $domXpath->evaluate("//xs:element[@name = '{$node_name}']");
+  //   $node = $node->item(0);
+
+  //   $attributes = [];
+  //   $att = [];
+  //   $node_name_elemType = $node_name."ElemType";
+
+  //   if($node->getAttribute('type') == $node_name_elemType){
+  //     $elemType = $domXpath->evaluate("//xs:complexType[@name='{$node_name_elemType}'");
+  //     $elemType = $elemType->item(0);
+
+  //     foreach($elemType->childNodes as $att){
+  //       if($att->nodeName = "xs:attribute"){
+  //         array_push($att[0], $att->getAttribute('ref') ?: $att->getAttribute('name'));
+  //         array_push($att[1], null);
+  //       } elseif ($att->nodeName == "xs:attributeGroup"){
+  //         $attGroup = $domXpath->evaluate("//xs:attributeGroup[@name = '{$att->getAttribute('ref')}']");
+  //         $attGroup = $attGroup->item(0);
+  //         array_push($att[0], $attGroup)
+  //       }
+  //     }
+  //   }
+  // }
 
 
 
