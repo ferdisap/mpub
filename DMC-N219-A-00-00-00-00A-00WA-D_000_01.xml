@@ -79,7 +79,7 @@
           <name>Model Aircraft</name>
           <displayName>MODEL</displayName>
           <descr>Model of Aircraft</descr>
-          <enumeration applicPropertyValues="N219" />
+          <!-- <enumeration applicPropertyValues="N219" /> -->
         </productAttribute>
       </productAttributeList>
       <condCrossRefTableRef>

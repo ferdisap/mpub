@@ -48,6 +48,7 @@ class Assert extends Element
     $nominalValues = $this->generateValue($this->crossRefTable->getApplicPropertyValuesFromCrossRefTable($this->applicPropertyIdent));
     $testedValues = [];
 
+    dump($producedValues, $nominalValues, __CLASS__,__LINE__);
     if($nominalValues){
       foreach($producedValues as $value){
         if(!in_array($value, $nominalValues)){

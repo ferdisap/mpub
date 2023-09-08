@@ -95,11 +95,20 @@ trait Applicability
         $query_enum = "//enumeration[parent::*/@id = '{$condTypeRefId}']/@applicPropertyValues";
         break;
     }
-
     $enums = $domXpath->evaluate($query_enum);
-    if (!$enums || count($enums) == 0) {
+
+    //  if enums is not exist, use valuePattern as propertyValues
+    if(!$enums || count($enums) == 0){
+      $pattern = $this->isexistValuePattern($applicPropertyIdent);
+      if($pattern){
+        $propertyValue = trim($pattern);
+        $propertyValue = substr_replace($propertyValue, "", 0,1);
+        $propertyValue = substr_replace($propertyValue, "", strlen($propertyValue)-1,1); 
+        return $propertyValue;
+      }
       return false;
     }
+
     return $enums[0]->value;
   }
 }
