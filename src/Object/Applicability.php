@@ -48,7 +48,7 @@ trait Applicability
     if($valuePattern){
       preg_match_all($valuePattern, $subject, $matches, PREG_SET_ORDER);
       $match = $matches[0][0];
-      $value = $matches[0][1];
+      $value = $matches[0][1] ?: $match;
       if ($match) {
         return $value;
       } else {

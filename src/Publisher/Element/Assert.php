@@ -73,15 +73,16 @@ class Assert extends Element
       // @valuePattern harus memiliki 1 capturing group yang akan diganti dengan nilai baru.
       $pattern = $crossRefTable->isexistValuePattern($this->applicPropertyIdent);
       if($pattern){
-        $regex = "/.*(\(.*\)).*/";
+        $regex = "/.*(\(.*\)).*/"; // akan match dengan yang didalam kurungnya /N(219)/ akan match dengan 219
         preg_match_all($regex, $pattern, $structure, PREG_SET_ORDER, 0);
-
-        for ($i=0; $i < count($testedValues); $i++) { 
-          $newValue = str_replace($structure[0][1], $testedValues[$i], $structure[0][0]);
-          $newValue = trim($newValue);
-          $newValue = substr_replace($newValue, "", 0,1);
-          $newValue = substr_replace($newValue, "", strlen($newValue)-1,1);
-          $testedValues[$i] = $newValue;
+        if($structure){
+          for ($i=0; $i < count($testedValues); $i++) { 
+            $newValue = str_replace($structure[0][1], $testedValues[$i], $structure[0][0]);
+            $newValue = trim($newValue);
+            $newValue = substr_replace($newValue, "", 0,1);
+            $newValue = substr_replace($newValue, "", strlen($newValue)-1,1);
+            $testedValues[$i] = $newValue;
+          }
         }
       }
       // dump($testedValues, $structure);
@@ -111,10 +112,12 @@ class Assert extends Element
       // dd($values, $values[3], 'values3');
       if($values[3]){
         $singleValue = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent ,$values[3], $this->valueDataType);
+        // dump($singleValue,__CLASS__,__LINE__);
         if($singleValue){
           array_push($values_generated, $singleValue);
         }
       }
+      // dump($values_generated,__CLASS__,__LINE__);
     }
     // dd($values_generated,__CLASS__,__LINE__);
     return $values_generated;
