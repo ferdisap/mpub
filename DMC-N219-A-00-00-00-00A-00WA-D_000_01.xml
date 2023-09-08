@@ -74,6 +74,12 @@
           <!-- <enumeration applicPropertyValues="N001" /> -->
           <enumeration applicPropertyValues="N001~N010|N011~N015" />
         </productAttribute>
+        <productAttribute id="model" valueDataType="string" valuePattern="/(N219)/">
+          <name>Model Aircraft</name>
+          <displayName>MODEL</displayName>
+          <descr>Model of Aircraft</descr>
+          <enumeration applicPropertyValues="N219" />
+        </productAttribute>
       </productAttributeList>
       <condCrossRefTableRef>
         <dmRef>

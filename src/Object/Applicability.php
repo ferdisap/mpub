@@ -33,7 +33,8 @@ trait Applicability
 
   /**
    * 1. fungsi ini digunakan jika valueDataType == 'string' atau jika <enumeration> di ACT/CCT tidak ada, pakai fungsi ini dan force $valueDataType ke string.
-   * 2. Untuk menggunakan fungsi ini, pastikan attribute @valuePattern di data module memiliki capturing Group untuk di iterate/tidak. Misal /(N219)/ match with string "N219", otherwise if not grouped, it will abandoned even regex is matched.
+   * 2. Untuk menggunakan fungsi ini, pastikan attribute @valuePattern di data module memiliki capturing Group untuk di iterate/tidak. 
+   * Misal /(N219)/ match with string "N219", otherwise if not grouped, it will abandoned even regex is matched.
    * 
    * @return mixed value for ranging/iterate. Bisa integer bisa juga string untuk di iterate
    * @return false jika pattern tidak ada padahal wajib ada atau jika subject tidak sesuai dengan pattern
@@ -43,7 +44,6 @@ trait Applicability
     if ($valueDataType != 'string') {
       return $subject;
     }
-
     $valuePattern = $this->isexistValuePattern($applicPropertyIdent);
     if($valuePattern){
       preg_match_all($valuePattern, $subject, $matches, PREG_SET_ORDER);

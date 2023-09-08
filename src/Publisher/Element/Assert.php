@@ -68,6 +68,23 @@ class Assert extends Element
           }
         }          
       }
+
+      // @valuePattern kan cuma dipakai saat @valueDataType == 'string', sehingga ini tidak akan dijalankan kalau tidak ada pattern nya. Jadi aman jika assert berisi integer/booelan
+      // @valuePattern harus memiliki 1 capturing group yang akan diganti dengan nilai baru.
+      $pattern = $crossRefTable->isexistValuePattern($this->applicPropertyIdent);
+      if($pattern){
+        $regex = "/.*(\(.*\)).*/";
+        preg_match_all($regex, $pattern, $structure, PREG_SET_ORDER, 0);
+
+        for ($i=0; $i < count($testedValues); $i++) { 
+          $newValue = str_replace($structure[0][1], $testedValues[$i], $structure[0][0]);
+          $newValue = trim($newValue);
+          $newValue = substr_replace($newValue, "", 0,1);
+          $newValue = substr_replace($newValue, "", strlen($newValue)-1,1);
+          $testedValues[$i] = $newValue;
+        }
+      }
+      // dump($testedValues, $structure);
       return [$this->applicPropertyIdent => $testedValues];
     }
   }
@@ -81,6 +98,8 @@ class Assert extends Element
     foreach($matches as $values){
       $start = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent, $values[1], $this->valueDataType);
       $end = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent, $values[2], $this->valueDataType);
+      // dump($values,$values[3],__CLASS__,__LINE__);
+      // dump('foo');
 
       $range = range($start, $end);
       if($start && $end){
@@ -89,6 +108,7 @@ class Assert extends Element
         }
       }
 
+      // dd($values, $values[3], 'values3');
       if($values[3]){
         $singleValue = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent ,$values[3], $this->valueDataType);
         if($singleValue){
@@ -96,6 +116,7 @@ class Assert extends Element
         }
       }
     }
+    // dd($values_generated,__CLASS__,__LINE__);
     return $values_generated;
   }
 
