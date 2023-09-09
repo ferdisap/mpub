@@ -1,6 +1,8 @@
 {
     "name": "ptdi/mpub",
     "description": "processing csdb object",
+    "type": "library,
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Ptdi\\Mpub\\": "src/"
