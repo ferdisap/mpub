@@ -75,11 +75,13 @@
           <enumeration applicPropertyValues="N001~N010|N011~N015" />
         </productAttribute>
         <!-- <productAttribute id="model" valueDataType="string" valuePattern="/(N219)/"> -->
-        <productAttribute id="model" valueDataType="string" valuePattern="/N219/">
+        <!-- <productAttribute id="model" valueDataType="string" valuePattern="/N219/"> -->
+        <productAttribute id="model" valueDataType="string">
           <name>Model Aircraft</name>
           <displayName>MODEL</displayName>
           <descr>Model of Aircraft</descr>
-          <!-- <enumeration applicPropertyValues="N219" /> -->
+          <!-- Harus punya minimal valuePattern untuk value, else is null -->
+          <!-- <enumeration applicPropertyValues="N2189" /> -->
         </productAttribute>
       </productAttributeList>
       <condCrossRefTableRef>

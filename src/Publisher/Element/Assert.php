@@ -44,11 +44,11 @@ class Assert extends Element
       return false;
     };
 
-    $producedValues = $this->generateValue($this->applicPropertyValues);  
     $nominalValues = $this->generateValue($this->crossRefTable->getApplicPropertyValuesFromCrossRefTable($this->applicPropertyIdent));
+    $producedValues = $this->generateValue($this->applicPropertyValues);  
     $testedValues = [];
 
-    dump($producedValues, $nominalValues, __CLASS__,__LINE__);
+    // dump($this->applicPropertyValues, $producedValues, $nominalValues, __CLASS__,__LINE__);
     if($nominalValues){
       foreach($producedValues as $value){
         if(!in_array($value, $nominalValues)){
@@ -86,11 +86,16 @@ class Assert extends Element
           }
         }
       }
-      // dump($testedValues, $structure);
       return [$this->applicPropertyIdent => $testedValues];
+    } 
+    else {
+      return [$this->applicPropertyIdent => $producedValues];
     }
   }
 
+  /**
+   * @return array
+   */
   private function generateValue(string $applicPropertyValues){
     $this->valueDataType = $this->crossRefTable->getValueDataType($applicPropertyValues);
 
@@ -100,8 +105,6 @@ class Assert extends Element
     foreach($matches as $values){
       $start = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent, $values[1], $this->valueDataType);
       $end = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent, $values[2], $this->valueDataType);
-      // dump($values,$values[3],__CLASS__,__LINE__);
-      // dump('foo');
 
       $range = range($start, $end);
       if($start && $end){
@@ -110,17 +113,13 @@ class Assert extends Element
         }
       }
 
-      // dd($values, $values[3], 'values3');
       if($values[3]){
         $singleValue = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent ,$values[3], $this->valueDataType);
-        // dump($singleValue,__CLASS__,__LINE__);
         if($singleValue){
           array_push($values_generated, $singleValue);
         }
       }
-      // dump($values_generated,__CLASS__,__LINE__);
     }
-    // dd($values_generated,__CLASS__,__LINE__);
     return $values_generated;
   }
 
