@@ -22,17 +22,41 @@ class DModule extends CSDB
    * @param string $filename the name of the data module file, with format extension
    * @param string $prefix the data module name prefix, DMC or PMC. Used to resolve DM Name
    */
-  public function __construct(string $filename, string $prefix = "DMC")
+  public function __construct(string $prefix = "DMC", string $modelIdentCode = '')
   {
-    $doc = parent::load($filename);
-    $this->filename = ($doc ? $filename : null);
-    $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
-    // dd($this->DOMDocument->firstElementChild);
-    // dd($this->getSchemaName($this->DOMDocument->firstElementChild), 'aaa');
-    $this->schemaValidate = $this->validateToSchema($this->DOMDocument, $this->getSchemaName($this->DOMDocument->firstElementChild));
     $this->prefix = $prefix;
-    return $this;
+    $this->modelIdentCode = $modelIdentCode;
   }
+
+  public function import_DOMDocument(string $filename)
+  {
+    $doc = $this->load($filename);
+    return $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+  }
+
+  public function validateTowardsXSI(string $schemaName = null)
+  {
+    if($document = $this->DOMDocument){
+      libxml_use_internal_errors(true);
+      $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName.".xsd") : Schema::getSchemaString(self::getSchemaName($document->firstElementChild).".xsd");
+      // dd($schemaString);
+      $status = $document->schemaValidateSource($schemaString, LIBXML_PARSEHUGE);
+      $errors = libxml_get_errors();
+      return $this->schemaValidate = ["status"=> $status, "errors" => $errors];
+    }
+    return $this->schemaValidate = ["status"=> false, "errors" => null];
+  }
+  // public function __construct(string $filename, string $prefix = "DMC")
+  // {
+  //   $doc = parent::load($filename);
+  //   $this->filename = ($doc ? $filename : null);
+  //   $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+  //   // dd($this->DOMDocument->firstElementChild);
+  //   // dd($this->getSchemaName($this->DOMDocument->firstElementChild), 'aaa');
+  //   $this->schemaValidate = $this->validateToSchema($this->DOMDocument, $this->getSchemaName($this->DOMDocument->firstElementChild));
+  //   $this->prefix = $prefix;
+  //   return $this;
+  // }
 
   public static function getSchemaPath(\DOMElement $element)
   {
@@ -58,20 +82,20 @@ class DModule extends CSDB
     }
   }
 
-  /**
-   * Validate DOMDocument by XSD
-   * 
-   * @param \DOMDocument $document The document should be validated
-   * @param string $schemaName The xsd path. If null, it will used the internal schema which stated in DM attribute xsi:noNamespaceSchemaLocation
-   */
-  public static function validateToSchema(\DOMDocument $document, string $schemaName = null)
-  {
-    libxml_use_internal_errors(true);
-    $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName.".xsd") : Schema::getSchemaString(self::getSchemaName($document->firstElementChild).".xsd");
-    $status = $document->schemaValidateSource($schemaString, LIBXML_PARSEHUGE);
-    $errors = libxml_get_errors();
-    return ["status"=> $status, "errors" => $errors];
-  }
+  // /**
+  //  * Validate DOMDocument by XSD
+  //  * 
+  //  * @param \DOMDocument $document The document should be validated
+  //  * @param string $schemaName The xsd path. If null, it will used the internal schema which stated in DM attribute xsi:noNamespaceSchemaLocation
+  //  */
+  // public static function validateToSchema(\DOMDocument $document, string $schemaName = null)
+  // {
+  //   libxml_use_internal_errors(true);
+  //   $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName.".xsd") : Schema::getSchemaString(self::getSchemaName($document->firstElementChild).".xsd");
+  //   $status = $document->schemaValidateSource($schemaString, LIBXML_PARSEHUGE);
+  //   $errors = libxml_get_errors();
+  //   return ["status"=> $status, "errors" => $errors];
+  // }
 
   public function getDOMDocument()
   {

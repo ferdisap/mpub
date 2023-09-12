@@ -6,6 +6,9 @@ use Exception;
 
 abstract class CSDB {
   
+  public string $modelIdentCode;
+  protected string $CSDB_path;
+  
   /**
    * Load CSDB object
    * 
@@ -41,5 +44,13 @@ abstract class CSDB {
     } catch (\Throwable $th) {
       return false;
     }
-  }  
+  }
+
+  public function setCsdbPath(string $modelIdentCode = null)
+  {
+    if($modelIdentCode){
+      return $this->CSDB_path = "ietp_". strtolower($modelIdentCode);
+    }
+    return $this->modelIdentCode ? $this->CSDB_path = "ietp_". strtolower($this->modelIdentCode) : null;
+  }
 }
