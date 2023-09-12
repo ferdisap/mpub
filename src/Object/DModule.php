@@ -7,6 +7,7 @@ use Error;
 use Exception;
 use Ptdi\Mpub\Object\ACT;
 use Ptdi\Mpub\CSDB;
+use Ptdi\Mpub\Csdb\Element\Dmodule as ElementDmodule;
 use Ptdi\Mpub\Publisher\Element;
 use Ptdi\Mpub\Publisher\ElementList;
 use Ptdi\Mpub\Schema\Schema;
@@ -28,18 +29,26 @@ class DModule extends CSDB
     $this->modelIdentCode = $modelIdentCode;
   }
 
-  public function import_DOMDocument(string $filename)
+  /**
+   * @param string $filename with extension
+   * @param string $schemaName with extension .xsd
+   */
+  public function import_DOMDocument(string $filename, string $schemaName = null)
   {
     $doc = $this->load($filename);
-    return $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+    $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+    if($schemaName){
+      if($schemaName != DModule::getSchemaName($this->DOMDocument->firstElementChild)){
+        throw new Exception("The DModule is not type of schema {$schemaName}", 1);
+      }
+    }
   }
 
   public function validateTowardsXSI(string $schemaName = null)
   {
     if($document = $this->DOMDocument){
       libxml_use_internal_errors(true);
-      $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName.".xsd") : Schema::getSchemaString(self::getSchemaName($document->firstElementChild).".xsd");
-      // dd($schemaString);
+      $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName) : Schema::getSchemaString(self::getSchemaName($document->firstElementChild));
       $status = $document->schemaValidateSource($schemaString, LIBXML_PARSEHUGE);
       $errors = libxml_get_errors();
       return $this->schemaValidate = ["status"=> $status, "errors" => $errors];
@@ -58,6 +67,9 @@ class DModule extends CSDB
   //   return $this;
   // }
 
+  /**
+   * @return string schema path with file name extension
+   */
   public static function getSchemaPath(\DOMElement $element)
   {
     $schema_path = $element->getAttribute("xsi:noNamespaceSchemaLocation");
@@ -69,14 +81,15 @@ class DModule extends CSDB
   }
 
   /**
-   * get schema name without extension .xsd
+   * @return string schemaName with extension .xsd
+   * @return false
    */
   public static function getSchemaName(\DOMElement $element = null)
   {
     $schema_path = self::getSchemaPath($element);
     preg_match('/[a-z]+(?=.xsd)/', $schema_path, $matches, PREG_OFFSET_CAPTURE, 0);
     if ($matches) {
-      return $matches[0][0];
+      return $matches[0][0].".xsd";
     } else {
       return false;
     }
@@ -163,8 +176,13 @@ class DModule extends CSDB
   private function resolveApplicability()
   {
     // dd($this->getSchemaName($this->getDOMDocument()->firstElementChild));
-    $actdm_filename = DModule::getDMName($this->getDOMDocument(),1).".xml";
-    $act = new ACT($actdm_filename);
+    // $actdm_filename = DModule::getDMName($this->getDOMDocument(),1).".xml";
+    // dd($this->modelIdentCode);
+    $act = new ACT('DMC', $this->modelIdentCode);
+    $act->import_DOMDocument(DModule::getDMName($this->getDOMDocument(),1).".xml", 'appliccrossreftable.xsd');
+    $act->setReferedCCTandPCT();
+    
+    // dd($act);
 
     $applics = $this->getElementList("//applic");
     
