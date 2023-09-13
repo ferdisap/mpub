@@ -6,7 +6,7 @@ use Exception;
 
 abstract class CSDB {
   
-  public string $modelIdentCode;
+  protected string $modelIdentCode;
   protected string $CSDB_path;
   
   /**
@@ -46,11 +46,11 @@ abstract class CSDB {
     }
   }
 
-  public function setCsdbPath(string $modelIdentCode = null)
+  public function setCsdbPath(string $app_path ,string $modelIdentCode = null)
   {
     if($modelIdentCode){
-      return $this->CSDB_path = "ietp_". strtolower($modelIdentCode);
+      return $this->CSDB_path = ($app_path ?? '')."\ietp_". strtolower($modelIdentCode) . "\csdb\\";
     }
-    return $this->modelIdentCode ? $this->CSDB_path = "ietp_". strtolower($this->modelIdentCode) : null;
+    return $this->modelIdentCode ? $this->CSDB_path = ($app_path ?? '')."\ietp_". strtolower($this->modelIdentCode). "\csdb\\" : null;
   }
 }

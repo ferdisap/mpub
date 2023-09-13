@@ -28,7 +28,7 @@ class ACT extends DModule {
   //     $this->PCT = $PCT;
   //   }
   // }
-  public function __construct($prefix, $modelIdentCode)
+  public function __construct(string $prefix, string $modelIdentCode)
   {
     parent::__construct($prefix, $modelIdentCode);
   }

@@ -15,7 +15,7 @@ use Ptdi\Mpub\Schema\Schema;
 class DModule extends CSDB
 {
   private \DOMDocument $DOMDocument;
-  public array $schemaValidate;
+  public array $schemaValidate = ["status"=> false, "errors" => null];
   public string $prefix;
   public string $filename;
 
@@ -30,13 +30,57 @@ class DModule extends CSDB
   }
 
   /**
+   * @param string $schemaName is with extension .xsd
+   * @return \DOMDocument
+   */
+  public function create_blankDocument(string $schemaName)
+  {
+    $doc = new \DOMDocument('1.0', "UTF-8");
+    switch ($schemaName) {
+      case 'dml.xsd':
+        $dmodule = $doc->createElement('dml', '');
+        break;
+      
+      default:
+        $dmodule = $doc->createElement('dmodule', '');
+        break;
+    }
+    $doc->appendChild($dmodule);
+    
+    $noNamespaceSchemaLocation = $doc->createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", 'xsi:noNamespaceSchemaLocation');
+    $noNamespaceSchemaLocation->value = "../mpub/src/Schema/dml.xsd";
+
+    $dmodule->appendChild($noNamespaceSchemaLocation);
+    return $this->DOMDocument = $doc;
+  }
+
+  /**
+   * @param string $filename is output file with extension
+   */
+  public function writeToFile(string $app_path, string $filename)
+  {
+    switch ($this->getSchemaName($this->getDOMDocument()->firstElementChild)) {
+      case 'dml.xsd':
+        $objectType = "data_management_list";
+        break;
+      
+      default:
+        $objectType = "data_module";
+        break;
+    }
+    $path = $this->setCsdbPath($app_path).($this->schemaValidate['status'] ? '' : $objectType.'\unvalidated\\').$filename;
+    file_put_contents($path, $this->getDOMDocument());
+  }
+
+  /**
    * @param string $filename with extension
    * @param string $schemaName with extension .xsd
    */
   public function import_DOMDocument(string $filename, string $schemaName = null)
   {
     $doc = $this->load($filename);
-    $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+    // $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+    $this->DOMDocument = $doc;
     if($schemaName){
       if($schemaName != DModule::getSchemaName($this->DOMDocument->firstElementChild)){
         throw new Exception("The DModule is not type of schema {$schemaName}", 1);
