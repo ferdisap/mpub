@@ -13,6 +13,9 @@ class IdentAndStatusSection extends Element {
   public array $attributes = [];
   private array $structure;
 
+  /**
+   * @param string $schemaName with extension
+   */
   public function __construct(string $schemaName)
   {
     parent::__construct();

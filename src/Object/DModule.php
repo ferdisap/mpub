@@ -48,7 +48,8 @@ class DModule extends CSDB
     $doc->appendChild($dmodule);
     
     $noNamespaceSchemaLocation = $doc->createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", 'xsi:noNamespaceSchemaLocation');
-    $noNamespaceSchemaLocation->value = "../mpub/src/Schema/dml.xsd";
+    // $noNamespaceSchemaLocation->value = "../mpub/src/Schema/dml.xsd";
+    $noNamespaceSchemaLocation->value = "dml.xsd";
 
     $dmodule->appendChild($noNamespaceSchemaLocation);
     return $this->DOMDocument = $doc;
