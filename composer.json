@@ -5,7 +5,9 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Ptdi\\Mpub\\": "src/"
+            "Ptdi\\Mpub\\": "src/",
+            "Ptdi\\Mpub\\Pdf\\": "pdf/",
+            "Ptdi\\Mpub\\Pdf2\\": "pdf2/"
         }
     },
     "authors": [
@@ -14,7 +16,9 @@
             "email": "ferdisaptoko@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "tecnickcom/tcpdf": "*"
+    },
     "require-dev": {
       "symfony/var-dumper": "^6.3"
     }
