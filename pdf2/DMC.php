@@ -26,6 +26,7 @@ class DMC
     $this->dmCode = $dmCode;
     $this->issueInfo = $issueInfo;
     $this->languange = $languange;
+    $this->pdf->curEntry = $this->dmCode.$this->issueInfo.$this->languange;
 
     $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($dmCode.$issueInfo.$languange).".xml";
 
@@ -109,7 +110,12 @@ class DMC
     foreach($levelledPara->attributes as $attribute){
       $attributes[$attribute->nodeName] = $attribute->nodeValue;
     }
+    // set id for fragment if any
+    if(isset($attributes['id'])){
+      $this->pdf->addInternalReference($this->pdf->curEntry, $attributes['id'], $this->pdf->getPage(), $this->pdf->GetY());
+    }
 
+    // set changemark if any
     if((isset($attributes['changeMark']) && $attributes['changeMark'] == "1") && isset($attributes['reasonForUpdateRefIds'])){
       $st_pos_y = $this->pdf->GetY();
       $reasonForUpdateRefIds = $attributes['reasonForUpdateRefIds'];
@@ -169,6 +175,7 @@ class DMC
     $xsltproc->importStylesheet($xsl_figure);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     $xsltproc->setParameter('','prefixnum', $index);
+    $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $html = $xsltproc->transformToXml(CSDB::importDocument('',$figure->C14N(),'figure'));
     $this->pdf->Ln(3);
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $tes = true, $who = "figure");
@@ -186,6 +193,7 @@ class DMC
     // $xsltproc->setParameter('','level',$level+1);  
     $xsltproc->setParameter('','prefixnum',$prefixnum);
     $xsltproc->setParameter('','indentation',2);
+    $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $html = $xsltproc->transformToXml(CSDB::importDocument('',$title->C14N(),'title'));
     $html = preg_replace("/[\r\n]|\s{2,}/",'',$html);
 
@@ -208,6 +216,7 @@ class DMC
     $xsl_para = CSDB::importDocument(__DIR__."./xsl/para.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl_para);
+    $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $html = $xsltproc->transformToXml(CSDB::importDocument('',$para->C14N(),'para'));
     $html = preg_replace("/[\r\n]|\s{2,}/",'',$html);
 
@@ -252,7 +261,7 @@ class DMC
   public static function resolve_issueInfo(\DOMElement $issueInfo = null)
   {
     if(!$issueInfo){
-      return false;
+      return '';
     }
     $issueNumber = $issueInfo->getAttribute('issueNumber');
     $inWork = $issueInfo->getAttribute('inWork');
@@ -262,7 +271,7 @@ class DMC
   public static function resolve_languange(\DOMElement $languange = null)
   {
     if(!$languange) {
-      return false;
+      return '';
     }
     $languangeIsoCode = $languange->getAttribute('languageIsoCode');
     $countryIsoCode = $languange->getAttribute('countryIsoCode');

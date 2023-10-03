@@ -24,6 +24,8 @@ class PMC_PDF extends TCPDF
   public string $page_ident = '';
 
   public array $cgmark = [];
+  public array $references = [];
+  public string $curEntry;
 
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
@@ -255,6 +257,18 @@ class PMC_PDF extends TCPDF
 			}
 			unset($pamatch);
 		}
+    // adjust references, not links
+    // $tmpreferences = $this->references;
+    // foreach($tmpreferences as $key => $reference){
+    //   if(!$reference['f']){
+    //     if(($reference['p'] >= $topage) AND ($reference['p'] < $frompage)){
+    //       $this->references[$key]['p'] = ($reference['p'] + 1);
+    //     } elseif ($reference['p'] == $frompage){
+    //       $this->reference[$key]['p'] = $topage;
+    //     }
+    //   }
+    // }
+    
 		// return to last page
     /** EDITTED - comment lastPage() function agar tidak terjadi perbedaan margin setiap pmEntry.
      *  walaupun parameter ($resetmargin) di set false, malah berantakan
@@ -534,13 +548,6 @@ class PMC_PDF extends TCPDF
         $this->movePage($page_last, $page);
       }
     }
-    // dump($this->lMargin . " | " . __LINE__);
-    // modified by me: adding intetionally left page
-    // $page_last_TOC = $numpages;
-    // if ($this->getNumPages() % 2 != 0) {
-    //   self::addIntentionallyLeftBlankPage($this);
-    //   $this->movePage($this->getPage(), $page_last_TOC + 1);
-    // }
   }
 
   /**
@@ -1358,7 +1365,19 @@ class PMC_PDF extends TCPDF
 		return $dom;
 	}
   
-  ###### own method ######
+  public function addInternalReference($ident, $id, $page, $y = 0){
+    $link = $this->AddLink();
+    $this->setLink($link,$y,$page);
+    
+    array_push($this->references, [
+      'ident' => $ident,
+      'id' => $id,
+      'link' => $link,
+      // 'p' => $page,
+      // 'y' => $y,
+      // 'f' => $fixed,
+    ]);
+  }
 
   public function __construct(string $absolute_path_csdbInput)
   {
@@ -1384,7 +1403,6 @@ class PMC_PDF extends TCPDF
 
     parent::__construct($orientation, $unit, $format);
   }
-
   /**
    * @param string $aa_name
    * @param string $approved_date
@@ -1393,7 +1411,6 @@ class PMC_PDF extends TCPDF
     $this->aa_approved['name'] = $aa_name;
     $this->aa_approved['date'] = $approved_date;
   }
-
   public function render()
   {
     if (!$this->validateSchema) {
@@ -1470,10 +1487,11 @@ class PMC_PDF extends TCPDF
     // $a = <<<AOD
     // <a href="#para-001,4.5">back to page 1</a>
     // AOD; 
+    // <a href="/#page=2&zoom=100,0,189">back to page 1</a>
     $a = <<<AOD
-    <a href="/#page=2&zoom=100,0,189">back to page 1</a>
+    <a href="#1,50">back to page 1</a>
     AOD; 
-    $this->writeHTML($a,true);
+    // $this->writeHTML($a,true);
     $a = <<<AOD
     <a href="/ident=DMC-N219-A-15-30-00-00A&fragment=para-001">back to page 1</a>
     AOD; 
@@ -1484,6 +1502,28 @@ class PMC_PDF extends TCPDF
     <a href="xsl/tespdf.pdf">back to tespdf.pdf</a>
     AOD; 
     // $this->writeHTML($a,true);
+    // $this->AddPage();
+    // $this->AddPage();
+    // $this->AddPage();
+    // $this->AddPage();
+    // $this->AddPage();
+    // $this->PageAnnots[1][0]['txt'] = "/#page=1";
+    // dd($this->PageAnnots[1], $this->references, $this->PageAnnots[1][0]['txt'] == $this->references[0]['ident'].",".$this->references[0]['id'], $this);
+    // foreach($this->references as $key => $reference){}
+    // $topage = 1;
+    // $endpage = $this->getPage();
+    // for ($page=$topage; $page < $endpage; $page++) { 
+    //   foreach($this->PageAnnots[$page] as $i => $annots){
+    //     foreach($this->references as $reference){
+    //       if($annots['txt'] == $reference['ident'].",".$reference['id']){
+    //         $pg = $reference['p'];
+    //        $this->PageAnnots[$page][$i]['txt'] = "/#page={$pg}";
+    //       }
+    //     }
+    //   }
+    // }
+    // dd($this->PageAnnots);
+    // foreach($this->reference)
     // dd($this);
     // foreach ($this->pages as $key => $page){
     //   $replaced = preg_replace("{{foobar}}", $this->cellCode_linked, $page);
@@ -1515,23 +1555,6 @@ class PMC_PDF extends TCPDF
   
 
     // <a href="file:///D:/application/php-app/mpub/pdf2/tespdf.pdf">see this pdf below</a>
-    $html = <<<EOD
-    <a href="tes('foo')">see this pdf below 5</a>
-    EOD;
-      
-    $js = <<<EOF
-    function Tes(){
-      alert('foo');
-    }
-
-    app.Tes = function () {
-      alert('foobar');
-    }
-
-    app.Tes();
-    EOF;
-    // $this->IncludeJS($js);
-
     
     // $this->writeHTML($html,true);
     // $this->Button('Tes', 30,10,'Tes', "app.Tes('foo')");
@@ -1539,6 +1562,8 @@ class PMC_PDF extends TCPDF
     // $this->setAllowLocalFiles(false);
     // $this->addHtmlLink("www.google.com", 'google', false);
     
+    
+
     // add TOC
     $this->addTOCPage();
     $this->SetFont($this->getFontFamily(), 'B', 14);
@@ -1548,6 +1573,28 @@ class PMC_PDF extends TCPDF
     $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
     $this->endTOCPage();
     $this->endPageGroup = $this->getPage();
+
+    
+    $this->updateLink();
+
+
+    // dd($this);
+  }
+
+  public function updateLink(){
+    $page_last = $this->getPage();
+    for ($page=0; $page <= $page_last; $page++) { 
+      if(!isset($this->PageAnnots[$page])){
+        continue;
+      }
+      foreach($this->PageAnnots[$page] as $i => $annots){
+        foreach($this->references as $reference){
+          if($annots['txt'] == $reference['ident'].",".$reference['id']){
+            $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
+          }
+        }
+      }
+    }
   }
   
 
@@ -1563,8 +1610,7 @@ class PMC_PDF extends TCPDF
     $dmCode_el = $identExtension_el ? $identExtension_el->nextElementSibling : $dmRefIdent->firstElementChild;
     $issueInfo_el = $dmCode_el->nextElementSibling;
     $languange_el = $issueInfo_el ? $issueInfo_el->nextElementSibling : null;
-    
-    // $this->AddPage();
+
     $dmc = new DMC();
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
@@ -1575,7 +1621,6 @@ class PMC_PDF extends TCPDF
 
   public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
   {
-    // dump($tes);
     if (($pdf->getNumPages() % 2) == 0) {
       return false;
     } else {
@@ -3025,9 +3070,7 @@ class PMC_PDF extends TCPDF
 								$opentagpos = $this->footerpos[$this->page];
 							}
 						}
-            // if($dom[$key]['value'] == 'img'){
-            //   dump($key);
-            // }
+
             if($revmark AND isset($dom[$key]['cgmarkid'])){
               $this->start_cgmark = $this->start_cgmark ?? [];
               // $this->start_cgmark[$key] = count($this->cgmark);
@@ -3041,8 +3084,11 @@ class PMC_PDF extends TCPDF
                 $dom[$key]['value']); // assign first position ('st_pos_y')
             }
 
+            if(isset($dom[$key]['attribute']['id'])){
+              $this->addInternalReference($this->curEntry, $dom[$key]['attribute']['id'], $this->page, $this->y);
+            }
+
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
-            // dump($dom, $key);
 					}
 				} 
         else { // closing tag
