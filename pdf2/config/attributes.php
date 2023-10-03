@@ -15,7 +15,8 @@ $pmType = [
     ],
     'fontsize' => [
       'levelledPara' => [
-        'title' =>[ '0' => 14, '1'  => 12, '2'  => 11, '3'  => 10, '4'  => '9'],
+        // 'title' =>[ '0' => 14, '1'  => 12, '2'  => 11, '3'  => 10, '4'  => '9'],
+        'title' =>[12,11,10,9,8],
         'para' => 9,
         'figure' => [ 
           'title' => 9, 
@@ -27,7 +28,10 @@ $pmType = [
       ],
     ],
     'content' => [
-      'indentation' => [
+      // 'indentation' => [
+      //   'levelledPara' => [0,3,5,7,9]
+      // ],
+      'padding' => [
         'levelledPara' => [0,3,5,7,9]
       ],
       'header' => '/template/pt51_header.php',

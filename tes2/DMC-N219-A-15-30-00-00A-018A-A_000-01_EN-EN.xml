@@ -148,7 +148,6 @@
           that the area is clear around the aircraft, observation of traffic, operation of exterior 
           lighting required for flight, operation of avionics equipment such as communication 
           or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
-          <!-- weather radar, and so forth <internalRef internalRefId="lvlp-001">Para lvlp-001</internalRef>. -->
           weather radar, and so forth <internalRef internalRefId="para-001">go to para-001</internalRef>.
         </para>
       </levelledPara>

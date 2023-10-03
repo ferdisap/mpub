@@ -1427,17 +1427,17 @@ class PMC_PDF extends TCPDF
     $bookletMargin = [$this->pmType_config['page']['margins']['R'], $this->pmType_config['page']['margins']['L']];
     $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
 
-    $this->setHeaderMargin($headerMargin);
-    $this->setMargins($leftMargin,$topMargin,$rightMargin);
-    $this->setMargins(0,$topMargin,0);
-    $this->setBooklet(true,$bookletMargin[0],$bookletMargin[1]);
-    $this->setFontSize($fontsize);
-    $this->SetAutoPageBreak(TRUE, $bottomMargin);
-    $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
+    
     $DOMXpath = new \DOMXPath($this->DOMDocument);
     $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
     foreach ($pmEntries as $index => $pmEntry) {
+      $this->setHeaderMargin($headerMargin);
+      $this->setMargins($leftMargin,$topMargin,$rightMargin);
+      $this->setBooklet(true,$bookletMargin[0],$bookletMargin[1]);
+      $this->setFontSize($fontsize);
+      $this->SetAutoPageBreak(TRUE, $bottomMargin);
+      $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      
       $this->pmEntry($pmEntry);
     }
   }
@@ -1459,8 +1459,6 @@ class PMC_PDF extends TCPDF
     $this->AddPage();
     $this->Bookmark($txt, $index);
     
-    // dump($this->page);
-    
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
@@ -1468,100 +1466,7 @@ class PMC_PDF extends TCPDF
           $this->dmRef($child);
           break;
       }
-    }
-    
-    // dd($this);
-    // $this->AddPage();
-    // $this->Write('','target');
-    // $link = $this->AddLink(); // instance in each 
-    // $this->setLink($link, 0, $this->getPage());
-    // $this->setLink($link, 50, "*1");
-
-    // $this->AddPage();
-    // $this->Write('','get back to the link',$link);
-    // $this->writeHTML("<br/><br/><br/><br/>",true);
-    // dd($this);
-    // $a = <<<AOD
-    // <a href="#1,10">back to page 1</a>
-    // AOD;
-    // $a = <<<AOD
-    // <a href="#para-001,4.5">back to page 1</a>
-    // AOD; 
-    // <a href="/#page=2&zoom=100,0,189">back to page 1</a>
-    $a = <<<AOD
-    <a href="#1,50">back to page 1</a>
-    AOD; 
-    // $this->writeHTML($a,true);
-    $a = <<<AOD
-    <a href="/ident=DMC-N219-A-15-30-00-00A&fragment=para-001">back to page 1</a>
-    AOD; 
-    $a = <<<AOD
-    <a href="www.google.com">back to google</a>
-    AOD; 
-    $a = <<<AOD
-    <a href="xsl/tespdf.pdf">back to tespdf.pdf</a>
-    AOD; 
-    // $this->writeHTML($a,true);
-    // $this->AddPage();
-    // $this->AddPage();
-    // $this->AddPage();
-    // $this->AddPage();
-    // $this->AddPage();
-    // $this->PageAnnots[1][0]['txt'] = "/#page=1";
-    // dd($this->PageAnnots[1], $this->references, $this->PageAnnots[1][0]['txt'] == $this->references[0]['ident'].",".$this->references[0]['id'], $this);
-    // foreach($this->references as $key => $reference){}
-    // $topage = 1;
-    // $endpage = $this->getPage();
-    // for ($page=$topage; $page < $endpage; $page++) { 
-    //   foreach($this->PageAnnots[$page] as $i => $annots){
-    //     foreach($this->references as $reference){
-    //       if($annots['txt'] == $reference['ident'].",".$reference['id']){
-    //         $pg = $reference['p'];
-    //        $this->PageAnnots[$page][$i]['txt'] = "/#page={$pg}";
-    //       }
-    //     }
-    //   }
-    // }
-    // dd($this->PageAnnots);
-    // foreach($this->reference)
-    // dd($this);
-    // foreach ($this->pages as $key => $page){
-    //   $replaced = preg_replace("{{foobar}}", $this->cellCode_linked, $page);
-    //   $this->pages[$key] = $replaced;
-    // }
-
-
-
-    // dd($this);
-    // <a href="#1,133">back to page 1</a>
-    // <a href="*/tespdf.pdf">back to page 1</a>
-
-    // $n = $this->AddLink();
-
-    // $this->reference = [
-    //   'url' => "#para-001",
-    //   'page' => 1,
-    //   'link' => $n
-    // ];
-    // $this->setLink($n, $this->y, 4);
-
-
-
-    // $this->writeHTML($a,true);
-    // dump($this);
-    // dump($this);
-    // dd($this);
-    // $this->AddPage();
-  
-
-    // <a href="file:///D:/application/php-app/mpub/pdf2/tespdf.pdf">see this pdf below</a>
-    
-    // $this->writeHTML($html,true);
-    // $this->Button('Tes', 30,10,'Tes', "app.Tes('foo')");
-
-    // $this->setAllowLocalFiles(false);
-    // $this->addHtmlLink("www.google.com", 'google', false);
-    
+    }   
     
 
     // add TOC
@@ -1574,11 +1479,7 @@ class PMC_PDF extends TCPDF
     $this->endTOCPage();
     $this->endPageGroup = $this->getPage();
 
-    
     $this->updateLink();
-
-
-    // dd($this);
   }
 
   public function updateLink(){
@@ -1616,7 +1517,6 @@ class PMC_PDF extends TCPDF
     $dmc->pdf = $this;
     $dmc->importDocument_byIdent($identExtension_el, $dmCode_el, $issueInfo_el, $languange_el);
     $dmc->render();
-    // dump($this->getPage(). " | ". $this->lMargin );
   }
 
   public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
@@ -1870,8 +1770,7 @@ class PMC_PDF extends TCPDF
 	 * @public
 	 */
   public function writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $tes = false, $who = '') {
-    // dump($html);
-		$gvars = $this->getGraphicVars();
+    $gvars = $this->getGraphicVars();
 		// store current values
 		$prev_cell_margin = $this->cell_margin;
 		$prev_cell_padding = $this->cell_padding;
@@ -1930,7 +1829,7 @@ class PMC_PDF extends TCPDF
 		} else {
 			$w = $this->w - $this->rMargin - $this->x;
 		}
-		$w -= ($this->cell_padding['L'] + $this->cell_padding['R']);
+		$w -= ($this->cell_padding['L'] + $this->cell_padding['R']);    
 		if ($cell) {
 			if ($this->rtl) {
 				$this->x -= $this->cell_padding['R'];
@@ -1961,15 +1860,31 @@ class PMC_PDF extends TCPDF
 			$this->resetLastH();
 		}
 		$dom = $this->getHtmlDomArray($html);
-    // $tes AND ($who == 'figure')? dump($dom) : null;
-    // if($who == 'figure' AND $revmark){
-    //   // dump($revmark, $who, $html, $dom);
-    //   dump($dom);
-    // }
 
 		$maxel = count($dom);
 		$key = 0;
-		while ($key < $maxel) {
+    
+    $basic_cell_padding_L = $this->cell_padding['L'];
+    $basic_w = $w;
+		while ($key < $maxel) {      
+      // if($tes){
+        // !empty($dom[$key]['attribute']) ? dump($dom[$key]['attribute']) : null;
+      // }
+      
+      // bookmark if such attribute exist
+      if(!empty($dom[$key]['attribute']['bookmarklvl']) AND !empty($dom[$key]['attribute']['bookmarktxt'])){
+        $txt = preg_replace("/&#xA0;/",' ', $dom[$key]['attribute']['bookmarktxt']);
+        $this->Bookmark($txt, $dom[$key]['attribute']['bookmarklvl']);
+      }
+
+      // set padding if dom[$key] has attribute paddingleft
+      $i = $key;
+      while($i != 0 AND !$this->InFooter AND (isset($dom[$key]['attribute']) AND isset($dom[$key]['attribute']['paddingleft'])) AND $dom[$key]['attribute']['paddingleft'] AND isset($dom[$key]['opening']) AND $dom[$key]['opening']){
+        $this->cell_padding['L'] = $basic_cell_padding_L + $dom[$key]['attribute']['paddingleft'];
+        $w = $basic_w - $dom[$key]['attribute']['paddingleft'];
+        $i = 0;
+      }      
+      
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND $dom[$key]['hide']) {
 				// store the node key
 				$hidden_node_key = $key;
@@ -1984,20 +1899,20 @@ class PMC_PDF extends TCPDF
 					}
 					++$key;
 				}
-			}
+			}      
 			if ($key == $maxel) break;
 			if ($dom[$key]['tag'] AND isset($dom[$key]['attribute']['pagebreak'])) {
 				// check for pagebreak
 				if (($dom[$key]['attribute']['pagebreak'] == 'true') OR ($dom[$key]['attribute']['pagebreak'] == 'left') OR ($dom[$key]['attribute']['pagebreak'] == 'right')) {
 					// add a page (or trig AcceptPageBreak() for multicolumn mode)
 					$this->checkPageBreak($this->PageBreakTrigger + 1);
-					$this->htmlvspace = ($this->PageBreakTrigger + 1); //tes
+					$this->htmlvspace = ($this->PageBreakTrigger + 1);
 				}
 				if ((($dom[$key]['attribute']['pagebreak'] == 'left') AND (((!$this->rtl) AND (($this->page % 2) == 0)) OR (($this->rtl) AND (($this->page % 2) != 0))))
 					OR (($dom[$key]['attribute']['pagebreak'] == 'right') AND (((!$this->rtl) AND (($this->page % 2) != 0)) OR (($this->rtl) AND (($this->page % 2) == 0))))) {
 					// add a page (or trig AcceptPageBreak() for multicolumn mode)
 					$this->checkPageBreak($this->PageBreakTrigger + 1);
-					$this->htmlvspace = ($this->PageBreakTrigger + 1); // tes
+					$this->htmlvspace = ($this->PageBreakTrigger + 1);
 				}
 			}
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND isset($dom[$key]['attribute']['nobr']) AND ($dom[$key]['attribute']['nobr'] == 'true')) {
@@ -3088,6 +3003,19 @@ class PMC_PDF extends TCPDF
               $this->addInternalReference($this->curEntry, $dom[$key]['attribute']['id'], $this->page, $this->y);
             }
 
+            
+            // width cell ***tes***
+            // if(isset($dom[$key]['attribute']['paralevel'])){
+            //   $padding = $this->pmType_config['content']['indentation']['levelledPara'][$dom[$key]['attribute']['paralevel']];
+              
+            //   $this->cell_padding['L'] += $padding;
+            //   $this->rMargin += $padding;
+            // } 
+            // else {
+            //   $this->cell_padding['L'] = $prev_cell_padding_L;
+            //   $this->rMargin = $rMargin;        
+            // }
+            // dump($key);
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
@@ -3104,8 +3032,6 @@ class PMC_PDF extends TCPDF
 					$prev_numpages = $this->numpages;
 					$old_bordermrk = $this->bordermrk[$this->page];
 
-          // tes
-          // if($revmark AND in_array($dom[$key]['parent'], $this->start_cgmark)){
           $parent_cgmarkid = $dom[$dom[$key]['parent']]['cgmarkid'] ?? null;
           if($revmark AND isset($parent_cgmarkid)){
             if(isset($this->start_cgmark[$parent_cgmarkid])){
@@ -3113,7 +3039,6 @@ class PMC_PDF extends TCPDF
             }
           }
           $dom = $this->closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney);
-          // end tes
 
 					if ($this->bordermrk[$this->page] > $old_bordermrk) {
 						$startlinepos += ($this->bordermrk[$this->page] - $old_bordermrk);

@@ -18,16 +18,16 @@
     </a>
   </xsl:template>
 
-  <xsl:template name="internalRefTargetType">
+  <!-- <xsl:template name="internalRefTargetType">
     <xsl:param name="internalRefTargetType" select="@internalRefTargetType"/>
     <xsl:choose>
       <xsl:when test="$internalRefTargetType == 'irtt01'">
         <xsl:text>Fig.&#160;</xsl:text>
       </xsl:when>
     </xsl:choose>
-  </xsl:template>
+  </xsl:template> -->
 
-  <xsl:template name="getPosition">
+  <!-- <xsl:template name="getPosition">
     
-  </xsl:template>
+  </xsl:template> -->
 </xsl:stylesheet>
