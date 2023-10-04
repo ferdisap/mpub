@@ -64,6 +64,10 @@
         </xsl:choose>
       </xsl:attribute>
 
+      <xsl:if test="$level = '1'">
+        <xsl:attribute name="addIntentionallyLeftBlank">true</xsl:attribute>
+      </xsl:if>
+
       <xsl:apply-templates/>
     </div>
   </xsl:template>

@@ -1853,7 +1853,16 @@ class PMC_PDF extends TCPDF
     
     $basic_cell_padding_L = $this->cell_padding['L'];
     $basic_w = $w;
+    if($tes){
+      // dd($dom);
+    }
 		while ($key < $maxel) {
+
+      /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
+      if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
+        $h = $this->getCellHeight($dom[$key]['fontsize']) * 3; // dikali tiga biar kalau ga break, ada text paragraph yang membersamainya 
+        $this->checkPageBreak($h, $this->y);
+      }
 
       // bookmark if such attribute exist
       if(!empty($dom[$key]['attribute']['bookmarklvl']) AND !empty($dom[$key]['attribute']['bookmarktxt'])){
@@ -1883,13 +1892,6 @@ class PMC_PDF extends TCPDF
 				}
 			}      
 			if ($key == $maxel) break;
-
-      // if($this->page != 1 OR (($this->page - 1) != $this->lastpageIntentionallyLeftBlank )){
-      //   if(isset($dom[$key]['attribute']['pagebreak']) AND (($dom[$key]['attribute']['pagebreak'] == 'true') OR ($dom[$key]['attribute']['pagebreak'] == 'left') OR ($dom[$key]['attribute']['pagebreak'] == 'right'))){
-      //     unset($dom[$key]['attribute']['pagebreak']);
-      //   }
-      // }
-
 			if ($dom[$key]['tag'] AND isset($dom[$key]['attribute']['pagebreak'])) {
         // check for pagebreak
 				if (($dom[$key]['attribute']['pagebreak'] == 'true') OR ($dom[$key]['attribute']['pagebreak'] == 'left') OR ($dom[$key]['attribute']['pagebreak'] == 'right')) {
@@ -1903,14 +1905,6 @@ class PMC_PDF extends TCPDF
 					$this->checkPageBreak($this->PageBreakTrigger + 1);
 					$this->htmlvspace = ($this->PageBreakTrigger + 1);
 				}
-        // dump($this->page == 1 OR (($this->page - 1) == $this->lastpageIntentionallyLeftBlank ));
-        // dump($this->lastpageIntentionallyLeftBlank);
-        // dump($this->page);
-        // if(($this->page-1) == 1 OR (($this->page - 1) == $this->lastpageIntentionallyLeftBlank )){
-          // dump('xxx');
-          // $dom[$key]['attribute']['pagebreak'] = 'false';
-          // $this->setPage(1);
-        // }
 			}
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND isset($dom[$key]['attribute']['nobr']) AND ($dom[$key]['attribute']['nobr'] == 'true')) {
 				if (isset($dom[($dom[$key]['parent'])]['attribute']['nobr']) AND ($dom[($dom[$key]['parent'])]['attribute']['nobr'] == 'true')) {
@@ -2691,22 +2685,7 @@ class PMC_PDF extends TCPDF
 				unset($opentagpos);
 			}
 			if ($dom[$key]['tag']) {
-        // if($dom[$key]['opening'] == false AND ($who == 'figure')){
-        //   dump($key . " | ". $dom[$key]['value']);
-        // }
 				if ($dom[$key]['opening']) {
-          
-          // if($dom[$key]['value'] == 'ol' || $dom[$key]['value'] == 'ul'){ // tambahan
-            // $this->y += ($this->getLastH() * 2); // tes sama dengan // $this->Ln() 2 kali; // tidak dipakai karena para yang parentnya listitem akan pakai span, cek di xsl nya
-            // $this->y += ($this->getLastH()); // tes sama dengan // $this->Ln() 2 kali;  // tidak dipakai karena para yang parentnya listitem akan pakai span, cek di xsl nya
-            // if($dom[$key-1]['value'] == 'p'){
-              // $this->y -= ($this->getLastH()); // tes sama dengan // $this->Ln() 2 kali;  // tidak dipakai karena para yang parentnya listitem akan pakai span, cek di xsl nya
-            // }
-          // }
-          // if($dom[$key]['value'] == 'p' AND (isset($dom[$key+1]['value']) AND $dom[$key+1]['value'] == 'ol')){
-          //     // $this->y += ($this->getLastH()); // tes sama dengan // $this->Ln() 2 kali;  // tidak dipakai karena para yang parentnya listitem akan pakai span, cek di xsl nya
-          // }
-
 					// get text indentation (if any)
 					if (isset($dom[$key]['text-indent']) AND $dom[$key]['block']) {
 						$this->textindent = $dom[$key]['text-indent'];
@@ -2999,20 +2978,6 @@ class PMC_PDF extends TCPDF
             if(isset($dom[$key]['attribute']['id'])){
               $this->addInternalReference($this->curEntry, $dom[$key]['attribute']['id'], $this->page, $this->y);
             }
-
-            
-            // width cell ***tes***
-            // if(isset($dom[$key]['attribute']['paralevel'])){
-            //   $padding = $this->pmType_config['content']['indentation']['levelledPara'][$dom[$key]['attribute']['paralevel']];
-              
-            //   $this->cell_padding['L'] += $padding;
-            //   $this->rMargin += $padding;
-            // } 
-            // else {
-            //   $this->cell_padding['L'] = $prev_cell_padding_L;
-            //   $this->rMargin = $rMargin;        
-            // }
-            // dump($key);
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
@@ -3043,9 +3008,18 @@ class PMC_PDF extends TCPDF
 					if ($prev_numpages > $this->numpages) {
 						$startlinepage = $this->page;
 					}
+
+          /** EDITTED - untuk tambah intentionally left blank atau page break */
+          if(isset($dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank']) AND $dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank'] == 'true'){
+            if(($this->page % 2) == 0){
+              $this->AddPage();
+            } else {
+              self::addIntentionallyLeftBlankPage($this);
+            }
+          }
+          
 				}
 			} elseif (strlen($dom[$key]['value']) > 0) {
-        // dump(($dom[$key]['value']));
 				// print list-item
 				if (!TCPDF_STATIC::empty_string($this->lispacer) AND ($this->lispacer != '^')) {
 					$this->setFont($pfontname, $pfontstyle, $pfontsize);
@@ -3066,8 +3040,7 @@ class PMC_PDF extends TCPDF
 					}
 				}
 				// text
-				$this->htmlvspace = 0; // tes
-				// $this->htmlvspace = $this->y + $this->getCellHeight($fontsize / $this->k); // tes
+				$this->htmlvspace = 0;
 				$isRTLString = preg_match(TCPDF_FONT_DATA::$uni_RE_PATTERN_RTL, $dom[$key]['value']) || preg_match(TCPDF_FONT_DATA::$uni_RE_PATTERN_ARABIC, $dom[$key]['value']);
 				if ((!$this->premode) AND $this->isRTLTextDir() AND !$isRTLString) {
 					// reverse spaces order

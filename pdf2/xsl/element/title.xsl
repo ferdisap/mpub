@@ -37,7 +37,6 @@
                 <xsl:when test="$h = 'h1'">
                   <xsl:attribute name="style">
                     <xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_1"/>
-                    <xsl:text>;page-break-before:always</xsl:text>
                   </xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h2'">
