@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/frontmatter.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="001" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01"/>
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="09" day="21" />
+        <dmTitle>
+          <techName>Aircraft</techName>
+          <infoName>Section 04</infoName>
+          <infoNameVariant>Normal Procedures</infoNameVariant>
+        </dmTitle>        
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+             <dmCode modelIdentCode="N219" systemDiffCode="A"
+                systemCode="00" subSystemCode="0" subSubSystemCode="0"
+                assyCode="00" disassyCode="00" disassyCodeVariant="A"
+                infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <frontMatter>
+      <frontMatterTitlePage>
+        <!-- <productIntroName> -->
+          <!-- kalau NAU 9 contohnya: <name>NC212i NAU9 Troop Configuration</name> -->
+          <!-- <name>N219</name> -->
+        <!-- </productIntroName> -->
+        <pmTitle>Section 04 - Normal Procedure</pmTitle>
+        <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
+        <issueInfo issueNumber="000" inWork="01" />
+        <issueDate year="2023" month="09" day="17"/>
+        <security securityClassification="01" />
+        <responsiblePartnerCompany enterpriseCode="0001Z">
+          <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+        </responsiblePartnerCompany>
+      </frontMatterTitlePage>
+    </frontMatter>
+  </content>
+</dmodule>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N218" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="09" day="21" />
+        <dmTitle>
+          <techName>Normal Procedures</techName>
+          <infoName>Introduction</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01"/>
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+             <dmCode modelIdentCode="N219" systemDiffCode="A"
+                systemCode="00" subSystemCode="0" subSubSystemCode="0"
+                assyCode="00" disassyCode="00" disassyCodeVariant="A"
+                infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+      <reasonForUpdate id="rfu-001">
+        <simplePara>First Revision</simplePara>
+      </reasonForUpdate>
+      <reasonForUpdate id="rfu-002">
+        <simplePara>Second Revision</simplePara>
+      </reasonForUpdate>
+      <reasonForUpdate id="rfu-003">
+        <simplePara>Third Revision</simplePara>
+      </reasonForUpdate>
+      <reasonForUpdate id="rfu-004">
+        <simplePara>Fourth Revision</simplePara>
+      </reasonForUpdate>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara id="lvlp-001">
+        <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title>
+        <para>
+          Operators are encouraged to develop their own 'quick reference' normal checklists 
+          based on the procedures provided in this manual. The sequence of individual checklist 
+          items should <superScript> sub sub</superScript> bar <emphasis emphasisType="em01">emphasis-bold</emphasis> not be changed when operator-specific quick reference checklists are 
+          developed. For example, turning off the <changeInline changeType="add">autofeather</changeInline> system is listed as the last item
+          in the After Takeoff checklist, and it should remain the last item in any operator-specific
+          'quick reference' After Takeoff checklist.
+        </para>
+        <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
+          <randomList>
+            <listItem>
+              <para>Listitem 1 Lorem <emphasis emphasisType="em01">ipsum</emphasis> dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. </para>
+            </listItem>
+            <listItem>
+              <para>
+                <randomList>
+                  <listItem><para>Ferdi</para></listItem>
+                  <listItem><para>Rahman</para></listItem>
+                </randomList>
+              </para>
+            </listItem>
+            <listItem>
+              <para>Listitem 3 Lorem ipsum dolor sit amet.</para>
+            </listItem>
+          </randomList>
+        </para>
+        <para>
+          The normal operating procedures in this section comply with the requirements of CASR Part 23.
+        </para>
+        <para>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed nisi illum quisquam, ex iste a nostrum rerum alias corrupti itaque eius assumenda sapiente sequi magni dignissimos praesentium aut fugiat earum aspernatur minus ipsum. Cupiditate adipisci est officiis consequuntur maiores magni, veniam distinctio iure alias voluptatibus doloribus aperiam, odit quis harum aliquam voluptatem qui sint ducimus? Necessitatibus alias dignissimos commodi consequuntur iusto, nulla mollitia quisquam nesciunt asperiores laudantium cumque ex beatae odio inventore odit aliquid esse corrupti animi placeat cupiditate repellat! Amet, nemo! Error consequatur illo repellat facilis sapiente praesentium officiis soluta iure repudiandae eius impedit autem voluptatem quidem vitae, necessitatibus dolorem corporis dolores fugiat, quibusdam suscipit totam nihil esse aliquam. Eligendi voluptatum officiis veniam temporibus perspiciatis rerum tenetur magni dolore, ut consequatur facere vitae similique, eum modi aperiam assumenda consequuntur deserunt laboriosam eveniet laudantium pariatur, distinctio aspernatur illo iure? Eaque possimus non dolores nulla minus? Illo, illum minima ullam facere mollitia incidunt obcaecati! Officiis sint iste odit facere eum molestiae eos aperiam? Ut, repellat iste numquam cumque voluptatum laudantium, quo a quaerat expedita ad in soluta totam quibusdam excepturi quasi pariatur adipisci, perspiciatis dolorum saepe consequuntur illo repellendus minus tempore quod! Quos dignissimos voluptas ut aliquam dolor possimus ipsa eveniet quibusdam doloribus odio blanditiis porro voluptatum laboriosam voluptate eius assumenda excepturi quam qui nihil quidem dolorem, repellat sed! Sed eos sint impedit expedita id quaerat mollitia nesciunt, adipisci placeat, alias architecto esse vero aut dolorem accusamus maiores praesentium dignissimos iste hic. Laboriosam beatae praesentium ex nulla a incidunt quia porro sint assumenda alias natus officiis, magni, pariatur veritatis, quos nemo soluta ipsa distinctio deleniti voluptates excepturi tempore voluptatem nobis consequatur. Similique ut ex quam eius labore deserunt necessitatibus, consequuntur, nisi incidunt temporibus, nesciunt ipsa rerum. Quia voluptates laborum ad officiis. Molestias aliquid id quaerat quo impedit fugiat, repudiandae a facilis corrupti at, excepturi ipsum? Nobis modi assumenda deleniti quae, incidunt blanditiis, vel dignissimos voluptatem sapiente necessitatibus quas explicabo exercitationem, pariatur ipsam! Et rem eos tenetur est voluptates quod cum id quisquam sint. At harum consequuntur perferendis dolor? Iusto veniam soluta laborum quo temporibus nesciunt sequi fuga iure aliquam sed consequuntur recusandae mollitia, eligendi deserunt impedit odit eius incidunt distinctio consectetur. Similique fuga sint beatae laudantium molestias eveniet sequi magnam blanditiis corporis nostrum alias, quasi veritatis ratione laboriosam quisquam itaque illum, molestiae reiciendis eius assumenda ex. Deleniti sequi commodi quod blanditiis maxime quibusdam quis repudiandae officia magnam quaerat dolore aperiam laborum harum aliquam culpa, cupiditate reiciendis eos quae assumenda sit? Architecto, porro delectus. Est doloremque rerum illo, earum temporibus quasi sapiente eaque commodi laborum molestiae dolorem veniam ipsa quod nisi fugit officiis, debitis obcaecati laudantium facere adipisci suscipit, illum libero distinctio. Et praesentium aliquid, at iste dicta hic illum voluptatibus vitae laborum excepturi harum natus vel, maiores voluptates temporibus omnis facilis ex aut, nulla ea deserunt eius eos culpa eveniet. Rerum minus quia voluptatem quasi. Inventore eveniet, quos officiis sunt ut eius expedita optio error? Animi ab consectetur vel. Laboriosam nam, voluptatum 
+        </para>
+        <levelledPara>
+          <title>Intro tes 1</title>
+          <para>tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore?</para>
+        </levelledPara>
+        <levelledPara changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">
+          <title>Intro tes 2</title>
+          <para>tes1 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore bar?</para>
+          <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore bar?</para>
+          <para changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">tes3 lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?</para>
+          <!-- <para changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">tes4 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?</para> -->
+          <levelledPara>
+            <title>Intro tes 21</title>
+            <para>21 tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore fooxx?</para>
+          </levelledPara>
+        </levelledPara>
+      </levelledPara>
+      <!-- <levelledPara>
+        <title>Scope</title>
+        <para>
+          This section provides normal operating procedures. Normal procedures are used 
+          when systems are functioning in their usual manner.
+        </para>
+        <para id="para-001">
+          Because the focus of this manual is on providing technical guidance that is specific 
+          or unique to the N219, no attempt has been made to include in the checklists 
+          standard 'airmanship' practices that are applicable to any flight such as confirming 
+          that the area is clear around the aircraft, observation of traffic, operation of exterior 
+          lighting required for flight, operation of avionics equipment such as communication 
+          or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
+          weather radar, and so forth <internalRef internalRefId="lvlp-002">Para lvlp-002</internalRef>.
+        </para>
+        <para>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, repellat, aut amet, impedit ab perferendis omnis rerum mollitia dolores esse sint autem dolor natus adipisci nihil! Quidem, ipsam accusantium dicta recusandae sunt quae quibusdam vero ipsum consequuntur expedita dolorem suscipit sapiente provident obcaecati laudantium ullam vitae ex a, dolores totam ipsa cum illo. Error autem maiores veniam cupiditate sunt commodi! Enim nemo veritatis libero modi minima reprehenderit distinctio id quo, nulla sit! Debitis voluptatum molestias dolorum, et praesentium commodi error aspernatur aliquid! Mollitia assumenda ipsam labore facilis reiciendis accusantium architecto? Aliquam quibusdam deleniti fugiat ipsa ab officiis quo amet praesentium?
+        </para>
+      </levelledPara> -->
+      <levelledPara id="lvlp-002">
+        <title>Para lvlp-002</title>
+        <para>
+          This section provides normal operating procedures. Normal procedures are used 
+          when systems are functioning in their usual manner.
+        </para>
+        <para>
+          Because the focus of this manual is on providing technical guidance that is specific 
+          or unique to the N219, no attempt has been made to include in the checklists 
+          standard 'airmanship' practices that are applicable to any flight such as confirming 
+          that the area is clear around the aircraft, observation of traffic, operation of exterior 
+          lighting required for flight, operation of avionics equipment such as communication 
+          or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
+          weather radar, and so forth <internalRef internalRefId="para-001">go to para-001</internalRef>.
+        </para>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>

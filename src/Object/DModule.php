@@ -7,6 +7,7 @@ use Error;
 use Exception;
 use Ptdi\Mpub\Object\ACT;
 use Ptdi\Mpub\CSDB;
+use Ptdi\Mpub\Csdb\Element\Dmodule as ElementDmodule;
 use Ptdi\Mpub\Publisher\Element;
 use Ptdi\Mpub\Publisher\ElementList;
 use Ptdi\Mpub\Schema\Schema;
@@ -14,7 +15,7 @@ use Ptdi\Mpub\Schema\Schema;
 class DModule extends CSDB
 {
   private \DOMDocument $DOMDocument;
-  public array $schemaValidate;
+  public array $schemaValidate = ["status"=> false, "errors" => null];
   public string $prefix;
   public string $filename;
 
@@ -28,18 +29,71 @@ class DModule extends CSDB
     $this->modelIdentCode = $modelIdentCode;
   }
 
-  public function import_DOMDocument(string $filename)
+  /**
+   * @param string $schemaName is with extension .xsd
+   * @return \DOMDocument
+   */
+  public function create_blankDocument(string $schemaName)
+  {
+    $doc = new \DOMDocument('1.0', "UTF-8");
+    switch ($schemaName) {
+      case 'dml.xsd':
+        $dmodule = $doc->createElement('dml', '');
+        break;
+      
+      default:
+        $dmodule = $doc->createElement('dmodule', '');
+        break;
+    }
+    $doc->appendChild($dmodule);
+    
+    $noNamespaceSchemaLocation = $doc->createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", 'xsi:noNamespaceSchemaLocation');
+    // $noNamespaceSchemaLocation->value = "../mpub/src/Schema/dml.xsd";
+    $noNamespaceSchemaLocation->value = "dml.xsd";
+
+    $dmodule->appendChild($noNamespaceSchemaLocation);
+    return $this->DOMDocument = $doc;
+  }
+
+  /**
+   * @param string $filename is output file with extension
+   */
+  public function writeToFile(string $app_path, string $filename)
+  {
+    switch ($this->getSchemaName($this->getDOMDocument()->firstElementChild)) {
+      case 'dml.xsd':
+        $objectType = "data_management_list";
+        break;
+      
+      default:
+        $objectType = "data_module";
+        break;
+    }
+    $path = $this->setCsdbPath($app_path).($this->schemaValidate['status'] ? '' : $objectType.'\unvalidated\\').$filename;
+    file_put_contents($path, $this->getDOMDocument());
+  }
+
+  /**
+   * @param string $filename with extension
+   * @param string $schemaName with extension .xsd
+   */
+  public function import_DOMDocument(string $filename, string $schemaName = null)
   {
     $doc = $this->load($filename);
-    return $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+    // $this->DOMDocument = $doc->firstElementChild->nodeName == 'dmodule' ? $doc : new \DOMDocument();
+    $this->DOMDocument = $doc;
+    if($schemaName){
+      if($schemaName != DModule::getSchemaName($this->DOMDocument->firstElementChild)){
+        throw new Exception("The DModule is not type of schema {$schemaName}", 1);
+      }
+    }
   }
 
   public function validateTowardsXSI(string $schemaName = null)
   {
     if($document = $this->DOMDocument){
       libxml_use_internal_errors(true);
-      $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName.".xsd") : Schema::getSchemaString(self::getSchemaName($document->firstElementChild).".xsd");
-      // dd($schemaString);
+      $schemaString = isset($schemaName) ? Schema::getSchemaString($schemaName) : Schema::getSchemaString(self::getSchemaName($document->firstElementChild));
       $status = $document->schemaValidateSource($schemaString, LIBXML_PARSEHUGE);
       $errors = libxml_get_errors();
       return $this->schemaValidate = ["status"=> $status, "errors" => $errors];
@@ -58,6 +112,9 @@ class DModule extends CSDB
   //   return $this;
   // }
 
+  /**
+   * @return string schema path with file name extension
+   */
   public static function getSchemaPath(\DOMElement $element)
   {
     $schema_path = $element->getAttribute("xsi:noNamespaceSchemaLocation");
@@ -69,14 +126,15 @@ class DModule extends CSDB
   }
 
   /**
-   * get schema name without extension .xsd
+   * @return string schemaName with extension .xsd
+   * @return false
    */
   public static function getSchemaName(\DOMElement $element = null)
   {
     $schema_path = self::getSchemaPath($element);
     preg_match('/[a-z]+(?=.xsd)/', $schema_path, $matches, PREG_OFFSET_CAPTURE, 0);
-    if ($matches) {
-      return $matches[0][0];
+    if (count($matches) > 0) {
+      return $matches[0][0].".xsd";
     } else {
       return false;
     }
@@ -126,7 +184,57 @@ class DModule extends CSDB
     $issueInfo = $domXpath->evaluate($query_issueInfo);
     $issueInfo = get_class($issueInfo) == "DOMNodeList" ? $issueInfo->item(0) : throw new Error("Data module name cannot be resolved");
 
+    ############################
+
+    return self::resolveDMCode($dmCode,$issueInfo, $getDMName[$dmType]["prefix"] ? $getDMName[$dmType]["prefix"]."-" : null );
+    
+    ############################
+    
+    
     // dump(DModule::getSchemaName($doc->firstElementChild), $dmCode, $dmType);
+    // $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
+    // $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
+    // $systemCode = $dmCode->getAttribute('systemCode');
+    // $subSystemCode = $dmCode->getAttribute('subSystemCode');
+    // $subSubSystemCode = $dmCode->getAttribute('subSubSystemCode');
+    // $assyCode = $dmCode->getAttribute('assyCode');
+    // $disassyCode = $dmCode->getAttribute('disassyCode');
+    // $disassyCodeVariant = $dmCode->getAttribute('disassyCodeVariant');
+    // $infoCode = $dmCode->getAttribute('infoCode');
+    // $infoCodeVariant = $dmCode->getAttribute('infoCodeVariant');
+    // $itemLocationCode = $dmCode->getAttribute('itemLocationCode');
+
+    // $issueNumber = $issueInfo->getAttribute('issueNumber');
+    // $inWork = $issueInfo->getAttribute('inWork');
+
+    // $name = (($prefix = $getDMName[$dmType]["prefix"]) ? $prefix : $doc->prefix)."-".
+    // $modelIdentCode."-".$systemDiffCode."-".
+    // $systemCode."-".$subSystemCode.$subSubSystemCode."-".
+    // $assyCode."-".$disassyCode.$disassyCodeVariant."-".
+    // $infoCode.$infoCodeVariant."-".$itemLocationCode."_".
+    // $issueNumber."_".$inWork;
+
+    // return $name;
+  }
+
+  public static function resolvePMCode(\DOMElement $pmCode, \DOMElement $issueInfo = null, mixed $prefix = 'PMC-'){
+    $modelIdentCode = $pmCode->getAttribute('modelIdentCode');
+    $pmIssuer = $pmCode->getAttribute('pmIssuer');
+    $pmNumber = $pmCode->getAttribute('pmNumber');
+    $pmVolume = $pmCode->getAttribute('pmVolume');
+
+    return
+    $prefix.
+    $modelIdentCode."-".
+    $pmIssuer."-".
+    $pmNumber."-".
+    $pmVolume;
+  }
+
+  public static function resolveDMCode(\DOMElement $dmCode, \DOMElement $issueInfo = null, mixed $prefix = 'DMC-'){
+    // $dmCode = $dmIdent->childNodes[0];
+    // $issueInfo = $dmIdent->childNodes[1];
+
     $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
     $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
     $systemCode = $dmCode->getAttribute('systemCode');
@@ -139,17 +247,20 @@ class DModule extends CSDB
     $infoCodeVariant = $dmCode->getAttribute('infoCodeVariant');
     $itemLocationCode = $dmCode->getAttribute('itemLocationCode');
 
-    $issueNumber = $issueInfo->getAttribute('issueNumber');
-    $inWork = $issueInfo->getAttribute('inWork');
+    $issue = '';
+    if($issueInfo){
+      $issueNumber = $issueInfo->getAttribute('issueNumber');
+      $inWork = $issueInfo->getAttribute('inWork');
+      $issue = "_".$issueNumber."-".$inWork;
+    }
 
-    $name = (($prefix = $getDMName[$dmType]["prefix"]) ? $prefix : $doc->prefix)."-".
+    $name = $prefix.
     $modelIdentCode."-".$systemDiffCode."-".
     $systemCode."-".$subSystemCode.$subSubSystemCode."-".
     $assyCode."-".$disassyCode.$disassyCodeVariant."-".
-    $infoCode.$infoCodeVariant."-".$itemLocationCode."_".
-    $issueNumber."_".$inWork;
+    $infoCode.$infoCodeVariant."-".$itemLocationCode;
 
-    return $name;
+    return $name.$issue;
   }
 
   public function resolve(array $objectResolves = ['applicability'])
@@ -163,8 +274,13 @@ class DModule extends CSDB
   private function resolveApplicability()
   {
     // dd($this->getSchemaName($this->getDOMDocument()->firstElementChild));
-    $actdm_filename = DModule::getDMName($this->getDOMDocument(),1).".xml";
-    $act = new ACT($actdm_filename);
+    // $actdm_filename = DModule::getDMName($this->getDOMDocument(),1).".xml";
+    // dd($this->modelIdentCode);
+    $act = new ACT('DMC', $this->modelIdentCode);
+    $act->import_DOMDocument(DModule::getDMName($this->getDOMDocument(),1).".xml", 'appliccrossreftable.xsd');
+    $act->setReferedCCTandPCT();
+    
+    // dd($act);
 
     $applics = $this->getElementList("//applic");
     
@@ -198,6 +314,20 @@ class DModule extends CSDB
 
     return ElementList::createList($list_elements); 
   }
+
+  ##################
+  // untuk pdf
+  // dipindah ke CSDB
+  // public static function children(\DOMElement $element, string $node = "elements"){
+  //   $arr = array();
+  //   foreach ($element->childNodes as $childNodes){
+  //     if($node == 'elements'){
+  //       $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;    
+  //     }
+  //   }
+  //   return $arr;
+  // }
+  ##################
 
 
 }

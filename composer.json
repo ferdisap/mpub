@@ -1,24 +1,25 @@
 {
-    "name": "ptdi/mpub",
-    "description": "processing csdb object",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Ptdi\\Mpub\\": "src/",
-            "Ptdi\\Mpub\\tes_tcpdf": "tes_tcpdf/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Ferdi Saptoko",
-            "email": "ferdisaptoko@gmail.com"
-        }
-    ],
-    "require": {
-        "tecnickcom/tcpdf": "^6.6"
-    },
-    "require-dev": {
-      "symfony/var-dumper": "^6.3"
-    }
+  "name": "ptdi/mpub",
+  "description": "processing csdb object",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+      "psr-4": {
+          "Ptdi\\Mpub\\": "src/",
+          "Ptdi\\Mpub\\Pdf\\": "pdf/",
+          "Ptdi\\Mpub\\Pdf2\\": "pdf2/"
+      }
+  },
+  "authors": [
+      {
+          "name": "Ferdi Saptoko",
+          "email": "ferdisaptoko@gmail.com"
+      }
+  ],
+  "require": {
+      "tecnickcom/tcpdf": "*"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^6.3"
+  }
 }

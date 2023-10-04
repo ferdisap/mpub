@@ -18,8 +18,12 @@ So, we change the schema data-type of @infoEntityIdent into "entity" (figure, vi
 schema_changed:
 descript.xsd, 
 appliccrossreftable.xsd,
-condcrossreftable.xsd
-prdcrossreftable.xsd
+condcrossreftable.xsd,
+prdcrossreftable.xsd,
+dml.xsd,
+brex.xsd,
+brdoc.xsd,
+pm.xsd,
 ###
 
 ###
@@ -67,4 +71,8 @@ schema_changed:
 descript.xsd, 
 appliccrossreftable.xsd,
 condcrossreftable.xsd
+dml.xsd,
+brex.xsd,
+brdoc.xsd,
+pm.xsd,
 ###
