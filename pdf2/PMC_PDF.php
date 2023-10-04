@@ -26,6 +26,7 @@ class PMC_PDF extends TCPDF
   public array $cgmark = [];
   public array $references = [];
   public string $curEntry;
+  public $lastpageIntentionallyLeftBlank = 0;
 
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
@@ -329,7 +330,6 @@ class PMC_PDF extends TCPDF
     $numwidth = $this->GetStringWidth('00000');
     $maxpage = 0; //used for pages on attached documents
     // *** EDITED
-    // dd($this->outline);
     for ($i=0; $i < count($this->outlines); $i++){
       $outline = $this->outlines[$i];
       
@@ -352,14 +352,6 @@ class PMC_PDF extends TCPDF
         $aligntext = 'L';
         $alignnum = 'R';
       }
-      /**
-       * EDITED - agar font di TOC list sama semua
-       */ 
-      // if ($outline['l'] == 0) {
-      //   $this->setFont($fontfamily, $outline['s'] . 'B', $fontsize);
-      // } else {
-      //   $this->setFont($fontfamily, $outline['s'], $fontsize - $outline['l']);
-      // }
       $this->setFont($fontfamily, $outline['s'], $fontsize); // fontsize is same with default
       
       $this->setTextColorArray($outline['c']);
@@ -383,15 +375,11 @@ class PMC_PDF extends TCPDF
         $current_column = $this->current_column;
       }
       $this->setX($x_start);
-      // *** EDITED
-      $indent = ($spacer * ($outline['l'] -1));
-      // end EDITTED
+      $indent = ($spacer * ($outline['l']));
       if ($this->rtl) {
-        // dd('rtl');
         $this->x -= $indent;
         $this->rMargin = $this->w - $this->x;
       } else {
-        // dump($this->lMargin . " | " . __LINE__);
         $this->x += $indent;
         $this->lMargin = $this->x;
       }
@@ -401,13 +389,12 @@ class PMC_PDF extends TCPDF
       if ($this->rtl) {
         $txt = ' ' . $outline['t'];
       } else {
-        $txt = $outline['t'] . ' ';
+        $txt = $outline['t'] . '  ';
       }
       // *** EDITED - make vertical space before Level 1, not level 0 because level is abandoned
       if ($outline['l'] == 1) {
         $this->Ln(1.5);
       }
-      
       $this->Write(0, $txt, $link, false, $aligntext, false, 0, false, false, 0, $numwidth, '');
       if ($this->rtl) {
         $tw = $this->x - $this->lMargin;
@@ -425,8 +412,7 @@ class PMC_PDF extends TCPDF
         }
         $maxpage = max($maxpage, $outline['p']);
       }
-      $gap_titleAndFiller = 4;
-      $fw = ($tw - $this->GetStringWidth($pagenum . $filler)) - $gap_titleAndFiller;
+      $fw = ($tw - $this->GetStringWidth($pagenum . $filler));
       $wfiller = $this->GetStringWidth($filler);
       if ($wfiller > 0) {
         $numfills = floor($fw / $wfiller); // jumlah titik2 atau filler toc nya
@@ -447,12 +433,12 @@ class PMC_PDF extends TCPDF
         ### end bypass
       }
       // write the number
-      $this->Cell($tw, 0, $pagenum, 0, 1, $alignnum, 0, $link, 0);
+      
+      $this->Cell($tw, 0, $pagenum, 0, 1, $alignnum, 0, $link, 0, false, 'T', 'M');
     }
     $page_last = $this->getPage();
     $numpages = ($page_last - $page_first + 1);
     // account for booklet mode
-    // dump($this->getPage(). " | ". $this->getMargins()['left'] );
     if ($this->booklet) {
       // check if a blank page is required before TOC
       $page_fill_start = ((($page_first % 2) == 0) xor (($page % 2) == 0));
@@ -460,25 +446,18 @@ class PMC_PDF extends TCPDF
       if ($page_fill_start) {
         // add a page at the end (to be moved before TOC)
         // *** EDITED
-        // $this->addPage();
         self::addIntentionallyLeftBlankPage($this);
-        // $this->Addpage();
-        // $this->Cell(0, 150, 'FOO', 0, 1, 'C');
         ++$page_last;
         ++$numpages;
       }
       if ($page_fill_end) {
         // add a page at the end
         // *** EDITED
-        // $this->addPage();
         self::addIntentionallyLeftBlankPage($this);
-        // $this->Addpage();
-        // $this->Cell(0, 150, 'BAr', 0, 1, 'C');
         ++$page_last;
         ++$numpages;
       }
     }
-    // dump($this->getPage(). " | ". $this->getMargins()['left'] );
     // code untuk update page number aliasnya
     $maxpage = max($maxpage, $page_last);
     if (!TCPDF_STATIC::empty_string($page)) {
@@ -531,8 +510,15 @@ class PMC_PDF extends TCPDF
             } else {
               $nr = $sfill . ' ' . $na;
               ### remove character ... from nr (page number)
-              $nr = preg_replace("/\W/m",'',$nr);
+              // dump($nr);
+              // dd($this->GetStringWidth(".."), $this->GetStringWidth("3"));
+              if($this->GetStringWidth($nr) > 3){
+                $nr = preg_replace("/\W/m",'',$nr);                
+              } 
               ### end remove
+              // if((int)$nr < 10){
+              //   $nr = "0".$nr;
+              // }
             }
             $temppage = str_replace($a, $nr, $temppage);
           }
@@ -540,7 +526,6 @@ class PMC_PDF extends TCPDF
         $this->setPageBuffer($p, $temppage, false, $tes = true);
       }
       // move pages
-      // $this->Bookmark($toc_name, 0, 0, $page_first, $style, $color);
       if ($page_fill_start) {
         $this->movePage($page_last, $page_first);
       }
@@ -1477,7 +1462,7 @@ class PMC_PDF extends TCPDF
     $this->endTOCPage();
     $this->endPageGroup = $this->getPage();
 
-    $this->updateLink();
+    // $this->updateLink();
   }
 
   private function dmRef(\DOMElement $dmRef)
@@ -1513,6 +1498,8 @@ class PMC_PDF extends TCPDF
       $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin);
       $pdf->setFontSize(7);
       $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
+
     }
   }
 
@@ -1770,9 +1757,6 @@ class PMC_PDF extends TCPDF
 	 * @public
 	 */
   public function writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $tes = false, $who = '') {
-    if($tes){
-      $this->tes = $tes;
-    }
     $gvars = $this->getGraphicVars();
 		// store current values
 		$prev_cell_margin = $this->cell_margin;
@@ -1869,12 +1853,8 @@ class PMC_PDF extends TCPDF
     
     $basic_cell_padding_L = $this->cell_padding['L'];
     $basic_w = $w;
-		while ($key < $maxel) {      
-      if($tes){
-        // dd($dom);
-        // !empty($dom[$key]['attribute']) ? dump($dom[$key]['attribute']) : null;
-      }
-      
+		while ($key < $maxel) {
+
       // bookmark if such attribute exist
       if(!empty($dom[$key]['attribute']['bookmarklvl']) AND !empty($dom[$key]['attribute']['bookmarktxt'])){
         $txt = preg_replace("/&#xA0;/",' ', $dom[$key]['attribute']['bookmarktxt']);
@@ -1903,15 +1883,19 @@ class PMC_PDF extends TCPDF
 				}
 			}      
 			if ($key == $maxel) break;
+
+      // if($this->page != 1 OR (($this->page - 1) != $this->lastpageIntentionallyLeftBlank )){
+      //   if(isset($dom[$key]['attribute']['pagebreak']) AND (($dom[$key]['attribute']['pagebreak'] == 'true') OR ($dom[$key]['attribute']['pagebreak'] == 'left') OR ($dom[$key]['attribute']['pagebreak'] == 'right'))){
+      //     unset($dom[$key]['attribute']['pagebreak']);
+      //   }
+      // }
+
 			if ($dom[$key]['tag'] AND isset($dom[$key]['attribute']['pagebreak'])) {
-				// check for pagebreak
+        // check for pagebreak
 				if (($dom[$key]['attribute']['pagebreak'] == 'true') OR ($dom[$key]['attribute']['pagebreak'] == 'left') OR ($dom[$key]['attribute']['pagebreak'] == 'right')) {
-					// add a page (or trig AcceptPageBreak() for multicolumn mode)
-          /** EDITTED supaya page-break-before di abaikan jika di halaman pertama */
-          if(!($this->page % 2)){
+          // dump($this->pagegroups);
             $this->checkPageBreak($this->PageBreakTrigger + 1);
             $this->htmlvspace = ($this->PageBreakTrigger + 1);
-          }
 				}
 				if ((($dom[$key]['attribute']['pagebreak'] == 'left') AND (((!$this->rtl) AND (($this->page % 2) == 0)) OR (($this->rtl) AND (($this->page % 2) != 0))))
 					OR (($dom[$key]['attribute']['pagebreak'] == 'right') AND (((!$this->rtl) AND (($this->page % 2) != 0)) OR (($this->rtl) AND (($this->page % 2) == 0))))) {
@@ -1919,6 +1903,14 @@ class PMC_PDF extends TCPDF
 					$this->checkPageBreak($this->PageBreakTrigger + 1);
 					$this->htmlvspace = ($this->PageBreakTrigger + 1);
 				}
+        // dump($this->page == 1 OR (($this->page - 1) == $this->lastpageIntentionallyLeftBlank ));
+        // dump($this->lastpageIntentionallyLeftBlank);
+        // dump($this->page);
+        // if(($this->page-1) == 1 OR (($this->page - 1) == $this->lastpageIntentionallyLeftBlank )){
+          // dump('xxx');
+          // $dom[$key]['attribute']['pagebreak'] = 'false';
+          // $this->setPage(1);
+        // }
 			}
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND isset($dom[$key]['attribute']['nobr']) AND ($dom[$key]['attribute']['nobr'] == 'true')) {
 				if (isset($dom[($dom[$key]['parent'])]['attribute']['nobr']) AND ($dom[($dom[$key]['parent'])]['attribute']['nobr'] == 'true')) {

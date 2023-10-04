@@ -112,7 +112,7 @@
           </levelledPara>
         </levelledPara>
       </levelledPara>
-      <levelledPara id="plev-002">
+      <!-- <levelledPara id="plev-002">
         <title>Scope</title>
         <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-001">
           This section provides normal operating procedures. Normal procedures are used 
@@ -127,7 +127,7 @@
           or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
           weather radar, and so forth.
         </para>
-      </levelledPara>
+      </levelledPara> -->
     </description>
   </content>
 </dmodule>
