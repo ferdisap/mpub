@@ -67,7 +67,7 @@
     <description>
       <levelledPara id="lvlp-001">
         <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title>
-        <para>
+        <para id="para-001">
           Operators are encouraged to develop their own 'quick reference' normal checklists 
           based on the procedures provided in this manual. The sequence of individual checklist 
           items should <superScript> sub sub</superScript> bar <emphasis emphasisType="em01">emphasis-bold</emphasis> not be changed when operator-specific quick reference checklists are 

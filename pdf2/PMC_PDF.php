@@ -427,11 +427,10 @@ class PMC_PDF extends TCPDF
       } else {
         // $pagenum = $rowfill.$gap.$pagenum;
         // *** EDITED ### bypass page number by adding prefix
-        $pagenum = $rowfill . $gap . $this->prefix_pagenum . $pagenum;
+        $pagenum = $rowfill.$this->prefix_pagenum . $pagenum; // gap di hilangkan dari sini karena akan ditambahkan saat replacing page number alias dibawah (masih di fungsi addTOC())
         ### end bypass
       }
       // write the number
-      
       $this->Cell($tw, 0, $pagenum, 0, 1, $alignnum, 0, $link, 0, false, 'T', 'M');
     }
     $page_last = $this->getPage();
@@ -445,8 +444,6 @@ class PMC_PDF extends TCPDF
         // add a page at the end (to be moved before TOC)
         // *** EDITED
         self::addIntentionallyLeftBlankPage($this);
-        // $this->AddPage();
-        // $this->Write('','foobar');
         ++$page_last;
         ++$numpages;
       }
@@ -454,8 +451,6 @@ class PMC_PDF extends TCPDF
         // add a page at the end
         // *** EDITED
         self::addIntentionallyLeftBlankPage($this);
-        // $this->AddPage();
-        // $this->Write('','foobar');
         ++$page_last;
         ++$numpages;
       }
@@ -480,7 +475,7 @@ class PMC_PDF extends TCPDF
           $na = TCPDF_STATIC::formatTOCPageNumber(($this->starting_page_number + $np - 1));
           $nu = TCPDF_FONTS::UTF8ToUTF16BE($na, false, $this->isunicode, $this->CurrentFont);
 
-          /** EDITTED
+          /** EDITTED - tambahan
            * agar addressed page di TOC tertulis sesuai dengan pergroup. 
            * Jika ada dua group, maka addressed page tidak akan dihitung dari group sebelumnya
            */
@@ -515,6 +510,24 @@ class PMC_PDF extends TCPDF
               $nr = preg_replace("/\W/m",'',$nr);                
               ### end remove
             }
+
+            // karena Cell di render dengan page alias, jadi width cell tidak aktual (tidak sama align di kanan antar list toc nya) saat di replace aliasnya, jadi lakukan script dibawah ini
+            // $nr adalah pengganti nya, $a aliasnya eg.:{#1}
+            $nr = $gap.$nr;
+            $wa = $this->GetStringWidth($a);
+            $wnr = $this->GetStringWidth($nr);
+            $ls = $wa - $wnr;
+            $numtb = floor($ls / $wfiller);
+            if ($wfiller > 0) {
+              $numfills = floor($fw / $wfiller); // jumlah titik2 atau filler toc nya
+            }
+            if ($numtb > 0) {
+              $tb = str_repeat($filler, $numtb);
+            } else {
+              $tb = '';
+            }
+            $nr = $tb.$nr;
+
             $temppage = str_replace($a, $nr, $temppage);
           }
         }
@@ -1447,6 +1460,9 @@ class PMC_PDF extends TCPDF
           break;
       }
     }   
+
+    
+    
     // add TOC
     $this->addTOCPage();
     $this->SetFont($this->getFontFamily(), 'B', 14);
@@ -1457,8 +1473,8 @@ class PMC_PDF extends TCPDF
     $this->endTOCPage();
     $this->endPageGroup = $this->getPage();
     
-    // dump( $this->endPageGroup);
     $this->updateLink();
+    // dump( $this->endPageGroup);
   }
 
   private function dmRef(\DOMElement $dmRef)
