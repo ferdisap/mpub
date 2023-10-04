@@ -297,8 +297,6 @@ class PMC_PDF extends TCPDF
    */
   public function addTOC($page = null, $numbersfont = '', $filler = '.', $toc_name = 'TOC', $style = '', $color = array(0, 0, 0))
   {
-    // dump($this->page, __CLASS__.":".__LINE__); // harusnya 5
-    // dump($this->getPage(). " | ". $this->getMargins()['left'] );
     $fontsize = $this->FontSizePt;
     $fontfamily = $this->FontFamily;
     $fontstyle = $this->FontStyle;
@@ -447,6 +445,8 @@ class PMC_PDF extends TCPDF
         // add a page at the end (to be moved before TOC)
         // *** EDITED
         self::addIntentionallyLeftBlankPage($this);
+        // $this->AddPage();
+        // $this->Write('','foobar');
         ++$page_last;
         ++$numpages;
       }
@@ -454,6 +454,8 @@ class PMC_PDF extends TCPDF
         // add a page at the end
         // *** EDITED
         self::addIntentionallyLeftBlankPage($this);
+        // $this->AddPage();
+        // $this->Write('','foobar');
         ++$page_last;
         ++$numpages;
       }
@@ -510,15 +512,8 @@ class PMC_PDF extends TCPDF
             } else {
               $nr = $sfill . ' ' . $na;
               ### remove character ... from nr (page number)
-              // dump($nr);
-              // dd($this->GetStringWidth(".."), $this->GetStringWidth("3"));
-              if($this->GetStringWidth($nr) > 3){
-                $nr = preg_replace("/\W/m",'',$nr);                
-              } 
+              $nr = preg_replace("/\W/m",'',$nr);                
               ### end remove
-              // if((int)$nr < 10){
-              //   $nr = "0".$nr;
-              // }
             }
             $temppage = str_replace($a, $nr, $temppage);
           }
@@ -527,10 +522,11 @@ class PMC_PDF extends TCPDF
       }
       // move pages
       if ($page_fill_start) {
-        $this->movePage($page_last, $page_first);
+        $this->movePage($page_last, $page_first); // ini digunakan untuk menukar 2 halaman terkahir (dua halaman itu adalah TOC (intentionally left blank page))
       }
+      // dump($page_last, $page);
       for ($i = 0; $i < $numpages; ++$i) {
-        $this->movePage($page_last, $page);
+        $this->movePage($page_last, $page); // ini untuk memindahkan TOC (2 halaman atau lebih) ke halaman yang kita inginkan ($page) sesuai parameter fungsi
       }
     }
   }
@@ -1447,7 +1443,6 @@ class PMC_PDF extends TCPDF
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
-          // $this->AddPage();
           $this->dmRef($child);
           break;
       }
@@ -1461,8 +1456,9 @@ class PMC_PDF extends TCPDF
     $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
     $this->endTOCPage();
     $this->endPageGroup = $this->getPage();
-
-    // $this->updateLink();
+    
+    // dump( $this->endPageGroup);
+    $this->updateLink();
   }
 
   private function dmRef(\DOMElement $dmRef)
@@ -1497,9 +1493,10 @@ class PMC_PDF extends TCPDF
       $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
       $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin);
       $pdf->setFontSize(7);
-      $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      // $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
       $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
-
+      return $pdf->getPage();
     }
   }
 
@@ -1853,9 +1850,17 @@ class PMC_PDF extends TCPDF
     
     $basic_cell_padding_L = $this->cell_padding['L'];
     $basic_w = $w;
-    if($tes){
+
+    // if($tes){
       // dd($dom);
-    }
+      // foreach($dom as $key => $v){
+        // if($dom[$key]['value'] == 'div' AND $dom[$key]['parent'] == "1" AND $dom[$key]['opening'] == false){
+          // dd($key);
+          // dump($key, $dom[$key]);
+        // }
+      // }
+    // }
+
 		while ($key < $maxel) {
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
@@ -3010,11 +3015,28 @@ class PMC_PDF extends TCPDF
 					}
 
           /** EDITTED - untuk tambah intentionally left blank atau page break */
+          // saat di closing tag ini, jika parent (open tag) ada atribute @addintentionallyleftblank, maka..
           if(isset($dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank']) AND $dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank'] == 'true'){
-            if(($this->page % 2) == 0){
-              $this->AddPage();
-            } else {
-              self::addIntentionallyLeftBlankPage($this);
+
+            // jika tidak bisa ditambah intentionallyleftblank (karena page genap)
+            if(!self::addIntentionallyLeftBlankPage($this)){
+              $is_endpage = true;
+              $i = $key;
+              while($i <= $maxel){
+                // determine if the page is at the end or not. If not the end, it is page break. if end, add Intentionally leftblank or not (jika page genap)
+                // jika di next dom parentnya ada atribute @addintentionallyleftblank, maka.. bukan page terakhi, sehingga ditambah pagebreak saja untuk next title levelledPara
+                if(isset($dom[$i+1]) AND isset($dom[$dom[$i+1]['parent']]['attribute']['addintentionallyleftblank']) AND $dom[$dom[$i+1]['parent']]['attribute']['addintentionallyleftblank'] == 'true'){
+                  // dump($key."|".$this->page."|still exist at next page");
+                  $is_endpage = false;
+                  $this->checkPageBreak($this->PageBreakTrigger + 1);
+                  $i = $maxel + 1;
+                }
+                $i++;
+              }
+              // tapi jika ini adalah halaman terakhir, page break tidak ditambah, tapi leftblank page ditambah (kalau page ganjil)
+              if($is_endpage){
+                self::addIntentionallyLeftBlankPage($this);
+              }
             }
           }
           

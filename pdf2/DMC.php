@@ -47,7 +47,7 @@ class DMC
     switch ($this->schemaXsd) {
       case 'descript.xsd':
         $this->render_descriptXsd();
-        PMC_PDF::addIntentionallyLeftBlankPage($this->pdf);
+        // PMC_PDF::addIntentionallyLeftBlankPage($this->pdf);
         break;
       default:
         # code...
