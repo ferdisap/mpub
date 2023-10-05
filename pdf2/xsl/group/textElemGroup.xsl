@@ -9,6 +9,7 @@
 
   <xsl:include href="part/internalRef.xsl" />
   <xsl:include href="part/dmRef.xsl" />
+  <xsl:include href="part/pmRef.xsl" />
 
   <xsl:param name="dmOwner"/>
 

@@ -84,10 +84,25 @@
             </dmRefIdent>
             <dmRefAddressItems>
               <dmTitle>
-                Normal Procedures
+                <techName>
+                 Normal Procedures
+                </techName>
               </dmTitle>
             </dmRefAddressItems>
           </dmRef>
+        </para>
+        <para>Refer to&#160;
+          <pmRef>
+            <pmRefIdent>
+              <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
+            </pmRefIdent>
+            <pmRefAddressItems>
+              <pmTitle>Section 04 - Normal Procedure</pmTitle>
+              <pubMedia pubMediaType="PDF" pubMediaCode="" mediaLocation="xsl/" />
+            </pmRefAddressItems>
+          </pmRef>
         </para>
         <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
           <randomList>
