@@ -1472,9 +1472,13 @@ class PMC_PDF extends TCPDF
     $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
     $this->endTOCPage();
     $this->endPageGroup = $this->getPage();
-    
+
     $this->updateLink();
-    // dump( $this->endPageGroup);
+    
+  }
+
+  public function getPageAnnots(){
+    return $this->PageAnnots;
   }
 
   private function dmRef(\DOMElement $dmRef)
@@ -1533,7 +1537,11 @@ class PMC_PDF extends TCPDF
       }
       foreach($this->PageAnnots[$page] as $i => $annots){
         foreach($this->references as $reference){
-          if($annots['txt'] == $reference['ident'].",".$reference['id']){
+          if(
+            ($annots['txt'] == $reference['ident'].",".$reference['id']) 
+            OR ("DMC-".$annots['txt'] == $reference['ident'].",".$reference['id']) 
+            OR ("PMC-".$annots['txt'] == $reference['ident'].",".$reference['id']))
+          {
             $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
           }
         }

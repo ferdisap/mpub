@@ -75,6 +75,20 @@
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
         </para>
+        <para>Refer to&#160;
+          <dmRef referredFragment="lvlp-001">
+            <dmRefIdent>
+              <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
+            </dmRefIdent>
+            <dmRefAddressItems>
+              <dmTitle>
+                Normal Procedures
+              </dmTitle>
+            </dmRefAddressItems>
+          </dmRef>
+        </para>
         <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
           <randomList>
             <listItem>

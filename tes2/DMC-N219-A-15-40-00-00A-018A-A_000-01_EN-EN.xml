@@ -3,7 +3,7 @@
   <identAndStatusSection>
     <dmAddress>
       <dmIdent>
-        <dmCode modelIdentCode="N218" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+        <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
         <language languageIsoCode="en" countryIsoCode="EN" />
         <issueInfo issueNumber="000" inWork="01" />
       </dmIdent>
@@ -65,7 +65,7 @@
   </identAndStatusSection>
   <content>
     <description>
-      <levelledPara id="plev-001" changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-003">
+      <levelledPara id="lvlp-001" changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-003">
         <title changeMark="0" reasonForUpdateRefIds="rfu-002">Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title>
         <!-- <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-001">
           DMC 15-40-00 Operators are encouraged to develop their own 'quick reference' normal checklists 
@@ -78,7 +78,7 @@
         <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">
           The normal operating procedures in this section comply with the requirements of CASR Part 23.
         </para>
-        <figure changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
+        <figure id="fig-001" changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
           <title changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">Large Aircraft</title>            
           <graphic infoEntityIdent="ICN-0001Z-00002-001-05.jpg" reproductionHeight="120mm"/>
           <graphic infoEntityIdent="ICN-0001Z-00002-001-05.jpg" reproductionHeight="120mm"/>
@@ -106,6 +106,7 @@
           <para>tes6 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?</para>
           <para>tes7 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?</para>
           <para>tes8 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. </para>
+          <para>Refer to <internalRef internalRefId="fig-001" internalRefTargetType="irtt01"></internalRef></para>
           <levelledPara changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-003">
             <title>Intro tes 21</title>
             <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-003">21 tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore fooxx?</para>

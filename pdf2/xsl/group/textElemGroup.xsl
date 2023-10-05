@@ -5,6 +5,11 @@
   <!-- 
     Tidak bisa kasi include karena ini xsl ini di call oleh para.xsl/figure.xsl, etc
    -->
+   
+
+  <xsl:include href="part/internalRef.xsl" />
+  <xsl:include href="part/dmRef.xsl" />
+
   <xsl:param name="dmOwner"/>
 
   <xsl:output method="xml"/>
@@ -34,17 +39,6 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
-  <xsl:include href="part/internalRef.xsl" />
-  <!-- <xsl:template match="internalRef">
-    <xsl:param name="internalRefId" select="@internalRefId"/>
-    <a>
-      <xsl:call-template name="cgmark"/>
-      <xsl:attribute name="href">
-        <xsl:value-of select="$dmOwner"/>,<xsl:value-of select="$internalRefId"/>
-      </xsl:attribute>
-      <xsl:apply-templates/>
-    </a>
-  </xsl:template> -->
+  
 
 </xsl:stylesheet>

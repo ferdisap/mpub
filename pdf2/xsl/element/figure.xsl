@@ -24,6 +24,7 @@
     <!-- <div style="text-align:center;page-break-before:always;page-break-after:always"> -->
     <div style="text-align:center;">
       <!-- untuk elemen figure-->
+      <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
 
       <xsl:for-each select="graphic">
