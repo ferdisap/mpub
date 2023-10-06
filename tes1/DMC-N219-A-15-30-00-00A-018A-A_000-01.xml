@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N218" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="09" day="21" />
+        <dmTitle>
+          <techName>Normal Procedures</techName>
+          <infoName>Introduction</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01"/>
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+             <dmCode modelIdentCode="N219" systemDiffCode="A"
+                systemCode="00" subSystemCode="0" subSubSystemCode="0"
+                assyCode="00" disassyCode="00" disassyCodeVariant="A"
+                infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara id="plev-001">
+        <title>Introduction</title>
+        <para>
+          Operators are encouraged to develop their own 'quick reference' normal checklists 
+          based on the procedures provided in this manual. The sequence of individual checklist 
+          items should not be changed when operator-specific quick reference checklists are 
+          developed. For example, turning off the autofeather system is listed as the last item
+          in the After Takeoff checklist, and it should remain the last item in any operator-specific
+          'quick reference' After Takeoff checklist.
+        </para>
+        <para>
+          The normal operating procedures in this section comply with the requirements of CASR Part 23.
+        </para>
+        <levelledPara>
+          <title>Intro tes 1</title>
+          <para>tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore?</para>
+        </levelledPara>
+        <levelledPara>
+          <title>Intro tes 2</title>
+          <para>tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore?</para>
+        </levelledPara>
+      </levelledPara>
+      <levelledPara id="plev-002">
+        <title>Scope</title>
+        <para>
+          This section provides normal operating procedures. Normal procedures are used 
+          when systems are functioning in their usual manner.
+        </para>
+        <para>
+          Because the focus of this manual is on providing technical guidance that is specific 
+          or unique to the N219, no attempt has been made to include in the checklists 
+          standard 'airmanship' practices that are applicable to any flight such as confirming 
+          that the area is clear around the aircraft, observation of traffic, operation of exterior 
+          lighting required for flight, operation of avionics equipment such as communication 
+          or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
+          weather radar, and so forth.
+        </para>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>

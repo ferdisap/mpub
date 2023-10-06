@@ -1,0 +1,1 @@
+In this folder, calling template named cgmark is done because this xsl group file will be included to xsl located in outer folder.

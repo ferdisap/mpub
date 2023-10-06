@@ -14,6 +14,7 @@ class Element {
   public $nodeName;
   public array $attributes; // [0] = attribute name, [1] = attribute value
   public array $inner;
+  private \DOMElement $DOMElement;
   
 
   /**
@@ -22,7 +23,7 @@ class Element {
    */
   public function __construct(array $attributes = [], array $inner = []){
     $reflex = new ReflectionClass($this);
-    $this->nodeName = strtolower($reflex->getShortName());
+    $this->nodeName = lcfirst($reflex->getShortName());
     $this->attributes = $attributes;
     $this->inner = $inner; 
     return $this;

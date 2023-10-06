@@ -48,7 +48,8 @@ class DModule extends CSDB
     $doc->appendChild($dmodule);
     
     $noNamespaceSchemaLocation = $doc->createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", 'xsi:noNamespaceSchemaLocation');
-    $noNamespaceSchemaLocation->value = "../mpub/src/Schema/dml.xsd";
+    // $noNamespaceSchemaLocation->value = "../mpub/src/Schema/dml.xsd";
+    $noNamespaceSchemaLocation->value = "dml.xsd";
 
     $dmodule->appendChild($noNamespaceSchemaLocation);
     return $this->DOMDocument = $doc;
@@ -132,7 +133,7 @@ class DModule extends CSDB
   {
     $schema_path = self::getSchemaPath($element);
     preg_match('/[a-z]+(?=.xsd)/', $schema_path, $matches, PREG_OFFSET_CAPTURE, 0);
-    if ($matches) {
+    if (count($matches) > 0) {
       return $matches[0][0].".xsd";
     } else {
       return false;
@@ -183,7 +184,57 @@ class DModule extends CSDB
     $issueInfo = $domXpath->evaluate($query_issueInfo);
     $issueInfo = get_class($issueInfo) == "DOMNodeList" ? $issueInfo->item(0) : throw new Error("Data module name cannot be resolved");
 
+    ############################
+
+    return self::resolveDMCode($dmCode,$issueInfo, $getDMName[$dmType]["prefix"] ? $getDMName[$dmType]["prefix"]."-" : null );
+    
+    ############################
+    
+    
     // dump(DModule::getSchemaName($doc->firstElementChild), $dmCode, $dmType);
+    // $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
+    // $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
+    // $systemCode = $dmCode->getAttribute('systemCode');
+    // $subSystemCode = $dmCode->getAttribute('subSystemCode');
+    // $subSubSystemCode = $dmCode->getAttribute('subSubSystemCode');
+    // $assyCode = $dmCode->getAttribute('assyCode');
+    // $disassyCode = $dmCode->getAttribute('disassyCode');
+    // $disassyCodeVariant = $dmCode->getAttribute('disassyCodeVariant');
+    // $infoCode = $dmCode->getAttribute('infoCode');
+    // $infoCodeVariant = $dmCode->getAttribute('infoCodeVariant');
+    // $itemLocationCode = $dmCode->getAttribute('itemLocationCode');
+
+    // $issueNumber = $issueInfo->getAttribute('issueNumber');
+    // $inWork = $issueInfo->getAttribute('inWork');
+
+    // $name = (($prefix = $getDMName[$dmType]["prefix"]) ? $prefix : $doc->prefix)."-".
+    // $modelIdentCode."-".$systemDiffCode."-".
+    // $systemCode."-".$subSystemCode.$subSubSystemCode."-".
+    // $assyCode."-".$disassyCode.$disassyCodeVariant."-".
+    // $infoCode.$infoCodeVariant."-".$itemLocationCode."_".
+    // $issueNumber."_".$inWork;
+
+    // return $name;
+  }
+
+  public static function resolvePMCode(\DOMElement $pmCode, \DOMElement $issueInfo = null, mixed $prefix = 'PMC-'){
+    $modelIdentCode = $pmCode->getAttribute('modelIdentCode');
+    $pmIssuer = $pmCode->getAttribute('pmIssuer');
+    $pmNumber = $pmCode->getAttribute('pmNumber');
+    $pmVolume = $pmCode->getAttribute('pmVolume');
+
+    return
+    $prefix.
+    $modelIdentCode."-".
+    $pmIssuer."-".
+    $pmNumber."-".
+    $pmVolume;
+  }
+
+  public static function resolveDMCode(\DOMElement $dmCode, \DOMElement $issueInfo = null, mixed $prefix = 'DMC-'){
+    // $dmCode = $dmIdent->childNodes[0];
+    // $issueInfo = $dmIdent->childNodes[1];
+
     $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
     $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
     $systemCode = $dmCode->getAttribute('systemCode');
@@ -196,17 +247,20 @@ class DModule extends CSDB
     $infoCodeVariant = $dmCode->getAttribute('infoCodeVariant');
     $itemLocationCode = $dmCode->getAttribute('itemLocationCode');
 
-    $issueNumber = $issueInfo->getAttribute('issueNumber');
-    $inWork = $issueInfo->getAttribute('inWork');
+    $issue = '';
+    if($issueInfo){
+      $issueNumber = $issueInfo->getAttribute('issueNumber');
+      $inWork = $issueInfo->getAttribute('inWork');
+      $issue = "_".$issueNumber."-".$inWork;
+    }
 
-    $name = (($prefix = $getDMName[$dmType]["prefix"]) ? $prefix : $doc->prefix)."-".
+    $name = $prefix.
     $modelIdentCode."-".$systemDiffCode."-".
     $systemCode."-".$subSystemCode.$subSubSystemCode."-".
     $assyCode."-".$disassyCode.$disassyCodeVariant."-".
-    $infoCode.$infoCodeVariant."-".$itemLocationCode."_".
-    $issueNumber."_".$inWork;
+    $infoCode.$infoCodeVariant."-".$itemLocationCode;
 
-    return $name;
+    return $name.$issue;
   }
 
   public function resolve(array $objectResolves = ['applicability'])
@@ -260,6 +314,20 @@ class DModule extends CSDB
 
     return ElementList::createList($list_elements); 
   }
+
+  ##################
+  // untuk pdf
+  // dipindah ke CSDB
+  // public static function children(\DOMElement $element, string $node = "elements"){
+  //   $arr = array();
+  //   foreach ($element->childNodes as $childNodes){
+  //     if($node == 'elements'){
+  //       $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;    
+  //     }
+  //   }
+  //   return $arr;
+  // }
+  ##################
 
 
 }

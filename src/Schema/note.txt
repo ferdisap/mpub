@@ -22,7 +22,8 @@ condcrossreftable.xsd,
 prdcrossreftable.xsd,
 dml.xsd,
 brex.xsd,
-brdoc.xsd
+brdoc.xsd,
+pm.xsd,
 ###
 
 ###
@@ -72,5 +73,6 @@ appliccrossreftable.xsd,
 condcrossreftable.xsd
 dml.xsd,
 brex.xsd,
-brdoc.xsd
+brdoc.xsd,
+pm.xsd,
 ###
