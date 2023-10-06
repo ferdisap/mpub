@@ -57,10 +57,10 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     }
   }
   // Page footer
@@ -69,12 +69,12 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $this->SetY(-15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $this->SetY(-15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     }
   }
   
@@ -1422,18 +1422,35 @@ class PMC_PDF extends TCPDF
     $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
 
     
-    $DOMXpath = new \DOMXPath($this->DOMDocument);
-    $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
-    foreach ($pmEntries as $index => $pmEntry) {
-      $this->setHeaderMargin($headerMargin);
-      $this->setMargins($leftMargin,$topMargin,$rightMargin);
-      $this->setBooklet(true,$bookletMargin[0],$bookletMargin[1]);
-      $this->setFontSize($fontsize);
-      $this->SetAutoPageBreak(TRUE, $bottomMargin);
-      $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    // $DOMXpath = new \DOMXPath($this->DOMDocument);
+    // $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
+    // foreach ($pmEntries as $index => $pmEntry) {
+    //   $this->setHeaderMargin($headerMargin);
+    //   $this->setMargins($leftMargin,$topMargin,$rightMargin);
+    //   $this->setBooklet(true,$bookletMargin[0],$bookletMargin[1]);
+    //   $this->setFontSize($fontsize);
+    //   $this->SetAutoPageBreak(TRUE, $bottomMargin);
+    //   $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
       
-      $this->pmEntry($pmEntry);
-    }
+    //   $this->pmEntry($pmEntry);
+    // }
+
+    
+    // tes caption
+    $html = <<<EOD
+    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iste quasi necessitatibus 
+    <span height="30">ENG FIRE</span>
+    fugiat eum consectetur quod pariatur rerum, quas aut amet, laborum repellendus provident suscipit impedit ducimus. Ratione vitae odio voluptate quo voluptatibus suscipit, possimus ab fugiat aperiam? Labore cupiditate, dolore ipsa recusandae commodi accusantium, ex quasi voluptas ipsum itaque eius.</p>
+    EOD;
+
+    $this->AddPage();
+    $this->y = 50;
+    $this->writeHTML($html,false,false,false,false,'J');
+    // $this->Cell(25,30,'ENG FIRE',1,0,'C',false,'',0,false,'T');
+    // $this->Write('',' foo bar');
+    // $this->writeHTML(' bazz');
+    // dd($this->y);
+
   }
 
   private function pmEntry(\DOMElement $pmEntry)
@@ -2249,6 +2266,7 @@ class PMC_PDF extends TCPDF
 			// align lines
 			if ($this->newline AND (strlen($dom[$key]['value']) > 0) AND ($dom[$key]['value'] != 'td') AND ($dom[$key]['value'] != 'th')) {
 				$newline = true;
+        // dump($key."|".$this->newline, $dom[$key]['value']);
 				$fontaligned = false;
 				// we are at the beginning of a new line
 				if (isset($startlinex)) {
@@ -2714,6 +2732,7 @@ class PMC_PDF extends TCPDF
 				unset($opentagpos);
 			}
 			if ($dom[$key]['tag']) {
+        // dd($dom);
 				if ($dom[$key]['opening']) {
 					// get text indentation (if any)
 					if (isset($dom[$key]['text-indent']) AND $dom[$key]['block']) {
@@ -3066,6 +3085,39 @@ class PMC_PDF extends TCPDF
           
 				}
 			} elseif (strlen($dom[$key]['value']) > 0) {
+        // tes untuk span with height
+        if(
+          ($dom[$dom[$key]['parent']]['value'] == 'span') 
+          AND isset($dom[$dom[$key]['parent']]['height'])
+          AND !isset($dom[$key]['opening'])
+          // AND $dom[$key]['parent'] == 3
+          )
+        {
+          // dd($this->x, $this->getPageWidth());
+          // dump($dom[$key]['value']);
+          // dump($key);
+          $lh = $this->lasth;
+          $ys = $this->y;
+          $value = $dom[$key]['value'];
+          $height = $dom[$dom[$key]['parent']]['height'];
+          // $this->writeHTMLCell('',$height,$this->x, $this->y,$value,1,0,false,true,'C');
+          // dump($this->y);
+          $this->Cell(25,$height,$value,1,0,'C',false,'',0,false,'T');
+          $this->Line($this->x+10,$ys, 100, $ys);
+          $this->lasth = $lh;
+          // dump($ys, $this->y);
+          $key++;
+          // continue;
+          $startliney = $ys + 30;
+          $minstartliney = $ys + 30;
+          // $this->y += 30;
+          // $this->y = 80;
+          // $yshift += 30;
+          // $this->y += 30;
+          $this->spanheight = 1;
+          $this->lastspanh = 30;
+        }
+
 				// print list-item
 				if (!TCPDF_STATIC::empty_string($this->lispacer) AND ($this->lispacer != '^')) {
 					$this->setFont($pfontname, $pfontstyle, $pfontsize);
@@ -3101,6 +3153,16 @@ class PMC_PDF extends TCPDF
 					$dom[$key]['value'] = $rsp.$this->stringTrim($dom[$key]['value']).$lsp;
 				}
 				if ($newline) {
+          
+          if(isset($this->spanheight) AND $this->spanheight == 1){
+            // if($this->newline){
+            //   // dd('aaa');
+              // $this->y += 30;
+              $this->y += $this->lastspanh;
+              $this->spanheight = 0;
+            // }
+          }
+          // dump($dom[$key]['value']);
 					if (!$this->premode) {
 						$prelen = strlen($dom[$key]['value']);
 						if ($this->isRTLTextDir() AND !$isRTLString) {
@@ -3226,7 +3288,6 @@ class PMC_PDF extends TCPDF
             //   $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
             // }
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
-
 						// restore default direction
 						if ($reverse_dir AND ($wadj == 0)) {
 							$this->x = $xws; // @phpstan-ignore-line

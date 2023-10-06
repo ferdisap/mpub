@@ -75,7 +75,14 @@
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
         </para>
-        <para>Refer to&#160;
+        <para>
+        This is an caption example
+          <caption>
+            <captionLine>FOO</captionLine>
+          </caption>
+        it is the example of caption.
+        </para>
+        <!-- <para>Refer to&#160;
           <dmRef referredFragment="lvlp-001">
             <dmRefIdent>
               <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
@@ -90,8 +97,8 @@
               </dmTitle>
             </dmRefAddressItems>
           </dmRef>
-        </para>
-        <para>Refer to&#160;
+        </para> -->
+        <!-- <para>Refer to&#160;
           <pmRef>
             <pmRefIdent>
               <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
@@ -103,8 +110,8 @@
               <pubMedia pubMediaType="PDF" pubMediaCode="" mediaLocation="xsl/" />
             </pmRefAddressItems>
           </pmRef>
-        </para>
-        <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
+        </para> -->
+        <!-- <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
           <randomList>
             <listItem>
               <para>Listitem 1 Lorem <emphasis emphasisType="em01">ipsum</emphasis> dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. </para>
@@ -121,18 +128,18 @@
               <para>Listitem 3 Lorem ipsum dolor sit amet.</para>
             </listItem>
           </randomList>
-        </para>
-        <para>
+        </para> -->
+        <!-- <para>
           The normal operating procedures in this section comply with the requirements of CASR Part 23.
-        </para>
-        <para>
+        </para> -->
+        <!-- <para>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed nisi illum quisquam, ex iste a nostrum rerum alias corrupti itaque eius assumenda sapiente sequi magni dignissimos praesentium aut fugiat earum aspernatur minus ipsum. Cupiditate adipisci est officiis consequuntur maiores magni, veniam distinctio iure alias voluptatibus doloribus aperiam, odit quis harum aliquam voluptatem qui sint ducimus? Necessitatibus alias dignissimos commodi consequuntur iusto, nulla mollitia quisquam nesciunt asperiores laudantium cumque ex beatae odio inventore odit aliquid esse corrupti animi placeat cupiditate repellat! Amet, nemo! Error consequatur illo repellat facilis sapiente praesentium officiis soluta iure repudiandae eius impedit autem voluptatem quidem vitae, necessitatibus dolorem corporis dolores fugiat, quibusdam suscipit totam nihil esse aliquam. Eligendi voluptatum officiis veniam temporibus perspiciatis rerum tenetur magni dolore, ut consequatur facere vitae similique, eum modi aperiam assumenda consequuntur deserunt laboriosam eveniet laudantium pariatur, distinctio aspernatur illo iure? Eaque possimus non dolores nulla minus? Illo, illum minima ullam facere mollitia incidunt obcaecati! Officiis sint iste odit facere eum molestiae eos aperiam? Ut, repellat iste numquam cumque voluptatum laudantium, quo a quaerat expedita ad in soluta totam quibusdam excepturi quasi pariatur adipisci, perspiciatis dolorum saepe consequuntur illo repellendus minus tempore quod! Quos dignissimos voluptas ut aliquam dolor possimus ipsa eveniet quibusdam doloribus odio blanditiis porro voluptatum laboriosam voluptate eius assumenda excepturi quam qui nihil quidem dolorem, repellat sed! Sed eos sint impedit expedita id quaerat mollitia nesciunt, adipisci placeat, alias architecto esse vero aut dolorem accusamus maiores praesentium dignissimos iste hic. Laboriosam beatae praesentium ex nulla a incidunt quia porro sint assumenda alias natus officiis, magni, pariatur veritatis, quos nemo soluta ipsa distinctio deleniti voluptates excepturi tempore voluptatem nobis consequatur. Similique ut ex quam eius labore deserunt necessitatibus, consequuntur, nisi incidunt temporibus, nesciunt ipsa rerum. Quia voluptates laborum ad officiis. Molestias aliquid id quaerat quo impedit fugiat, repudiandae a facilis corrupti at, excepturi ipsum? Nobis modi assumenda deleniti quae, incidunt blanditiis, vel dignissimos voluptatem sapiente necessitatibus quas explicabo exercitationem, pariatur ipsam! Et rem eos tenetur est voluptates quod cum id quisquam sint. At harum consequuntur perferendis dolor? Iusto veniam soluta laborum quo temporibus nesciunt sequi fuga iure aliquam sed consequuntur recusandae mollitia, eligendi deserunt impedit odit eius incidunt distinctio consectetur. Similique fuga sint beatae laudantium molestias eveniet sequi magnam blanditiis corporis nostrum alias, quasi veritatis ratione laboriosam quisquam itaque illum, molestiae reiciendis eius assumenda ex. Deleniti sequi commodi quod blanditiis maxime
-        </para>
-        <levelledPara>
+        </para> -->
+        <!-- <levelledPara>
           <title>Intro tes 1</title>
           <para>tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore?</para>
-        </levelledPara>
-        <levelledPara changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">
+        </levelledPara> -->
+        <!-- <levelledPara changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">
           <title>Intro tes 2</title>
           <para>tes1 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore bar?</para>
           <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore bar?</para>
@@ -141,8 +148,8 @@
             <title>Intro tes 21</title>
             <para>21 tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore fooxx?</para>
           </levelledPara>
-        </levelledPara>
-      </levelledPara>
+        </levelledPara> -->
+      </levelledPara> 
       <!-- <levelledPara>
         <title>Scope</title>
         <para>
@@ -162,7 +169,7 @@
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, repellat, aut amet, impedit ab perferendis omnis rerum mollitia dolores esse sint autem dolor natus adipisci nihil! Quidem, ipsam accusantium dicta recusandae sunt quae quibusdam vero ipsum consequuntur expedita dolorem suscipit sapiente provident obcaecati laudantium ullam vitae ex a, dolores totam ipsa cum illo. Error autem maiores veniam cupiditate sunt commodi! Enim nemo veritatis libero modi minima reprehenderit distinctio id quo, nulla sit! Debitis voluptatum molestias dolorum, et praesentium commodi error aspernatur aliquid! Mollitia assumenda ipsam labore facilis reiciendis accusantium architecto? Aliquam quibusdam deleniti fugiat ipsa ab officiis quo amet praesentium?
         </para>
       </levelledPara> -->
-      <levelledPara id="lvlp-002">
+      <!-- <levelledPara id="lvlp-002">
         <title>Para lvlp-002</title>
         <para>
           This section provides normal operating procedures. Normal procedures are used 
@@ -177,7 +184,7 @@
           or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
           weather radar, and so forth <internalRef internalRefId="para-001">go to para-001</internalRef>.
         </para>
-      </levelledPara>
+      </levelledPara> -->
     </description>
   </content>
 </dmodule>
