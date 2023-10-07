@@ -76,7 +76,7 @@
         </para>
         <para>
         This is an caption example&#160;
-          <caption captionHeight="10mm" color="co66" captionWidth="25mm">
+          <caption captionHeight="10mm" color="co85" captionWidth="25mm">
             <captionLine>ENG FIRE</captionLine>
           </caption>
         <!-- &#160;it is the example of caption. -->
