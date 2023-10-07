@@ -66,22 +66,22 @@
   <content>
     <description>
       <levelledPara id="lvlp-001">
-        <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title>
+        <!-- <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title> -->
         <para id="para-001">
-          Operators are encouraged to develop their own 'quick reference' normal checklists 
-          based on the procedures provided in this manual. The sequence of individual checklist 
+          Operators are encouraged to develop their own 'quick reference' normal checklists based on the procedures provided in this manual. The sequence of individual checklist 
           items should <superScript> sub sub</superScript> bar <emphasis emphasisType="em01">emphasis-bold</emphasis> not be changed when operator-specific quick reference checklists are 
           developed. For example, turning off the <changeInline changeType="add">autofeather</changeInline> system is listed as the last item
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
         </para>
         <para>
-        This is an caption example
-          <caption>
-            <captionLine>FOO</captionLine>
+        This is an caption example&#160;
+          <caption captionHeight="10mm" color="co66" captionWidth="25mm">
+            <captionLine>ENG FIRE</captionLine>
           </caption>
-        it is the example of caption.
+        <!-- &#160;it is the example of caption. -->
         </para>
+        <para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, repellat?</para>
         <!-- <para>Refer to&#160;
           <dmRef referredFragment="lvlp-001">
             <dmRefIdent>

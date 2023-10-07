@@ -116,8 +116,7 @@ class DMC
 
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     $html = $xsltproc->transformToXml($this->DOMDocument);
-    
-    $html = preg_replace("/[\r\n]|\s{2,}/",'',$html);
+    $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // untuk menghilangkan space/enter/multispace diawal setelah tag >
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
   }

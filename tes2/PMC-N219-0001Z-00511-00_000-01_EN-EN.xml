@@ -68,7 +68,7 @@
         </dmRefIdent>
       </dmRef> -->
     </pmEntry>
-    <pmEntry pmEntryType="pmt61">
+    <!-- <pmEntry pmEntryType="pmt61">
       <pmEntryTitle>Section 05 - Emergency Procedures</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
@@ -77,6 +77,6 @@
           <language languageIsoCode="en" countryIsoCode="EN"/>
         </dmRefIdent>
       </dmRef>
-    </pmEntry>
+    </pmEntry> -->
   </content>
 </pm>
