@@ -15,6 +15,7 @@
   <xsl:param name="dmOwner"/>
 
   <xsl:output method="xml"/>
+  
   <xsl:template match="changeInline">
     <span>
       <xsl:call-template name="cgmark"/>

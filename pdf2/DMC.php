@@ -97,6 +97,7 @@ class DMC
     $xsl = CSDB::importDocument(__DIR__."./xsl/descript.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
+    $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];
     $xsltproc->setParameter('',"padding_levelPara_1", $padding_levelPara[0]);

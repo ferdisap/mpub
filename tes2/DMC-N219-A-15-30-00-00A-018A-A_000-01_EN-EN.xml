@@ -67,21 +67,270 @@
     <description>
       <levelledPara id="lvlp-001">
         <!-- <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title> -->
-        <para id="para-001">
+        <title>Try Caption</title>
+        <!-- <para id="para-001">
           Operators are encouraged to develop their own 'quick reference' normal checklists based on the procedures provided in this manual. The sequence of individual checklist 
           items should <superScript> sub sub</superScript> bar <emphasis emphasisType="em01">emphasis-bold</emphasis> not be changed when operator-specific quick reference checklists are 
           developed. For example, turning off the <changeInline changeType="add">autofeather</changeInline> system is listed as the last item
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
-        </para>
+        </para> -->
         <para>
         This is an caption example&#160;
           <caption captionHeight="10mm" color="co85" captionWidth="25mm">
             <captionLine>ENG FIRE</captionLine>
           </caption>
-        <!-- &#160;it is the example of caption. -->
+        &#160;it is the example of caption.
         </para>
         <para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, repellat?</para>
+        <para>
+          <captionGroup cols="2">
+            <captionBody>
+              <captionRow>
+                <captionEntry alignCaptionEntry="left" valign="middle">
+                  <caption color="co83" captionWidth="30mm" captionHeight="20mm">
+                    <captionLine>FIRE - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+                <captionEntry alignCaptionEntry="center" valign="middle">
+                  <caption color="co83" captionWidth="30mm" captionHeight="40mm">
+                    <captionLine>LOSS - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry alignCaptionEntry="center" valign="middle">
+                  <caption color="co83" captionWidth="50mm" captionHeight="30mm">
+                    <captionLine>LOSS - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+                <captionEntry alignCaptionEntry="center" valign="bottom">
+                  <caption color="co83" captionWidth="50mm">
+                    <captionLine>LOSS - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+              </captionRow>
+            </captionBody>
+          </captionGroup>
+        </para>
+        <para>
+          <captionGroup id="cap-001" cols="5" colsep="1" rowsep="1">
+            <colspec colname="col1" colwidth="20mm"/>
+            <colspec colname="col2" colwidth="30mm"/>
+            <colspec colname="col3" colwidth="15mm"/>
+            <colspec colname="col4" colwidth="20mm"/>
+            <colspec colname="col5"/>
+
+            <spanspec namest="col2" nameend="col3" spanname="col2-3"/>
+            <spanspec namest="col1" nameend="col4" spanname="all4"/>
+
+            <!-- 04. BERHASIL (colwidth) -->
+            <!-- Hanya perlu mencantumkan colname di setiap captionEntry sesuai dengan //colspec/@colname -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry colname="col1">
+                  <captionText>FOO entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col2">
+                  <captionText>FOO entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+
+            <!-- 03. BERHASIL (rowspan)-->
+            <!-- col2: row1 is spanded until row2 -->
+            <!-- tidak perlu element colspec atau spanspec -->
+            <captionBody>
+              <captionRow>
+                <captionEntry>
+                  <captionText>FOO-BAR entry 2</captionText>
+                </captionEntry>
+                <captionEntry morerows="2">
+                  <caption captionHeight="10mm" color="co85" captionWidth="21mm">
+                    <captionLine>ENG FIRE</captionLine>
+                  </caption>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col3">
+                  <captionText>BAR entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody>
+
+            <!-- DIBAWAH INI adala 2 contoh untuk colspan-->
+            <!-- 02. BERHASIL total: 5 column, 3 rows-->
+            <!-- row1: col2 is spanded until col3 -->
+            <!-- row2: col1 is spanded until col4 -->
+            <!-- row3: tidak di spanded -->
+            <!-- HARUS PAKAI attribute colname jika mau colspan -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry colname="col1">
+                  <captionText>FOO entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col2" spanname="col2-3">
+                  <captionText>FOO entry 2</captionText>
+                </captionEntry>
+                <captionEntry colname="col4">
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry colname="col5">
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry colname="col1" spanname="all4">
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col5">
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+            <!-- 01. BERHASIL total: 5 column, 3 rows-->
+            <!-- row1: col2 is spanded until col3 -->
+            <!-- row2: col1 is spanded until col4 -->
+            <!-- TIDAK PERLU attribute colname untuk colspan -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry>
+                  <captionText>FOO entry 1</captionText>
+                </captionEntry>
+                <captionEntry namest="col2" nameend="col3">
+                  <captionText>FOO entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry namest="col1" nameend="col4">
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+
+          </captionGroup>
+        </para>
         <!-- <para>Refer to&#160;
           <dmRef referredFragment="lvlp-001">
             <dmRefIdent>
