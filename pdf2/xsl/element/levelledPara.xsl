@@ -24,6 +24,7 @@
   <xsl:include href="para.xsl"/>
   <xsl:include href="title.xsl"/>
   <xsl:include href="figure.xsl"/>
+  <xsl:include href="table.xsl"/>
 
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 

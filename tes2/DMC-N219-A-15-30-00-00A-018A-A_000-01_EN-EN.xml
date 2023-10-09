@@ -75,15 +75,54 @@
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
         </para> -->
-        <para>
+        <table >
+          <title changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">List of Consumable Parts</title>
+          <tgroup cols="3" rowsep="1" colsep="1">
+            <colspec colname="col1"/>
+            <colspec colname="col2"/>
+            <colspec colname="col3" colwidth="25mm"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-2" />
+            <spanspec namest="col1" nameend="col3" spanname="col1-3" />
+            <thead>
+              <row>
+                <entry><para>Row THEAD Entry 1</para></entry>
+                <entry><para>Row THEAD Entry 2</para></entry>
+                <entry colname="col3"><para>Row THEAD Entry 3</para></entry>
+              </row>
+            </thead>            
+            <tfoot>
+              <row>
+                <entry spanname="col1-3"><para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, voluptatibus.</para></entry>
+              </row>            
+            </tfoot>
+            <tbody>
+              <row>
+                <entry spanname="col1-2" morerows="2"><para>Row 1 Entry 1</para></entry>
+                <entry colname="col3"><para>Row 1 Entry 3</para></entry>
+              </row>
+              <row>
+                <!-- <entry><para>Row 2 Entry 1</para></entry> -->
+                <!-- <entry><para>Row 2 Entry 2</para></entry> -->
+                <entry colname="3"><para>Row 2 Entry 3</para></entry>
+              </row>
+              <row>
+                <entry colname="col1"><para>Row 3 Entry 1</para></entry>
+                <entry colname="col2"><para>Row 3 Entry 2</para></entry>
+                <entry colname="col3"><para>Row 3 Entry 3</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <!-- <para>
         This is an caption example&#160;
           <caption captionHeight="10mm" color="co85" captionWidth="25mm">
             <captionLine>ENG FIRE</captionLine>
           </caption>
         &#160;it is the example of caption.
-        </para>
-        <para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, repellat?</para>
-        <para>
+        </para> -->
+        <!-- <para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, repellat?</para> -->
+        <!-- <para>
           <captionGroup cols="2">
             <captionBody>
               <captionRow>
@@ -112,9 +151,9 @@
               </captionRow>
             </captionBody>
           </captionGroup>
-        </para>
+        </para> -->
         <para>
-          <captionGroup id="cap-001" cols="5" colsep="1" rowsep="1">
+          <!-- <captionGroup id="cap-001" cols="5" colsep="1" rowsep="1">
             <colspec colname="col1" colwidth="20mm"/>
             <colspec colname="col2" colwidth="30mm"/>
             <colspec colname="col3" colwidth="15mm"/>
@@ -122,7 +161,7 @@
             <colspec colname="col5"/>
 
             <spanspec namest="col2" nameend="col3" spanname="col2-3"/>
-            <spanspec namest="col1" nameend="col4" spanname="all4"/>
+            <spanspec namest="col1" nameend="col4" spanname="all4"/> -->
 
             <!-- 04. BERHASIL (colwidth) -->
             <!-- Hanya perlu mencantumkan colname di setiap captionEntry sesuai dengan //colspec/@colname -->
@@ -183,7 +222,7 @@
             <!-- 03. BERHASIL (rowspan)-->
             <!-- col2: row1 is spanded until row2 -->
             <!-- tidak perlu element colspec atau spanspec -->
-            <captionBody>
+            <!-- <captionBody>
               <captionRow>
                 <captionEntry>
                   <captionText>FOO-BAR entry 2</captionText>
@@ -234,7 +273,7 @@
                   <captionText>ZAZ entry 5</captionText>
                 </captionEntry>
               </captionRow>
-            </captionBody>
+            </captionBody> -->
 
             <!-- DIBAWAH INI adala 2 contoh untuk colspan-->
             <!-- 02. BERHASIL total: 5 column, 3 rows-->
@@ -328,8 +367,7 @@
                 </captionEntry>
               </captionRow>
             </captionBody> -->
-
-          </captionGroup>
+          <!-- </captionGroup> -->
         </para>
         <!-- <para>Refer to&#160;
           <dmRef referredFragment="lvlp-001">

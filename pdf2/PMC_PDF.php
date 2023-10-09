@@ -549,6 +549,63 @@ class PMC_PDF extends TCPDF
   }
 
   /**
+   * editannya: menghilangkan default setelan border['cap'].
+	 * Returns the border style array from CSS border properties
+	 * @param string $cssborder border properties
+	 * @return array containing border properties
+	 * @protected
+	 * @since 5.7.000 (2010-08-02)
+	 */
+	protected function getCSSBorderStyle($cssborder) {
+		$bprop = preg_split('/[\s]+/', trim($cssborder));
+		$count = count($bprop);
+		if ($count > 0 && $bprop[$count - 1] === '!important') {
+			unset($bprop[$count - 1]);
+			--$count;
+		}
+
+		$border = array(); // value to be returned
+		switch ($count) {
+			case 2: {
+				$width = 'medium';
+				$style = $bprop[0];
+				$color = $bprop[1];
+				break;
+			}
+			case 1: {
+				$width = 'medium';
+				$style = $bprop[0];
+				$color = 'black';
+				break;
+			}
+			case 0: {
+				$width = 'medium';
+				$style = 'solid';
+				$color = 'black';
+				break;
+			}
+			default: {
+				$width = $bprop[0];
+				$style = $bprop[1];
+				$color = $bprop[2];
+				break;
+			}
+		}
+		if ($style == 'none') {
+			return array();
+		}
+		// $border['cap'] = 'square';
+		$border['join'] = 'miter';
+		$border['dash'] = $this->getCSSBorderDashStyle($style);
+		if ($border['dash'] < 0) {
+			return array();
+		}
+		$border['width'] = $this->getCSSBorderWidth($width);
+		$border['color'] = TCPDF_COLORS::convertHTMLColorToDec($color, $this->spot_colors);
+		return $border;
+	}
+
+  /**
    * tambahan nya adalah menambah attribute cgmarkid disetiap dom yang punya changemark==1
 	 * Returns the HTML DOM array.
 	 * @param string $html html code
@@ -1051,7 +1108,7 @@ class PMC_PDF extends TCPDF
 							$brd_styles = preg_split('/[\s]+/', trim($dom[$key]['style']['border-style']));
 							if (isset($brd_styles[3]) AND ($brd_styles[3]!='none')) {
 								$dom[$key]['border']['L']['cap'] = 'square';
-								$dom[$key]['border']['L']['join'] = 'miter';
+								$dom[$key]['border']['L']['join'] = 'bevel';
 								$dom[$key]['border']['L']['dash'] = $this->getCSSBorderDashStyle($brd_styles[3]);
 								if ($dom[$key]['border']['L']['dash'] < 0) {
 									$dom[$key]['border']['L'] = array();
@@ -1059,7 +1116,7 @@ class PMC_PDF extends TCPDF
 							}
 							if (isset($brd_styles[1])) {
 								$dom[$key]['border']['R']['cap'] = 'square';
-								$dom[$key]['border']['R']['join'] = 'miter';
+								$dom[$key]['border']['R']['join'] = 'bevel';
 								$dom[$key]['border']['R']['dash'] = $this->getCSSBorderDashStyle($brd_styles[1]);
 								if ($dom[$key]['border']['R']['dash'] < 0) {
 									$dom[$key]['border']['R'] = array();
@@ -1067,7 +1124,7 @@ class PMC_PDF extends TCPDF
 							}
 							if (isset($brd_styles[0])) {
 								$dom[$key]['border']['T']['cap'] = 'square';
-								$dom[$key]['border']['T']['join'] = 'miter';
+								$dom[$key]['border']['T']['join'] = 'bevel';
 								$dom[$key]['border']['T']['dash'] = $this->getCSSBorderDashStyle($brd_styles[0]);
 								if ($dom[$key]['border']['T']['dash'] < 0) {
 									$dom[$key]['border']['T'] = array();
@@ -1075,7 +1132,7 @@ class PMC_PDF extends TCPDF
 							}
 							if (isset($brd_styles[2])) {
 								$dom[$key]['border']['B']['cap'] = 'square';
-								$dom[$key]['border']['B']['join'] = 'miter';
+								$dom[$key]['border']['B']['join'] = 'bevel';
 								$dom[$key]['border']['B']['dash'] = $this->getCSSBorderDashStyle($brd_styles[2]);
 								if ($dom[$key]['border']['B']['dash'] < 0) {
 									$dom[$key]['border']['B'] = array();
@@ -1546,8 +1603,8 @@ class PMC_PDF extends TCPDF
       $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
       $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin);
       $pdf->setFontSize(7);
-      // $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
-      $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      // $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
       $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
       return $pdf->getPage();
     }
@@ -1705,6 +1762,13 @@ class PMC_PDF extends TCPDF
         $y2 = $pos['ed_pos_y'];
 
         $x = $this->getMargins()['left'] - 5;
+        $this->setLineStyle([
+          'width' => 0.5,
+          'cap' => 'butt',
+          'join' => 'mitter',
+          'dash' => 0,
+          'color' => [0,0,0]
+        ]);
         $this->Line($x, $y1, $x, $y2);
       }
     }
@@ -1798,6 +1862,10 @@ class PMC_PDF extends TCPDF
 
 
   /**
+   * editannya: banyak (lupa nulis)
+   * 1. Tambahan cgmark
+   * 2. tambahan caption
+   * 3. ...
 	 * Allows to preserve some HTML formatting (limited support).<br />
 	 * IMPORTANT: The HTML must be well formatted - try to clean-up it using an application like HTML-Tidy before submitting.
 	 * Supported tags are: a, b, blockquote, br, dd, del, div, dl, dt, em, font, h1, h2, h3, h4, h5, h6, hr, i, img, li, ol, p, pre, small, span, strong, sub, sup, table, tcpdf, td, th, thead, tr, tt, u, ul
@@ -1919,6 +1987,13 @@ class PMC_PDF extends TCPDF
     // }
 
 		while ($key < $maxel) {
+      
+
+      if($tes){
+        if($dom[$key]['value'] == 'td'){
+          // dd($dom[$key]);
+        }
+      }
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
