@@ -28,6 +28,10 @@ class PMC_PDF extends TCPDF
   public string $curEntry;
   public $lastpageIntentionallyLeftBlank = 0;
 
+  public array $footnotes = [];
+  public array $footnotesRef = [];
+  public bool $inFootnote = false;
+
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
    */
@@ -57,10 +61,10 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     }
   }
   // Page footer
@@ -69,12 +73,12 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $this->SetY(-15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $this->SetY(-15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     }
   }
   
@@ -1525,7 +1529,6 @@ class PMC_PDF extends TCPDF
     // dd($this->y);
 
   }
-
   private function pmEntry(\DOMElement $pmEntry)
   {
     $pmEntryType_config = require "config/attributes.php";
@@ -1832,6 +1835,13 @@ class PMC_PDF extends TCPDF
     $this->Output('tes2.pdf', 'I');
   }
 
+  public function changeXObjectHeight($template, $h){
+    // $new_template = $start
+    // if($this->xobject[$template]){
+
+    // }
+  }
+
 
 
 
@@ -1987,12 +1997,8 @@ class PMC_PDF extends TCPDF
     // }
 
 		while ($key < $maxel) {
-      
-
       if($tes){
-        if($dom[$key]['value'] == 'td'){
-          // dd($dom[$key]);
-        }
+        // dd($dom);
       }
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
@@ -2011,7 +2017,7 @@ class PMC_PDF extends TCPDF
       if(!$this->InFooter AND (isset($dom[$dom[$key]['parent']]['attribute']['paddingleft']))){
         $this->cell_padding['L'] = $basic_cell_padding_L + ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);
         $w = $basic_w - ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);
-      }      
+      }
       
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND $dom[$key]['hide']) {
 				// store the node key
@@ -2354,6 +2360,48 @@ class PMC_PDF extends TCPDF
 					$lalign = $align;
 				}
 			}
+
+      // footnote - syaratnya, tidak boleh ada footnote didalam footnote
+      // if(isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
+      if(isset($dom[$key]['attribute']['isfootnote']) OR isset($dom[$dom[$key]['parent']]['attribute']['isfootnote'])){
+          // footnote #1
+          if(isset($dom[$key]['opening']) AND $dom[$key]['opening'] 
+            AND isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
+            $id = $dom[$key]['attribute']['id'] ?? random_int(1000,10000);
+            array_push($this->footnotes,['id' => $id]);
+
+            // create template for getting the maxH
+            $width = $this->w - $this->rMargin - $startlinex - $this->cell_padding['L'] - $this->cell_padding['R'];
+            $template = $this->startTemplate($width,0);
+            $str = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id consectetur possimus suscipit! Velit fuga autem, repudiandae a eum nisi nemo eos molestiae aspernatur placeat, facilis deleniti quam quaerat ea tenetur quo doloribus quae quisquam quidem neque, iure iusto libero! Nisi dolorum praesentium voluptates dolores commodi tenetur magnam autem distinctio eum excepturi. Placeat eius dolore in dignissimos alias saepe veritatis id eum quibusdam commodi. Asperiores harum labore repudiandae reiciendis, cum blanditiis error iusto, quam dolorem repellat animi ex, consectetur fugit sint voluptatibus officiis inventore maxime magnam voluptatem iure officia tempore. Cupiditate atque error recusandae accusamus fugit impedit repellat modi deserunt ab.';
+            $this->Write('', $str);
+            $h = $this->y;
+            $h += $this->lasth;
+            $this->endTemplate();
+            
+            // create final template;
+            unset($this->xobjects[$template]);
+            $template = $this->startTemplate($width,$h);
+            $this->Write('', $str);
+            $this->endTemplate();
+
+            // apply templates
+            $this->printTemplate($template,$startlinex,160,0,0);
+            
+            $h2 = $this->getStringHeight($width, $str);
+            dd($h, $h2); // 24.69.......
+          } 
+          // footnote #2
+          elseif(isset($dom[$key]['opening']) AND !$dom[$key]['opening'] AND $dom[$dom[$key]['parent']]['attribute']['isfootnote'] == true){
+          // $lastFntIndex = count($this->footnotes) - 1;
+          // $this->footnotes[$lastFntIndex]['template'][] = $template;
+          // $this->endTemplate();
+          // $this->y -= 30;
+          // dump($this->y);
+          // $this->inFootnote = false;
+        }
+      }
+
 			// align lines
 			if ($this->newline AND (strlen($dom[$key]['value']) > 0) AND ($dom[$key]['value'] != 'td') AND ($dom[$key]['value'] != 'th')) {
 				$newline = true;
@@ -3413,8 +3461,35 @@ class PMC_PDF extends TCPDF
             }
             // $this->stringHeight = $this->getCellHeight($this->FontSize, true); // dipindah ke atas
             // end #1
+
+            // footnote #3            
+            if($this->inFootnote){
+              // if($ypos_pg >= $this->PageBreakTrigger){
+              //   $lastFntIndex = count($this->footnotes) - 1;
+              //   $this->footnotes[$lastFntIndex]['template'][] = $template;
+              //   $this->endTemplate();
+              //   $width = $this->w - $this->rMargin - $startlinex - $this->cell_padding['L'] - $this->cell_padding['R'];
+              //   $height = $this->h - $this->bMargin - $this->tMargin - $this->cell_padding['T'] - $this->cell_padding['B'];
+              //   $this->startTemplate($width,$height);
+              // }
+            }
+            foreach($this->footnotes as $index => $footnote){
+              if(isset($footnote['template'])){
+                foreach($footnote['template'] as $ky => $template){
+                  $this->printTemplate($template,$startlinex,'',0,0);
+                  // $this->x = $startlinex;
+                  unset($this->footnotes[$index]['template'][$ky]);
+                  // $this->checkPageBreak($this->PageBreakTrigger + 1);
+                  // $this->htmlvspace = $this->PageBreakTrigger + 1;
+                  if(isset($footnote['template'][$ky+1])){
+                    break;
+                  }
+                }
+              }
+            }
             
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
+            // dump($this->y.'|'.$dom[$key]['value']);
 						// restore default direction
 						if ($reverse_dir AND ($wadj == 0)) {
 							$this->x = $xws; // @phpstan-ignore-line

@@ -11,6 +11,7 @@
   <xsl:include href="part/dmRef.xsl" />
   <xsl:include href="part/pmRef.xsl" />
   <xsl:include href="part/caption.xsl"/>
+  <xsl:include href="part/footnote.xsl"/>
 
   <xsl:param name="dmOwner"/>
 

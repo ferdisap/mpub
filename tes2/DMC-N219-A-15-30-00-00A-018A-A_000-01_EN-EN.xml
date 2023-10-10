@@ -68,6 +68,14 @@
       <levelledPara id="lvlp-001">
         <!-- <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title> -->
         <title>Try Caption</title>
+        <para>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus nesciunt sunt praesentium nam. Similique odio sit ipsum saepe at ullam deserunt tessaja, 
+          <footnote>
+            <para>tes foot note.</para>
+            <!-- <para>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus modi quam quisquam consequuntur ea labore deserunt eius esse dolorum tempora?</para> -->
+          </footnote>
+          quo aut dolor doloremque distinctio corporis accusantium voluptate tempora provident fugiat! Amet, numquam, blanditiis vel illum voluptates possimus vero consequatur reprehenderit quo, sunt sequi non recusandae perspiciatis totam?          
+        </para>
         <!-- <para id="para-001">
           Operators are encouraged to develop their own 'quick reference' normal checklists based on the procedures provided in this manual. The sequence of individual checklist 
           items should <superScript> sub sub</superScript> bar <emphasis emphasisType="em01">emphasis-bold</emphasis> not be changed when operator-specific quick reference checklists are 
@@ -75,7 +83,7 @@
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
         </para> -->
-        <table >
+        <!-- <table >
           <title changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">List of Consumable Parts</title>
           <tgroup cols="3" rowsep="1" colsep="1">
             <colspec colname="col1"/>
@@ -101,8 +109,6 @@
                 <entry colname="col3"><para>Row 1 Entry 3</para></entry>
               </row>
               <row>
-                <!-- <entry><para>Row 2 Entry 1</para></entry> -->
-                <!-- <entry><para>Row 2 Entry 2</para></entry> -->
                 <entry colname="3"><para>Row 2 Entry 3</para></entry>
               </row>
               <row>
@@ -112,7 +118,7 @@
               </row>
             </tbody>
           </tgroup>
-        </table>
+        </table> -->
 
         <!-- <para>
         This is an caption example&#160;

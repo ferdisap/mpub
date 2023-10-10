@@ -12,6 +12,13 @@
           <xsl:apply-templates/>
         </span>
       </xsl:when>
+      <xsl:when test="parent::footnote">
+        <span>
+          <xsl:call-template name="id"/>
+          <xsl:call-template name="cgmark"/>
+          <xsl:apply-templates/>
+        </span>      
+      </xsl:when>
       <xsl:otherwise>
         <p style="page-break-inside: avoid;">
           <xsl:call-template name="id"/>
