@@ -4,7 +4,8 @@
   <xsl:output method="xml" omit-xml-declaration="yes"/>
   
   <xsl:template match="footnote" >
-    <span isfootnote="true" id="fnt-001" style="font-size:7">
+    <!-- syaratnya, jangan tambah line-height di footnote ini, karena akan berdampak ke text selanjutnya yang bukan footnote -->
+    <span isfootnote="true" id="fnt-001" style="font-size:7;">
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>

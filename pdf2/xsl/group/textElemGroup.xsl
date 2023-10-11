@@ -44,5 +44,11 @@
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="subScript">
+    <sub>subScript</sub>
+  </xsl:template>
+  <xsl:template match="superScript">
+    <sup>superScript</sup>
+  </xsl:template>
 
 </xsl:stylesheet>

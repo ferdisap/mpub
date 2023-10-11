@@ -69,7 +69,7 @@
         <!-- <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title> -->
         <title>Try Caption</title>
         <para>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus nesciunt sunt praesentium nam. Similique odio sit ipsum saepe at ullam deserunt tessaja, 
+          Lorem ipsum <subScript>tes</subScript> dolor sit amet, <emphasis emphasisType="em01">tes emphasis</emphasis> consectetur adipisicing elit. Natus nesciunt <superScript>foo</superScript> sunt praesentium nam. Similique odio sit <emphasis emphasisType="em01">tes emphasis</emphasis> ipsum saepe at ullam deserunt tessaja, 
           <footnote>
             <para>tes foot note.</para>
             <!-- <para>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus modi quam quisquam consequuntur ea labore deserunt eius esse dolorum tempora?</para> -->
