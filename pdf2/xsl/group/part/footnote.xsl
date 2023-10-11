@@ -5,7 +5,10 @@
   
   <xsl:template match="footnote" >
     <!-- syaratnya, jangan tambah line-height di footnote ini, karena akan berdampak ke text selanjutnya yang bukan footnote -->
-    <span isfootnote="true" id="fnt-001" style="font-size:7;">
+    <!-- <sup>
+    <a href="www.google.com">aaa</a>
+    </sup> -->
+    <span isfootnote="true" id="fnt-001" style="font-size:6;">
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>

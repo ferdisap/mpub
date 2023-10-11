@@ -1986,6 +1986,16 @@ class PMC_PDF extends TCPDF
     $basic_cell_padding_L = $this->cell_padding['L'];
     $basic_w = $w;
 
+    foreach($dom as $k => $value){
+     if(isset($dom[$k+1]['attribute']['isfootnote']) AND $dom[$k+1]['attribute']['isfootnote']
+        AND !$dom[$k]['tag']
+     ) {
+        $dom[$k]['value'] .= '[?f]';
+     }
+    }
+
+    // $textWithFootnote = [];
+
 		while ($key < $maxel) {
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
@@ -2287,7 +2297,6 @@ class PMC_PDF extends TCPDF
 							}
 							if (!$dom[$key]['block']) {
                 if (!(isset($dom[($key + 1)]) AND $dom[($key + 1)]['tag'] AND (!$dom[($key + 1)]['opening']) AND ($dom[($key + 1)]['value'] != 'li') AND $dom[$key]['tag'] AND (!$dom[$key]['opening']))) {
-                  // dump($key);
                   $this->y += (((($curfontsize * $this->cell_height_ratio) - ($fontsize * $dom[$key]['line-height'])) / $this->k) + $curfontascent - $fontascent - $curfontdescent + $fontdescent) / 2; // ini masalahnya
                 }
 								if (($dom[$key]['value'] != 'sup') AND ($dom[$key]['value'] != 'sub')) {
@@ -2354,7 +2363,7 @@ class PMC_PDF extends TCPDF
 
       // footnote - syaratnya, tidak boleh ada footnote didalam footnote
       // if(isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
-      if(isset($dom[$key]['attribute']['isfootnote']) OR isset($dom[$dom[$key]['parent']]['attribute']['isfootnote'])){
+      // if(isset($dom[$key]['attribute']['isfootnote']) OR isset($dom[$dom[$key]['parent']]['attribute']['isfootnote'])){
           // footnote #1
           // if(isset($dom[$key]['opening']) AND $dom[$key]['opening'] 
           //   AND isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
@@ -2382,7 +2391,7 @@ class PMC_PDF extends TCPDF
           //   $h2 = $this->getStringHeight($width, $str);
           //   // dd($h, $h2); // 24.69.......
           // } 
-          if(isset($dom[$key]['opening']) AND $dom[$key]['opening'] AND isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
+          // if(isset($dom[$key]['opening']) AND $dom[$key]['opening'] AND isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
             // $id = $dom[$key]['attribute']['id'] ?? random_int(1000,10000);
             // $this->footnotes[]['id'] = $id;
             // $width = $this->w - $this->rMargin - $startlinex - $this->cell_padding['L'] - $this->cell_padding['R'];
@@ -2392,9 +2401,9 @@ class PMC_PDF extends TCPDF
             // // $this->xobjects[$template]['dom'][$key] = $dom[$key];
             // $this->xobjects[$template]['domkeystart'] = $key;
             // $this->template_old = true;
-          }
+          // }
           // footnote #3
-          elseif(isset($dom[$key]['opening']) AND !$dom[$key]['opening'] AND $dom[$dom[$key]['parent']]['attribute']['isfootnote'] == true){
+          // elseif(isset($dom[$key]['opening']) AND !$dom[$key]['opening'] AND $dom[$dom[$key]['parent']]['attribute']['isfootnote'] == true){
             // if($this->template_old){
               // $this->xobjects[$template]['dom'][$key] = $dom[$key];
               // $h = $this->y;
@@ -2424,8 +2433,8 @@ class PMC_PDF extends TCPDF
           // $this->y -= 30;
           // dump($this->y);
           // $this->inFootnote = false;
-        }
-      }
+        // }
+      // }
       // dump($this->y."|".$dom[$key]['value']);
 
       // footnote #2
@@ -2845,6 +2854,7 @@ class PMC_PDF extends TCPDF
 						$this->y -= $yshift;
 					}
 				}
+        // dUMP($dom[$key]);
 				$pbrk = $this->checkPageBreak($this->lasth);
 				$this->newline = false;
 				$startlinex = $this->x;
@@ -2907,12 +2917,32 @@ class PMC_PDF extends TCPDF
 
           // footnote #1 new
           if(isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
-            // dd($curfontsize,$fontsize,$fontname,$fontstyle,$fontascent, $fontdescent,__LINE__);
-            // dd($curfontsize,$pfontsize);
             $id = $dom[$key]['attribute']['id'] ?? random_int(1000,10000);
             $this->footnotes[]['id'] = $id;
-            $width = $this->w - $this->rMargin - $startlinex - $this->cell_padding['L'] - $this->cell_padding['R'];
+            
+            // untuk menulis citation nya
+            $this->setFontSize($curfontsize);
+            $txt = count($this->footnotes);
+            // dump($this->x + $this->GetStringWidth("[1] ") . "|". $this->w - $this->lMargin - $this->rMargin);
+            // dump($w);
+            // dump($this->x . "|". $this->y. "|" .$this->w - $this->lMargin - $this->cell_padding['L']);
+            // dump($this->x - $this->lMargin + $this->GetStringWidth("[1] "). "|". $this->y. "|" . $w); //true
+            // if($this->x + $this->GetStringWidth("[1] ") > $this->w - $this->lMargin - $this->rMargin){
+              // $this->newline = true;
+              // $this->x = $startlinex;
+              // $this->y += $this->lasth;
+            // }
+            // dump($this->x);
+            // dump($this->y, $this->page);
+            // dd($this->GetStringWidth("[1] "));
+            // $this->y -= 2 * ((0.3 * $this->FontSizePt) / $this->k);
+            // $this->Write('',"[{$txt}] ",'',false,'L',false,0,true);
+            // $this->y += 2 * ((0.3 * $this->FontSizePt) / $this->k);
+
+            $width = $this->w - $this->rMargin - $this->lMargin - $startlinex - $this->cell_padding['L'] - $this->cell_padding['R'];
             $template = $this->startTemplate($width,'');
+            $this->setFontSize($curfontsize);
+            
             $this->inFootnote = true;
             $this->xobjects[$template]['domkeystart'] = $key;
             $this->template_old = true;
@@ -3216,6 +3246,7 @@ class PMC_PDF extends TCPDF
 					}
 				} 
         else { // closing tag
+          // footnote #2
           if(isset($dom[$dom[$key]['parent']]['attribute']['isfootnote']) AND $dom[$dom[$key]['parent']]['attribute']['isfootnote'] == 'true'){
             if(isset($this->template_old) AND $this->template_old){
               $this->xobjects[$template]['dom'][$key] = $dom[$key];
@@ -3223,25 +3254,33 @@ class PMC_PDF extends TCPDF
               $h += $this->lasth;
               $this->endTemplate();
               $this->inFootnote = false;
-              $this->template_old = false;
-            
+              $this->template_old = false;              
+              
               $this->inFootnote = true;
               $template_new = $this->startTemplate($width, $h);
+              // $this->setFontSize(5);
+              // $this->Line($this->x, $this->y, $this->x + 50, $this->y );
+              $txt = count($this->footnotes);
+              $this->Write('',"[{$txt}] ",'',false,'L',false,0,true, true,0,0);
               $key = $this->xobjects[$template]['domkeystart']+1;
             } else {
               unset($this->xobjects[$template]);
+              
               $this->endTemplate();
               $minstartliney = $startliney;
               // saat di closing tag, fontsize berubah ke semula. Sudah bawaan basic tcpdf nya
               // jadi $curfontsize = 9 (normal), $pfontsize = 7 (footnote)
               // $this->y -= ((((9 * $this->cell_height_ratio) - (7 * 1.25)) / $this->k) + 2.955925 - 2.2990527777778 - 0.714375 + 0.555625) / 2;
-              $this->setFontSize($curfontsize);
               $this->y -= (((($curfontsize * $this->cell_height_ratio) - ($pfontsize * $dom[$dom[$key]['parent']]['line-height'])) / $this->k) + $curfontascent - $pfontascent - $curfontdescent + $pfontdescent) / 2;
-              $this->printTemplate($template_new, $startlinex,170,0,0);
+              
+              $lastIndexfnt = count($this->footnotes) - 1;
+              $this->footnotes[$lastIndexfnt]['template'][] = $template_new;
+              $this->footnotes[$lastIndexfnt]['height'][] = $h;
+              $this->inFootnote = false;
+              $this->setFontSize($curfontsize);
             }
-          }
-          // dd($this_method_vars);
-            
+          }          
+          
 
           /** EDITED - Tambahan agar jika didalam paragrap berakhir dengan ul/ol, tidak diberi v space 2x tinggi text. 
            * tapi setelah di coba dengan html ol/ul yang ada border, berhasil
@@ -3410,7 +3449,7 @@ class PMC_PDF extends TCPDF
 				}
         
         
-				if (!isset($dom[$key]['trimmed_space']) OR !$dom[$key]['trimmed_space']) {          
+				if (!isset($dom[$key]['trimmed_space']) OR !$dom[$key]['trimmed_space']) { 
 					$strlinelen = $this->GetStringWidth($dom[$key]['value']);
 					if (!empty($this->HREF) AND (isset($this->HREF['url']))) {
 						// HTML <a> Link
@@ -3432,7 +3471,21 @@ class PMC_PDF extends TCPDF
 						}
 
             // artinya ini adalah ketika str terakhir ditulis dalam sebuah block
-						if (($strlinelen < $cwa) AND (isset($dom[($key + 1)])) AND ($dom[($key + 1)]['tag']) AND (!$dom[($key + 1)]['block'])) {
+            if (($strlinelen < $cwa) AND (isset($dom[($key + 1)])) AND ($dom[($key + 1)]['tag']) AND (!$dom[($key + 1)]['block'])) {
+
+              // dump($dom[$key]['value'], $key);
+              // footnote
+              if(!$this->inFootnote){
+                $v = $dom[$key]['value'];
+                $v_n = preg_replace("/\[\?f\]/",'', $v);
+                if($v != $v_n) {
+                  $dom[$key]['value'] = $v_n;
+                  $c = count($this->footnotes) + 1;
+                  $footnoteRefTxt = "<sup>[{$c}]</sup>&#160;";
+                  // $this->writeHTML("<sup>[foo]</sup>",false);
+                }
+              }
+
 							// check the next text blocks for continuity
 							$nkey = ($key + 1);
 							$write_block = true;
@@ -3534,7 +3587,7 @@ class PMC_PDF extends TCPDF
             // $this->stringHeight = $this->getCellHeight($this->FontSize, true); // dipindah ke atas
             // end #1
 
-            // footnote #3            
+            // footnote #3      
             // if($this->inFootnote){
               // dump($key);
               // $this->xobjects[$template]['dom'][$key] = $dom[$key];
@@ -3562,16 +3615,101 @@ class PMC_PDF extends TCPDF
             //     }
             //   }
             // }
-            // $this->y += $yshift;
-            // $this->y = $startliney + $yshift;
-            // dump($this->y."|".$startliney."|".$yshift."|".$dom[$key]['value']);
-            // dump($key);
-            // dump($prevy);
-            // $this->y = $startliney;
+            // footnote #3  
+            // if(!$this->inFootnote){
+            //   $qtyfnt = count($this->footnotes);
+            //   $posy = $this->h - $this->bMargin - $this->cell_padding['B'];
+            //   $hgt = 0;
+            //   $hasprinted = false;
+            //   for ($i=$qtyfnt-1; $i >= 0 ; --$i) {
+            //     $footnote = $this->footnotes[$i];
+            //     foreach($footnote['height'] as $separated_footnote => $height){
+            //       $posy -= $height;
+            //       $this->printTemplate($footnote['template'][$separated_footnote],$startlinex,$posy);
+            //       unset($this->footnotes[$i]['height'][$separated_footnote]);
+            //       $hasprinted = true;
+            //       $hgt += $height;
+            //     }
+            //   }
+            //   if(isset($hasprinted) and $hasprinted){
+            //     // $this->PageBreakTrigger = $this->h - $this->bMargin - $hgt;
+            //     // $this->Line($startlinex, $posy, $startlinex + 50, $posy );
+            //   }
+            //   $this->setFontSize($curfontsize);
+            // }
+
+            $this->footnoteheight = $this->footnoteheight ?? 0;
+            if(!$this->inFootnote AND (($this->footnoteheight + $this->y + (3 * $this->getCellHeight($this->FontSize)) ) >= $this->PageBreakTrigger)){
+              
+              $this->y += ($this->PageBreakTrigger - ($this->footnoteheight + $this->y))/2;
+              $this->setLineWidth(0.5);
+              $this->Line($startlinex, $this->y, $startlinex + 50, $this->y );              
+              $this->y += ($this->PageBreakTrigger - ($this->footnoteheight + $this->y))/2;
+            
+              $fs = $this->FontSize;
+              $qtyfnt = count($this->footnoteready);
+              for ($i=$qtyfnt-1; $i >= 0 ; --$i) {
+                $footnoteready = $this->footnoteready[$i];
+                foreach($footnoteready['template'] as $separated_footnote => $template){
+                  $id = $this->footnoteready[$i]['template'][$separated_footnote];                  
+                  $this->footnoteheight = $this->footnoteheight ?? 0;
+
+                  if(isset($this->footnoteready[$i]['height'][$separated_footnote])){
+                    $this->footnoteheight -= $this->footnoteready[$i]['height'][$separated_footnote];
+                    unset($this->footnoteready[$i]['height'][$separated_footnote]);
+                    $this->setFontSize($this->xobjects[$id]['gvars']['FontSizePt']);
+                    $this->printTemplate($id,$startlinex, $this->y + $this->footnoteheight);
+                  }
+                }
+              }
+              $this->setFontSize($curfontsize);
+              $this->checkPageBreak($this->PageBreakTrigger + 1);
+            }
+
+
+            // footnote #3 - register or save place for footer
+            if(!$this->inFootnote){
+              $this->footnoteready = $this->footnoteready ?? [];
+              foreach($this->footnotes as $i => $footnote){
+                foreach($footnote['height'] as $separated_footnote => $height){
+                  // dump($dom[$key], $dom[$key]['value']);
+                  // dump($this->FontSizePt, $this->FontSize);
+                  // dump($this->y + $this->footnoteheight + (2 * $this->getCellHeight($this->FontSize)));
+                  // dump($this->y + $this->footnoteheight + $this->getCellHeight($this->FontSize), $this->PageBreakTrigger, $this->page);
+                  if( ($this->y + $this->footnoteheight + (2 * $this->getCellHeight($this->FontSize))) < $this->PageBreakTrigger){
+                    $this->footnoteheight += $height;
+                    $this->footnoteready[$i]['template'][] = $footnote['template'][$separated_footnote];
+                    $this->footnoteready[$i]['height'][] = $footnote['height'][$separated_footnote];
+                    unset($this->footnotes[$i]['height'][$separated_footnote]);
+                  }
+                }
+              }
+              $this->setFontSize($curfontsize);
+            }
+            
+
+            
+            // footnote #0
+            // textWithFootnote
+            // if(
+            //   isset($dom[$key+1]['tag'])
+            //   AND isset($dom[$key+1]['attribute']['isfootnote'])
+            //   )
+            // {
+            //   if(!in_array($key, $textWithFootnote)){
+            //     $q = count($this->footnotes);
+            //     $lastfnt = $q == 0 ? 1 : $q;
+            //     $dom[$key]['value'] .= "[{$lastfnt}] ";
+            //     $textWithFootnote[] = $key;
+            //   }
+            // }
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
-            // dump($this->y);
-            // dump($this->y.'|'.$dom[$key]['value']);
-						// restore default direction
+            // footnote #0 writing footnoteRefTxt
+            if(isset($footnoteRefTxt)){
+              $this->writeHTML($footnoteRefTxt,false);
+              unset($footnoteRefTxt);
+            }
+            // restore default direction
 						if ($reverse_dir AND ($wadj == 0)) {
 							$this->x = $xws; // @phpstan-ignore-line
 							$this->rtl = !$this->rtl;
