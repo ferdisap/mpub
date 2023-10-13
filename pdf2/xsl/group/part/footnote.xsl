@@ -8,11 +8,16 @@
     <!-- <sup>
     <a href="www.google.com">aaa</a>
     </sup> -->
-    <span isfootnote="true" id="fnt-001" style="font-size:6;">
-      <xsl:call-template name="id"/>
-      <xsl:call-template name="cgmark"/>
-      <xsl:apply-templates/>
-    </span>
+    <!-- <span forfootnote="true"> -->
+      <!-- aaa -->
+      <!-- <span isfootnote="true" id="fnt-001" style="font-size:6;"> -->
+      <!-- <xsl:text>&#91;?f&#93;</xsl:text> -->
+        <span isfootnote="true" id="{generate-id()}" style="font-size:6;text-align:justify">
+        <xsl:call-template name="id"/>
+        <xsl:call-template name="cgmark"/>
+        <xsl:apply-templates/>
+      </span>
+    <!-- </span> -->
   </xsl:template>
   
 </xsl:stylesheet>

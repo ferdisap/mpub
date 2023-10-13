@@ -2,6 +2,8 @@
 
 namespace Ptdi\Mpub\Pdf2;
 
+use DOMDocument;
+use DOMXPath;
 use Ptdi\Mpub\CSDB;
 use TCPDF;
 use TCPDF_COLORS;
@@ -1890,7 +1892,7 @@ class PMC_PDF extends TCPDF
 	 * @param string $align Allows to center or align the text. Possible values are:<ul><li>L : left align</li><li>C : center</li><li>R : right align</li><li>'' : empty string : left for LTR or right for RTL</li></ul>
 	 * @public
 	 */
-  public function writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $tes = false, $who = '') {
+  public function writeHTMl($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $tes = false, $who = '') {
     $gvars = $this->getGraphicVars();
 		// store current values
 		$prev_cell_margin = $this->cell_margin;
@@ -1980,7 +1982,8 @@ class PMC_PDF extends TCPDF
 			// reset row height
 			$this->resetLastH();
 		}
-		$dom = $this->getHtmlDomArray($html);
+    // is_array($html) ? $dom = $html : 
+    $dom = $this->getHtmlDomArray($html);
 
 		$maxel = count($dom);
 		$key = 0;
@@ -1988,17 +1991,20 @@ class PMC_PDF extends TCPDF
     $basic_cell_padding_L = $this->cell_padding['L'];
     $basic_w = $w;
 
-    foreach($dom as $k => $value){
-     if(isset($dom[$k+1]['attribute']['isfootnote']) AND $dom[$k+1]['attribute']['isfootnote']
-        AND !$dom[$k]['tag']
-     ) {
-        $dom[$k]['value'] .= '[?f]';
-     }
+    $tmp_footnotesdom = [];
+    $domdoc = new DOMDocument();
+    $domdoc->loadXML($html);
+    $domxpath = new DOMXPath($domdoc);
+    $res = $domxpath->evaluate("//span[@isfootnote = 'true']");
+
+    foreach($res as $i => $fnt){
+      $tmp_footnotesdom[$fnt->getAttribute('id')]['html'] = $fnt->c14N();
     }
 
-    // $textWithFootnote = [];
-
+    // dd($tmp_footnotesdom);
+    // dd($tmp_footnotesdom, $id,  array_keys($tmp_footnotesdom, $id));
 		while ($key < $maxel) {
+
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
         $h = $this->getCellHeight($dom[$key]['fontsize']) * 3; // dikali tiga biar kalau ga break, ada text paragraph yang membersamainya 
@@ -2371,6 +2377,9 @@ class PMC_PDF extends TCPDF
 				$fontaligned = false;
 				// we are at the beginning of a new line
 				if (isset($startlinex)) {
+
+          // if(!$this->inFootnote) dump($startlinex."|".$this->x."|".$key."|".$dom[$key]['value']);
+
 					$yshift = ($minstartliney - $startliney);
 					if (($yshift > 0) OR ($this->page > $startlinepage)) {
 						$yshift = 0;
@@ -2378,6 +2387,7 @@ class PMC_PDF extends TCPDF
 					$t_x = 0;
 					// the last line must be shifted to be aligned as requested
 					$linew = abs($this->endlinex - $startlinex);
+          if($this->inFootnote) $startlinepos = strlen($this->xobjects[$this->xobjid]['outdata']); // tambahan untuk footnote
 					if ($this->inxobj) {
 						// we are inside an XObject template
 						$pstart = substr($this->xobjects[$this->xobjid]['outdata'], 0, $startlinepos);
@@ -2480,7 +2490,8 @@ class PMC_PDF extends TCPDF
 						} elseif ($plalign == 'L') {
 							// left alignment on RTL document
 							$t_x = -$mdiff;
-						} elseif (($plalign == 'J') AND ($plalign == $lalign)) {
+						} 
+            elseif (($plalign == 'J') AND ($plalign == $lalign)) {
 							// Justification
 							if ($this->isRTLTextDir()) {
 								// align text on the left
@@ -2581,8 +2592,9 @@ class PMC_PDF extends TCPDF
 												break;
 											}
 											$currentxpos = $xmatches[1];
-                      $currentxpos == '' ? ($currentxpos = 0) : $currentxpos; // tambahan coba-coba untuk footnote
+                      // $currentxpos == '' ? ($currentxpos = 0) : $currentxpos; // tambahan coba-coba untuk footnote
                       // dump($currentxpos);
+                      // dump($pmid);
 											$textpos = $currentxpos;
 											if (($strcount <= $maxkk) AND ($strpiece[2][0] == 'Td')) {
 												$ns = $lnstring[3][$strcount];
@@ -2740,6 +2752,7 @@ class PMC_PDF extends TCPDF
 									if ($this->inxobj) {
 										// we are inside an XObject template
 										$this->xobjects[$this->xobjid]['outdata'] = $pstart."\n".$pmid."\nBT 0 Tw ET\n".$pend;
+                    // dump($pstart, $pmid, $pend);
 									} else {
 										$this->setPageBuffer($startlinepage, $pstart."\n".$pmid."\nBT 0 Tw ET\n".$pend);
 									}
@@ -2777,7 +2790,6 @@ class PMC_PDF extends TCPDF
 						$this->y -= $yshift;
 					}
 				}
-        // dUMP($dom[$key]);
 				$pbrk = $this->checkPageBreak($this->lasth);
 				$this->newline = false;
 				$startlinex = $this->x;
@@ -2839,43 +2851,23 @@ class PMC_PDF extends TCPDF
 				if ($dom[$key]['opening']) { // kayaknya pindah ke sini si footnote
 
           // footnote #1 new
-          if(isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'){
-            $id = $dom[$key]['attribute']['id'] ?? random_int(1000,10000);
-            $this->footnotes[]['id'] = $id;
+          // if(isset($dom[$key]['attribute']['isfootnote']) AND $dom[$key]['attribute']['isfootnote'] == 'true'
+          //   AND !$this->inFootnote
+          //   ){
+          //   $id = $dom[$key]['attribute']['id'] ?? random_int(1000,10000);
+          //   $this->footnotes[]['id'] = $id;
             
-            // untuk menulis citation nya
-            $this->setFontSize($curfontsize);
-            $txt = count($this->footnotes);     
-
-            $template = $this->startTemplate('','');
-            // $this->setFontSize($curfontsize);
-            $this->inFootnote = true;
-            $this->xobjects[$template]['domkeystart'] = $key;
-            // $this->xobjects[$template]['dom'][$key] = $dom[$key];;
-            $this->template_old = true;            
-            $this->Write('',"[{$txt}] ",'',false,'L',false,0,true, true, 0, 0);
-            
-            $kk = $key + 1;
-            $tt = '';
-            while($dom[$kk]){
-              dd($kk);
-              if(!$dom[$kk]['tag']){
-                dump($dom[$kk]['value']);
-                $tt .= $dom[$kk]['value'];
-                $kk++;
-              } elseif($dom[$kk]['parent'] == $kk){
-                dd('aaa');
-                break;
-              } else{
-                dump($tt); 
-                break;
-              }
-            }
-            $this->endTemplate();
-
-            $key
-
-          }
+          //   // untuk menulis citation nya
+          //   $wfnt = $this->w - $this->lMargin - $this->rMargin - $this->cell_padding['L'] - $this->cell_padding['R'];
+          //   unset($template);
+          //   $template = $this->startTemplate($wfnt,'');
+          //   $this->x = $this->lMargin + $this->cell_padding['L'];
+          //   $this->inFootnote = true;
+          //   $this->xobjects[$template]['domkeystart'] = $key;
+          //   $txt = count($this->footnotes);
+          //   $this->Write('',"[{$txt}]    ",'',false,'J',false,0,true, true, 0, 0);
+          //   $this->lMargin += $this->GetStringWidth("[{$txt}]    ",$curfontname, $curfontstyle, $curfontsize);
+          // }
 
 					// get text indentation (if any)
 					if (isset($dom[$key]['text-indent']) AND $dom[$key]['block']) {
@@ -3175,53 +3167,6 @@ class PMC_PDF extends TCPDF
 					}
 				} 
         else { // closing tag
-          // footnote #2
-          if(isset($dom[$dom[$key]['parent']]['attribute']['isfootnote']) AND $dom[$dom[$key]['parent']]['attribute']['isfootnote'] == 'true'){
-            if(isset($this->template_old) AND $this->template_old){
-              // $this->xobjects[$template]['dom'][$key] = $dom[$key];
-              // $h = $this->y;
-              // $h += $this->lasth;
-              
-              
-              // foreach($this->xobjects[$template]['dom'] as $k => $d){
-              //   $dom[$k] = $d;
-              // }
-              
-
-              // $this->endTemplate();
-              // $this->inFootnote = false;
-              // $this->template_old = false;              
-
-              
-              // $this->inFootnote = true;
-
-              // $template_new = $this->startTemplate('', $h + 10);
-              // // $this->setFontSize(6);
-              
-              // $txt = count($this->footnotes);
-              // $this->Write('',"[{$txt}] ",'',false,'L',false,0,true, true,0,0);
-              
-              // $key = $this->xobjects[$template]['domkeystart'] + 1;
-
-
-            } else {
-              // unset($this->xobjects[$template]);
-              // $this->endTemplate();
-              // $startlinex = $this->lMargin;
-              // $minstartliney = $startliney;
-              // // saat di closing tag, fontsize berubah ke semula. Sudah bawaan basic tcpdf nya
-              // // jadi $curfontsize = 9 (normal), $pfontsize = 7 (footnote)
-              // // $this->y -= ((((9 * $this->cell_height_ratio) - (7 * 1.25)) / $this->k) + 2.955925 - 2.2990527777778 - 0.714375 + 0.555625) / 2;
-              // $this->y -= (((($curfontsize * $this->cell_height_ratio) - ($pfontsize * $dom[$dom[$key]['parent']]['line-height'])) / $this->k) + $curfontascent - $pfontascent - $curfontdescent + $pfontdescent) / 2;
-              
-              // $lastIndexfnt = count($this->footnotes) - 1;
-              // $this->footnotes[$lastIndexfnt]['template'][] = $template_new;
-              // $this->footnotes[$lastIndexfnt]['height'][] = $h;
-              // $this->inFootnote = false;
-              // $this->setFontSize($curfontsize);
-            }
-          }          
-          
 
           /** EDITED - Tambahan agar jika didalam paragrap berakhir dengan ul/ol, tidak diberi v space 2x tinggi text. 
            * tapi setelah di coba dengan html ol/ul yang ada border, berhasil
@@ -3249,6 +3194,46 @@ class PMC_PDF extends TCPDF
 						$startlinepage = $this->page;
 					}
 
+          
+          // footnote #2
+          // if($this->inFootnote AND !isset($reinstatefootnote)){
+          //   $footnoteh = $this->y;
+          //   $footnoteh +=  $this->lasth;
+          //   $this->endTemplate();
+          //   foreach($this->xobjects[$template]['dom'] as $k => $d){
+          //     $dom[$k] = $d;
+          //   }
+          //   $keystart = $this->xobjects[$template]['domkeystart'];
+          //   $key = $keystart;
+          //   $dom[$key]['attribute']['isfootnote'] = 'false';
+          //   unset($this->xobjects[$template]);
+          //   unset($template);
+
+          //   $reinstatefootnote = true;
+          //   $template = $this->startTemplate($wfnt, $footnoteh);
+            
+          //   $this->x = $this->lMargin + $this->cell_padding['L'];
+
+          //   $this->setFontSize(6);
+          //   $txt = count($this->footnotes);
+          //   $this->Write('',"[{$txt}]    ",'',false,'L',false,0,true, true,0,0);
+          //   $this->lMargin += $this->GetStringWidth("[{$txt}]    ",$curfontname, $curfontstyle, $curfontsize);
+          //   --$key;
+          // }
+          // elseif($this->inFootnote AND isset($reinstatefootnote)){
+          //   $this->endTemplate();
+          //   $startlinex = $this->lMargin;
+          //   $minstartliney = $startliney;
+
+          //   $this->y -= (((($curfontsize * $this->cell_height_ratio) - ($pfontsize * $dom[$dom[$key]['parent']]['line-height'])) / $this->k) + $curfontascent - $pfontascent - $curfontdescent + $pfontdescent) / 2;  
+          //   $lastIndexfnt = count($this->footnotes) - 1;
+          //   $this->footnotes[$lastIndexfnt]['template'][] = $template;
+          //   $this->footnotes[$lastIndexfnt]['height'][] = $footnoteh;
+          //   $this->inFootnote = false;
+          //   $this->setFontSize($curfontsize);
+          //   unset($reinstatefootnote);
+          // }
+
           /** EDITTED - untuk tambah intentionally left blank atau page break */
           // saat di closing tag ini, jika parent (open tag) ada atribute @addintentionallyleftblank, maka..
           if(isset($dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank']) AND $dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank'] == 'true'){
@@ -3273,7 +3258,7 @@ class PMC_PDF extends TCPDF
                 self::addIntentionallyLeftBlankPage($this);
               }
             }
-          } 
+          }
 				}
 			}
       elseif (strlen($dom[$key]['value']) > 0) {
@@ -3373,7 +3358,7 @@ class PMC_PDF extends TCPDF
 						}
 						$postlen = strlen($dom[$key]['value']);
 						if (($postlen == 0) AND ($prelen > 0)) {
-							$dom[$key]['trimmed_space'] = true;
+              $dom[$key]['trimmed_space'] = true;
 						}
 					}
 					$newline = false;
@@ -3390,9 +3375,6 @@ class PMC_PDF extends TCPDF
 					$this->x += $this->textindent;
 				}
         
-        // dump($key);
-        // dump($dom[$key]);
-        // dump($dom[38]);
 				if (!isset($dom[$key]['trimmed_space']) OR !$dom[$key]['trimmed_space']) { 
 					$strlinelen = $this->GetStringWidth($dom[$key]['value']);
 					if (!empty($this->HREF) AND (isset($this->HREF['url']))) {
@@ -3579,72 +3561,114 @@ class PMC_PDF extends TCPDF
 
 
             if ($strlinelen < $cwa){
-              // footnote #0 - create footnoteRefTxt for filling up the citation
-              if(!$this->inFootnote){
-                $v = $dom[$key]['value'];
-                $v_n = preg_replace("/\[\?f\]/",'', $v);
-                if($v != $v_n) {
-                  $dom[$key]['value'] = $v_n;
-                  $c = count($this->footnotes) + 1;
-                  $footnoteRefTxt = "<sup>[{$c}]</sup>&#160;";
-                }
-                if(!$this->inFootnote AND (($this->y + $this->footnoteheight + (2 * $this->getCellHeight($this->FontSize)) ) >= $this->PageBreakTrigger)){
-                  $undo = true;
-                  $dom[$key]['attribute']['nobr'] = 'false';
-                  --$key;
-                  $this->checkPageBreak($this->PageBreakTrigger + 1);
-                }
+
+              // footnote #1 - create footnoteRef
+              $v = $dom[$key]['value'];
+              $v_n = preg_replace("/\[\?f\]/",'', $v);
+              if($v != $v_n) {
+                $dom[$key]['value'] = $v_n;
+                $c = count($this->footnotes) + 1;
+                $footnoteRefTxt = "<span><sup>[{$c}]</sup>&#160;</span>";
               }
 
-              // footnote #3
-              if(!$this->inFootnote){
-                // $startlinex = 0;
-                // dump($this->footnotes, $dom[$key]['value']);
-                // dump($key);
-                $qtyfnt = count($this->footnotes);
-                for ($i= $qtyfnt-1; $i >= 0; $i--) {
-                  if(isset($this->footnotes[$i]) ){                    
-                    foreach ( $this->footnotes[$i]['template'] as $separated_footnote => $id){
-                      if(isset($this->footnotes[$i]['height'][$separated_footnote])){
-                        $hg = $this->footnotes[$i]['height'][$separated_footnote];
-                        $this->setFontSize($this->xobjects[$id]['gvars']['FontSizePt']);
-                        
-                        $prevfntid = $prevfntid ?? null;
-                        if($prevfntid){
-                          $pattern = "/(?<=\/){$prevfntid}(?=\sDo)/";
-                          // dump($pattern, $id);
-                          // dump($this):
-                          // $pgbufr = preg_replace($pattern, $id, $this->pages[$this->page]);
-                          // $this->pages[$this->page] = $pgbufr;
-                        }
+              if(($this->y + $this->footnoteheight + (2 * $this->getCellHeight($this->FontSize)) ) >= $this->PageBreakTrigger){
+                $undo = true;
+                $dom[$key]['attribute']['nobr'] = 'false';
+                --$key;
+                $this->checkPageBreak($this->PageBreakTrigger + 1);
+              }
 
-                        $ypos = $this->PageBreakTrigger - $hg;
-                        // $this->printTemplate($id,$this->lMargin, $ypos);
-                        // unset($this->footnotes[$i]['template'][$separated_footnote]);
-                        // $this->PageBreakTrigger -= $hg;
-                        // if($dom[$key]['tag']) $key++;
-                        // $prevfntid = $id;
-                      }
-                    }
+              // footnote #2 - create footnote xobject
+              if(isset($dom[$key+1]['attribute']['id']) AND in_array($dom[$key+1]['attribute']['id'], array_keys($tmp_footnotesdom))){
+                $kstartfnt = $key+1;
+
+                $lastIndexfnt = count($this->footnotes) + 1;
+
+                $ml = $tmp_footnotesdom[$dom[$key+1]['attribute']['id']]['html'];
+                $lMargin = $this->lMargin;
+                $rMargin = $this->rMargin;
+                $this->lPadding = $this->cell_padding['L'];
+                $this->rPadding = $this->cell_padding['R'];
+
+                $template = $this->startTemplate($this->w,'');
+                $this->lMargin = $lMargin;
+                $this->rMargin = $rMargin;
+                $this->cell_padding['L'] = $this->lPadding ;
+                $this->cell_padding['R'] = $this->rPadding ;
+                $this->x = $this->lMargin;
+
+                $this->setFontSize(6);
+                $this->Write('',"[{$lastIndexfnt}]    ",'',false,'J',false,0,true, true, 0, 0);
+                $this->lMargin += $this->GetStringWidth("[{$lastIndexfnt}]    ",'helvetica', '', 6);
+
+                $this->writeHTML("{$ml}", false,false);
+                $footnoteh = $this->y + $this->lasth;
+                $this->endTemplate();
+                $this->resetLastH();
+                unset($this->xobjects[$template]);
+
+                $template = $this->startTemplate($this->w,$footnoteh);
+                $this->lMargin = $lMargin ;
+                $this->rMargin = $rMargin ;
+                $this->cell_padding['L'] = $this->lPadding ;
+                $this->cell_padding['R'] = $this->rPadding ;
+                $this->x = $this->lMargin;
+
+                $this->setFontSize(6);
+                $this->Write('',"[{$lastIndexfnt}]    ",'',false,'L',false,0,true, true,0,0);
+                $this->lMargin += $this->GetStringWidth("[{$lastIndexfnt}]    ",'helvetica', '', 6);
+
+                $this->writeHTML("{$ml}", false,false);
+                $this->endTemplate();
+
+                $lastIndexfnt = count($this->footnotes) + 1;
+                $this->footnotes[$lastIndexfnt]['id'][] = $dom[$key+1]['attribute']['id'];
+                $this->footnotes[$lastIndexfnt]['template'][] = $template;
+                $this->footnotes[$lastIndexfnt]['height'][] = $footnoteh;                
+                
+                $kk = $kstartfnt;
+                while (isset($dom[$kk])){
+                  $kk++;
+                  if(!$dom[$kk]['tag'] AND !$dom[$key]['block']){
+                    $dom[$kk]['value'] = '';
                   }
-                  $this->setFontSize($curfontsize);
+    
+                  if($dom[$kk]['parent'] == $kstartfnt AND isset($dom[$kk]['opening']) AND !$dom[$kk]['opening']){
+                    break;
+                  }
                 }
               }
             }
-            
-            if($this->inFootnote){
-              // dump($this->xobjects[$template]['dom'][$key]);
-              if(!isset($this->xobjects[$template]['dom'][$key])){
-                $this->xobjects[$template]['dom'][$key] = $dom[$key];
+
+            // footnote #3 - printing footnoe
+            $qtyfnt = count($this->footnotes);
+            $yy = $this->y;
+            for ($i= $qtyfnt; $i >= 0; $i--) {
+              if(isset($this->footnotes[$i]) ){                    
+                foreach ( $this->footnotes[$i]['template'] as $separated_footnote => $id){
+                  if(isset($this->footnotes[$i]['height'][$separated_footnote])){
+                    $hg = $this->footnotes[$i]['height'][$separated_footnote];
+                    if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
+                      // dump($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) ."|".$this->PageBreakTrigger);
+                      $ypos = $this->PageBreakTrigger - $hg;
+                      $this->printTemplate($id,0, $ypos);
+                      $this->PageBreakTrigger -= $hg;
+                      unset($this->footnotes[$i]['template'][$separated_footnote]);                          
+                      $this->y = $yy;
+                    }        
+                  }
+                }
               }
             }
 
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
-            // footnote #0 writing footnoteRefTxt
+            
+            // footnote #1 writing footnoteRefTxt
             if(isset($footnoteRefTxt)){
               $this->writeHTML($footnoteRefTxt,false);
               unset($footnoteRefTxt);
             }
+            
             // restore default direction
 						if ($reverse_dir AND ($wadj == 0)) {
 							$this->x = $xws; // @phpstan-ignore-line
@@ -3713,6 +3737,31 @@ class PMC_PDF extends TCPDF
 				}
 			}
 		} // end for each $key
+
+    // $qtyfnt = count($this->footnotes);
+    // $yy = $this->y;
+    // for ($i= $qtyfnt-1; $i >= 0; $i--) {
+    //   if(isset($this->footnotes[$i]) ){                    
+    //     foreach ( $this->footnotes[$i]['template'] as $separated_footnote => $id){
+    //       if(isset($this->footnotes[$i]['height'][$separated_footnote])){
+    //         $hg = $this->footnotes[$i]['height'][$separated_footnote];
+    //         if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
+    //           $ypos = $this->PageBreakTrigger - $hg;
+    //           $this->printTemplate($id,0, $ypos);
+    //           dump('printed');
+    //           $this->PageBreakTrigger -= $hg;
+    //           unset($this->footnotes[$i]['template'][$separated_footnote]);                          
+    //           $this->y = $yy;
+    //           // $printed = true;
+    //         }
+
+    //       }
+    //     }
+    //   }
+    // }     
+    // if(isset($printed)){
+    //   dump($this->footnotes);
+    // }
 		// align the last line
 		if (isset($startlinex)) {
 			$yshift = ($minstartliney - $startliney);
