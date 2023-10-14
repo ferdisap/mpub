@@ -121,8 +121,11 @@ class DMC
     $html = preg_replace("/[\n\r\s]+(?=<.+isfootnote)/",'[?f]',$html); // untuk menghilangkan space ketika didepan ada footnote
     // dd($html);
     // dd($html);
-    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $tes = true);
+    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument , $tes = true);
+    // $this->pdf->writeHTML($html, true, false, true, true,'J',true, null , $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
+    // dd($this->pdf);
+    // dump($this->pdf->footnotes);
   }
 
   public function resolve_levelledPara(\DOMElement $levelledPara)
