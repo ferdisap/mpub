@@ -77,7 +77,7 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $this->SetY(-15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      // $this->writeHTML($footer, true, false, true, false, 'C');
+      $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $this->SetY(-15);
@@ -1429,17 +1429,24 @@ class PMC_PDF extends TCPDF
 	}
   
   public function addInternalReference($ident, $id, $page, $y = 0){
+
     $link = $this->AddLink();
     $this->setLink($link,$y,$page);
     
-    array_push($this->references, [
+    $this->references[$id] = [
       'ident' => $ident,
       'id' => $id,
       'link' => $link,
-      // 'p' => $page,
-      // 'y' => $y,
-      // 'f' => $fixed,
-    ]);
+    ];
+
+    // array_push($this->references, [
+    //   'ident' => $ident,
+    //   'id' => $id,
+    //   'link' => $link,
+    //   // 'p' => $page,
+    //   // 'y' => $y,
+    //   // 'f' => $fixed,
+    // ]);
   }
 
   public function __construct(string $absolute_path_csdbInput)
@@ -1633,15 +1640,25 @@ class PMC_PDF extends TCPDF
         continue;
       }
       foreach($this->PageAnnots[$page] as $i => $annots){
-        foreach($this->references as $reference){
+        foreach($this->references as $id => $reference){
+          // dump($id." => ",$reference);
           if(
-            ($annots['txt'] == $reference['ident'].",".$reference['id']) 
-            OR ("DMC-".$annots['txt'] == $reference['ident'].",".$reference['id']) 
-            OR ("PMC-".$annots['txt'] == $reference['ident'].",".$reference['id']))
+            ($annots['txt'] == $reference['ident'].",".$id) 
+            OR ("DMC-".$annots['txt'] == $reference['ident'].",".$id) 
+            OR ("PMC-".$annots['txt'] == $reference['ident'].",".$id))
           {
             $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
           }
         }
+        // foreach($this->references as $reference){
+        //   if(
+        //     ($annots['txt'] == $reference['ident'].",".$reference['id']) 
+        //     OR ("DMC-".$annots['txt'] == $reference['ident'].",".$reference['id']) 
+        //     OR ("PMC-".$annots['txt'] == $reference['ident'].",".$reference['id']))
+        //   {
+        //     $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
+        //   }
+        // }
       }
     }
   } 
@@ -3205,8 +3222,9 @@ class PMC_PDF extends TCPDF
               // dump('start_cgmark on tag', $this->inxobj, $this->start_cgmark);
             }
 
-            if(isset($dom[$key]['attribute']['id'])){
+            if(isset($dom[$key]['attribute']['id']) AND !$this->inFootnote){
               $this->addInternalReference($this->curEntry, $dom[$key]['attribute']['id'], $this->page, $this->y);
+              // dump('addInternalReference'."|".$dom[$key]['attribute']['id']);
             }
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
@@ -3528,7 +3546,12 @@ class PMC_PDF extends TCPDF
               if($v != $v_n) {
                 $dom[$key]['value'] = $v_n;
                 $c = count($this->footnotes['collection']) + 1;
-                $footnoteRefTxt = "<span><sup>[{$c}]</sup>&#160;</span>";
+
+                $idfnt = 'idfnt';
+                $fntref = <<<EOD
+                  <a style="text-decoration:none" href="curEntry,idfnt"><sup>[{$c}]</sup>&#160;</a>
+                EOD;
+                $footnoteRefTxt = $fntref;
               }
 
               // if(($this->y + $this->footnoteheight + (2 * $this->getCellHeight($this->FontSize)) ) >= $this->PageBreakTrigger){
@@ -3629,6 +3652,12 @@ class PMC_PDF extends TCPDF
                       $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
                       $this->footnotes['staging']['startypos'][$this->page] = $ypos;
                       $this->footnotes['staging']['height'][$this->page][] = $hg;
+
+                      // $link_key = $this->references
+                      // dump($this->references,  $this->footnotes['collection'][$i]['id'][0]);
+
+                      // dump(array_search( $this->footnotes['collection'][$i]['id'][0], $this->references));
+                      // $this->footnote
                       $this->PageBreakTrigger -= $hg;
                       unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
                       $this->y = $yy;
@@ -3642,6 +3671,8 @@ class PMC_PDF extends TCPDF
             
             // footnote #1 writing footnoteRefTxt
             if(isset($footnoteRefTxt)){
+              $footnoteRefTxt = preg_replace("/curEntry/", $this->curEntry, $footnoteRefTxt);
+              $footnoteRefTxt = preg_replace("/idfnt/", end($this->footnotes['collection'])['id'][0], $footnoteRefTxt);
               $this->writeHTML($footnoteRefTxt,false);
               unset($footnoteRefTxt);
             }
@@ -3878,16 +3909,28 @@ class PMC_PDF extends TCPDF
 		unset($dom);
     
     // footnote #3 - print the footnote
+    // dump($this->footnotes, $this->references, $this->links);
     if(!empty($footnoteshtmlstrings)){
       $curPage = $this->page;
       foreach($this->footnotes['staging']['xobjects'] as $p => $xobjs){
         $this->setPage($p);
         $x1line = $this->lMargin + 1;
         $yline = $this->footnotes['staging']['startypos'][$p] - (2.645833); // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
-        // $yline = $this->footnotes['staging']['startypos'][$p] - $this->pagedim[$p]['lasth']/2;
         $this->Line($x1line, $yline, ($x1line + 50), $yline);
         foreach($xobjs as $i => $xobj){
           $this->printTemplate($xobj,0,$this->footnotes['staging']['startypos'][$p], $this->w);
+          
+          // untuk mengubah posisi 'y' dan menyesuaikan 'p'pada links footnotes
+          $collection_key = $this->footnotes['staging']['collectionRef'][$p][$i];
+          // $references = $this->footnotes['collection'][$collection_key];
+          // foreach($references['id'] as $in => $reference_id){
+          //   $this->links[$this->references[$reference_id]['link']]['y'] = $this->footnotes['staging']['startypos'][$p];
+          // }
+          $reference_id = $this->footnotes['collection'][$collection_key]['id'][0]; // [0] karena setiap id ($this->footnotes['collection'][$pagenum]['id']) berisi array karena nantinya agar text footnotes bisa di separate lebih dari 1 halaman
+          $this->links[$this->references[$reference_id]['link']]['y'] = $this->footnotes['staging']['startypos'][$p];
+          $this->links[$this->references[$reference_id]['link']]['p'] = $p;
+
+
           $this->footnotes['staging']['startypos'][$p] += $this->footnotes['staging']['height'][$p][$i];
         }
       }
