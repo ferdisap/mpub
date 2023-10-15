@@ -124,6 +124,8 @@ class DMC
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument , $tes = true);
     // $this->pdf->writeHTML($html, true, false, true, true,'J',true, null , $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
+    // $this->pdf->setPage(2);
+    // $this->pdf->Line(0,$this->pdf->getPageDimensions(2)['PageBreakTrigger'], 50, $this->pdf->getPageDimensions(2)['PageBreakTrigger']);
     // dd($this->pdf);
     // dump($this->pdf->footnotes);
   }

@@ -2833,11 +2833,15 @@ class PMC_PDF extends TCPDF
 						$this->y -= $yshift;
 					}
 				}
-				// $pbrk = $this->checkPageBreak($this->lasth);
-				$pbrk = $this->checkPageBreak($this->lasth * 2); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
+				$pbrk = $this->checkPageBreak($this->lasth);
+        // $this->Line(0, $this->y, 100, $this->y);
+				// $pbrk = $this->checkPageBreak($this->lasth * 1); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
 				$this->newline = false;
 				$startlinex = $this->x;
 				$startliney = $this->y;
+        // $startliney += $this->lasth;
+        // $this->Line(0,$startliney + $this->lasth, 100, $startliney + $this->lasth);
+        // $this->Line(0,$startliney, 100, $startliney);
 				if ($dom[$dom[$key]['parent']]['value'] == 'sup') {
 					$startliney -= ((0.3 * $this->FontSizePt) / $this->k);
 				} elseif ($dom[$dom[$key]['parent']]['value'] == 'sub') {
@@ -2896,6 +2900,7 @@ class PMC_PDF extends TCPDF
 
 					// get text indentation (if any)
 					if (isset($dom[$key]['text-indent']) AND $dom[$key]['block']) {
+            $this->checkPageBreak($this->lasth + (2.645833 * 2)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
 						$this->textindent = $dom[$key]['text-indent'];
 						$this->newline = true;
 					}
@@ -3268,6 +3273,11 @@ class PMC_PDF extends TCPDF
 				}
 			}
       elseif (strlen($dom[$key]['value']) > 0) {
+        // dump($this->y + $this->lasth + (2.9 * 2). "|". $dom[$key]['value']."|". $this->PageBreakTrigger);
+        $this->checkPageBreak($this->lasth + (2.645833 * 1)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
+        // $this->checkPageBreak($this->lasth*2); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
+
+
         // dump($key);
         // dump($dom[38]);
         // #2 untuk mencetak caption. Code ini berada di saat $key value = text
@@ -3885,6 +3895,26 @@ class PMC_PDF extends TCPDF
     };
 	}
 
+
+  public function AddPage($orientation='', $format='', $keepmargins=false, $tocpage=false) {
+		if ($this->inxobj) {
+			// we are inside an XObject template
+			return;
+		}
+		if (!isset($this->original_lMargin) OR $keepmargins) {
+			$this->original_lMargin = $this->lMargin;
+		}
+		if (!isset($this->original_rMargin) OR $keepmargins) {
+			$this->original_rMargin = $this->rMargin;
+		}
+		// terminate previous page
+    $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
+    $this->pagedim[$this->page]['lasth'] = ($this->lasth > 0 ? $this->lasth : 2 );
+		$this->endPage();
+		// start new page
+		$this->startPage($orientation, $format, $tocpage);
+	}
+
   /**
    * tambahanya hanya menambah tulisan intentionally left blank saja, tapi tidak jadi
 	 * Add page if needed.
@@ -3895,42 +3925,42 @@ class PMC_PDF extends TCPDF
 	 * @since 3.2.000 (2008-07-01)
 	 * @protected
 	 */
-	protected function checkPageBreak($h=0, $y=null, $addpage=true) {
-		if (TCPDF_STATIC::empty_string($y)) {
-			$y = $this->y;
-		}
-		$current_page = $this->page;
+	// protected function checkPageBreak($h=0, $y=null, $addpage=true) {
+	// 	if (TCPDF_STATIC::empty_string($y)) {
+	// 		$y = $this->y;
+	// 	}
+	// 	$current_page = $this->page;
 
-		if ((($y + $h) > $this->PageBreakTrigger) AND ($this->inPageBody()) AND ($this->AcceptPageBreak())) {
-			if ($addpage) {
-				//Automatic page break
-				$x = $this->x;
-				$this->AddPage($this->CurOrientation);        
-				$this->y = $this->tMargin;
-				$oldpage = $this->page - 1;
-        if(!empty($this->tes) AND $this->tes){
-          // dump($oldpage . "|" .$current_page. "|". $y, $this->PageBreakTrigger);
-        }
-				if ($this->rtl) {
-					if ($this->pagedim[$this->page]['orm'] != $this->pagedim[$oldpage]['orm']) {
-						$this->x = $x - ($this->pagedim[$this->page]['orm'] - $this->pagedim[$oldpage]['orm']);
-					} else {
-						$this->x = $x;
-					}
-				} else {
-					if ($this->pagedim[$this->page]['olm'] != $this->pagedim[$oldpage]['olm']) {
-						$this->x = $x + ($this->pagedim[$this->page]['olm'] - $this->pagedim[$oldpage]['olm']);
-					} else {
-						$this->x = $x;
-					}
-				}
-			}
-			return true;
-		}
-		if ($current_page != $this->page) {
-			// account for columns mode
-			return true;
-		}
-		return false;
-	}
+	// 	if ((($y + $h) > $this->PageBreakTrigger) AND ($this->inPageBody()) AND ($this->AcceptPageBreak())) {
+	// 		if ($addpage) {
+	// 			//Automatic page break
+	// 			$x = $this->x;
+	// 			$this->AddPage($this->CurOrientation);        
+	// 			$this->y = $this->tMargin;
+	// 			$oldpage = $this->page - 1;
+  //       if(!empty($this->tes) AND $this->tes){
+  //         // dump($oldpage . "|" .$current_page. "|". $y, $this->PageBreakTrigger);
+  //       }
+	// 			if ($this->rtl) {
+	// 				if ($this->pagedim[$this->page]['orm'] != $this->pagedim[$oldpage]['orm']) {
+	// 					$this->x = $x - ($this->pagedim[$this->page]['orm'] - $this->pagedim[$oldpage]['orm']);
+	// 				} else {
+	// 					$this->x = $x;
+	// 				}
+	// 			} else {
+	// 				if ($this->pagedim[$this->page]['olm'] != $this->pagedim[$oldpage]['olm']) {
+	// 					$this->x = $x + ($this->pagedim[$this->page]['olm'] - $this->pagedim[$oldpage]['olm']);
+	// 				} else {
+	// 					$this->x = $x;
+	// 				}
+	// 			}
+	// 		}
+	// 		return true;
+	// 	}
+	// 	if ($current_page != $this->page) {
+	// 		// account for columns mode
+	// 		return true;
+	// 	}
+	// 	return false;
+	// }
 }
