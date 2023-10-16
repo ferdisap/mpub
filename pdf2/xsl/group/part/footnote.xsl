@@ -27,9 +27,15 @@
   </xsl:template>
 
   <xsl:template match="footnoteRef">
+    <xsl:param name="internalRefId" select="@internalRefId"/>
     <a style="text-decoration:none">
-      <xsl:attribute name="href"><xsl:value-of select="$dmOwner"/>,<xsl:value-of select="@internalRefId"/></xsl:attribute>
-      <sup>footnote 4</sup>
+      <xsl:attribute name="href"><xsl:value-of select="$dmOwner"/>,<xsl:value-of select="$internalRefId"/></xsl:attribute>
+      <xsl:variable name="pos">
+        <xsl:for-each select="//footnote[@id = $internalRefId]">
+          <xsl:number/>
+        </xsl:for-each>
+      </xsl:variable>
+      <sup>[<xsl:value-of select="$pos"/>]</sup>
     </a>
   </xsl:template>
 

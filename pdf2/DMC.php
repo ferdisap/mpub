@@ -117,7 +117,7 @@ class DMC
 
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     $html = $xsltproc->transformToXml($this->DOMDocument);
-    $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // untuk menghilangkan space/enter/multispace diawal setelah tag >
+    $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
     $html = preg_replace("/[\n\r\s]+(?=<.+isfootnote)/",'[?f]',$html); // untuk menghilangkan space ketika didepan ada footnote
     // dd($html);
     // dd($html);
