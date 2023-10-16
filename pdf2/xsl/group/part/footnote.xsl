@@ -30,7 +30,6 @@
     <a style="text-decoration:none">
       <xsl:attribute name="href"><xsl:value-of select="$dmOwner"/>,<xsl:value-of select="@internalRefId"/></xsl:attribute>
       <sup>footnote 4</sup>
-      <!-- <sup><xsl:value-of select="$dmOwner"/></sup> -->
     </a>
   </xsl:template>
 
