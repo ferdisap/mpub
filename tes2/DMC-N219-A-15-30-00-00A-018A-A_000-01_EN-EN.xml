@@ -66,16 +66,380 @@
   <content>
     <description>
       <levelledPara id="lvlp-001">
-        <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title>
-        <para id="para-001">
-          Operators are encouraged to develop their own 'quick reference' normal checklists 
-          based on the procedures provided in this manual. The sequence of individual checklist 
+        <!-- <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title> -->
+        <title>Try Caption</title>
+        <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Labore, voluptas, mollitia, fugit ullam delectus at sit necessitatibus reiciendis esse aspernatur sequi quae doloremque laborum maxime? Rem quo eaque natus expedita.
+        </para>
+        <para>
+          Lorem ipsum 
+          <subScript>tes</subScript> dolor sit amet, <emphasis emphasisType="em01">tes emphasis</emphasis> consectetur adipisicing elit. Natus nesciunt 
+          <superScript>foo</superScript> sunt praesentium nam. Similique odio sit <emphasis emphasisType="em01">tes emphasis</emphasis> ipsum saepe at ullam deserunt 
+          tessaja
+          <footnote changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
+            <!-- <para>tes 1 foot note.</para> -->
+            <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">tes Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti, ad accusantium. 
+              Lorem ipssum dolor sit amet consectetur adipisicing elit. Cupiditate porro rerum quo expedita volup tates quas vitae natus, rem quaerat nobis eum fuga doloremque soluta eaque maiores possimus! Quos, nobis nemo.
+            </para>
+            <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">Ferdi A</para>
+          </footnote>
+          <!-- Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consectetur tenetur vero alias sunt cumque perspiciatis blanditiis maiores! Eius numquam, voluptate nam aliquam iusto recusandae nisi molestias, autem commodi, optio facere? -->
+          <!-- Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus, dolores incidunt error quas necessitatibus quisquam itaque odit placeat cum obcaecati, dolorum voluptate provident vel ipsum consequuntur doloribus minus, autem quis reiciendis culpa distinctio? Porro eligendi quo vitae sit qui, ducimus illum molestias vero quasi sed earum culpa, enim sunt dolor laboriosam sint? Nostrum optio dolores qui dolorum perferendis voluptatum, reprehenderit iste corrupti? Repellendus aspernatur dignissimos ipsam ipsum incidunt accusantium expedita recusandae hic, officiis commodi, animi debitis, dolore corporis! Doloremque eius debitis tempore sunt ducimus sequi laborum alias quisquam voluptatibus inventore suscipit nisi cum, iusto asperiores quibusdam dolorem voluptate veniam iste explicabo earum odio placeat voluptatum ad dicta. Nostrum necessitatibus vel, aliquid officia pariatur totam ducimus error similique voluptates, ipsam natus vero esse laborum voluptas sapiente ut libero perferendis porro. Temporibus autem cumque nostrum. Facilis adipisci voluptatum officia saepe, impedit autem vitae id incidunt sint? Quasi architecto pariatur voluptatum soluta animi dolor velit modi eligendi, consequuntur, quam minima voluptates aut qui! Obcaecati porro voluptate aperiam ratione. Dolore alias aut dignissimos, minima delectus distinctio atque optio quam aliquam at, molestias amet nam! Aliquam vitae sit ipsum voluptates eaque esse modi labore cum nobis sunt deserunt, fugiat dolorem ea minus iure totam sed nemo doloribus. Excepturi doloribus consequuntur, totam voluptatibus tenetur voluptate eligendi modi, sequi voluptatem officia incidunt neque dolor enim exercitationem assumenda! Accusamus non tempora deleniti ratione temporibus iste numquam nihil assumenda vero, voluptate laudantium recusandae necessitatibus nisi rerum vitae cupiditate officia. Nihil voluptates cumque sit quaerat, facere, officiis eligendi qui esse velit dicta nulla? Deserunt, recusandae necessitatibus nam repellat vitae saepe laboriosam nostrum perferendis eligendi quos esse expedita, excepturi, praesentium facilis atque. Fugiat ex ut eum! Commodi nemo, libero perferendis amet itaque illum, aut modi vero iure suscipit aliquam, fugiat voluptate dolorum sit id placeat nostrum asperiores ducimus optio corrupti vel est nobis illo! Voluptatibus autem, tempore praesentium saepe architecto laudantium soluta accusantium excepturi non aut nisi cum at placeat facere fugit vitae ex obcaecati esse, illum ducimus? Delectus excepturi optio vitae cumque quaerat minus neque nesciunt obcaecati doloribus nam? Cumque eligendi sunt sint quia hic expedita facilis laborum totam in cupiditate dolor atque, quo excepturi iusto distinctio consequuntur ipsum quibusdam? Velit voluptates, reiciendis quaerat totam alias fugit cupiditate quia a sit natus fugiat saepe delectus maiores, perferendis molestias! Ducimus fuga harum molestiae minus, doloremque accusamus sint eum ipsum deleniti commodi, minima exercitationem atque? Hic labore animi dolore nisi quasi, voluptas ullam unde dolores ea iusto. Cupiditate neque possimus, consectetur eligendi vero, maiores consequuntur repellendus natus quae harum optio omnis magni corrupti illo provident quo laboriosam ea voluptate numquam voluptatibus! Tempore dolorem praesentium eos doloribus nobis. Non nobis debitis quia dolores quo impedit dolor ullam neque vel iusto fugit tenetur iste quisquam placeat quaerat necessitatibus distinctio, beatae excepturi voluptas, ipsa laudantium similique veritatis aliquam aperiam! Et reiciendis provident dolores culpa quae delectus ad cumque magnam alias minus. Impedit, quo laboriosam. Eius aliquam voluptate enim consectetur, quos ipsum distinctio molestias facilis ad in laborum neque dolore commodi soluta tenetur hic? Recusandae, quia? -->
+          Lorem30, ipsum dolor sit amet consectetur adipisicing elit. Et necessitatibus, nulla beatae recusandae, voluptate qui odit, provident iste suscipit natus facilis quidem deleniti doloremque at ad ullam hic labore numquam.
+          <footnote>
+            <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">
+            tes 2 foot note. 
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illum eligendi cumque saepe atque velit
+            iure sed adipisci qui natus aliquid!
+            </para>
+          </footnote>
+          quo aut dolor doloremque distinctio corporis accusantium voluptate tempora provident fugiat! 
+          Amet, numquam, blanditiis vel illum voluptates possimus vero consequatur reprehenderit quo, sunt sequi non recusandae perspiciatis totam?          
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Id dolore a blanditiis debitis explicabo! Harum dignissimos architecto dolor tempora sit id magnam minima provident molestias assumenda. Dolorum provident odio corporis! Illum dolore rem, repellendus fugiat quae voluptas quam reiciendis eaque fuga consectetur nesciunt suscipit. Aspernatur adipisci quod officiis voluptate, non, magnam explicabo tempora expedita quae voluptates similique iure, in minus animi delectus quibusdam! Rerum voluptate provident enim, quibusdam voluptas odit asperiores veniam quis distinctio eos doloribus iusto? Nihil illum nam doloremque dolorum iure, totam quo? Alias, mollitia. Perspiciatis a vero repellendus, accusamus tempore eos ea unde at facere ad dolores consequatur ipsum error hic veniam modi obcaecati, perferendis veritatis deleniti repudiandae provident? Cupiditate quae ducimus eaque obcaecati? Odio aperiam consequatur veniam odit quam consequuntur unde ex amet maxime porro. Nobis perspiciatis sit debitis, deleniti necessitatibus nisi, molestiae neque veritatis, at cumque sapiente odit fugiat eos? Culpa atque ratione ducimus reiciendis assumenda eveniet molestiae perspiciatis, illo aliquam iste tempora iure, sapiente facilis vero provident et itaque. Incidunt ipsum soluta illum quos doloremque suscipit id voluptas quidem ab doloribus at nesciunt commodi vitae nisi itaque, dolores ipsa? Ipsum inventore quam debitis maiores quas repudiandae sed? Magni accusamus vel dolorum assumenda! Dolores, consectetur dicta. Suscipit eum impedit quidem quos! Incidunt, neque ex doloremque voluptatem laboriosam vero cumque necessitatibus facilis, obcaecati eaque libero similique itaque, totam id rem at non atque aliquid natus maxime. Ullam nobis, nihil modi veritatis deserunt sapiente libero consequuntur quam fugiat officiis! Cupiditate, fugit! Amet illo laborum culpa! Optio 
+          ratione porro nesciunt laboriosam ducimus earum illo eum alias animi tenetur, inventore iusto, placeat deserunt est dolorem accusamus nemo excepturi 
+          Lorem20, ipsum dolor sit amet consectetur adipisicing elit. Cum quisquam accusantium nostrum quae exercitationem, ipsum alias in asperiores officiis ducimus.
+          <footnote>
+            <para>tes 3 foot note.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate porro rerum quo expedita volup tates quas vitae natus, rem quaerat nobis eum fuga doloremque soluta eaque maiores possimus! Quos, nobis nemo.
+            </para>
+          </footnote>
+          quibusdam itaque commodisa 
+          <footnote id="fnt-004">
+            <para>tes 4 foot note.
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Qui ex quasi hic quidem pariatur laboriosam esse maiores. Rerum omnis perspiciatis aperiam eaque dolores! Incidunt repellendus laboriosam aspernatur quisquam ducimus impedit.
+            </para>
+          </footnote>
+          harum aliquid. Sapiente, fuga 
+           asperiores. 
+          <!-- Tes apa saja yang penting footnote jalan dengan baik. -->
+        </para>
+        <!-- <para>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi consequatur, ipsam quidem numquam ad dolorem accusamus recusandae beatae officia porro repudiandae adipisci nesciunt vitae, sequi laborum. Natus tenetur veritatis autem.
+          Lorem ipsum dolor sit amet.
+        </para> -->
+        <figure changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
+          <title changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">Large Aircraft</title>            
+          <graphic infoEntityIdent="ICN-0001Z-00002-001-05.jpg" reproductionHeight="140mm"/>
+        </figure>
+        <para>
+          Cupiditate porro voluptates consectetur
+          <footnote>
+            <para>tes 5 foot note.</para>
+          </footnote>
+          odio earum ea accusamus
+          <footnote>
+            <para>tes 6 foot note.</para>
+          </footnote>
+          deserunt dicta repellendus, hic ducimus at commodi eum omnis alias, 
+           <footnote>
+            <para>tes 7 foot note.</para>
+          </footnote>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem necessitatibus consequuntur nam pariatur deleniti quidem corporis placeat fugiat, totam sunt rem facilis quis aspernatur non reiciendis. Maiores consequuntur a quisquam. Vitae aspernatur laudantium voluptatibus provident ea eius ullam ipsa excepturi praesentium cupiditate. Nesciunt suscipit vel labore obcaecati tenetur aut, quidem velit recusandae mollitia ratione sint porro molestiae eligendi fugit quod nihil cupiditate adipisci. Officia accusamus facere praesentium. Exercitationem aliquam ipsa natus nulla nesciunt ullam aliquid dolore voluptas est pariatur eaque quaerat unde necessitatibus non reiciendis impedit iure, porro inventore cumque. Omnis debitis eos nihil, fugit adipisci aliquid deserunt rem maiores dolores similique ad atque expedita. Inventore animi totam asperiores quidem sint? Harum vel rerum sit adipisci similique vero veritatis error ipsum ipsam, repellat iste quaerat ipsa, modi officiis tempora! Nobis, sint? Voluptate vel esse magni magnam asperiores aperiam doloremque quod culpa quisquam sit sint eos ab aliquid cum ipsa placeat eum commodi, odit officiis illo explicabo corrupti. Aut fugiat similique ullam voluptatibus maxime error incidunt modi. Saepe dolore ut dicta dignissimos corporis, voluptas, fugit, deleniti alias voluptatibus iste sit hic at exercitationem quos architecto eum ipsa nesciunt ea excepturi vitae quod harum asperiores obcaecati repellat? Earum optio perferendis placeat dolores quisquam rem laudantium voluptate inventore in ea? Reprehenderit sit repudiandae exercitationem voluptate illum amet aperiam neque, veritatis blanditiis nam debitis minus adipisci ipsam eveniet eaque porro magni. Saepe, labore voluptas quam eos assumenda mollitia, tenetur maiores laboriosam delectus quod earum blanditiis quaerat. Iusto incidunt enim aliquam debitis quas, commodi doloribus animi id, corrupti nisi itaque hic atque ducimus. Nemo provident deleniti, hic voluptatum necessitatibus suscipit aliquid porro illo sint animi rerum neque quam repellat voluptatem ab inventore. Totam culpa hic mollitia consequuntur perferendis illum dolore accusantium. Animi, iusto, aliquid, illo culpa obcaecati architecto fuga hic nihil minus iure placeat commodi ipsum perferendis in enim? Ea eius, officia tenetur totam provident qui eligendi adipisci laudantium doloribus assumenda vel tempora ducimus nesciunt, cumque consequatur placeat facere. Labore alias in impedit odio voluptatum aspernatur aut quidem obcaecati tempore nulla. Rem omnis unde incidunt velit inventore quisquam repellat! Sequi ullam vitae incidunt quos earum totam numquam blanditiis, unde nemo culpa laudantium sapiente voluptatibus vel rerum ipsam quaerat sint reiciendis. Aliquid vitae, atque possimus sed necessitatibus a fugiat inventore, molestias voluptatum omnis quidem dignissimos magnam minus nesciunt. Adipisci tenetur ad maxime harum. At facere, aliquam cumque error, ipsam quaerat, illum perferendis laboriosam sequi molestiae in!
+          ipsum dolor sit amet consectetur adipisicing elit. Exercitationem suscipit nesciunt nihil quasi consectetur doloremque temporibus libero porro, maxime rem cum id recusandae voluptatum soluta minima ea repudiandae eum! Nostrum? 
+        </para>
+        <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Et, dolor at fuga ad incidunt porro doloremque vero dignissimos delectus eveniet quam blanditiis voluptatibus nostrum sunt vel rerum amet repellendus est repellat quasi alias hic consequuntur! Eos, ipsam. Provident, autem explicabo ratione quae harum, iusto temporibus quam pariatur libero animi optio ea cum quas est. Corrupti, aperiam ex eveniet, reiciendis totam, quis quasi eum sunt perferendis distinctio voluptate iusto nobis tempora. Adipisci, error blanditiis quibusdam non est, aliquam voluptate qui excepturi provident autem ipsa repudiandae expedita cupiditate fuga quos dolorum, harum eveniet officiis laboriosam et reprehenderit! Voluptatibus provident omnis, cum odit veritatis dolor facilis libero molestiae deleniti voluptates tenetur sequi corrupti beatae laboriosam saepe voluptatem neque doloremque porro aspernatur a officia ipsa ea. Exercitationem, deleniti! Deserunt fugit saepe omnis fugiat aperiam at, maiores nisi, voluptatum eligendi impedit assumenda aut tempore optio veritatis commodi natus voluptatibus quo, quasi deleniti minus! Fugiat eaque pariatur error fugit aspernatur aperiam magnam nobis adipisci officiis. Cumque molestias omnis debitis quia necessitatibus atque corrupti iste laborum sapiente voluptate? Laborum numquam, reprehenderit ducimus distinctio doloribus inventore porro eveniet quia culpa mollitia voluptas molestiae repellendus delectus voluptate explicabo! Quam voluptatum repellat ipsum veritatis ullam, eaque saepe sed laborum deleniti maiores odit quidem voluptate sequi aspernatur nemo aperiam necessitatibus minima ab quae nulla ea placeat iusto! Dolor modi quae inventore ab tempora alias culpa maxime officia ipsa consectetur illo libero eius repellendus suscipit, harum voluptate enim aperiam, animi, ad ducimus unde. Quos, laborum eligendi? Ad illo esse ipsam explicabo vel ipsum, itaque praesentium perferendis culpa provident quod similique. Dolor saepe iste repellat eius expedita molestiae earum dolorum suscipit, laborum exercitationem deleniti, consectetur dolore accusamus esse, placeat reprehenderit. Quos quibusdam eos, debitis impedit, ea, nam expedita voluptas nihil repellat dolore illum perspiciatis magnam doloremque? Inventore sint dolorem quaerat, iste possimus repellat sequi impedit iure placeat minus ad repellendus vel nostrum expedita enim tenetur beatae minima cum debitis. Est omnis itaque atque accusamus neque provident voluptatibus esse, incidunt porro repellat in! Facere rerum voluptate inventore possimus non, quasi rem odit pariatur iusto temporibus nisi corporis est exercitationem nam quae explicabo saepe harum dolore! Totam hic reiciendis sequi commodi itaque, consectetur, officiis dolore repellendus in omnis obcaecati natus id qui quo optio, quasi rerum tempora libero delectus quidem beatae? Vitae, consectetur ipsa? Maxime voluptas aliquam delectus veniam ullam harum ipsum dolore id fuga quidem obcaecati assumenda dolorem, corporis fugit voluptate illo ad esse doloribus ea. Earum, perferendis voluptas. Perferendis molestias deleniti, soluta minima sed dolore! Fugit ratione sit quibusdam distinctio dolorem aperiam eveniet exercitationem, officia officiis necessitatibus sapiente a dicta aspernatur doloremque ducimus laudantium iure suscipit vero. Reprehenderit minus quia ipsa id vitae aliquid itaque, voluptates ea cum aliquam ratione consequuntur deleniti? Dolores alias quod distinctio debitis inventore eveniet ipsam pariatur non, quos asperiores quae sed adipisci voluptatem impedit? Tempora rem commodi exercitationem eum facilis quas perspiciatis reiciendis architecto! Odio voluptatem aspernatur, ipsa ab laudantium dolorum tempora accusantium, accusamus quibusdam iure reiciendis distinctio, tenetur cumque veritatis rerum ut earum harum nostrum exercitationem saepe?
+        </para>
+        <!-- <para id="para-001">
+          Operators are encouraged to develop their own 'quick reference' normal checklists based on the procedures provided in this manual. The sequence of individual checklist 
           items should <superScript> sub sub</superScript> bar <emphasis emphasisType="em01">emphasis-bold</emphasis> not be changed when operator-specific quick reference checklists are 
           developed. For example, turning off the <changeInline changeType="add">autofeather</changeInline> system is listed as the last item
           in the After Takeoff checklist, and it should remain the last item in any operator-specific
           'quick reference' After Takeoff checklist.
+        </para> -->
+        <!-- <table >
+          <title changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">List of Consumable Parts</title>
+          <tgroup cols="3" rowsep="1" colsep="1">
+            <colspec colname="col1"/>
+            <colspec colname="col2"/>
+            <colspec colname="col3" colwidth="25mm"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-2" />
+            <spanspec namest="col1" nameend="col3" spanname="col1-3" />
+            <thead>
+              <row>
+                <entry><para>Row THEAD Entry 1</para></entry>
+                <entry><para>Row THEAD Entry 2</para></entry>
+                <entry colname="col3"><para>Row THEAD Entry 3</para></entry>
+              </row>
+            </thead>            
+            <tfoot>
+              <row>
+                <entry spanname="col1-3"><para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, voluptatibus.</para></entry>
+              </row>            
+            </tfoot>
+            <tbody>
+              <row>
+                <entry spanname="col1-2" morerows="2"><para>Row 1 Entry 1</para></entry>
+                <entry colname="col3"><para>Row 1 Entry 3</para></entry>
+              </row>
+              <row>
+                <entry colname="3"><para>Row 2 Entry 3</para></entry>
+              </row>
+              <row>
+                <entry colname="col1"><para>Row 3 Entry 1</para></entry>
+                <entry colname="col2"><para>Row 3 Entry 2</para></entry>
+                <entry colname="col3"><para>Row 3 Entry 3</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table> -->
+
+        <!-- <para>
+        This is an caption example&#160;
+          <caption captionHeight="10mm" color="co85" captionWidth="25mm">
+            <captionLine>ENG FIRE</captionLine>
+          </caption>
+        &#160;it is the example of caption.
+        </para> -->
+        <!-- <para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex, repellat?</para> -->
+        <!-- <para>
+          <captionGroup cols="2">
+            <captionBody>
+              <captionRow>
+                <captionEntry alignCaptionEntry="left" valign="middle">
+                  <caption color="co83" captionWidth="30mm" captionHeight="20mm">
+                    <captionLine>FIRE - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+                <captionEntry alignCaptionEntry="center" valign="middle">
+                  <caption color="co83" captionWidth="30mm" captionHeight="40mm">
+                    <captionLine>LOSS - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry alignCaptionEntry="center" valign="middle">
+                  <caption color="co83" captionWidth="50mm" captionHeight="30mm">
+                    <captionLine>LOSS - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+                <captionEntry alignCaptionEntry="center" valign="bottom">
+                  <caption color="co83" captionWidth="50mm">
+                    <captionLine>LOSS - ENGINE</captionLine>
+                  </caption>
+                </captionEntry>
+              </captionRow>
+            </captionBody>
+          </captionGroup>
+        </para> -->
+        <para>
+          <!-- <captionGroup id="cap-001" cols="5" colsep="1" rowsep="1">
+            <colspec colname="col1" colwidth="20mm"/>
+            <colspec colname="col2" colwidth="30mm"/>
+            <colspec colname="col3" colwidth="15mm"/>
+            <colspec colname="col4" colwidth="20mm"/>
+            <colspec colname="col5"/>
+
+            <spanspec namest="col2" nameend="col3" spanname="col2-3"/>
+            <spanspec namest="col1" nameend="col4" spanname="all4"/> -->
+
+            <!-- 04. BERHASIL (colwidth) -->
+            <!-- Hanya perlu mencantumkan colname di setiap captionEntry sesuai dengan //colspec/@colname -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry colname="col1">
+                  <captionText>FOO entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col2">
+                  <captionText>FOO entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+
+            <!-- 03. BERHASIL (rowspan)-->
+            <!-- col2: row1 is spanded until row2 -->
+            <!-- tidak perlu element colspec atau spanspec -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry>
+                  <captionText>FOO-BAR entry 2</captionText>
+                </captionEntry>
+                <captionEntry morerows="2">
+                  <caption captionHeight="10mm" color="co85" captionWidth="21mm">
+                    <captionLine>ENG FIRE</captionLine>
+                  </caption>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col3">
+                  <captionText>BAR entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+
+            <!-- DIBAWAH INI adala 2 contoh untuk colspan-->
+            <!-- 02. BERHASIL total: 5 column, 3 rows-->
+            <!-- row1: col2 is spanded until col3 -->
+            <!-- row2: col1 is spanded until col4 -->
+            <!-- row3: tidak di spanded -->
+            <!-- HARUS PAKAI attribute colname jika mau colspan -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry colname="col1">
+                  <captionText>FOO entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col2" spanname="col2-3">
+                  <captionText>FOO entry 2</captionText>
+                </captionEntry>
+                <captionEntry colname="col4">
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry colname="col5">
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry colname="col1" spanname="all4">
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry colname="col5">
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+            <!-- 01. BERHASIL total: 5 column, 3 rows-->
+            <!-- row1: col2 is spanded until col3 -->
+            <!-- row2: col1 is spanded until col4 -->
+            <!-- TIDAK PERLU attribute colname untuk colspan -->
+            <!-- <captionBody>
+              <captionRow>
+                <captionEntry>
+                  <captionText>FOO entry 1</captionText>
+                </captionEntry>
+                <captionEntry namest="col2" nameend="col3">
+                  <captionText>FOO entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>FOO entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry namest="col1" nameend="col4">
+                  <captionText>BAR entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>BAR entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+              <captionRow>
+                <captionEntry>
+                  <captionText>ZAZ entry 1</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 2</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 3</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 4</captionText>
+                </captionEntry>
+                <captionEntry>
+                  <captionText>ZAZ entry 5</captionText>
+                </captionEntry>
+              </captionRow>
+            </captionBody> -->
+          <!-- </captionGroup> -->
         </para>
-        <para>Refer to&#160;
+        <!-- <para>Refer to&#160;
           <dmRef referredFragment="lvlp-001">
             <dmRefIdent>
               <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
@@ -90,8 +454,8 @@
               </dmTitle>
             </dmRefAddressItems>
           </dmRef>
-        </para>
-        <para>Refer to&#160;
+        </para> -->
+        <!-- <para>Refer to&#160;
           <pmRef>
             <pmRefIdent>
               <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
@@ -103,8 +467,8 @@
               <pubMedia pubMediaType="PDF" pubMediaCode="" mediaLocation="xsl/" />
             </pmRefAddressItems>
           </pmRef>
-        </para>
-        <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
+        </para> -->
+        <!-- <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore baz?
           <randomList>
             <listItem>
               <para>Listitem 1 Lorem <emphasis emphasisType="em01">ipsum</emphasis> dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. dolor sit amet. dolor sit amet. dolor sit amet. dolor sit. </para>
@@ -121,18 +485,18 @@
               <para>Listitem 3 Lorem ipsum dolor sit amet.</para>
             </listItem>
           </randomList>
-        </para>
-        <para>
+        </para> -->
+        <!-- <para>
           The normal operating procedures in this section comply with the requirements of CASR Part 23.
-        </para>
-        <para>
+        </para> -->
+        <!-- <para>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed nisi illum quisquam, ex iste a nostrum rerum alias corrupti itaque eius assumenda sapiente sequi magni dignissimos praesentium aut fugiat earum aspernatur minus ipsum. Cupiditate adipisci est officiis consequuntur maiores magni, veniam distinctio iure alias voluptatibus doloribus aperiam, odit quis harum aliquam voluptatem qui sint ducimus? Necessitatibus alias dignissimos commodi consequuntur iusto, nulla mollitia quisquam nesciunt asperiores laudantium cumque ex beatae odio inventore odit aliquid esse corrupti animi placeat cupiditate repellat! Amet, nemo! Error consequatur illo repellat facilis sapiente praesentium officiis soluta iure repudiandae eius impedit autem voluptatem quidem vitae, necessitatibus dolorem corporis dolores fugiat, quibusdam suscipit totam nihil esse aliquam. Eligendi voluptatum officiis veniam temporibus perspiciatis rerum tenetur magni dolore, ut consequatur facere vitae similique, eum modi aperiam assumenda consequuntur deserunt laboriosam eveniet laudantium pariatur, distinctio aspernatur illo iure? Eaque possimus non dolores nulla minus? Illo, illum minima ullam facere mollitia incidunt obcaecati! Officiis sint iste odit facere eum molestiae eos aperiam? Ut, repellat iste numquam cumque voluptatum laudantium, quo a quaerat expedita ad in soluta totam quibusdam excepturi quasi pariatur adipisci, perspiciatis dolorum saepe consequuntur illo repellendus minus tempore quod! Quos dignissimos voluptas ut aliquam dolor possimus ipsa eveniet quibusdam doloribus odio blanditiis porro voluptatum laboriosam voluptate eius assumenda excepturi quam qui nihil quidem dolorem, repellat sed! Sed eos sint impedit expedita id quaerat mollitia nesciunt, adipisci placeat, alias architecto esse vero aut dolorem accusamus maiores praesentium dignissimos iste hic. Laboriosam beatae praesentium ex nulla a incidunt quia porro sint assumenda alias natus officiis, magni, pariatur veritatis, quos nemo soluta ipsa distinctio deleniti voluptates excepturi tempore voluptatem nobis consequatur. Similique ut ex quam eius labore deserunt necessitatibus, consequuntur, nisi incidunt temporibus, nesciunt ipsa rerum. Quia voluptates laborum ad officiis. Molestias aliquid id quaerat quo impedit fugiat, repudiandae a facilis corrupti at, excepturi ipsum? Nobis modi assumenda deleniti quae, incidunt blanditiis, vel dignissimos voluptatem sapiente necessitatibus quas explicabo exercitationem, pariatur ipsam! Et rem eos tenetur est voluptates quod cum id quisquam sint. At harum consequuntur perferendis dolor? Iusto veniam soluta laborum quo temporibus nesciunt sequi fuga iure aliquam sed consequuntur recusandae mollitia, eligendi deserunt impedit odit eius incidunt distinctio consectetur. Similique fuga sint beatae laudantium molestias eveniet sequi magnam blanditiis corporis nostrum alias, quasi veritatis ratione laboriosam quisquam itaque illum, molestiae reiciendis eius assumenda ex. Deleniti sequi commodi quod blanditiis maxime
-        </para>
-        <levelledPara>
+        </para> -->
+        <!-- <levelledPara>
           <title>Intro tes 1</title>
           <para>tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore?</para>
-        </levelledPara>
-        <levelledPara changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">
+        </levelledPara> -->
+        <!-- <levelledPara changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">
           <title>Intro tes 2</title>
           <para>tes1 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore bar?</para>
           <para>tes2 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore bar?</para>
@@ -141,9 +505,9 @@
             <title>Intro tes 21</title>
             <para>21 tes Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa perspiciatis cum, sunt similique consectetur velit dolorum, dicta blanditiis aspernatur error quasi aut, rerum officiis ut in ad eum fugiat ratione tenetur dolore dolor numquam placeat sint quisquam. Rerum ex consequatur eaque quo quidem deserunt beatae deleniti amet corporis veniam! Voluptatum doloribus debitis voluptate voluptatem nulla non excepturi rem, consectetur eveniet odio sapiente recusandae, ducimus cum doloremque unde, id sequi veniam! Fugiat porro soluta enim unde? Reiciendis eligendi praesentium laborum saepe expedita laboriosam illo impedit libero iure iusto cupiditate quod quis consequuntur sequi dolor dolorum, itaque enim accusamus incidunt! Ducimus, inventore fooxx?</para>
           </levelledPara>
-        </levelledPara>
-      </levelledPara>
-      <!-- <levelledPara>
+        </levelledPara> -->
+      </levelledPara> 
+      <levelledPara>
         <title>Scope</title>
         <para>
           This section provides normal operating procedures. Normal procedures are used 
@@ -161,7 +525,8 @@
         <para>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, repellat, aut amet, impedit ab perferendis omnis rerum mollitia dolores esse sint autem dolor natus adipisci nihil! Quidem, ipsam accusantium dicta recusandae sunt quae quibusdam vero ipsum consequuntur expedita dolorem suscipit sapiente provident obcaecati laudantium ullam vitae ex a, dolores totam ipsa cum illo. Error autem maiores veniam cupiditate sunt commodi! Enim nemo veritatis libero modi minima reprehenderit distinctio id quo, nulla sit! Debitis voluptatum molestias dolorum, et praesentium commodi error aspernatur aliquid! Mollitia assumenda ipsam labore facilis reiciendis accusantium architecto? Aliquam quibusdam deleniti fugiat ipsa ab officiis quo amet praesentium?
         </para>
-      </levelledPara> -->
+        <para>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla temporibus odit blanditiis veritatis odio eum iusto numquam. Eius vel officiis odio harum porro veniam nesciunt quis, in perspiciatis cum iste esse earum nam, repellendus est at possimus eos vitae maxime ipsa? Architecto cum repudiandae maxime minus? Quam, vero error hic quod culpa distinctio quae quo praesentium rerum sunt et alias? Aperiam corrupti odio minima, modi vitae quod labore nulla amet cupiditate, ea officia. Dolores assumenda debitis libero laborum quas alias aut necessitatibus. Rerum aperiam aut, recusandae tempore esse beatae repellendus doloribus maxime blanditiis incidunt non voluptatem voluptates nesciunt aliquid nobis omnis numquam corrupti similique deleniti. Repellat nemo assumenda est quisquam quas provident obcaecati animi hic fuga! Corporis repellat praesentium ad quaerat ut modi numquam vel assumenda itaque facilis laudantium cupiditate tempora delectus, impedit officia quod sunt quos, vitae nam voluptatem. Facere velit dolorum officia magni excepturi? Eos, fuga? Cumque, optio? Optio odit voluptatem unde iure fugiat quaerat magnam illum quam rerum. Enim pariatur aliquam esse, incidunt, corrupti natus sed dolores sunt accusantium repellendus quis ut laboriosam quibusdam, expedita excepturi eligendi nihil rem beatae consequatur dolorem. Libero veritatis velit recusandae, ad veniam, atque omnis incidunt asperiores magnam sint eveniet qui sit vel soluta culpa tempora enim fuga numquam nulla laudantium molestiae blanditiis! Libero, qui. Officia ea dolores, obcaecati excepturi cupiditate reiciendis modi. Deleniti aut velit beatae dolor et error quas. Magni sapiente deleniti consectetur, dignissimos pariatur nemo ab minus aliquid nostrum, excepturi officia hic vel enim vitae! Facere placeat fugiat natus praesentium similique soluta sequi aliquam! Doloremque voluptatum at similique? Accusantium assumenda iure, vitae accusamus laboriosam nesciunt pariatur cumque iusto. Atque rerum eum, animi alias, facere porro et, molestias esse blanditiis dicta ipsa! Repellat a eligendi expedita ea. Consequuntur assumenda dignissimos esse, voluptatem, aut odio atque enim iste aliquid animi nam perspiciatis velit similique exercitationem. Officiis rem blanditiis odio minima ex doloribus, molestiae alias eligendi necessitatibus quae quam nostrum iste voluptatum natus assumenda numquam maiores tempora hic consequuntur illum at est doloremque quos? Ab adipisci accusantium molestias deleniti recusandae repellat, expedita in cumque tempore id. Aut fugit unde, veritatis recusandae corrupti eius ut totam consequatur necessitatibus quasi laudantium quas tempore voluptatum asperiores, voluptate nam minus! Enim quis rerum consequatur. Voluptates eum delectus ad. Unde quos ipsam eius rerum minus, maxime quas porro suscipit quibusdam molestiae dolorem facere molestias iusto voluptate vitae? Laboriosam sit ab expedita. Totam eligendi expedita ad ullam porro obcaecati facere odio repudiandae excepturi sunt quis molestias perferendis reprehenderit pariatur non facilis vero ex quibusdam, sequi unde ipsa veritatis? Eum voluptas quia dignissimos officiis fugiat. Distinctio voluptate ipsa fugit fugiat ex, laboriosam officiis explicabo harum officia? Aliquid quibusdam quae perspiciatis pariatur! Molestiae saepe obcaecati veritatis error minima laudantium fugit voluptatum rerum voluptates officia veniam culpa possimus numquam, cum sit quis! Totam vitae sunt illo. Tempore, hic perferendis ipsam perspiciatis vero quas laborum eveniet, numquam quasi esse temporibus omnis aspernatur earum est possimus dicta. Doloremque quae nulla fuga obcaecati explicabo recusandae, officiis similique eligendi beatae? Fugiat nostrum vel corrupti ratione?</para>
+      </levelledPara>
       <levelledPara id="lvlp-002">
         <title>Para lvlp-002</title>
         <para>
@@ -177,6 +542,8 @@
           or navigation equipment, or operation of safety systems such as TAWS, TCAS, 
           weather radar, and so forth <internalRef internalRefId="para-001">go to para-001</internalRef>.
         </para>
+
+        <para> see footnote <footnoteRef internalRefId="fnt-004"/></para>
       </levelledPara>
     </description>
   </content>

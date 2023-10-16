@@ -97,6 +97,7 @@ class DMC
     $xsl = CSDB::importDocument(__DIR__."./xsl/descript.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
+    $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];
     $xsltproc->setParameter('',"padding_levelPara_1", $padding_levelPara[0]);
@@ -116,10 +117,17 @@ class DMC
 
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     $html = $xsltproc->transformToXml($this->DOMDocument);
-    
-    $html = preg_replace("/[\r\n]|\s{2,}/",'',$html);
-    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $tes = true);
+    $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // untuk menghilangkan space/enter/multispace diawal setelah tag >
+    $html = preg_replace("/[\n\r\s]+(?=<.+isfootnote)/",'[?f]',$html); // untuk menghilangkan space ketika didepan ada footnote
+    // dd($html);
+    // dd($html);
+    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument , $tes = true);
+    // $this->pdf->writeHTML($html, true, false, true, true,'J',true, null , $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
+    // $this->pdf->setPage(2);
+    // $this->pdf->Line(0,$this->pdf->getPageDimensions(2)['PageBreakTrigger'], 50, $this->pdf->getPageDimensions(2)['PageBreakTrigger']);
+    // dd($this->pdf);
+    // dump($this->pdf->footnotes);
   }
 
   public function resolve_levelledPara(\DOMElement $levelledPara)

@@ -10,10 +10,13 @@
   <xsl:include href="part/internalRef.xsl" />
   <xsl:include href="part/dmRef.xsl" />
   <xsl:include href="part/pmRef.xsl" />
+  <xsl:include href="part/caption.xsl"/>
+  <xsl:include href="part/footnote.xsl"/>
 
   <xsl:param name="dmOwner"/>
 
   <xsl:output method="xml"/>
+  
   <xsl:template match="changeInline">
     <span>
       <xsl:call-template name="cgmark"/>
@@ -41,5 +44,11 @@
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template match="subScript">
+    <sub>subScript</sub>
+  </xsl:template>
+  <xsl:template match="superScript">
+    <sup>superScript</sup>
+  </xsl:template>
 
 </xsl:stylesheet>

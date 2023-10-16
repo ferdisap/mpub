@@ -20,7 +20,7 @@ $footer_odd = <<<EOF
 <table style="width:108%;font-size:9;">
   <tr>
     <td align="left"></td>
-    <td align="right">{$documentNumber}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="right">{$documentNumber}&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
   </tr>
   <tr>
     <td align="left">{$aa_approved}</td>
