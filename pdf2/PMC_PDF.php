@@ -1568,14 +1568,14 @@ class PMC_PDF extends TCPDF
     
     
     // add TOC
-    // $this->addTOCPage();
-    // $this->SetFont($this->getFontFamily(), 'B', 14);
-    // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-    // $this->Ln();    
-    // $this->SetFont($this->getFontFamily(), '', 10);
-    // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-    // $this->endTOCPage();
-    // $this->endPageGroup = $this->getPage();
+    $this->addTOCPage();
+    $this->SetFont($this->getFontFamily(), 'B', 14);
+    $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+    $this->Ln();    
+    $this->SetFont($this->getFontFamily(), '', 10);
+    $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+    $this->endTOCPage();
+    $this->endPageGroup = $this->getPage();
 
     $this->updateLink();
     

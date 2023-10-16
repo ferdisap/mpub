@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
 
   <xsl:output method="xml" omit-xml-declaration="yes" />
 
@@ -46,6 +46,13 @@
                   <xsl:attribute name="height"><xsl:value-of select="@reproductionHeight"/></xsl:attribute>
                 </xsl:if>
               </img>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align:right">
+              <span style="font-size:6" paddingleft="5">
+                <xsl:value-of select="php:function('preg_replace', '/.[\w]+$/', '', string(@infoEntityIdent))"/>
+              </span>
             </td>
           </tr>
           <tr>
