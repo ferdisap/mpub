@@ -1568,14 +1568,14 @@ class PMC_PDF extends TCPDF
     
     
     // add TOC
-    $this->addTOCPage();
-    $this->SetFont($this->getFontFamily(), 'B', 14);
-    $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-    $this->Ln();    
-    $this->SetFont($this->getFontFamily(), '', 10);
-    $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-    $this->endTOCPage();
-    $this->endPageGroup = $this->getPage();
+    // $this->addTOCPage();
+    // $this->SetFont($this->getFontFamily(), 'B', 14);
+    // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+    // $this->Ln();    
+    // $this->SetFont($this->getFontFamily(), '', 10);
+    // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+    // $this->endTOCPage();
+    // $this->endPageGroup = $this->getPage();
 
     $this->updateLink();
     
@@ -2070,6 +2070,7 @@ class PMC_PDF extends TCPDF
     // dd($dom, $footnoteshtmlstrings, $html);
 
 		while ($key < $maxel) {
+      
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
@@ -3303,6 +3304,7 @@ class PMC_PDF extends TCPDF
       elseif (strlen($dom[$key]['value']) > 0) {
         // dump($this->y + $this->lasth + (2.9 * 2). "|". $dom[$key]['value']."|". $this->PageBreakTrigger);
         $this->checkPageBreak($this->lasth + (2.645833 * 2)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote . Berfungi juga ketika ada footnote di line terakhir sebelum PageBreakTrigger, akan dipindah ke halaman selanjutnya
+        // $this->checkPageBreak($this->lasth + (2.645833 * 1)); // footnote #3
         // $this->checkPageBreak($this->lasth*2); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
 
 
@@ -3546,50 +3548,29 @@ class PMC_PDF extends TCPDF
 
 
             if ($strlinelen < $cwa){
-              
-              
-              // dump($startlinepage. "|". $this->page."|".$dom[$key]['value']);
-
               // footnote #1 - create footnoteRef
               $v = $dom[$key]['value'];
               $v_n = preg_replace("/\[\?f\]/",'', $v);
               if($v != $v_n) {
                 $dom[$key]['value'] = $v_n;
                 $c = count($this->footnotes['collection']) + 1;
-
-                $idfnt = 'idfnt';
                 $fntref = <<<EOD
                   <a style="text-decoration:none" href="curEntry,idfnt"><sup>[{$c}]</sup>&#160;</a>
                 EOD;
                 $footnoteRefTxt = $fntref;
               }
 
-              // if(($this->y + $this->footnoteheight + (2 * $this->getCellHeight($this->FontSize)) ) >= $this->PageBreakTrigger){
-              //   $undo = true;
-              //   $dom[$key]['attribute']['nobr'] = 'false';
-              //   --$key;
-              //   $this->checkPageBreak($this->PageBreakTrigger + 1);
-              // }
-
               // footnote #2 - create footnote xobject
               if(isset($dom[$key+1]['attribute']['id']) AND in_array($dom[$key+1]['attribute']['id'], array_keys($footnoteshtmlstrings))){
-
-                // dd($dom);
-                // dump($this->y."|".$this->page."|".$key."|".$dom[$key]['value']);
-
+                // initiate template to get footnoteh
                 $this->inFootnote = true;
-                // dump($this->PageBreakTrigger);
                 $kstartfnt = $key+1;
-
                 $lastIndexfnt = count($this->footnotes['collection']) + 1;
-
                 $footnoteshtmlstring = $footnoteshtmlstrings[$dom[$key+1]['attribute']['id']]['html'];
-                // $lMargin = $startlinex;
                 $lMargin = $this->lMargin;
                 $rMargin = $this->rMargin;
                 $lPadding = $this->cell_padding['L'];
                 $rPadding = $this->cell_padding['R'];
-
                 $template = $this->startTemplate($this->w,'');
                 $this->lMargin = $lMargin;
                 $this->rMargin = $rMargin;
@@ -3607,9 +3588,21 @@ class PMC_PDF extends TCPDF
                 $this->resetLastH();
                 unset($this->xobjects[$template]);
 
-                // dump($this->y ."|". $footnoteh."|".$this->PageBreakTrigger."|". () ."|".$dom[$key]['value']);
+                // supaya jika ada footnote yang di buat di halaman ex:ganjil sedangkan di print di halaman ex:genap, margin tetap terjaga 
+                if($this->y + $this->lasth + $footnoteh + (2.645833 * 2) >= $this->PageBreakTrigger){
+                  $tmplPadding = $rPadding;
+                  $tmprPadding = $lPadding;
+                  $tmplMargin = $lMargin;
+                  $tmprMargin = $rMargin;
 
-                $template = $this->startTemplate($this->w,$footnoteh);
+                  $lMargin = $tmprMargin - $tmprPadding;
+                  $rMargin = $tmplMargin + $tmplPadding;
+                  $lPadding = $tmprPadding;
+                  $rPadding = $tmplPadding;
+                }
+                
+                // reinstate template after we got the footnoteh
+                $template = $this->startTemplate($this->w,$footnoteh);                
                 $this->lMargin = $lMargin;
                 $this->rMargin = $rMargin;
                 $this->cell_padding['L'] = $lPadding ;
@@ -3617,7 +3610,6 @@ class PMC_PDF extends TCPDF
                 $this->lMargin += 5;
                 $this->x = $this->lMargin;
 
-                // dump($this->page."|".$this->lMargin."|".$template); // pada footnote [3] (XT14) terjadi kesalahan lMargin. saat di buat footnote berada di page 2 (lMargin = 15), sementara di print di page 3 (lMargin = 25) sehingga ada misalaginment dengan footnote [4];
                 $this->setFontSize(6);
                 $this->Write('',"[{$lastIndexfnt}]    ",'',false,'L',false,0,true, true,0,0);
                 $this->lMargin += $this->GetStringWidth("[{$lastIndexfnt}]    ",'helvetica', '', 6);
@@ -3629,15 +3621,14 @@ class PMC_PDF extends TCPDF
                 }
                 $this->endTemplate();
 
+                // push to footnotes collection 
                 $lastIndexfnt = count($this->footnotes['collection']) + 1;
                 $this->footnotes['collection'][$lastIndexfnt]['id'][] = $dom[$key+1]['attribute']['id'];
                 $this->footnotes['collection'][$lastIndexfnt]['template'][] = $template;
                 $this->footnotes['collection'][$lastIndexfnt]['template_dump'][] = $template;
                 $this->footnotes['collection'][$lastIndexfnt]['height'][] = $footnoteh;                
                 
-                // dump($this->y."|".$this->page."|".$key."|".$template."|".$dom[$key]['value']);
-
-
+                // change dom[$key] to outside <footer>
                 $kk = $kstartfnt;
                 while (isset($dom[$kk])){
                   $kk++;
@@ -3656,6 +3647,7 @@ class PMC_PDF extends TCPDF
 
                 $this->inFootnote = false;
 
+                // staging the footnotes which has been push
                 $qtyfnt = count($this->footnotes['collection']);
                 $yy = $this->y;
                 // for ($i= $qtyfnt; $i >= 0; $i--) {
@@ -3680,28 +3672,6 @@ class PMC_PDF extends TCPDF
                   }
               }
             }
-
-            // footnote #3 - staging the footnote
-            // $qtyfnt = count($this->footnotes['collection']);
-            // $yy = $this->y;
-            // for ($i= $qtyfnt; $i >= 0; $i--) {
-            //   if(isset($this->footnotes['collection'][$i]) ){                    
-            //     foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
-            //       if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
-            //         $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
-            //         if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
-            //           $ypos = $this->PageBreakTrigger - $hg;
-            //           $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
-            //           $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
-            //           $this->footnotes['staging']['startypos'][$this->page] = $ypos;
-            //           $this->footnotes['staging']['height'][$this->page][] = $hg;
-            //           $this->PageBreakTrigger -= $hg;
-            //           unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
-            //           $this->y = $yy;
-            //         }        
-            //       }
-            //     }
-            //   }
             }
 
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
