@@ -13,7 +13,8 @@ $header_even = <<<EOD
     </td>
     <td align="center" style="width:40%;"><div>{$headerTitle}</div>
     </td>
-    <td align="left" style="width:30%;"><img src="{$headerLogo}"/>
+    <td align="right" style="width:30%;">
+        <img src="{$headerLogo}" width="15mm"/>
     </td>
   </tr>
 </table>
@@ -22,7 +23,8 @@ EOD;
 $header_odd = <<<EOF
 <table style="width:100%;font-size:10;">
   <tr>
-    <td align="left" style="width:30%;"><img src="{$headerLogo}"/>
+    <td align="left" style="width:30%;">
+      <img src="{$headerLogo}" width="15mm"/>
     </td>
     <td align="center" style="width:40%;"><div>{$headerTitle}</div>
     </td>

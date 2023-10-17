@@ -3,18 +3,17 @@
   <identAndStatusSection>
     <pmAddress>
       <pmIdent>
-        <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
-        <language languageIsoCode="en" countryIsoCode="EN" />
+        <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00011" pmVolume="00" />
+        <language languageIsoCode="en" countryIsoCode="EN"/>
         <issueInfo issueNumber="000" inWork="01" />
       </pmIdent>
       <pmAddressItems>
-        <issueDate year="2023" month="09" day="17" />
-        <pmTitle>Section 04 - Normal Procedure</pmTitle>
-        <shortPmTitle>Section 04</shortPmTitle>
+        <issueDate year="2023" month="10" day="16" />
+        <pmTitle>FRONTMATTER</pmTitle>
       </pmAddressItems>
     </pmAddress>
     <pmStatus>
-      <security securityClassification="05" />
+      <security securityClassification="05"/>
       <responsiblePartnerCompany enterpriseCode="0001Z">
         <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
       </responsiblePartnerCompany>
@@ -51,32 +50,22 @@
     </pmStatus>
   </identAndStatusSection>
   <content>
-    <pmEntry pmEntryType="pmt61">
-      <pmEntryTitle>SECTION 04 - NORMAL PROCEDURES</pmEntryTitle>
+    <pmEntry pmEntryType="pmt01">
+      <pmEntryTitle>FRONTMATTER</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
-          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
-          <issueInfo issueNumber="000" inWork="01"/>
-          <language languageIsoCode="en" countryIsoCode="EN"/>
+          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="001" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
-      <dmRef>
-        <dmRefIdent>
-          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
-          <issueInfo issueNumber="000" inWork="01"/>
-          <language languageIsoCode="en" countryIsoCode="EN"/>
-        </dmRefIdent>
-      </dmRef>
-    </pmEntry>
-    <pmEntry pmEntryType="pmt61">
-      <pmEntryTitle>SECTION 05 - EMERGENCY PROCEDURES</pmEntryTitle>
-      <dmRef>
-        <dmRefIdent>
-          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
-          <issueInfo issueNumber="000" inWork="01"/>
-          <language languageIsoCode="en" countryIsoCode="EN"/>
-        </dmRefIdent>
-      </dmRef>
+      <!-- <pmRef>
+        <pmRefIdent>
+          <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </pmRefIdent>
+      </pmRef> -->
     </pmEntry>
   </content>
 </pm>

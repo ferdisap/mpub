@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/frontmatter.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="001" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="16" />
+        <dmTitle>
+          <techName>Cover POH-AFM</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+             <dmCode modelIdentCode="N219" systemDiffCode="A"
+                systemCode="00" subSystemCode="0" subSubSystemCode="0"
+                assyCode="00" disassyCode="00" disassyCodeVariant="A"
+                infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <frontMatter>
+      <frontMatterTitlePage>
+        <productIntroName>
+          <name>N219</name>
+        </productIntroName>
+        <pmTitle>
+          PILOT OPERATING HANDBOOK #ln; AND #ln; DGCA APPROVED AIRPLANE FLIGHT MANUAL
+        </pmTitle>
+        <shortPmTitle>POH-AFM</shortPmTitle>
+        <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00001" pmVolume="00" />
+        <issueInfo issueNumber="000" inWork="01" />
+        <issueDate year="2023" month="10" day="16" />
+        <security securityClassification="05"/>
+        <productIllustration>
+          <graphic infoEntityIdent="ICN-0001Z-00003-001-05.png" reproductionHeight="20mm"></graphic>
+          <graphic infoEntityIdent="ICN-0001Z-00004-001-05.png" reproductionHeight="70mm"></graphic>
+        </productIllustration>
+        <responsiblePartnerCompany enterpriseCode="0001Z">
+          <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+        </responsiblePartnerCompany>
+        <frontMatterInfo frontMatterInfoType="fmi51">
+          <reducedPara>
+            Section 1 through 10 inclusive of this document comprise the Pilot Operating Handbook (POH) for the N219.
+            Section 1, 2, 3, 4, 5, 6 and any supplement in Section 9 are Directorate General of Civil Aviation approved and constitute the approval Airplane Flight Manual.
+          </reducedPara>
+          <reducedPara>Section 0, 7, 8 and 10 are not approved and are provided for information only.</reducedPara>
+          <reducedPara>
+            NOTES:
+            <reducedRandomList>
+              <reducedRandomListItem>
+                <reducedListItemPara>It is not permissible to make any changes or endorsement in this Airplane Flight Manual, except the authorized person for the applicable regulatory authority.</reducedListItemPara>
+              </reducedRandomListItem>
+              <reducedRandomListItem>
+                <reducedListItemPara>The airplane must be operated in accordance with the limitations and instruction contained in the Airplane Flight Manual.</reducedListItemPara>
+              </reducedRandomListItem>
+            </reducedRandomList>
+          </reducedPara>
+        </frontMatterInfo>
+        <frontMatterInfo frontMatterInfoType="fmi52">
+          <title>MANUAL CONTENTS</title>
+          <reducedPara>SECTION 0 INTRODUCTION</reducedPara>
+          <reducedPara>SECTION 1 GENERAL</reducedPara>
+          <reducedPara>SECTION 2 LIMITATIONS</reducedPara>
+          <reducedPara>SECTION 3 EMERGENCY AND ABNORMAL PROCEDURES</reducedPara>
+          <reducedPara>SECTION 4 NORMAL PROCEDURES</reducedPara>
+          <reducedPara>SECTION 5 PERFORMANCE</reducedPara>
+          <reducedPara>SECTION 6 WEIGHT AND BALANCE</reducedPara>
+          <reducedPara>SECTION 7 SYSTEM DESCRIPTION</reducedPara>
+          <reducedPara>SECTION 8 HANDLING SERVICING AND MAINTENANCE</reducedPara>
+          <reducedPara>SECTION 9 SUPPLEMENTS</reducedPara>
+          <reducedPara>SECTION 10 SAFETY AND OPERATIONAL TIPS</reducedPara>
+        </frontMatterInfo>
+      </frontMatterTitlePage>
+    </frontMatter>
+  </content>
+  
+</dmodule>

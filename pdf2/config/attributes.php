@@ -4,8 +4,12 @@
 
 $pmType = [
   'pt51' => [
-    'value' => "pt51",
     'interpretation' => 'POH-AFM',
+    'value' => 'pt51',
+    'useheader' => false,
+    'usefooter' => false,
+    'usetoc' => false,
+    'usebookmark' => false,
     'page' => [
       'orientation' => 'P',
       'unit' => 'mm',
@@ -15,7 +19,6 @@ $pmType = [
     ],
     'fontsize' => [
       'levelledPara' => [
-        // 'title' =>[ '0' => 14, '1'  => 12, '2'  => 11, '3'  => 10, '4'  => '9'],
         'title' =>[12,11,10,9,8],
         'para' => 9,
         'figure' => [ 
@@ -28,9 +31,6 @@ $pmType = [
       ],
     ],
     'content' => [
-      // 'indentation' => [
-      //   'levelledPara' => [0,3,5,7,9]
-      // ],
       'padding' => [
         'levelledPara' => [0,3,5,7,9]
       ],
@@ -42,10 +42,21 @@ $pmType = [
 
 $pmEntryType = [
   'pmt01' => [
-    'interpretation' =>  'TP'
+    'interpretation' =>  'TITLE PAGE',
+    'useheader' => false,
+    'usefooter' => false,
+    'usetoc' => false,
+    'usebookmark' => true,
+    'page' => [
+      'margins' => [ 'L' => 20, 'T' => 15, 'R' => 10, 'B' => 15 ],
+    ],
   ],
   'pmt61' => [
-    'interpretation' => 'INTRODUCTION'
+    'interpretation' => 'CONTENT',
+    'useheader' => true,
+    'usefooter' => true,
+    'usetoc' => true,
+    'usebookmark' => true,
   ],
 ];
 

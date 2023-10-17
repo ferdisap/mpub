@@ -41,12 +41,13 @@ abstract class CSDB {
   private static function loadXmlDoc(String $filename)
   {
     $doc = new \DOMDocument();
-    try {
-      $doc->load($filename, LIBXML_PARSEHUGE);
-      return $doc;
-    } catch (\Throwable $th) {
-      return false;
-    }
+    $doc->load($filename, LIBXML_PARSEHUGE);
+   
+    return $doc;
+    // try {
+    // } catch (\Throwable $th) {
+    //   return false;
+    // }
   }
 
   public function setCsdbPath(string $app_path ,string $modelIdentCode = null)
@@ -149,5 +150,65 @@ abstract class CSDB {
       }
     }
     return $arr;
+  }
+
+  
+  public static function resolve_dmCode(\DOMElement $dmCode, string $prefix = 'DMC-')
+  {
+    $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
+    $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
+    $systemCode = $dmCode->getAttribute('systemCode');
+    $subSystemCode = $dmCode->getAttribute('subSystemCode');
+    $subSubSystemCode = $dmCode->getAttribute('subSubSystemCode');
+    $assyCode = $dmCode->getAttribute('assyCode');
+    $disassyCode = $dmCode->getAttribute('disassyCode');
+    $disassyCodeVariant = $dmCode->getAttribute('disassyCodeVariant');
+    $infoCode = $dmCode->getAttribute('infoCode');
+    $infoCodeVariant = $dmCode->getAttribute('infoCodeVariant');
+    $itemLocationCode = $dmCode->getAttribute('itemLocationCode');
+
+    $name = $prefix.
+    $modelIdentCode."-".$systemDiffCode."-".
+    $systemCode."-".$subSystemCode.$subSubSystemCode."-".
+    $assyCode."-".$disassyCode.$disassyCodeVariant."-".
+    $infoCode.$infoCodeVariant."-".$itemLocationCode;
+
+    return $name;
+  }
+
+  public static function resolve_pmCode(\DOMElement $pmCode, string $prefix = 'PMC-')
+  {
+    $modelIdentCode = $pmCode->getAttribute('modelIdentCode');
+    $pmIssuer = $pmCode->getAttribute('pmIssuer');
+    $pmNumber = $pmCode->getAttribute('pmNumber');
+    $pmVolume = $pmCode->getAttribute('pmVolume');
+
+    $name = $prefix.
+    $modelIdentCode."-".
+    $pmIssuer."-".
+    $pmNumber."-".
+    $pmVolume;
+
+    return $name;
+  }
+
+  public static function resolve_issueInfo(\DOMElement $issueInfo = null)
+  {
+    if(!$issueInfo){
+      return '';
+    }
+    $issueNumber = $issueInfo->getAttribute('issueNumber');
+    $inWork = $issueInfo->getAttribute('inWork');
+    return $issueNumber."-".$inWork;
+  }
+
+  public static function resolve_languange(\DOMElement $languange = null)
+  {
+    if(!$languange) {
+      return '';
+    }
+    $languangeIsoCode = $languange->getAttribute('languageIsoCode');
+    $countryIsoCode = $languange->getAttribute('countryIsoCode');
+    return $languangeIsoCode."-".$countryIsoCode;
   }
 }

@@ -19,6 +19,7 @@ class PMC_PDF extends TCPDF
   protected bool $validateSchema = true;
   protected bool $validateBrex = true;
   protected array $pmType_config;
+  protected array $pmEntryType_config;
 
   public string $prefix_pagenum = '';
   protected array $aa_approved;
@@ -39,7 +40,7 @@ class PMC_PDF extends TCPDF
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
    */
-  public string $headerLogo = '../pdf2/assets/logo.png';
+  public string $headerLogo = '../pdf2/assets/Logo-PTDI.jpg';
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
@@ -65,15 +66,17 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
+      $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
       $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
+      $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
       $this->writeHTML($header, true, false, false,true,'J',false);
     }
   }
   // Page footer
   public function Footer()
-  {    
+  {
     if (($this->getPage() % 2) == 0) {
       $this->SetY(-15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
@@ -614,7 +617,8 @@ class PMC_PDF extends TCPDF
 	}
 
   /**
-   * tambahan nya adalah menambah attribute cgmarkid disetiap dom yang punya changemark==1
+   * tambahan: adalah menambah attribute cgmarkid disetiap dom yang punya changemark==1
+   * tambahannya: replace #ln; menjadi \n (new line) disetiap string
 	 * Returns the HTML DOM array.
 	 * @param string $html html code
 	 * @return array
@@ -731,7 +735,9 @@ class PMC_PDF extends TCPDF
 			$html = preg_replace("'<select([^\>]*)>'si", "<select\\1 opt=\"", $html);
 			$html = preg_replace("'#!NwL!#</select>'si", "\" />", $html);
 		}
-		$html = str_replace("\n", ' ', $html);
+    
+		// $html = str_replace("\n", ' ', $html);
+    // dd($html);
 		// restore textarea newlines
 		$html = str_replace('<TBR>', "\n", $html);
 		// remove extra spaces from code
@@ -754,6 +760,9 @@ class PMC_PDF extends TCPDF
 		$html = preg_replace('/<su([bp])/', '<zws/><su\\1', $html); // fix sub/sup alignment
 		$html = preg_replace('/<\/su([bp])>/', '</su\\1><zws/>', $html); // fix sub/sup alignment
 		$html = preg_replace('/'.$this->re_space['p'].'+/'.$this->re_space['m'], chr(32), $html); // replace multiple spaces with a single space
+
+    // untuk mengubah #ln; menjadi new line
+    $html = preg_replace("/#ln;/","\n",$html);
 		// trim string
 		$html = $this->stringTrim($html);
 		// fix br tag after li
@@ -1452,6 +1461,7 @@ class PMC_PDF extends TCPDF
   public function __construct(string $absolute_path_csdbInput)
   {
     $this->absolute_path_csdbInput = $absolute_path_csdbInput;
+    parent::__construct();
   }  
   /**
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
@@ -1459,19 +1469,24 @@ class PMC_PDF extends TCPDF
    */
   public function importDocument(string $absolute_path = '', string $xml_string = '')
   {
+    $this->pmc_path = $absolute_path;
     $this->DOMDocument = CSDB::importDocument($absolute_path, $xml_string, 'pm');
+
     # validate DOMDocument here
 
     $pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType');
-    $pmType_config = require "config/attributes.php";
-    $pmType_config = $pmType_config['pmType'][$pmType_value];
-    $this->pmType_config = $pmType_config;
+    $attributes = require "config/attributes.php";
+    $this->pmType_config = $attributes['pmType'][$pmType_value];
     
     $orientation = $this->pmType_config['page']['orientation'];
     $unit = $this->pmType_config['page']['unit'];
     $format = $this->pmType_config['page']['format'];
 
-    parent::__construct($orientation, $unit, $format);
+    $this->setPageOrientation($orientation);
+    $this->setPageUnit($unit);
+    $this->setPageFormat($format);
+    // parent::__construct($orientation, $unit, $format);
+    
   }
   /**
    * @param string $aa_name
@@ -1488,95 +1503,84 @@ class PMC_PDF extends TCPDF
     }
 
     $this->setAllowLocalFiles(true);
-
-    $headerMargin = $this->pmType_config['page']['headerMargin'];
-    $topMargin = $this->pmType_config['page']['margins']['T'];
-    $bottomMargin = $this->pmType_config['page']['margins']['B'];
-    $leftMargin = $this->pmType_config['page']['margins']['L'];
-    $rightMargin = $this->pmType_config['page']['margins']['R'];
-    $bookletMargin = [$this->pmType_config['page']['margins']['R'], $this->pmType_config['page']['margins']['L']];
-    $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
-
     
     $DOMXpath = new \DOMXPath($this->DOMDocument);
     $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
-    foreach ($pmEntries as $index => $pmEntry) {
-      $this->setHeaderMargin($headerMargin);
-      $this->setMargins($leftMargin,$topMargin,$rightMargin);
-      $this->setBooklet(true,$bookletMargin[0],$bookletMargin[1]);
-      $this->setFontSize($fontsize);
-      $this->SetAutoPageBreak(TRUE, $bottomMargin);
-      $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      
+    foreach ($pmEntries as $index => $pmEntry) {   
       $this->pmEntry($pmEntry);
     }
-
-    
-    // tes caption
-    
-    // <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iste quasi necessitatibus sit amet lorem consectetur adipisicing elit
-    // $html = <<<EOD
-    // <p>Lorem ipsum dolor, sit gamet consectetur adipisicing elit. Iste quasi necessitatibus
-    // <span style="font-weight:bold" captionline="true" calign="T" height="10mm" width="25mm" fillcolor="255,0,0" textcolor="0,0,0">ENG FIRE</span>
-    // fugiat eum consectetur quod pariatur rerum, quas aut amet, laborum repellendus provident suscipit impedit ducimus. Ratione vitae odio voluptate quo voluptatibus suscipit, possimus ab fugiat aperiam? Labore cupiditate, dolore ipsa recusandae commodi accusantium, ex quasi voluptas ipsum itaque eius.</p>
-    // EOD;
-
-    // $txt = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam, sint quisquam quibusdam ut in quasi tempore quidem optio fugiat fugit fuga minima adipisci delectus harum voluptatibus nam quam odio provident dolor voluptatem suscipit! Reprehenderit quisquam quod ullam iste distinctio sapiente debitis officia, iusto esse harum provident dolorum corrupti repellat! Ipsum.';
-    
-    // $this->AddPage();
-    // $this->y = 50;
-    // $this->writeHTML($html,false,false,false,false,'J');
-    // while(strlen($txt) > 0){
-    //   $strrest = $this->Write($this->lasth, $txt,'',false,'',false,0,true,false);
-    //   $txt = $strrest;
-    // }
-    // $this->y += 10;
-    // $strrest = $this->Write($this->lasth, 'foobar','',false,'',false,0,true,false);
-
-
-    // $this->Cell(25,30,'ENG FIRE',1,0,'C',false,'',0,false,'T');
-    // $this->Write('',' foo bar');
-    // $this->writeHTML(' bazz');
-    // dd($this->y);
-
   }
   private function pmEntry(\DOMElement $pmEntry)
   {
     $pmEntryType_config = require "config/attributes.php";
     $pmEntryType_config = $pmEntryType_config['pmEntryType'];
     $pmEntryType = $pmEntry->getAttribute('pmEntryType');
+    $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
     
-    // add Bookmark level 0 for TOC
-    $index = $this->checkLevel($pmEntry);
-    $pmEntryType_interpretation = isset($pmEntryType_config[$pmEntryType]) ? $pmEntryType_config[$pmEntryType]['interpretation'] : null;
-    $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $index);
+    // $this->pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
+
+    $headerMargin = $this->pmType_config['page']['headerMargin'];
+    $topMargin = isset($pmEntryType_config['page']['margins']['T']) ? $pmEntryType_config['page']['margins']['T'] :  $this->pmType_config['page']['margins']['T'];
+    $bottomMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['B'] : $this->pmType_config['page']['margins']['B'];
+    $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
+    $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
+    $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
+
+    $this->setHeaderMargin($headerMargin);
+    $this->setMargins($leftMargin,$topMargin,$rightMargin);
+    $this->setBooklet(true,$rightMargin,$leftMargin);
+    $this->setFontSize($fontsize);
+    $this->SetAutoPageBreak(TRUE, $bottomMargin);
+    $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    // $this->setTopMargin($topMargin);
+
+    if(!empty($pmEntryType_config)){
+      $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
+      $this->startPageGroup();
+      $this->AddPage();
+      $this->setBooklet(true,$leftMargin,$rightMargin);
+      $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
+    }
+
+    $TOC = $pmEntryType_config['usetoc'] ?? false;
+    $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
+
+    if($BOOKMARK){
+      $index = $this->checkLevel($pmEntry);
+      $pmEntryType_interpretation = $this->pmEntryType_config['interpretation'] ?? '';
+      $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $index);
+      $this->Bookmark($txt, $index);
+      // dump($pmEntryType_config['usebookmark'], $txt, $index);
+    }
     
     $children = $this->childrenElement($pmEntry);
-    
-    $this->startPageGroup();
-    $this->AddPage();
-    $this->Bookmark($txt, $index);
-    
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
           $this->dmRef($child);
+          $this->resetFootnotes();
           break;
+        case 'pmRef':
+          $pmCode = CSDB::resolve_pmCode($child->getElementsByTagName('pmCode')[0]);
+          $issueInfo = ($if = CSDB::resolve_issueInfo($child->getElementsByTagName('issueInfo')[0])) ? "_". $if : '';
+          $languange = ($lg = CSDB::resolve_languange($child->getElementsByTagName('language')[0])) ? "_". $lg : '';
+
+          $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($pmCode.$issueInfo.$languange).".xml";
+
+          $this->importDocument($file_withLanguangeCode,'');
+          $this->render();
       }
-    }   
-
-    
-    
-    // add TOC
-    $this->addTOCPage();
-    $this->SetFont($this->getFontFamily(), 'B', 14);
-    $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-    $this->Ln();    
-    $this->SetFont($this->getFontFamily(), '', 10);
-    $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-    $this->endTOCPage();
+    }
+    if($TOC){
+      $this->addTOCPage();
+      $this->SetFont($this->getFontFamily(), 'B', 14);
+      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      $this->Ln();    
+      $this->SetFont($this->getFontFamily(), '', 10);
+      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      $this->endTOCPage();
+    }
     $this->endPageGroup = $this->getPage();
-
     $this->updateLink();
     
   }
@@ -1887,9 +1891,20 @@ class PMC_PDF extends TCPDF
     return ($index < 0) ? 0 : $index;
   }
 
+  public function resetFootnotes(){
+    $this->footnotes = [
+      'staging' => [],
+      'collection' => [],
+    ];
+  }
+
   public function get_pmType_config()
   {
     return $this->pmType_config;
+  }
+  public function get_pmEntryType_config()
+  {
+    return $this->pmEntryType_config;
   }
 
   public function getAssetPath()
@@ -1902,13 +1917,6 @@ class PMC_PDF extends TCPDF
   public function getPDF()
   {
     $this->Output('tes2.pdf', 'I');
-  }
-
-  public function changeXObjectHeight($template, $h){
-    // $new_template = $start
-    // if($this->xobject[$template]){
-
-    // }
   }
 
 
@@ -1957,7 +1965,9 @@ class PMC_PDF extends TCPDF
 	 * @param string $align Allows to center or align the text. Possible values are:<ul><li>L : left align</li><li>C : center</li><li>R : right align</li><li>'' : empty string : left for LTR or right for RTL</li></ul>
 	 * @public
 	 */
-  public function writeHTMl($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $DOMDocument = null, $tes = false, $who = '') {
+  public function writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $DOMDocument = null, $tes = false, $who = '') {
+    // if(!$tes) dump($this->print_header, $html);
+    // dump($html);
     $gvars = $this->getGraphicVars();
 		// store current values
 		$prev_cell_margin = $this->cell_margin;
@@ -2048,7 +2058,12 @@ class PMC_PDF extends TCPDF
 			$this->resetLastH();
 		}
     // is_array($html) ? $dom = $html : 
+    // $html = preg_replace("/:br:/", '\n', $html);
+    // dd($html);
     $dom = $this->getHtmlDomArray($html);
+
+    // dd($html);
+    // if($tes) dd($dom, $html);
 
 		$maxel = count($dom);
 		$key = 0;
