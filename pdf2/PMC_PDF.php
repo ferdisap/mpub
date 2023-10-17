@@ -30,6 +30,7 @@ class PMC_PDF extends TCPDF
   public array $references = [];
   public string $curEntry;
   public $lastpageIntentionallyLeftBlank = 0;
+  public int $pmEntry_level = 0;
 
   public bool $inFootnote = false;
   public array $footnotes = [
@@ -1546,17 +1547,19 @@ class PMC_PDF extends TCPDF
     $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
 
     if($BOOKMARK){
-      $index = $this->checkLevel($pmEntry);
+      $level = $this->checkLevel($pmEntry);
       $pmEntryType_interpretation = $this->pmEntryType_config['interpretation'] ?? '';
-      $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $index);
-      $this->Bookmark($txt, $index);
-      // dump($pmEntryType_config['usebookmark'], $txt, $index);
+      $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $level);
+      $this->Bookmark($txt, $level);
+      // dump($level);
+      // dump($pmEntryType_config['usebookmark'], $txt, $level);
     }
     
     $children = $this->childrenElement($pmEntry);
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
+          $this->pmEntry_level = $level;
           $this->dmRef($child);
           $this->resetFootnotes();
           break;
@@ -2096,7 +2099,9 @@ class PMC_PDF extends TCPDF
       // bookmark if such attribute exist
       if(!empty($dom[$key]['attribute']['bookmarklvl']) AND !empty($dom[$key]['attribute']['bookmarktxt'])){
         $txt = preg_replace("/&#xA0;/",' ', $dom[$key]['attribute']['bookmarktxt']);
-        $this->Bookmark($txt, $dom[$key]['attribute']['bookmarklvl']);
+        // $this->Bookmark($txt, $dom[$key]['attribute']['bookmarklvl']);
+        // dump($this->pmEntry_level);
+        $this->Bookmark($txt, $dom[$key]['attribute']['bookmarklvl'] + $this->pmEntry_level);
       }
 
       // set padding if dom[$key] has attribute paddingleft

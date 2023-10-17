@@ -35,6 +35,12 @@ class DMC
     $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
     $this->schemaXsd = $schemaXsd;
     $this->pdf->page_ident = $this->dmCode;
+
+    $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
+    $techname = $dmTitle->firstElementChild->nodeValue;
+    $infoname = $dmTitle->firstElementChild->nextElementSibling ? $dmTitle->firstElementChild->nextElementSibling->nodeValue : null;
+    
+    $this->pdf->Bookmark($techname.($infoname ? '-'. $infoname : ''),$this->pdf->pmEntry_level += 1);
   }
 
   public function render()
