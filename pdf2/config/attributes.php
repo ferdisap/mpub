@@ -51,6 +51,13 @@ $pmEntryType = [
       'margins' => [ 'L' => 20, 'T' => 15, 'R' => 10, 'B' => 15 ],
     ],
   ],
+  'pmt06' => [
+    'interpretation' =>  'LEODM',
+    'useheader' => true,
+    'usefooter' => true,
+    'usetoc' => false,
+    'usebookmark' => true,
+  ],
   'pmt61' => [
     'interpretation' => 'CONTENT',
     'useheader' => true,

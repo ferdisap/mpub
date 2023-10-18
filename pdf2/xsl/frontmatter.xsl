@@ -4,12 +4,15 @@
   <xsl:include href="attribute/id.xsl" />
   <xsl:include href="attribute/cgmark.xsl" />
   <xsl:include href="./group/reducedParaElemGroup.xsl" />
+  <xsl:include href="./element/frontMatterList.xsl" />
 
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 
   <xsl:param name="dmOwner"/>
   <xsl:param name="absolute_path_csdbInput"></xsl:param>
   <xsl:param name="logo_ptdi"></xsl:param>
+  <!-- <xsl:param name="resolve_dmCode_forXSLT"></xsl:param> -->
+  <!-- <xsl:param name="tesfungsi"></xsl:param> -->
 
   <xsl:template match="dmodule">
     <xsl:apply-templates select="//content/frontMatter"/>
@@ -148,7 +151,6 @@
         <!-- halaman 4 (genap): kosong -->
         <div style="page-break-before:always"></div>
       </div>
-      
 
       <!-- halaman 5 -->
       <div style="page-break-before:always">
@@ -162,8 +164,6 @@
         <!-- halaman 6 (genap): kosong -->
         <div style="page-break-before:always"></div>
       </div>
-      
-
     </div>
   </xsl:template>
 

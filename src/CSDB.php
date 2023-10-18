@@ -2,6 +2,7 @@
 
 namespace Ptdi\Mpub;
 
+use DOMElement;
 use Exception;
 
 abstract class CSDB {
@@ -152,9 +153,134 @@ abstract class CSDB {
     return $arr;
   }
 
-  
-  public static function resolve_dmCode(\DOMElement $dmCode, string $prefix = 'DMC-')
+  public static function call($fn){
+    // return (CSDB::class)::tesfungsi;
+    // $c = __DIR__.DIRECTORY_SEPARATOR.CSDB::class;
+    // dd($c);
+    $c = CSDB::class;
+    // dd(__DIR__.DIRECTORY_SEPARATOR.$c);
+    return "$c::$fn";
+  }
+
+  // public static function resolve_dmCode_forXSLT($dmCode)
+  // {
+    // dd($dmCode[0]);
+    // dd($el);
+    // return $el[0];
+    // dd($el);
+    // return $el[0];
+    // return $el->nodeValue;
+    // return 'sedang tesfungsi';
+  // }
+
+  public static function resolve_issueType($issueType){
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if(is_array($issueType)){
+      $issueType = $issueType[0];
+    }
+    $it = $issueType->nodeValue;
+    
+    switch ($it) {
+      case 'new':
+        return'N';
+        break;
+      case 'changed':
+        return 'C';
+        break;
+      case 'deleted':
+        return 'D';
+        break;
+      case 'revised':
+        return 'R';
+        break;
+      case 'status':
+        return 'S';
+        break;
+      case 'rinstate-changed':
+        return 'RC';
+        break;
+      case 'rinstate-revised':
+        return 'RR';
+        break;
+      case 'rinstate-status':
+        return 'RS';
+        break;
+    }
+  }
+
+  public static function get_childrenElement(\DOMElement $element)
   {
+    $arr = [];
+    foreach ($element->childNodes as $childNodes) {
+      $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
+    }
+    return $arr;
+  }  
+
+  public static function resolve_issueDate($issueDate, $format = "M-d-Y"){
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if(is_array($issueDate)){
+      $issueDate = $issueDate[0];
+    }
+    $y = $issueDate->getAttribute("year");
+    $m = $issueDate->getAttribute("month");
+    $d = $issueDate->getAttribute("day");
+
+    return date($format, mktime(0,0,0, $m, $d, $y));
+  }
+
+  public static function get_applic_display_text($applic, $separator = '|'){
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if(is_array($applic)){
+      $applic = $applic[0];
+    }
+
+    $displayText = $applic->getElementsByTagName('displayText')[0];
+    $simpleParas = self::get_childrenElement($displayText);
+    $txt = '';
+    $c = count($simpleParas);
+    for ($i=0; $i < $c; $i++) { 
+      $txt .= $simpleParas[$i]->nodeValue;
+      if($i != ($c-1)) $txt .= $separator;
+    }
+    return $txt;
+    
+  }
+
+  public static function resolve_dmTitle($dmTitle, string $child = ''){
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if(is_array($dmTitle)){
+      $dmTitle = $dmTitle[0];
+    }
+
+    $techname = $dmTitle->firstElementChild->nodeValue;
+    $infoname = (isset($dmTitle->firstElementChild->nextElementSibling) ? $dmTitle->firstElementChild->nextElementSibling->nodeValue : '');
+    $infoNameVariant = (isset($dmTitle->firstElementChild->nextElementSibling->nextElementSibling) ? $dmTitle->firstElementChild->nextElementSibling->nextElementSibling : '');
+
+    switch ($child) {
+      case 'techname':
+        return $techname;
+        break;
+      case 'infoname':
+        return $infoname;
+        break;
+      case 'infoNameVariant':
+        return $infoNameVariant;
+        break;
+      default:
+        return $techname."-".$infoname."-".$infoNameVariant;
+        break;
+    }
+  }
+
+  
+  public static function resolve_dmCode($dmCode, string $prefix = 'DMC-')
+  {
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if(is_array($dmCode)){
+      $dmCode = $dmCode[0];
+    }
+
     $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
     $systemDiffCode = $dmCode->getAttribute('systemDiffCode');
     $systemCode = $dmCode->getAttribute('systemCode');

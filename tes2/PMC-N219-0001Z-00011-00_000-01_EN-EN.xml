@@ -59,13 +59,16 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
-      <!-- <pmRef>
-        <pmRefIdent>
-          <pmCode modelIdentCode="N219" pmIssuer="0001Z" pmNumber="00511" pmVolume="00" />
+    </pmEntry>
+    <pmEntry pmEntryType="pmt06">
+      <pmEntryTitle>LEODM</pmEntryTitle>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="002" infoCodeVariant="A" itemLocationCode="A" />
           <issueInfo issueNumber="000" inWork="01" />
           <language languageIsoCode="en" countryIsoCode="EN" />
-        </pmRefIdent>
-      </pmRef> -->
+        </dmRefIdent>
+      </dmRef>
     </pmEntry>
   </content>
 </pm>

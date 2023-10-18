@@ -1555,10 +1555,12 @@ class PMC_PDF extends TCPDF
       // dump($pmEntryType_config['usebookmark'], $txt, $level);
     }
     
-    $children = $this->childrenElement($pmEntry);
+    $children = CSDB::get_childrenElement($pmEntry);
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
+          if(isset($level)){
+          }
           $this->pmEntry_level = $level;
           $this->dmRef($child);
           $this->resetFootnotes();
@@ -1635,14 +1637,14 @@ class PMC_PDF extends TCPDF
     }
   }
 
-  private function childrenElement(\DOMElement $element)
-  {
-    $arr = [];
-    foreach ($element->childNodes as $childNodes) {
-      $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
-    }
-    return $arr;
-  }  
+  // private function childrenElement(\DOMElement $element)
+  // {
+  //   $arr = [];
+  //   foreach ($element->childNodes as $childNodes) {
+  //     $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
+  //   }
+  //   return $arr;
+  // }  
 
   public function updateLink(){
     $page_last = $this->getPage();
@@ -1968,7 +1970,7 @@ class PMC_PDF extends TCPDF
 	 * @param string $align Allows to center or align the text. Possible values are:<ul><li>L : left align</li><li>C : center</li><li>R : right align</li><li>'' : empty string : left for LTR or right for RTL</li></ul>
 	 * @public
 	 */
-  public function writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $DOMDocument = null, $tes = false, $who = '') {
+  public function writeHTML($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='', $revmark = false, $DOMDocument = null, $usefootnote = false ,$tes = false, $who = '') {
     // if(!$tes) dump($this->print_header, $html);
     // dump($html);
     $gvars = $this->getGraphicVars();
@@ -2075,16 +2077,19 @@ class PMC_PDF extends TCPDF
     $basic_w = $w;
 
     // footnote #0 - save footnote html string
+    // if($tes) dump($html);
     $footnoteshtmlstrings = [];
-    $domdoc = new DOMDocument();
-    $domdoc->loadXML("<root>$html</root>");
-    $domxpath = new DOMXPath($domdoc);
-    $res = $domxpath->evaluate("//span[@isfootnote = 'true']");
-    foreach($res as $i => $fnt){
-      $fnt->setAttribute("isfootnote", "false");
-      $footnoteshtmlstrings[$fnt->getAttribute('id')]['html'] = $fnt->c14N();
+    if($usefootnote){
+      $domdoc = new DOMDocument();
+      $domdoc->loadXML("<root>$html</root>");
+      $domxpath = new DOMXPath($domdoc);
+      $res = $domxpath->evaluate("//span[@isfootnote = 'true']");
+      foreach($res as $i => $fnt){
+        $fnt->setAttribute("isfootnote", "false");
+        $footnoteshtmlstrings[$fnt->getAttribute('id')]['html'] = $fnt->c14N();
+      }
+      unset($domdoc, $domxpath, $res);
     }
-    unset($domdoc, $domxpath, $res);
     // dd($dom, $footnoteshtmlstrings, $html);
 
 		while ($key < $maxel) {

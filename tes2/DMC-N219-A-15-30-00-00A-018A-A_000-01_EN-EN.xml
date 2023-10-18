@@ -34,6 +34,9 @@
         </dmRef>
       </applicCrossRefTableRef>
       <applic>
+        <displayText>
+          <simplePara>N219</simplePara>
+        </displayText>
         <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
       </applic>
       <brexDmRef>
@@ -71,6 +74,7 @@
         <para changeMark="0" changeType="modify" reasonForUpdateRefIds="rfu-002">
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Labore, voluptas, mollitia, fugit ullam delectus at sit necessitatibus reiciendis esse aspernatur sequi quae doloremque laborum maxime? Rem quo eaque natus expedita.
         </para>
+
         <para>
           Lorem ipsum 
           <subScript>tes</subScript> dolor sit amet, <emphasis emphasisType="em01">tes emphasis</emphasis> consectetur adipisicing elit. Natus nesciunt 
