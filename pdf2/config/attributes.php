@@ -58,6 +58,13 @@ $pmEntryType = [
     'usetoc' => false,
     'usebookmark' => true,
   ],
+  'pmt08' => [
+    'interpretation' =>  'HIGH',
+    'useheader' => true,
+    'usefooter' => true,
+    'usetoc' => false,
+    'usebookmark' => true,
+  ],
   'pmt61' => [
     'interpretation' => 'CONTENT',
     'useheader' => true,

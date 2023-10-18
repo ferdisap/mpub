@@ -60,13 +60,6 @@
         <issueDate year="2023" month="12" day="30" />
         <frontMatterSubList>
           <title>List of Effective Data Modules</title>
-          <reducedPara>
-            The listed documents are included in issue: 
-          </reducedPara>
-          <reducedPara>
-            C = Changed Data Module #ln;
-            N = New Data Module 
-          </reducedPara>
           <frontMatterDmEntry>
             <dmRef>
               <dmRefIdent>

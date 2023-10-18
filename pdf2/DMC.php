@@ -98,6 +98,7 @@ class DMC
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
+    $xsltproc->registerPHPFunctions();
     
     $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
@@ -107,6 +108,7 @@ class DMC
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument , $tes = true);
     
+    $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
   }
 
   public function render_descriptXsd()

@@ -17,6 +17,8 @@
   </xsl:template>
 
   <xsl:template match="dmRefIdent">
+    <xsl:param name="prefix"></xsl:param>
+    <xsl:value-of select="$prefix"/>
     <xsl:value-of select="dmCode/@modelIdentCode"/>-<xsl:value-of select="dmCode/@systemDiffCode"/>-<xsl:value-of select="dmCode/@systemCode"/>-<xsl:value-of select="dmCode/@subSystemCode"/><xsl:value-of select="dmCode/@subSubSystemCode"/>-<xsl:value-of select="dmCode/@assyCode"/>-<xsl:value-of select="dmCode/@disassyCode"/><xsl:value-of select="dmCode/@disassyCodeVariant"/>-<xsl:value-of select="dmCode/@infoCode"/><xsl:value-of select="dmCode/@infoCodeVariant"/>-<xsl:value-of select="dmCode/@itemLocationCode"/>
     <xsl:if test="issueInfo">
       <xsl:text>_</xsl:text>

@@ -1916,6 +1916,7 @@ class PMC_PDF extends TCPDF
   {
     if($this->allowLocalFiles){
       return "file://{$this->absolute_path_csdbInput}";
+      // return "{$this->absolute_path_csdbInput}";
     }
   }
 

@@ -5,6 +5,7 @@
   <xsl:include href="attribute/cgmark.xsl" />
   <xsl:include href="./group/reducedParaElemGroup.xsl" />
   <xsl:include href="./element/frontMatterList.xsl" />
+  <xsl:include href="./group/part/dmRef.xsl" />
 
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 

@@ -162,24 +162,26 @@ abstract class CSDB {
     return "$c::$fn";
   }
 
-  // public static function resolve_dmCode_forXSLT($dmCode)
-  // {
-    // dd($dmCode[0]);
-    // dd($el);
-    // return $el[0];
-    // dd($el);
-    // return $el[0];
-    // return $el->nodeValue;
-    // return 'sedang tesfungsi';
-  // }
-
-  public static function resolve_issueType($issueType){
+  public static function resolve_issueType($issueType, string $option = ''){
+    if(!$issueType) return '';
     // untuk mengakomodir penggunaan fungsi di XSLT
     if(is_array($issueType)){
       $issueType = $issueType[0];
     }
     $it = $issueType->nodeValue;
     
+    switch ($option) {
+      case 'uppercase':
+        return strtoupper($it);
+        break;      
+      case 'lowercase':
+        return strtolower($it);
+        break;
+      case 'sentencecase':
+        return ucfirst($it);
+        break;
+    }
+
     switch ($it) {
       case 'new':
         return'N';
