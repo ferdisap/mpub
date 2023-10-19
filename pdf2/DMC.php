@@ -106,7 +106,10 @@ class DMC
     
     $html = $xsltproc->transformToXml($this->DOMDocument);
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
-    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument , $tes = true);
+
+    $this->pdf->setPageOrientation($this->pdf->get_pmType_config()['page']['orientation']);
+    $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
+    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = false ,$tes = true);
     
     $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
   }
@@ -135,149 +138,15 @@ class DMC
     $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
 
-    // $this->pdf->setPrintHeader($this->pdf->get_pmEntryType_config()['useheader']);
-    // $this->pdf->setPrintFooter($this->pdf->get_pmEntryType_config()['usefooter']);
-
     $html = $xsltproc->transformToXml($this->DOMDocument);
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
     $html = preg_replace("/[\n\r\s]+(?=<.+isfootnote)/",'[?f]',$html); // untuk menghilangkan space ketika didepan ada footnote
-    // dd($html);
-    // dd('a',$html);
+  
+    $this->pdf->setPageOrientation($this->pdf->get_pmType_config()['page']['orientation']);
+    $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
-    // $this->pdf->writeHTML($html, true, false, true, true,'J',true, null , $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
-    // $this->pdf->setPage(2);
-    // $this->pdf->Line(0,$this->pdf->getPageDimensions(2)['PageBreakTrigger'], 50, $this->pdf->getPageDimensions(2)['PageBreakTrigger']);
-    // dd($this->pdf);
-    // dump($this->pdf->footnotes);
   }
-
-  // public function resolve_levelledPara(\DOMElement $levelledPara)
-  // {
-  //   $level = CSDB::checkLevel($levelledPara);
-
-  //   $indentation = $this->pdf->get_pmType_config()['content']['indentation']['levelledPara'][$level];
-    
-  //   $prefixnum = CSDB::getPrefixNum($levelledPara, 1);
-
-  //   $attributes = [];
-  //   foreach($levelledPara->attributes as $attribute){
-  //     $attributes[$attribute->nodeName] = $attribute->nodeValue;
-  //   }
-  //   // set id for fragment if any
-  //   if(isset($attributes['id'])){
-  //     $this->pdf->addInternalReference($this->pdf->curEntry, $attributes['id'], $this->pdf->getPage(), $this->pdf->GetY());
-  //   }
-
-  //   // set changemark if any
-  //   if((isset($attributes['changeMark']) && $attributes['changeMark'] == "1") && isset($attributes['reasonForUpdateRefIds'])){
-  //     $st_pos_y = $this->pdf->GetY();
-  //     $reasonForUpdateRefIds = $attributes['reasonForUpdateRefIds'];
-  //     $index_cgmark = count($this->pdf->cgmark);
-  //     $this->pdf->addCgMark($index_cgmark, $st_pos_y, null, $this->pdf->getPage(), $reasonForUpdateRefIds, 'ini levelledPara');
-  //   }
-
-  //   foreach (CSDB::children($levelledPara, 'element') as $element){
-  //     switch ($element->tagName) {
-  //       case 'title':
-  //         $this->pdf->setCellPaddings($indentation);
-  //         $this->resolve_title($element, $level, $prefixnum);
-  //         break;
-  //       case 'warning':
-  //         break;
-  //       case 'caution':
-  //         break;
-  //       case 'note':
-  //         break;
-  //       case 'circuitBreakerDescrGroup':
-  //         break;
-  //       case 'para':
-  //         $this->resolve_para($element);
-  //         break;
-  //       case 'figure':
-  //         $this->resolve_figure($element);
-  //         break;
-  //       case 'figureAlts':
-  //         break;
-  //       case 'multimedia':
-  //         break;
-  //       case 'multimediaAlts':
-  //         break;
-  //       case 'foldout':
-  //         break;
-  //       case 'table':
-  //         break;
-  //       case 'levelledPara':
-  //         $this->resolve_levelledPara($element);
-  //         break;
-  //       case 'levelledParaAlts':
-  //         break;
-          
-  //     }
-  //     if((isset($attributes['changeMark']) && $attributes['changeMark'] == "1") && isset($attributes['reasonForUpdateRefIds'])){
-  //       $ed_pos_y = $this->pdf->GetY();
-  //       $this->pdf->addCgMark($index_cgmark, null, $ed_pos_y, $this->pdf->getPage(), $reasonForUpdateRefIds, '');
-  //     }
-  //   }
-  // }
-
-  // public function resolve_figure(\DOMElement $figure){
-  //   $index = CSDB::checkIndex($figure, 1);
-
-  //   $xsl_figure = CSDB::importDocument(__DIR__."./xsl/figure.xsl", '',"xsl:stylesheet");
-  //   $xsltproc = new XSLTProcessor();
-  //   $xsltproc->importStylesheet($xsl_figure);
-  //   $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
-  //   $xsltproc->setParameter('','prefixnum', $index);
-  //   $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
-  //   $html = $xsltproc->transformToXml(CSDB::importDocument('',$figure->C14N(),'figure'));
-  //   $this->pdf->Ln(3);
-  //   $this->pdf->writeHTML($html, true, false, true, true,'J',true, $tes = true, $who = "figure");
-  //   $this->pdf->Ln(1.5);
-  // }
-
-  // public function resolve_title(\DOMElement $title, int $level, string $prefixnum = '')
-  // { 
-  //   $fontsize = $this->pdf->get_pmType_config()['fontsize']['levelledPara']['title'][$level];
-  //   $this->pdf->setFontSize($fontsize);
-
-  //   $xsl_title = CSDB::importDocument(__DIR__."./xsl/title.xsl", '',"xsl:stylesheet");
-  //   $xsltproc = new XSLTProcessor();
-  //   $xsltproc->importStylesheet($xsl_title);
-  //   // $xsltproc->setParameter('','level',$level+1);  
-  //   $xsltproc->setParameter('','prefixnum',$prefixnum);
-  //   $xsltproc->setParameter('','indentation',2);
-  //   $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
-  //   $html = $xsltproc->transformToXml(CSDB::importDocument('',$title->C14N(),'title'));
-  //   $html = preg_replace("/[\r\n]|\s{2,}/",'',$html);
-
-  //   $this->pdf->Ln(3);
-  //   $this->pdf->writeHTML($html, true, false, true, true,'J',true);
-  //   $this->pdf->Ln(1.5);
-
-  //   $tb = '';
-  //   foreach($title->childNodes as $node){
-  //     $tb .= $node->nodeValue;
-  //   }
-  //   $this->pdf->Bookmark($prefixnum." ".$tb, $level+1, 0,'',''); // level +1 karena di PM Entry sudah di bookmark level top nya
-  // }
-
-  // public function resolve_para(\DOMElement $para)
-  // {
-  //   $fontsize = $this->pdf->get_pmType_config()['fontsize']['levelledPara']['para'];
-  //   $this->pdf->setFontSize($fontsize);
-    
-  //   $xsl_para = CSDB::importDocument(__DIR__."./xsl/para.xsl", '',"xsl:stylesheet");
-  //   $xsltproc = new XSLTProcessor();
-  //   $xsltproc->importStylesheet($xsl_para);
-  //   $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
-  //   $html = $xsltproc->transformToXml(CSDB::importDocument('',$para->C14N(),'para'));
-  //   $html = preg_replace("/[\r\n]|\s{2,}/",'',$html);
-
-  //   $this->pdf->writeHTML($html, true, false, true, true,'J',true, $tes = false);
-  //   $this->pdf->Ln(1.5);
-  // }
-
   public static function getSchemaName(\DOMElement $dmodule)
   {
     $xsiNoNamespaceSchemaLocation = $dmodule->getAttribute("xsi:noNamespaceSchemaLocation");

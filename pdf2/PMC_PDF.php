@@ -78,14 +78,20 @@ class PMC_PDF extends TCPDF
   // Page footer
   public function Footer()
   {
+    // dump($this->page);
+    // dump($this->y."|".$this->page);
     if (($this->getPage() % 2) == 0) {
-      $this->SetY(-15);
+      // $this->SetY(-15);
+      // $this->setFooterMargin(15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
+      // $this->Line(0,$this->y, 50, $this->y);
       $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
-      $this->SetY(-15);
+      // $this->SetY(-15);
+      // $this->setFooterMargin(15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
+      // $this->Line(0,$this->y, 50, $this->y);
       $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
@@ -1470,7 +1476,7 @@ class PMC_PDF extends TCPDF
    */
   public function importDocument(string $absolute_path = '', string $xml_string = '')
   {
-    $this->pmc_path = $absolute_path;
+    // $this->pmc_path = $absolute_path;
     $this->DOMDocument = CSDB::importDocument($absolute_path, $xml_string, 'pm');
 
     # validate DOMDocument here
@@ -1479,15 +1485,8 @@ class PMC_PDF extends TCPDF
     $attributes = require "config/attributes.php";
     $this->pmType_config = $attributes['pmType'][$pmType_value];
     
-    $orientation = $this->pmType_config['page']['orientation'];
-    $unit = $this->pmType_config['page']['unit'];
     $format = $this->pmType_config['page']['format'];
-
-    $this->setPageOrientation($orientation);
-    $this->setPageUnit($unit);
-    $this->setPageFormat($format);
-    // parent::__construct($orientation, $unit, $format);
-    
+    $this->setPageFormat($format);    
   }
   /**
    * @param string $aa_name
@@ -1521,6 +1520,7 @@ class PMC_PDF extends TCPDF
     // $this->pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
 
     $headerMargin = $this->pmType_config['page']['headerMargin'];
+    $footerMargin = $this->pmType_config['page']['footerMargin'];
     $topMargin = isset($pmEntryType_config['page']['margins']['T']) ? $pmEntryType_config['page']['margins']['T'] :  $this->pmType_config['page']['margins']['T'];
     $bottomMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['B'] : $this->pmType_config['page']['margins']['B'];
     $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
@@ -1528,12 +1528,14 @@ class PMC_PDF extends TCPDF
     $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
 
     $this->setHeaderMargin($headerMargin);
+    $this->setFooterMargin($footerMargin);
     $this->setMargins($leftMargin,$topMargin,$rightMargin);
     $this->setBooklet(true,$rightMargin,$leftMargin);
     $this->setFontSize($fontsize);
     $this->SetAutoPageBreak(TRUE, $bottomMargin);
     $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
     // $this->setTopMargin($topMargin);
+    // $this->setPrintFooter(true);
 
     if(!empty($pmEntryType_config)){
       $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
@@ -1541,7 +1543,10 @@ class PMC_PDF extends TCPDF
       $this->AddPage();
       $this->setBooklet(true,$leftMargin,$rightMargin);
       $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
+      // dump($pmEntryType_config['usefooter'], $this->page);
+      // $this->setPrintFooter(true);
     }
+    // dump($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
 
     $TOC = $pmEntryType_config['usetoc'] ?? false;
     $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
@@ -1576,14 +1581,15 @@ class PMC_PDF extends TCPDF
           $this->render();
       }
     }
+    // add TOC
     if($TOC){
-      $this->addTOCPage();
-      $this->SetFont($this->getFontFamily(), 'B', 14);
-      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      $this->Ln();    
-      $this->SetFont($this->getFontFamily(), '', 10);
-      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      $this->endTOCPage();
+      // $this->addTOCPage();
+      // $this->SetFont($this->getFontFamily(), 'B', 14);
+      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      // $this->Ln();    
+      // $this->SetFont($this->getFontFamily(), '', 10);
+      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      // $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -3583,7 +3589,9 @@ class PMC_PDF extends TCPDF
                 $fntref = <<<EOD
                   <a style="text-decoration:none" href="curEntry,idfnt"><sup>[{$c}]</sup>&#160;</a>
                 EOD;
-                $footnoteRefTxt = $fntref;
+                if($usefootnote){
+                  $footnoteRefTxt = $fntref;
+                }
               }
 
               // footnote #2 - create footnote xobject
