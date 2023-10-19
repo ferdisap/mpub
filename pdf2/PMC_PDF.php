@@ -65,6 +65,7 @@ class PMC_PDF extends TCPDF
   //Page header
   public function Header()
   {
+    // dump($this->y."|".$this->page);
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
@@ -74,6 +75,7 @@ class PMC_PDF extends TCPDF
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
       $this->writeHTML($header, true, false, false,true,'J',false);
     }
+    // dump($this->y."|".$this->page);
   }
   // Page footer
   public function Footer()
@@ -1486,7 +1488,8 @@ class PMC_PDF extends TCPDF
     $this->pmType_config = $attributes['pmType'][$pmType_value];
     
     $format = $this->pmType_config['page']['format'];
-    $this->setPageFormat($format);    
+    $this->setPageFormat($format);  
+    $this->setPageOrientation($this->get_pmType_config()['page']['orientation']);  
   }
   /**
    * @param string $aa_name
@@ -1536,13 +1539,14 @@ class PMC_PDF extends TCPDF
     $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
     // $this->setTopMargin($topMargin);
     // $this->setPrintFooter(true);
-
     if(!empty($pmEntryType_config)){
+      // dump($this->page."|".$pmEntryType);
       $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
       $this->startPageGroup();
       $this->AddPage();
       $this->setBooklet(true,$leftMargin,$rightMargin);
       $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
+      // dump($this->page."|".$pmEntryType);
       // dump($pmEntryType_config['usefooter'], $this->page);
       // $this->setPrintFooter(true);
     }
@@ -1564,12 +1568,19 @@ class PMC_PDF extends TCPDF
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
+          // dump($this->page."|".$pmEntryType);
           if(isset($level)){
           }
           $this->pmEntry_level = $level;
           $this->dmRef($child);
+          // dump($this->page."|".$pmEntryType);
           $this->resetFootnotes();
+          // dump($this->page); // harusnya berakhir di page genap
+          $this->addIntentionallyLeftBlankPage($this);
+          // dump($this->page."|".$pmEntryType); // harusnya berakhir di page genap
+          
           break;
+
         case 'pmRef':
           $pmCode = CSDB::resolve_pmCode($child->getElementsByTagName('pmCode')[0]);
           $issueInfo = ($if = CSDB::resolve_issueInfo($child->getElementsByTagName('issueInfo')[0])) ? "_". $if : '';
@@ -1602,6 +1613,8 @@ class PMC_PDF extends TCPDF
 
   private function dmRef(\DOMElement $dmRef)
   {
+    // dump($this->page);
+    
     // if you want to utilize referredFragment, behavior, dmTitle, issueDate
     $referredFragment = $dmRef->getAttribute('referredFragment');
     $dmRefIdent = $dmRef->firstElementChild;
@@ -1618,16 +1631,19 @@ class PMC_PDF extends TCPDF
     $dmc->pdf = $this;
     $dmc->importDocument_byIdent($identExtension_el, $dmCode_el, $issueInfo_el, $languange_el);
     $dmc->render();
+    // dump($this->page);
   }
 
   public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
   {
+    // dump($pdf->getPage());
     if (($pdf->getNumPages() % 2) == 0) {
       return false;
     } else {
-      if(!empty($pdf->tes) AND $pdf->tes){
+      // if(!empty($pdf->tes) AND $pdf->tes){
         // dump($pdf->y, $pdf->page, $pdf->getLastH());
-      }
+      // }
+      $pdf->AddPage();
       $topMargin = $pdf->pmType_config['page']['margins']['T'];
       $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
       $tPadding = $pdf->getCellPaddings()['T'];
@@ -3998,7 +4014,33 @@ class PMC_PDF extends TCPDF
 		$this->endPage();
 		// start new page
 		$this->startPage($orientation, $format, $tocpage);
+
+    $y = $this->y;
+    $x = $this->x;
+    // add page ident
+    $y_pos = $this->getPageHeight() * 1 / 2;
+    // $template_dmc_identification = $this->startTemplate(80, 80, true);
+    // $this->StartTransform();
+    // $this->setFontSize(6);
+    // $this->Rotate(90, 25, 25);
+    // $this->Cell(50, 0, $this->page_ident, 0, 0, 'C', false, '', 0, false, 'T', 'M');
+    // $this->StopTransform();
+    // $this->endTemplate();
+    // $x = $this->getPageWidth() - $this->get_pmType_config()['page']['margins']['L'];
+    // $this->printTemplate($template_dmc_identification, 0, 30, '', '', '', '', false);
+    // dump($y_pos);
+    // $this->printTemplate($template_dmc_identification, 0, 40, '', '', '', '', false);
+    // dump($this->y);
+
+    // $this->Cell(50, 0, $this->page_ident, 0, 0, 'C', false, '', 0, false, 'T', 'M');
+   
+    $this->x = $x;
+    $this->y = $y;
+
+    // $this->Line(0,20,50,20);
+
 	}
+  
 
   /**
    * tambahanya hanya menambah tulisan intentionally left blank saja, tapi tidak jadi

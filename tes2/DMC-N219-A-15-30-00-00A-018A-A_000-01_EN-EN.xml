@@ -122,10 +122,10 @@
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi consequatur, ipsam quidem numquam ad dolorem accusamus recusandae beatae officia porro repudiandae adipisci nesciunt vitae, sequi laborum. Natus tenetur veritatis autem.
           Lorem ipsum dolor sit amet.
         </para> -->
-        <figure changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
+        <!-- <figure changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
           <title changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-001">Large Aircraft</title>            
           <graphic infoEntityIdent="ICN-0001Z-00002-001-05.jpg" reproductionHeight="140mm"/>
-        </figure>
+        </figure> -->
         <para>
           Cupiditate porro voluptates consectetur
           <footnote>

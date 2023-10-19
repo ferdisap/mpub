@@ -54,41 +54,39 @@ class DMC
     switch ($this->schemaXsd) {
       case 'descript.xsd':
         $this->render_descriptXsd();
-        // PMC_PDF::addIntentionallyLeftBlankPage($this->pdf);
         break;
       case 'frontmatter.xsd':
         $this->render_frontmatterXsd();
+        break;
       default:
         # code...
         break;
     }
-    
-    // note the end page of DMC
     $end_page = $this->pdf->getPage();
-    // add page ident in every page
+    // dd($end_page);
     for($i = $first_page; $i <= $end_page; $i++){
       $this->pdf->setPage($i);
-      $y_pos = $this->pdf->getPageHeight() * 1 / 2;
-
-      $template_dmc_identification = $this->pdf->startTemplate(80, 80, true);
+      $w = 5;
+      $h = 60;
+      $y_pos = $this->pdf->getPageHeight() * 1 / 3;
+      $tmpl = $this->pdf->startTemplate($w,$h);
       $this->pdf->StartTransform();
       $this->pdf->setFontSize(6);
-      $this->pdf->Rotate(90, 25, 25);
-      $this->pdf->Cell(50, 0, $this->pdf->page_ident, 0, 0, 'C', false, '', 0, false, 'T', 'M');
+      $this->pdf->Rotate(90,18,18);
+      $this->pdf->Text('','',$this->pdf->page_ident);
       $this->pdf->StopTransform();
       $this->pdf->endTemplate();
-
       if(($i % 2) == 0){
         $x = $this->pdf->getPageWidth() - $this->pdf->get_pmType_config()['page']['margins']['L'];
-        $this->pdf->printTemplate($template_dmc_identification, $x, $y_pos, '', '', '', '', false);
       } else{
         $x = $this->pdf->getPageWidth() - $this->pdf->get_pmType_config()['page']['margins']['R'];
-        $this->pdf->printTemplate($template_dmc_identification, $x, $y_pos, '', '', '', '', false);
       }
+      $this->pdf->printTemplate($tmpl, $x, $y_pos, $w, $h, '', '', false);
     }
   }
 
   public function render_frontmatterXsd(){
+    
     $this->pdf->page_ident = '';
     $CSDB_class_methods = array_map(function($name){
       return CSDB::class."::$name";
@@ -109,9 +107,10 @@ class DMC
 
     $this->pdf->setPageOrientation($this->pdf->get_pmType_config()['page']['orientation']);
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
+
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = false ,$tes = true);
     
-    $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
+    // $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
   }
 
   public function render_descriptXsd()
@@ -146,6 +145,8 @@ class DMC
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
+
+    // $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
   }
   public static function getSchemaName(\DOMElement $dmodule)
   {
