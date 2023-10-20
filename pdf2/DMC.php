@@ -34,7 +34,7 @@ class DMC
     
     $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
     $this->schemaXsd = $schemaXsd;
-    $this->pdf->page_ident = $this->dmCode;
+    $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
 
     $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
     $techname = $dmTitle->firstElementChild->nodeValue;
@@ -87,7 +87,7 @@ class DMC
 
   public function render_frontmatterXsd(){
     
-    $this->pdf->page_ident = '';
+    $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
     $CSDB_class_methods = array_map(function($name){
       return CSDB::class."::$name";
     },get_class_methods(CSDB::class));

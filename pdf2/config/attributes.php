@@ -49,6 +49,7 @@ $pmEntryType = [
     'usefooter' => false,
     'usetoc' => false,
     'usebookmark' => true,
+    'printpageident' => false,
     'page' => [
       'margins' => [ 'L' => 20, 'T' => 15, 'R' => 10, 'B' => 15 ],
     ],
@@ -59,6 +60,7 @@ $pmEntryType = [
     'usefooter' => true,
     'usetoc' => false,
     'usebookmark' => true,
+    'printpageident' => true,
   ],
   'pmt08' => [
     'interpretation' =>  'HIGH',
@@ -66,6 +68,7 @@ $pmEntryType = [
     'usefooter' => true,
     'usetoc' => false,
     'usebookmark' => true,
+    'printpageident' => true,
   ],
   'pmt61' => [
     'interpretation' => 'CONTENT',
@@ -73,6 +76,7 @@ $pmEntryType = [
     'usefooter' => true,
     'usetoc' => true,
     'usebookmark' => true,
+    'printpageident' => true,
   ],
 ];
 

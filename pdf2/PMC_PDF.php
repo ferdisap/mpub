@@ -65,36 +65,26 @@ class PMC_PDF extends TCPDF
   //Page header
   public function Header()
   {
-    // dump($this->y."|".$this->page);
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
-    }
-    // dump($this->y."|".$this->page);
+      $this->writeHTML($header, true, false, false,true,'J',false);
+    };
   }
   // Page footer
   public function Footer()
   {
-    // dump($this->page);
-    // dump($this->y."|".$this->page);
     if (($this->getPage() % 2) == 0) {
-      // $this->SetY(-15);
-      // $this->setFooterMargin(15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      // $this->Line(0,$this->y, 50, $this->y);
-      // $this->writeHTML($footer, true, false, true, false, 'C');
+      $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
-      // $this->SetY(-15);
-      // $this->setFooterMargin(15);
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      // $this->Line(0,$this->y, 50, $this->y);
-      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -627,7 +617,7 @@ class PMC_PDF extends TCPDF
 
   /**
    * tambahan: adalah menambah attribute cgmarkid disetiap dom yang punya changemark==1
-   * tambahannya: replace #ln; menjadi \n (new line) disetiap string
+   * tambahannya: replace #ln; menjadi \n (new line) disetiap string, tapi tidak bisa di table
 	 * Returns the HTML DOM array.
 	 * @param string $html html code
 	 * @return array
@@ -768,10 +758,12 @@ class PMC_PDF extends TCPDF
 		$html = preg_replace('/[\s]<\/([^\>]*)>/', '&nbsp;</\\1>', $html); // preserve some spaces
 		$html = preg_replace('/<su([bp])/', '<zws/><su\\1', $html); // fix sub/sup alignment
 		$html = preg_replace('/<\/su([bp])>/', '</su\\1><zws/>', $html); // fix sub/sup alignment
+    // dd(chr(30));
+    // dd('/'.$this->re_space['p'].'+/'.$this->re_space['m'], $this->re_space['p'],$this->re_space['m'], chr(32), $html);
 		$html = preg_replace('/'.$this->re_space['p'].'+/'.$this->re_space['m'], chr(32), $html); // replace multiple spaces with a single space
 
     // untuk mengubah #ln; menjadi new line
-    $html = preg_replace("/#ln;/","\n",$html);
+    // $html = preg_replace("/#ln;/","\n",$html); // dipindah ke writeHTML agar bisa dilakukan didalam table
 		// trim string
 		$html = $this->stringTrim($html);
 		// fix br tag after li
@@ -1520,7 +1512,8 @@ class PMC_PDF extends TCPDF
     $pmEntryType = $pmEntry->getAttribute('pmEntryType');
     $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
     
-    // $this->pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
+    // dump($pmEntryType_config);
+    $this->pmEntryType_config = $pmEntryType_config;
 
     $headerMargin = $this->pmType_config['page']['headerMargin'];
     $footerMargin = $this->pmType_config['page']['footerMargin'];
@@ -1980,7 +1973,8 @@ class PMC_PDF extends TCPDF
    * editannya: banyak (lupa nulis)
    * 1. Tambahan cgmark
    * 2. tambahan caption
-   * 3. ...
+   * 3. tambahan: footnote (Footnote text tidak bisa melebihi page height)
+   * 4. tambahannya: replace #ln; menjadi \n (new line) disetiap string, tapi tidak bisa di table
 	 * Allows to preserve some HTML formatting (limited support).<br />
 	 * IMPORTANT: The HTML must be well formatted - try to clean-up it using an application like HTML-Tidy before submitting.
 	 * Supported tags are: a, b, blockquote, br, dd, del, div, dl, dt, em, font, h1, h2, h3, h4, h5, h6, hr, i, img, li, ol, p, pre, small, span, strong, sub, sup, table, tcpdf, td, th, thead, tr, tt, u, ul
@@ -2113,10 +2107,8 @@ class PMC_PDF extends TCPDF
       }
       unset($domdoc, $domxpath, $res);
     }
-    // dd($dom, $footnoteshtmlstrings, $html);
 
 		while ($key < $maxel) {
-      
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
@@ -3354,6 +3346,9 @@ class PMC_PDF extends TCPDF
 				}
 			}
       elseif (strlen($dom[$key]['value']) > 0) {
+        $dom[$key]['value']  = preg_replace("/#ln;/",chr(10),$dom[$key]['value']);
+        // dump($dom[$key]['value']);
+        // dump($dom[$key]['value']);
         // dump($this->y + $this->lasth + (2.9 * 2). "|". $dom[$key]['value']."|". $this->PageBreakTrigger);
         $this->checkPageBreak($this->lasth + (2.645833 * 2)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote . Berfungi juga ketika ada footnote di line terakhir sebelum PageBreakTrigger, akan dipindah ke halaman selanjutnya
         // $this->checkPageBreak($this->lasth + (2.645833 * 1)); // footnote #3

@@ -8,6 +8,7 @@
   <xsl:template match="footnote">
     <!-- syaratnya, jangan tambah line-height di footnote ini, karena akan berdampak ke text
     selanjutnya yang bukan footnote -->
+    <!-- Footnote text tidak bisa melebihi page height -->
       <xsl:param name="usefootnote" select="'yes'"/>
       <xsl:choose>
         <xsl:when test="$usefootnote = 'no'">
