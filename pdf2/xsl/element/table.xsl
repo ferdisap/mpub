@@ -13,9 +13,11 @@
 
   <xsl:template match="tgroup">
     <xsl:param name="title"/>
-     <xsl:variable name="qtyTgroup">
+    <xsl:variable name="footnote" select="descendant::footnote"/>
+    <xsl:variable name="qtyTgroup">
       <xsl:value-of select="count(parent::table/tgroup)"/>
     </xsl:variable>
+
     <div style="text-align:center">
       <xsl:for-each select="parent::table">
         <xsl:call-template name="cgmark"/>
@@ -28,7 +30,22 @@
           <xsl:apply-templates select="tbody/row"/>
         </tbody>
         <tfoot>
-          <xsl:apply-templates select="tfoot/row"/>
+          <xsl:apply-templates select="tfoot/row">
+            <xsl:with-param name="userowsep" select="'no'"/>
+          </xsl:apply-templates>
+          <xsl:for-each select="$footnote">
+            <tr>
+              <!-- <xsl:call-template name="cgmark"/> -->
+              <td colspan="{ancestor::table/@cols}" style="line-height:0.5"> 
+                <xsl:variable name="fnt" select="."/>
+                <xsl:for-each select="ancestor::table/descendant::footnote">
+                  <xsl:if test="child::* = $fnt/child::*">
+                    <span style="font-size:6">[<xsl:value-of select="position()"/>]&#160;<xsl:apply-templates select="$fnt"/></span>
+                  </xsl:if>
+                </xsl:for-each>
+              </td>
+            </tr>
+          </xsl:for-each>                
         </tfoot>
       </table>
       <br/>
@@ -47,24 +64,35 @@
   </xsl:template>
 
   <xsl:template match="row">
+    <xsl:param name="userowsep" select="'yes'"/>
     <tr>
       <xsl:call-template name="cgmark"/>
-      <xsl:apply-templates select="entry"/>
+      <xsl:apply-templates select="entry">
+        <xsl:with-param name="userowsep" select="$userowsep"/>
+      </xsl:apply-templates>
     </tr>
   </xsl:template>
 
   <xsl:template match="entry">
+    <xsl:param name="userowsep" select="'yes'"/>
     <td>
-      <xsl:call-template name="tb_tdstyle"/>
+      <xsl:call-template name="tb_tdstyle">
+        <xsl:with-param name="userowsep" select="$userowsep"/>
+      </xsl:call-template>
       <xsl:call-template name="tb_colspan"/>
       <xsl:call-template name="tb_rowspan"/>
-      <xsl:apply-templates/>
+      <xsl:apply-templates>
+        <xsl:with-param name="usefootnote" select="'no'"/>
+      </xsl:apply-templates>
     </td>
   </xsl:template>
 
   <xsl:template name="tb_tdstyle">
+    <xsl:param name="userowsep" select="'yes'"/>
     <xsl:attribute name="style">
-      <xsl:call-template name="tb_rowsep"/>
+      <xsl:if test="not($userowsep = 'no')">
+        <xsl:call-template name="tb_rowsep"/>
+      </xsl:if>
       <xsl:call-template name="tb_colsep"/>
       <xsl:call-template name="tb_colwidth"/>
       <xsl:call-template name="tb_alignCaptionEntry"/>

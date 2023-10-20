@@ -8,22 +8,38 @@
   <xsl:template match="footnote">
     <!-- syaratnya, jangan tambah line-height di footnote ini, karena akan berdampak ke text
     selanjutnya yang bukan footnote -->
-    
-      <span isfootnote="true" style="font-size:6;text-align:justify">
-        <xsl:attribute name="id">
-          <xsl:choose>
-            <xsl:when test="@id">
-              <xsl:value-of select="@id"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="generate-id()"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:attribute>
-        <xsl:call-template name="id" />
-        <xsl:call-template name="cgmark" />
-        <xsl:apply-templates />
-    </span>
+      <xsl:param name="usefootnote" select="'yes'"/>
+      <xsl:choose>
+        <xsl:when test="$usefootnote = 'no'">
+          <xsl:variable name="fnt" select="."/>
+          <xsl:for-each select="ancestor::table/descendant::footnote">
+            <xsl:if test="child::* = $fnt/child::*">
+            <sup>
+            <xsl:call-template name="cgmark"/>
+            <xsl:text>[</xsl:text><xsl:value-of select="position()"/><xsl:text>]&#160;</xsl:text>
+            </sup>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <span isfootnote="true" style="font-size:6;text-align:justify">
+            <xsl:attribute name="id">
+              <xsl:choose>
+                <xsl:when test="@id">
+                  <xsl:value-of select="@id"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="generate-id()"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:attribute>
+            <xsl:call-template name="id" />
+            <xsl:call-template name="cgmark" />
+            <xsl:apply-templates />
+        </span>
+        </xsl:otherwise>
+      </xsl:choose>
+
   </xsl:template>
 
   <xsl:template match="footnoteRef">

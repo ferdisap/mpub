@@ -4,6 +4,7 @@
   <xsl:output method="xml" omit-xml-declaration="yes"/>
   
   <xsl:template match="para">
+    <xsl:param name="usefootnote" select="'yes'"/>
     <xsl:choose>
       <xsl:when test="ancestor::listItem">
         <span>
@@ -21,10 +22,11 @@
       </xsl:when>
       <xsl:otherwise>
         <p style="page-break-inside: avoid;">
-        <!-- <p> -->
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="usefootnote" select="$usefootnote"/>
+          </xsl:apply-templates> 
         </p>        
       </xsl:otherwise>
     </xsl:choose>
