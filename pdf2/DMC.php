@@ -76,7 +76,7 @@ class DMC
       $this->pdf->Text('','',$this->pdf->page_ident);
       $this->pdf->StopTransform();
       $this->pdf->endTemplate();
-      if(($i % 2) == 0){
+      if(($i % 2) == 0 AND ($this->pdf->isBooklet())){
         $x = $this->pdf->getPageWidth() - $this->pdf->get_pmType_config()['page']['margins']['L'];
       } else{
         $x = $this->pdf->getPageWidth() - $this->pdf->get_pmType_config()['page']['margins']['R'];

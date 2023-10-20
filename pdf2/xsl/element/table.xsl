@@ -18,11 +18,11 @@
       <xsl:value-of select="count(parent::table/tgroup)"/>
     </xsl:variable>
 
-    <div style="text-align:center">
+    <div style="text-align:center;border:1px solid red">
       <xsl:for-each select="parent::table">
         <xsl:call-template name="cgmark"/>
       </xsl:for-each>
-      <table style="text-align:left; border:1px solid black" cellpadding="1mm">
+      <table style="text-align:left;border:1px solid black;" cellpadding="1mm" >
         <thead>
           <xsl:apply-templates select="thead/row"/>
         </thead>

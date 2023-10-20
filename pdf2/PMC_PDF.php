@@ -13,6 +13,8 @@ use TCPDF_STATIC;
 
 class PMC_PDF extends TCPDF
 {
+  protected int $vgutter = 0;
+
   protected string $absolute_path_csdbOutput;
   protected string $absolute_path_csdbInput;
   protected \DOMDocument $DOMDocument;
@@ -61,6 +63,534 @@ class PMC_PDF extends TCPDF
   public string $documentNumber = '';
 
   private array $qty_pmEntry = array();
+  
+  public function addInternalReference($ident, $id, $page, $y = 0){
+
+    $link = $this->AddLink();
+    $this->setLink($link,$y,$page);
+    
+    $this->references[$id] = [
+      'ident' => $ident,
+      'id' => $id,
+      'link' => $link,
+    ];
+
+    // array_push($this->references, [
+    //   'ident' => $ident,
+    //   'id' => $id,
+    //   'link' => $link,
+    //   // 'p' => $page,
+    //   // 'y' => $y,
+    //   // 'f' => $fixed,
+    // ]);
+  }
+
+  public function __construct(string $absolute_path_csdbInput)
+  {
+    $this->absolute_path_csdbInput = $absolute_path_csdbInput;
+    parent::__construct();
+  }  
+  /**
+   * @param string $absolute_path for publication module, if empty string, it call the $xml_string
+   * @param string $xml_string of publication module
+   */
+  public function importDocument(string $absolute_path = '', string $xml_string = '')
+  {
+    // $this->pmc_path = $absolute_path;
+    $this->DOMDocument = CSDB::importDocument($absolute_path, $xml_string, 'pm');
+
+    # validate DOMDocument here
+
+    $pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType');
+    $attributes = require "config/attributes.php";
+    $this->pmType_config = $attributes['pmType'][$pmType_value];
+    
+    $format = $this->pmType_config['page']['format'];
+    $this->setPageFormat($format);  
+    $this->setPageOrientation($this->get_pmType_config()['page']['orientation']);  
+  }
+  /**
+   * @param string $aa_name
+   * @param string $approved_date
+   */
+  public function setAA_Approved(string $aa_name, string $approved_date){
+    $this->aa_approved['name'] = $aa_name;
+    $this->aa_approved['date'] = $approved_date;
+  }
+  public function render()
+  {
+    if (!$this->validateSchema) {
+      return false;
+    }
+
+    $this->setAllowLocalFiles(true);
+    
+    $DOMXpath = new \DOMXPath($this->DOMDocument);
+    $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
+    foreach ($pmEntries as $index => $pmEntry) {   
+      $this->pmEntry($pmEntry);
+    }
+  }
+  private function pmEntry(\DOMElement $pmEntry)
+  {
+    $pmEntryType_config = require "config/attributes.php";
+    $pmEntryType_config = $pmEntryType_config['pmEntryType'];
+    $pmEntryType = $pmEntry->getAttribute('pmEntryType');
+    $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
+    
+    // dump($pmEntryType_config);
+    $this->pmEntryType_config = $pmEntryType_config;
+
+    $orientation = $this->pmType_config['page']['orientation'];
+    $headerMargin = $this->pmType_config['page']['headerMargin'];
+    $footerMargin = $this->pmType_config['page']['footerMargin'];
+    $topMargin = isset($pmEntryType_config['page']['margins']['T']) ? $pmEntryType_config['page']['margins']['T'] :  $this->pmType_config['page']['margins']['T'];
+    $bottomMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['B'] : $this->pmType_config['page']['margins']['B'];
+    $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
+    $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
+    $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
+
+    $this->setHeaderMargin($headerMargin);
+    $this->setFooterMargin($footerMargin);
+    $this->setMargins($leftMargin,$topMargin,$rightMargin);
+    $this->SetAutoPageBreak(TRUE, $bottomMargin);
+    $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true,$rightMargin,$leftMargin);
+    $this->setFontSize($fontsize);
+    $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    // $this->setTopMargin($topMargin);
+    // $this->setPrintFooter(true);
+    if(!empty($pmEntryType_config)){
+      // dump($this->page."|".$pmEntryType);
+      $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
+      $this->startPageGroup();
+      $this->AddPage();
+      $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true,$leftMargin,$rightMargin);
+      $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
+      // dump($this->page."|".$pmEntryType);
+      // dump($pmEntryType_config['usefooter'], $this->page);
+      // $this->setPrintFooter(true);
+    }
+    // dump($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
+
+    $TOC = $pmEntryType_config['usetoc'] ?? false;
+    $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
+
+    if($BOOKMARK){
+      $level = $this->checkLevel($pmEntry);
+      $pmEntryType_interpretation = $this->pmEntryType_config['interpretation'] ?? '';
+      $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $level);
+      $this->Bookmark($txt, $level);
+      // dump($level);
+      // dump($pmEntryType_config['usebookmark'], $txt, $level);
+    }
+    
+    $children = CSDB::get_childrenElement($pmEntry);
+    foreach ($children as $child) {
+      switch ($child->nodeName) {
+        case 'dmRef':
+          // dump($this->page."|".$pmEntryType);
+          if(isset($level)){
+          }
+          $this->pmEntry_level = $level;
+          $this->dmRef($child);
+          // dump($this->page."|".$pmEntryType);
+          $this->resetFootnotes();
+          // dump($this->page); // harusnya berakhir di page genap
+          $this->addIntentionallyLeftBlankPage($this);
+          // dump($this->page."|".$pmEntryType); // harusnya berakhir di page genap
+          
+          break;
+
+        case 'pmRef':
+          $pmCode = CSDB::resolve_pmCode($child->getElementsByTagName('pmCode')[0]);
+          $issueInfo = ($if = CSDB::resolve_issueInfo($child->getElementsByTagName('issueInfo')[0])) ? "_". $if : '';
+          $languange = ($lg = CSDB::resolve_languange($child->getElementsByTagName('language')[0])) ? "_". $lg : '';
+
+          $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($pmCode.$issueInfo.$languange).".xml";
+
+          $this->importDocument($file_withLanguangeCode,'');
+          $this->render();
+      }
+    }
+    // add TOC
+    if($TOC){
+      // $this->addTOCPage();
+      // $this->SetFont($this->getFontFamily(), 'B', 14);
+      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      // $this->Ln();    
+      // $this->SetFont($this->getFontFamily(), '', 10);
+      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      // $this->endTOCPage();
+    }
+    $this->endPageGroup = $this->getPage();
+    $this->updateLink();
+    
+  }
+
+  public function getPageAnnots(){
+    return $this->PageAnnots;
+  }
+
+  private function dmRef(\DOMElement $dmRef)
+  {
+    // dump($this->page);
+    
+    // if you want to utilize referredFragment, behavior, dmTitle, issueDate
+    $referredFragment = $dmRef->getAttribute('referredFragment');
+    $dmRefIdent = $dmRef->firstElementChild;
+    $dmRefAddressItems = $dmRefIdent->nextElementSibling;
+    $behavior = $dmRefAddressItems ? $dmRefAddressItems->nextElementSibling : null;
+
+    $identExtension_el = ($idnt = $dmRefIdent->firstElementChild)->tagName == 'identExtension' ? $idnt : null;
+    $dmCode_el = $identExtension_el ? $identExtension_el->nextElementSibling : $dmRefIdent->firstElementChild;
+    $issueInfo_el = $dmCode_el->nextElementSibling;
+    $languange_el = $issueInfo_el ? $issueInfo_el->nextElementSibling : null;
+
+    $dmc = new DMC();
+    $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
+    $dmc->pdf = $this;
+    $dmc->importDocument_byIdent($identExtension_el, $dmCode_el, $issueInfo_el, $languange_el);
+    $dmc->render();
+    // dump($this->page);
+  }
+
+  public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
+  {
+    // dump($pdf->getPage());
+    if (($pdf->getNumPages() % 2) == 0) {
+      return false;
+    } else {
+      // if(!empty($pdf->tes) AND $pdf->tes){
+        // dump($pdf->y, $pdf->page, $pdf->getLastH());
+      // }
+      $pdf->AddPage();
+      $topMargin = $pdf->pmType_config['page']['margins']['T'];
+      $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
+      $tPadding = $pdf->getCellPaddings()['T'];
+      $bPadding = $pdf->getCellPaddings()['B'];
+      // dd($pdf->getCellPaddings());
+      // dd($pdf->getLastH());
+      $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin + $tPadding + $bPadding);
+      $page_height -= $pdf->getVgutter();
+      $pdf->setFontSize(7);
+      $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      // $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
+      $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
+      return $pdf->getPage();
+    }
+  }
+
+  // private function childrenElement(\DOMElement $element)
+  // {
+  //   $arr = [];
+  //   foreach ($element->childNodes as $childNodes) {
+  //     $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
+  //   }
+  //   return $arr;
+  // }  
+
+  public function updateLink(){
+    $page_last = $this->getPage();
+    for ($page=0; $page <= $page_last; $page++) { 
+      if(!isset($this->PageAnnots[$page])){
+        continue;
+      }
+      foreach($this->PageAnnots[$page] as $i => $annots){
+        foreach($this->references as $id => $reference){
+          // dump($id." => ",$reference);
+          if(
+            ($annots['txt'] == $reference['ident'].",".$id) 
+            OR ("DMC-".$annots['txt'] == $reference['ident'].",".$id) 
+            OR ("PMC-".$annots['txt'] == $reference['ident'].",".$id))
+          {
+            $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
+          }
+        }
+        // foreach($this->references as $reference){
+        //   if(
+        //     ($annots['txt'] == $reference['ident'].",".$reference['id']) 
+        //     OR ("DMC-".$annots['txt'] == $reference['ident'].",".$reference['id']) 
+        //     OR ("PMC-".$annots['txt'] == $reference['ident'].",".$reference['id']))
+        //   {
+        //     $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
+        //   }
+        // }
+      }
+    }
+  } 
+
+  /**
+   * belum mengakomodir changemark di levelled para. 
+   * saat ini applicable to children levelled para (title, para)
+   */
+  public function applyCgMark(\DOMDocument $DOMDocument, $footnoteOnly = false)
+  {
+    // dd($this);
+    // dump($this->cgmark);
+    $topMargin = $this->get_pmType_config()['page']['margins']['T'];
+    $bottomMargin = $this->get_pmType_config()['page']['margins']['B'];    
+
+    // 1. adding the $cgmark[$node_number]['set'][$pagenumber] to be ready to render
+    foreach($this->cgmark as $node_number => $cgmark){
+      
+      if($footnoteOnly){
+        if(!$cgmark['inFootnote']){
+          continue;
+        }
+      }
+
+      $first_page = min($cgmark['pagenum']);
+      $latest_page = max($cgmark['pagenum']);
+      $range = range($first_page, $latest_page);
+      $cgmark['pagenum'] = $range;
+
+      $cgmark['set'] = []; 
+      foreach($cgmark['pagenum'] as $index => $pagenum){
+        // dd($cgmark, $pagenum, count($cgmark['pagenum']));
+        // if($pagenum  == (count($cgmark['pagenum']))-1){
+        if($index == (count($cgmark['pagenum']))-1){ // jika halaman terakhir
+        // $cgmark['set'][$pagenum] = $cgmark['set']['pagenum'] ?? array();
+        // if($pagenum  == (count($cgmark['pagenum']) >= 1 ? count($cgmark['pagenum']) : 1)){
+          $cgmark['set'][$pagenum] = [
+            // 'st_pos_y' => $cgmark['st_pos_y'],
+            // 'st_pos_y' => $this->getMargins()['top'],
+            'st_pos_y' => (count($cgmark['pagenum']) > 1) ? $topMargin : $cgmark['st_pos_y'],
+            'ed_pos_y' => $cgmark['ed_pos_y']
+          ];
+        }
+        elseif($index == 0){ // jika halaman awal
+          $cgmark['set'][$pagenum] = [
+            'st_pos_y' => $cgmark['st_pos_y'],
+            // 'ed_pos_y' => $this->getPageHeight() - $bottomMargin,
+            'ed_pos_y' => $this->pagedim[$pagenum]['PageBreakTrigger'] - $this->pagedim[$pagenum]['lasth'],
+          ];
+        } 
+        else {
+          $cgmark['set'][$pagenum] = [
+            // 'st_pos_y' => $cgmark['st_pos_y'],
+            // 'ed_pos_y' => $cgmark['ed_pos_y'],
+            'st_pos_y' => $topMargin,
+            // 'ed_pos_y' => $this->getPageHeight() - $bottomMargin,
+            'ed_pos_y' => $this->pagedim[$pagenum]['PageBreakTrigger'] - $this->pagedim[$pagenum]['lasth'],
+          ];
+        }
+      }
+      $this->cgmark[$node_number] = $cgmark;
+    }
+
+    // dump($this->cgmark);
+
+    // 2. filtering the cgmark whenever parent with reasonForUpdateRefIds is old (fewer index)
+    $indexRFUIDs = [];
+    foreach($this->cgmark as $node_number => $cgmark){
+      $rfuids = $cgmark['reasonforupdaterefids'];
+      $DOMXpath = new \DOMXPath($DOMDocument);
+      $rfu = $DOMXpath->evaluate("//reasonForUpdate[@id = '{$rfuids}']");
+      if($rfu->item(0)){
+        $index = CSDB::checkIndex($rfu->item(0));
+        $indexRFUIDs[$rfuids] = $index;
+      }
+    }
+    for ($ky=1; $ky < count($this->cgmark) ; $ky++) { // $ky=1 karena dimulai dari index ke 1, bukan ke 0. Jika dari 0 makan tidak conflict (previous cgmark tidak ada)
+        // $previous_cgmark = $this->cgmark[$ky - 1];
+
+        if($footnoteOnly){
+          if(!$this->cgmark[$ky]['inFootnote']){
+            continue;
+          }
+        }
+
+        foreach($this->cgmark[$ky]['pagenum'] as $pagenum){ // foreach pagenumber in every cgmark
+          // unset the previous reasonForUpdateRefIds in the same page if it is older index and end length line is over
+          // if both changemark in one same page AND 
+          // if (current RFUID index > older RFUID index) AND
+          // jika previous_cgmark berada di halaman yang sama AND (prev.cgmark.ed_pos_y >= current.cgmark.ed_pos_y // pervious lebih panjang)
+          $currentIndex = $indexRFUIDs[$this->cgmark[$ky]['reasonforupdaterefids']]; // $cgmark['reasonforupdaterefids']
+          // $previousIndex = $indexRFUIDs[$previous_cgmark['reasonforupdaterefids']];
+          // if( in_array($pagenum,$previous_cgmark['pagenum']) AND ($currentIndex > $previousIndex) AND (isset($previous_cgmark['set'][$pagenum]) AND $previous_cgmark['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] )){
+              // unset($this->cgmark[$ky - 1]['set'][$pagenum]); // unset previous_cgmark
+          // }
+          // jika dihalaman yang sama AND
+          // currenIndex <= previous AND
+          // cgmark terkakhir / $this->cgmark[lastIndex] AND
+          // jika previous_cgmark berada di halaman yang sama AND (prev.cgmark.ed_pos_y >= current.cgmark.ed_pos_y // pervious lebih panjang) 
+          // (!isset($this->cgmark[$ky+1])) artinya jika tidak ada cgmark selanjutnya. Artinya saat ini adalah index terakhir
+          // elseif( in_array($pagenum,$previous_cgmark['pagenum']) AND ($currentIndex <= $previousIndex) AND (!isset($this->cgmark[$ky+1])) AND (isset($previous_cgmark['set'][$pagenum]) AND $previous_cgmark['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] )){
+            // unset current cgmark for the same page
+            // unset($this->cgmark[$ky]['set'][$pagenum]); // unset current cgmark
+          // }
+          // ini tidak seharusnya user menaruh @reasonForUpdateRefIds yang sama dalam first nested element
+          // elseif( in_array($pagenum,$previous_cgmark['pagenum']) AND ($currentIndex == $previousIndex) AND (isset($previous_cgmark['set'][$pagenum]) AND $previous_cgmark['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] )){
+            // unset($this->cgmark[$ky-1]['set'][$pagenum]); // unset previous cgmark
+          // }
+
+          // meng-unset ['set'] setiap cgmark dihalaman yang sama
+          // jika previous ed_pos_y >= current
+          for($pr=$ky-1; $pr >= 0; $pr--){
+
+            if($footnoteOnly){
+              if(!$this->cgmark[$pr]['inFootnote']){
+                continue;
+              }
+            }
+
+            // dump($pr);
+            $previous_cgmark = $this->cgmark[$pr];
+            $previousIndex = $indexRFUIDs[$this->cgmark[$pr]['reasonforupdaterefids']];
+            // dump($this->cgmark);
+            // dump($pr,$this->cgmark[$pr]['set'][2]);
+            // dump( $pr."|".$ky. ": ", "pagenum: {$pagenum}",$this->cgmark[$pr]['set']);
+            if( in_array($pagenum,$previous_cgmark['pagenum'])){
+              if(
+                isset($this->cgmark[$pr]['set'][$pagenum])
+                && ($this->cgmark[$pr]['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] ) 
+                )
+              {
+                if($currentIndex > $previousIndex){
+                  unset($this->cgmark[$pr]['set'][$pagenum]);
+                }
+                elseif($currentIndex <= $previousIndex){
+                  unset($this->cgmark[$ky]['set'][$pagenum]);
+                }
+              }
+            }
+          }
+        }
+    }
+
+    // dump($this->cgmark);
+    
+    // 3. install line vertical to page
+    foreach($this->cgmark as $key => $cgmark){
+
+      if($footnoteOnly){
+        if(!$cgmark['inFootnote']){
+          continue;
+        }
+      }
+
+      foreach($cgmark['set'] as $page => $pos){
+        $this->setPage($page);
+
+        $y1 = $pos['st_pos_y'];
+        $y2 = $pos['ed_pos_y'];
+
+        $x = $this->getMargins()['left'] - 5;
+
+        // dump($this->cgmark);
+
+        $this->setLineStyle([
+          'width' => 0.5,
+          'cap' => 'butt',
+          'join' => 'mitter',
+          'dash' => 0,
+          'color' => [0,0,0]
+        ]);
+        $this->Line($x, $y1, $x, $y2);
+        unset($this->cgmark[$key]);
+      }
+    }
+    // $this->cgmark = [];
+    $this->lastPage();
+  }
+
+  /**
+   * @param int|float $index is the sequential of cgmark
+   */
+  public function addCgMark(int|float $index, int|float $st_pos_y = null, int|float $ed_pos_y = null, int $pagenum, string $reasonForUpdateRefIds, mixed $value = '', bool $inFootnote = false)
+  {
+    // if st_pos_y exist, it assign new st_pos_y in cgmark (replacing)
+    // dump($st_pos_y."|".($pagenum > 0)."|". $reasonForUpdateRefIds);
+    // dump($st_pos_y AND ($pagenum > 0) AND $reasonForUpdateRefIds);
+    if(($st_pos_y >= 0 AND !$ed_pos_y) && ($pagenum > 0) && $reasonForUpdateRefIds){ // the important things is st_pos_y
+      // dump('add st_pos_y', $st_pos_y."|".$pagenum."|".$reasonForUpdateRefIds, );
+      $this->cgmark[$index]['st_pos_y'] = $this->cgmark[$index]['st_pos_y'] ?? $st_pos_y;
+      $this->cgmark[$index]['pagenum'] = $this->cgmark[$index]['pagenum'] ?? array();
+      $this->cgmark[$index]['reasonforupdaterefids'] = $reasonForUpdateRefIds;
+      $this->cgmark[$index]['value'] = $value;  
+      $this->cgmark[$index]['inFootnote'] = $inFootnote;
+      array_push($this->cgmark[$index]['pagenum'], $pagenum);
+    }
+    // if ed_pos_y exist, it assign new ed_pos_y (replacing)
+    // the $ed_pos_y should come from $this->y.
+    elseif ($ed_pos_y && ($pagenum > 0)){
+      // dump('ed_pos_y', $ed_pos_y);
+      $this->cgmark[$index]['ed_pos_y'] = $ed_pos_y; //
+      array_push($this->cgmark[$index]['pagenum'], $pagenum);
+    }    
+    // dump($this->cgmark);
+  }
+
+  /**
+   * minimum value of level is 0 (zero)
+   */
+  private function checkLevel(\DOMElement $element)
+  {
+    $tagName = $element->tagName;
+    $parent_tagName = $tagName;
+
+    $index = -1;
+
+    $parentNode = $element->parentNode;
+    while ($parentNode->tagName == $parent_tagName) {
+      $index += 1;
+      $parentNode = $parentNode->parentNode;
+    }
+    return ($index < 0) ? 0 : $index;
+  }
+
+  public function resetFootnotes(){
+    $this->footnotes = [
+      'staging' => [],
+      'collection' => [],
+    ];
+  }
+
+  public function get_pmType_config()
+  {
+    return $this->pmType_config;
+  }
+  public function get_pmEntryType_config()
+  {
+    return $this->pmEntryType_config;
+  }
+
+  public function getAssetPath()
+  {
+    if($this->allowLocalFiles){
+      return "file://{$this->absolute_path_csdbInput}";
+      // return "{$this->absolute_path_csdbInput}";
+    }
+  }
+
+  public function getPDF()
+  {
+    $this->Output('tes2.pdf', 'I');
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //Page header
   public function Header()
@@ -1437,536 +1967,37 @@ class PMC_PDF extends TCPDF
     // end tambahan
 		return $dom;
 	}
-  
-  public function addInternalReference($ident, $id, $page, $y = 0){
-
-    $link = $this->AddLink();
-    $this->setLink($link,$y,$page);
-    
-    $this->references[$id] = [
-      'ident' => $ident,
-      'id' => $id,
-      'link' => $link,
-    ];
-
-    // array_push($this->references, [
-    //   'ident' => $ident,
-    //   'id' => $id,
-    //   'link' => $link,
-    //   // 'p' => $page,
-    //   // 'y' => $y,
-    //   // 'f' => $fixed,
-    // ]);
-  }
-
-  public function __construct(string $absolute_path_csdbInput)
-  {
-    $this->absolute_path_csdbInput = $absolute_path_csdbInput;
-    parent::__construct();
-  }  
-  /**
-   * @param string $absolute_path for publication module, if empty string, it call the $xml_string
-   * @param string $xml_string of publication module
-   */
-  public function importDocument(string $absolute_path = '', string $xml_string = '')
-  {
-    // $this->pmc_path = $absolute_path;
-    $this->DOMDocument = CSDB::importDocument($absolute_path, $xml_string, 'pm');
-
-    # validate DOMDocument here
-
-    $pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType');
-    $attributes = require "config/attributes.php";
-    $this->pmType_config = $attributes['pmType'][$pmType_value];
-    
-    $format = $this->pmType_config['page']['format'];
-    $this->setPageFormat($format);  
-    $this->setPageOrientation($this->get_pmType_config()['page']['orientation']);  
-  }
-  /**
-   * @param string $aa_name
-   * @param string $approved_date
-   */
-  public function setAA_Approved(string $aa_name, string $approved_date){
-    $this->aa_approved['name'] = $aa_name;
-    $this->aa_approved['date'] = $approved_date;
-  }
-  public function render()
-  {
-    if (!$this->validateSchema) {
-      return false;
-    }
-
-    $this->setAllowLocalFiles(true);
-    
-    $DOMXpath = new \DOMXPath($this->DOMDocument);
-    $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
-    foreach ($pmEntries as $index => $pmEntry) {   
-      $this->pmEntry($pmEntry);
-    }
-  }
-  private function pmEntry(\DOMElement $pmEntry)
-  {
-    $pmEntryType_config = require "config/attributes.php";
-    $pmEntryType_config = $pmEntryType_config['pmEntryType'];
-    $pmEntryType = $pmEntry->getAttribute('pmEntryType');
-    $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
-    
-    // dump($pmEntryType_config);
-    $this->pmEntryType_config = $pmEntryType_config;
-
-    $headerMargin = $this->pmType_config['page']['headerMargin'];
-    $footerMargin = $this->pmType_config['page']['footerMargin'];
-    $topMargin = isset($pmEntryType_config['page']['margins']['T']) ? $pmEntryType_config['page']['margins']['T'] :  $this->pmType_config['page']['margins']['T'];
-    $bottomMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['B'] : $this->pmType_config['page']['margins']['B'];
-    $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
-    $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
-    $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
-
-    $this->setHeaderMargin($headerMargin);
-    $this->setFooterMargin($footerMargin);
-    $this->setMargins($leftMargin,$topMargin,$rightMargin);
-    $this->setBooklet(true,$rightMargin,$leftMargin);
-    $this->setFontSize($fontsize);
-    $this->SetAutoPageBreak(TRUE, $bottomMargin);
-    $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-    // $this->setTopMargin($topMargin);
-    // $this->setPrintFooter(true);
-    if(!empty($pmEntryType_config)){
-      // dump($this->page."|".$pmEntryType);
-      $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
-      $this->startPageGroup();
-      $this->AddPage();
-      $this->setBooklet(true,$leftMargin,$rightMargin);
-      $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
-      // dump($this->page."|".$pmEntryType);
-      // dump($pmEntryType_config['usefooter'], $this->page);
-      // $this->setPrintFooter(true);
-    }
-    // dump($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
-
-    $TOC = $pmEntryType_config['usetoc'] ?? false;
-    $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
-
-    if($BOOKMARK){
-      $level = $this->checkLevel($pmEntry);
-      $pmEntryType_interpretation = $this->pmEntryType_config['interpretation'] ?? '';
-      $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $level);
-      $this->Bookmark($txt, $level);
-      // dump($level);
-      // dump($pmEntryType_config['usebookmark'], $txt, $level);
-    }
-    
-    $children = CSDB::get_childrenElement($pmEntry);
-    foreach ($children as $child) {
-      switch ($child->nodeName) {
-        case 'dmRef':
-          // dump($this->page."|".$pmEntryType);
-          if(isset($level)){
-          }
-          $this->pmEntry_level = $level;
-          $this->dmRef($child);
-          // dump($this->page."|".$pmEntryType);
-          $this->resetFootnotes();
-          // dump($this->page); // harusnya berakhir di page genap
-          $this->addIntentionallyLeftBlankPage($this);
-          // dump($this->page."|".$pmEntryType); // harusnya berakhir di page genap
-          
-          break;
-
-        case 'pmRef':
-          $pmCode = CSDB::resolve_pmCode($child->getElementsByTagName('pmCode')[0]);
-          $issueInfo = ($if = CSDB::resolve_issueInfo($child->getElementsByTagName('issueInfo')[0])) ? "_". $if : '';
-          $languange = ($lg = CSDB::resolve_languange($child->getElementsByTagName('language')[0])) ? "_". $lg : '';
-
-          $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($pmCode.$issueInfo.$languange).".xml";
-
-          $this->importDocument($file_withLanguangeCode,'');
-          $this->render();
-      }
-    }
-    // add TOC
-    if($TOC){
-      // $this->addTOCPage();
-      // $this->SetFont($this->getFontFamily(), 'B', 14);
-      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      // $this->Ln();    
-      // $this->SetFont($this->getFontFamily(), '', 10);
-      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      // $this->endTOCPage();
-    }
-    $this->endPageGroup = $this->getPage();
-    $this->updateLink();
-    
-  }
-
-  public function getPageAnnots(){
-    return $this->PageAnnots;
-  }
-
-  private function dmRef(\DOMElement $dmRef)
-  {
-    // dump($this->page);
-    
-    // if you want to utilize referredFragment, behavior, dmTitle, issueDate
-    $referredFragment = $dmRef->getAttribute('referredFragment');
-    $dmRefIdent = $dmRef->firstElementChild;
-    $dmRefAddressItems = $dmRefIdent->nextElementSibling;
-    $behavior = $dmRefAddressItems ? $dmRefAddressItems->nextElementSibling : null;
-
-    $identExtension_el = ($idnt = $dmRefIdent->firstElementChild)->tagName == 'identExtension' ? $idnt : null;
-    $dmCode_el = $identExtension_el ? $identExtension_el->nextElementSibling : $dmRefIdent->firstElementChild;
-    $issueInfo_el = $dmCode_el->nextElementSibling;
-    $languange_el = $issueInfo_el ? $issueInfo_el->nextElementSibling : null;
-
-    $dmc = new DMC();
-    $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
-    $dmc->pdf = $this;
-    $dmc->importDocument_byIdent($identExtension_el, $dmCode_el, $issueInfo_el, $languange_el);
-    $dmc->render();
-    // dump($this->page);
-  }
-
-  public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
-  {
-    // dump($pdf->getPage());
-    if (($pdf->getNumPages() % 2) == 0) {
-      return false;
-    } else {
-      // if(!empty($pdf->tes) AND $pdf->tes){
-        // dump($pdf->y, $pdf->page, $pdf->getLastH());
-      // }
-      $pdf->AddPage();
-      $topMargin = $pdf->pmType_config['page']['margins']['T'];
-      $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
-      $tPadding = $pdf->getCellPaddings()['T'];
-      $bPadding = $pdf->getCellPaddings()['B'];
-      // dd($pdf->getCellPaddings());
-      // dd($pdf->getLastH());
-      $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin + $tPadding + $bPadding);
-      $pdf->setFontSize(7);
-      $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
-      // $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
-      $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
-      return $pdf->getPage();
-    }
-  }
-
-  // private function childrenElement(\DOMElement $element)
-  // {
-  //   $arr = [];
-  //   foreach ($element->childNodes as $childNodes) {
-  //     $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
-  //   }
-  //   return $arr;
-  // }  
-
-  public function updateLink(){
-    $page_last = $this->getPage();
-    for ($page=0; $page <= $page_last; $page++) { 
-      if(!isset($this->PageAnnots[$page])){
-        continue;
-      }
-      foreach($this->PageAnnots[$page] as $i => $annots){
-        foreach($this->references as $id => $reference){
-          // dump($id." => ",$reference);
-          if(
-            ($annots['txt'] == $reference['ident'].",".$id) 
-            OR ("DMC-".$annots['txt'] == $reference['ident'].",".$id) 
-            OR ("PMC-".$annots['txt'] == $reference['ident'].",".$id))
-          {
-            $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
-          }
-        }
-        // foreach($this->references as $reference){
-        //   if(
-        //     ($annots['txt'] == $reference['ident'].",".$reference['id']) 
-        //     OR ("DMC-".$annots['txt'] == $reference['ident'].",".$reference['id']) 
-        //     OR ("PMC-".$annots['txt'] == $reference['ident'].",".$reference['id']))
-        //   {
-        //     $this->PageAnnots[$page][$i]['txt'] = $reference['link'];
-        //   }
-        // }
-      }
-    }
-  } 
 
   /**
-   * belum mengakomodir changemark di levelled para. 
-   * saat ini applicable to children levelled para (title, para)
-   */
-  public function applyCgMark(\DOMDocument $DOMDocument, $footnoteOnly = false)
-  {
-    // dd($this);
-    // dump($this->cgmark);
-    $topMargin = $this->get_pmType_config()['page']['margins']['T'];
-    $bottomMargin = $this->get_pmType_config()['page']['margins']['B'];    
+	 * Defines the left, top and right margins.
+	 * @param int|float $left Left margin.
+	 * @param int|float $top Top margin.
+	 * @param int|float|null $right Right margin. Default value is the left one.
+	 * @param boolean $keepmargins if true overwrites the default page margins
+	 * @public
+	 * @since 1.0
+	 * @see SetLeftMargin(), SetTopMargin(), SetRightMargin(), SetAutoPageBreak()
+	 */
+	public function setMargins($left, $top, $right=null, $keepmargins=false) {
+		//Set left, top and right margins
+		$this->lMargin = $left;
+		$this->tMargin = $top;
+		if ($right == -1 OR $right === null) {
+			$right = $left;
+		}
+		$this->rMargin = $right;
+		if ($keepmargins) {
+			// overwrite original values
+			$this->original_lMargin = $this->lMargin;
+			$this->original_rMargin = $this->rMargin;
+		}
 
-    // 1. adding the $cgmark[$node_number]['set'][$pagenumber] to be ready to render
-    foreach($this->cgmark as $node_number => $cgmark){
-      
-      if($footnoteOnly){
-        if(!$cgmark['inFootnote']){
-          continue;
-        }
-      }
-
-      $first_page = min($cgmark['pagenum']);
-      $latest_page = max($cgmark['pagenum']);
-      $range = range($first_page, $latest_page);
-      $cgmark['pagenum'] = $range;
-
-      $cgmark['set'] = []; 
-      foreach($cgmark['pagenum'] as $index => $pagenum){
-        // dd($cgmark, $pagenum, count($cgmark['pagenum']));
-        // if($pagenum  == (count($cgmark['pagenum']))-1){
-        if($index == (count($cgmark['pagenum']))-1){ // jika halaman terakhir
-        // $cgmark['set'][$pagenum] = $cgmark['set']['pagenum'] ?? array();
-        // if($pagenum  == (count($cgmark['pagenum']) >= 1 ? count($cgmark['pagenum']) : 1)){
-          $cgmark['set'][$pagenum] = [
-            // 'st_pos_y' => $cgmark['st_pos_y'],
-            // 'st_pos_y' => $this->getMargins()['top'],
-            'st_pos_y' => (count($cgmark['pagenum']) > 1) ? $topMargin : $cgmark['st_pos_y'],
-            'ed_pos_y' => $cgmark['ed_pos_y']
-          ];
-        }
-        elseif($index == 0){ // jika halaman awal
-          $cgmark['set'][$pagenum] = [
-            'st_pos_y' => $cgmark['st_pos_y'],
-            // 'ed_pos_y' => $this->getPageHeight() - $bottomMargin,
-            'ed_pos_y' => $this->pagedim[$pagenum]['PageBreakTrigger'] - $this->pagedim[$pagenum]['lasth'],
-          ];
-        } 
-        else {
-          $cgmark['set'][$pagenum] = [
-            // 'st_pos_y' => $cgmark['st_pos_y'],
-            // 'ed_pos_y' => $cgmark['ed_pos_y'],
-            'st_pos_y' => $topMargin,
-            // 'ed_pos_y' => $this->getPageHeight() - $bottomMargin,
-            'ed_pos_y' => $this->pagedim[$pagenum]['PageBreakTrigger'] - $this->pagedim[$pagenum]['lasth'],
-          ];
-        }
-      }
-      $this->cgmark[$node_number] = $cgmark;
-    }
-
-    // dump($this->cgmark);
-
-    // 2. filtering the cgmark whenever parent with reasonForUpdateRefIds is old (fewer index)
-    $indexRFUIDs = [];
-    foreach($this->cgmark as $node_number => $cgmark){
-      $rfuids = $cgmark['reasonforupdaterefids'];
-      $DOMXpath = new \DOMXPath($DOMDocument);
-      $rfu = $DOMXpath->evaluate("//reasonForUpdate[@id = '{$rfuids}']");
-      if($rfu->item(0)){
-        $index = CSDB::checkIndex($rfu->item(0));
-        $indexRFUIDs[$rfuids] = $index;
-      }
-    }
-    for ($ky=1; $ky < count($this->cgmark) ; $ky++) { // $ky=1 karena dimulai dari index ke 1, bukan ke 0. Jika dari 0 makan tidak conflict (previous cgmark tidak ada)
-        // $previous_cgmark = $this->cgmark[$ky - 1];
-
-        if($footnoteOnly){
-          if(!$this->cgmark[$ky]['inFootnote']){
-            continue;
-          }
-        }
-
-        foreach($this->cgmark[$ky]['pagenum'] as $pagenum){ // foreach pagenumber in every cgmark
-          // unset the previous reasonForUpdateRefIds in the same page if it is older index and end length line is over
-          // if both changemark in one same page AND 
-          // if (current RFUID index > older RFUID index) AND
-          // jika previous_cgmark berada di halaman yang sama AND (prev.cgmark.ed_pos_y >= current.cgmark.ed_pos_y // pervious lebih panjang)
-          $currentIndex = $indexRFUIDs[$this->cgmark[$ky]['reasonforupdaterefids']]; // $cgmark['reasonforupdaterefids']
-          // $previousIndex = $indexRFUIDs[$previous_cgmark['reasonforupdaterefids']];
-          // if( in_array($pagenum,$previous_cgmark['pagenum']) AND ($currentIndex > $previousIndex) AND (isset($previous_cgmark['set'][$pagenum]) AND $previous_cgmark['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] )){
-              // unset($this->cgmark[$ky - 1]['set'][$pagenum]); // unset previous_cgmark
-          // }
-          // jika dihalaman yang sama AND
-          // currenIndex <= previous AND
-          // cgmark terkakhir / $this->cgmark[lastIndex] AND
-          // jika previous_cgmark berada di halaman yang sama AND (prev.cgmark.ed_pos_y >= current.cgmark.ed_pos_y // pervious lebih panjang) 
-          // (!isset($this->cgmark[$ky+1])) artinya jika tidak ada cgmark selanjutnya. Artinya saat ini adalah index terakhir
-          // elseif( in_array($pagenum,$previous_cgmark['pagenum']) AND ($currentIndex <= $previousIndex) AND (!isset($this->cgmark[$ky+1])) AND (isset($previous_cgmark['set'][$pagenum]) AND $previous_cgmark['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] )){
-            // unset current cgmark for the same page
-            // unset($this->cgmark[$ky]['set'][$pagenum]); // unset current cgmark
-          // }
-          // ini tidak seharusnya user menaruh @reasonForUpdateRefIds yang sama dalam first nested element
-          // elseif( in_array($pagenum,$previous_cgmark['pagenum']) AND ($currentIndex == $previousIndex) AND (isset($previous_cgmark['set'][$pagenum]) AND $previous_cgmark['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] )){
-            // unset($this->cgmark[$ky-1]['set'][$pagenum]); // unset previous cgmark
-          // }
-
-          // meng-unset ['set'] setiap cgmark dihalaman yang sama
-          // jika previous ed_pos_y >= current
-          for($pr=$ky-1; $pr >= 0; $pr--){
-
-            if($footnoteOnly){
-              if(!$this->cgmark[$pr]['inFootnote']){
-                continue;
-              }
-            }
-
-            // dump($pr);
-            $previous_cgmark = $this->cgmark[$pr];
-            $previousIndex = $indexRFUIDs[$this->cgmark[$pr]['reasonforupdaterefids']];
-            // dump($this->cgmark);
-            // dump($pr,$this->cgmark[$pr]['set'][2]);
-            // dump( $pr."|".$ky. ": ", "pagenum: {$pagenum}",$this->cgmark[$pr]['set']);
-            if( in_array($pagenum,$previous_cgmark['pagenum'])){
-              if(
-                isset($this->cgmark[$pr]['set'][$pagenum])
-                && ($this->cgmark[$pr]['set'][$pagenum]['ed_pos_y'] >= $this->cgmark[$ky]['set'][$pagenum]['ed_pos_y'] ) 
-                )
-              {
-                if($currentIndex > $previousIndex){
-                  unset($this->cgmark[$pr]['set'][$pagenum]);
-                }
-                elseif($currentIndex <= $previousIndex){
-                  unset($this->cgmark[$ky]['set'][$pagenum]);
-                }
-              }
-            }
-          }
-        }
-    }
-
-    // dump($this->cgmark);
     
-    // 3. install line vertical to page
-    foreach($this->cgmark as $key => $cgmark){
-
-      if($footnoteOnly){
-        if(!$cgmark['inFootnote']){
-          continue;
-        }
-      }
-
-      foreach($cgmark['set'] as $page => $pos){
-        $this->setPage($page);
-
-        $y1 = $pos['st_pos_y'];
-        $y2 = $pos['ed_pos_y'];
-
-        $x = $this->getMargins()['left'] - 5;
-
-        // dump($this->cgmark);
-
-        $this->setLineStyle([
-          'width' => 0.5,
-          'cap' => 'butt',
-          'join' => 'mitter',
-          'dash' => 0,
-          'color' => [0,0,0]
-        ]);
-        $this->Line($x, $y1, $x, $y2);
-        unset($this->cgmark[$key]);
-      }
-    }
-    // $this->cgmark = [];
-    $this->lastPage();
-  }
-
-  /**
-   * @param int|float $index is the sequential of cgmark
-   */
-  public function addCgMark(int|float $index, int|float $st_pos_y = null, int|float $ed_pos_y = null, int $pagenum, string $reasonForUpdateRefIds, mixed $value = '', bool $inFootnote = false)
-  {
-    // if st_pos_y exist, it assign new st_pos_y in cgmark (replacing)
-    // dump($st_pos_y."|".($pagenum > 0)."|". $reasonForUpdateRefIds);
-    // dump($st_pos_y AND ($pagenum > 0) AND $reasonForUpdateRefIds);
-    if(($st_pos_y >= 0 AND !$ed_pos_y) && ($pagenum > 0) && $reasonForUpdateRefIds){ // the important things is st_pos_y
-      // dump('add st_pos_y', $st_pos_y."|".$pagenum."|".$reasonForUpdateRefIds, );
-      $this->cgmark[$index]['st_pos_y'] = $this->cgmark[$index]['st_pos_y'] ?? $st_pos_y;
-      $this->cgmark[$index]['pagenum'] = $this->cgmark[$index]['pagenum'] ?? array();
-      $this->cgmark[$index]['reasonforupdaterefids'] = $reasonForUpdateRefIds;
-      $this->cgmark[$index]['value'] = $value;  
-      $this->cgmark[$index]['inFootnote'] = $inFootnote;
-      array_push($this->cgmark[$index]['pagenum'], $pagenum);
-    }
-    // if ed_pos_y exist, it assign new ed_pos_y (replacing)
-    // the $ed_pos_y should come from $this->y.
-    elseif ($ed_pos_y && ($pagenum > 0)){
-      // dump('ed_pos_y', $ed_pos_y);
-      $this->cgmark[$index]['ed_pos_y'] = $ed_pos_y; //
-      array_push($this->cgmark[$index]['pagenum'], $pagenum);
-    }    
-    // dump($this->cgmark);
-  }
-
-  /**
-   * minimum value of level is 0 (zero)
-   */
-  private function checkLevel(\DOMElement $element)
-  {
-    $tagName = $element->tagName;
-    $parent_tagName = $tagName;
-
-    $index = -1;
-
-    $parentNode = $element->parentNode;
-    while ($parentNode->tagName == $parent_tagName) {
-      $index += 1;
-      $parentNode = $parentNode->parentNode;
-    }
-    return ($index < 0) ? 0 : $index;
-  }
-
-  public function resetFootnotes(){
-    $this->footnotes = [
-      'staging' => [],
-      'collection' => [],
-    ];
-  }
-
-  public function get_pmType_config()
-  {
-    return $this->pmType_config;
-  }
-  public function get_pmEntryType_config()
-  {
-    return $this->pmEntryType_config;
-  }
-
-  public function getAssetPath()
-  {
-    if($this->allowLocalFiles){
-      return "file://{$this->absolute_path_csdbInput}";
-      // return "{$this->absolute_path_csdbInput}";
-    }
-  }
-
-  public function getPDF()
-  {
-    $this->Output('tes2.pdf', 'I');
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $this->normal_header_margin = $this->header_margin;
+    $this->normal_footer_margin = $this->footer_margin;
+    $this->normal_tMargin = $this->tMargin;
+    $this->normal_bMargin = $this->bMargin;
+	}
 
 
   /**
@@ -3997,10 +4028,31 @@ class PMC_PDF extends TCPDF
 	}
 
   public function AddPage($orientation='', $format='', $keepmargins=false, $tocpage=false) {
+    // dump($this->PageBreakTrigger."|".$this->page);
 		if ($this->inxobj) {
 			// we are inside an XObject template
 			return;
 		}
+
+    $this->header_margin = 5;
+    $this->footer_margin = $this->normal_footer_margin;
+    $this->tMargin = $this->normal_tMargin;
+    $this->bMargin = $this->normal_bMargin;
+
+
+    // if($this->vgutter){
+      if($this->page % 2 == 0){
+        $this->header_margin += $this->vgutter; // saat di page genap, untuk page selanjutnya (ganjil) header margin ditambah 
+        $this->tMargin += $this->vgutter; // begitu juga untuk tMargin juga di tambah
+        $this->footer_margin += $this->vgutter; // saat di page genap, footer belum di render sebelum endPage sehingga footer margin ditambah dulu sebelum di render untuk dihalaman genap (yang sama)
+      } else {        
+        $this->bMargin += $this->vgutter; // tapi saat di yang sama, bMargin itu tidak bisa di ubah karena sudah di proses. Ini bMargin ditambah untuk page selanjutnya (genap)
+        $this->PageBreakTrigger -= $this->vgutter;
+      }
+    // }
+    
+    // dump($this->bMargin."|".'addpage');
+
 		if (!isset($this->original_lMargin) OR $keepmargins) {
 			$this->original_lMargin = $this->lMargin;
 		}
@@ -4011,33 +4063,48 @@ class PMC_PDF extends TCPDF
     $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
     $this->pagedim[$this->page]['lasth'] = ($this->lasth > 0 ? $this->lasth : 2 );
 		$this->endPage();
-		// start new page
-		$this->startPage($orientation, $format, $tocpage);
+		// start new page    
+		
 
-    $y = $this->y;
-    $x = $this->x;
-    // add page ident
-    $y_pos = $this->getPageHeight() * 1 / 2;
-    // $template_dmc_identification = $this->startTemplate(80, 80, true);
-    // $this->StartTransform();
-    // $this->setFontSize(6);
-    // $this->Rotate(90, 25, 25);
-    // $this->Cell(50, 0, $this->page_ident, 0, 0, 'C', false, '', 0, false, 'T', 'M');
-    // $this->StopTransform();
-    // $this->endTemplate();
-    // $x = $this->getPageWidth() - $this->get_pmType_config()['page']['margins']['L'];
-    // $this->printTemplate($template_dmc_identification, 0, 30, '', '', '', '', false);
-    // dump($y_pos);
-    // $this->printTemplate($template_dmc_identification, 0, 40, '', '', '', '', false);
-    // dump($this->y);
+    if($this->vgutter){
+      // if($this->page % 2 == 0){
+        // $this->header_margin += 10;
+        // $this->tMargin += 10;
+        // $this->footer_margin += 10;
+        // $this->bMargin += 10;
+      // }
+    }
 
-    // $this->Cell(50, 0, $this->page_ident, 0, 0, 'C', false, '', 0, false, 'T', 'M');
-   
-    $this->x = $x;
-    $this->y = $y;
+    $this->startPage($orientation, $format, $tocpage);
+    // if($this->vgutter){
+    //   // $this->header_margin = $this->normal_header_margin;
+    //   $this->header_margin = 15;
+    //   $this->footer_margin = $this->normal_footer_margin;
+    //   $this->tMargin = $this->normal_tMargin;
+    //   $this->bMargin = $this->normal_bMargin;
 
-    // $this->Line(0,20,50,20);
+    //   if(($this->page % 2) == 0){
+    //     // $this->bMargin += $this->horgutter_footer;
+    //     $this->footer_margin += $this->horgutter_footer;
+    //   } else {
+    //     $this->tMargin += $this->horgutter_header;
+    //     // $this->header_margin += $this->horgutter_header;
+    //   }
+    //     // dump($this->page);
+    //     // $this->tMargin += $this->horgutter_header;
+    //     // $this->header_margin += $this->horgutter_header;
+    //     // $this->bMargin += $this->horgutter_footer;
+    //     // $this->footer_margin += $this->horgutter_footer;
 
+    //     // dump($this->tMargin ."|".
+    //     // $this->header_margin ."|".
+    //     // $this->bMargin ."|".
+    //     // $this->footer_margin."|||".$this->page);
+        
+    //     // dump($this->horgutter_header."|".$this->horgutter_footer."|||".$this->page);
+
+    //     // dump($this->normal_header_margin. "|". $this->normal_footer_margin."---".$this->page);
+    // }
 	}
   
 
@@ -4423,6 +4490,19 @@ class PMC_PDF extends TCPDF
 		return $nl;
 	}
 
+  public function isBooklet(){
+    return $this->booklet;
+  }
+
+  public function getVgutter(){
+    return $this->vgutter;
+  }
+
+  public function setVgutter($inner){
+    if($inner > 0){
+      $this->vgutter = $inner;
+    }
+  }
   /**
    * tambahanya hanya menambah tulisan intentionally left blank saja, tapi tidak jadi
 	 * Add page if needed.
