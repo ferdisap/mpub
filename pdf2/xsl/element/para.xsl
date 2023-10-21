@@ -21,7 +21,7 @@
         </span>      
       </xsl:when>
       <xsl:otherwise>
-        <p style="page-break-inside: avoid;">
+        <p style="page-break-inside: avoid;border:1px solid red">
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
           <xsl:apply-templates>

@@ -153,7 +153,7 @@ class PMC_PDF extends TCPDF
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
     $this->setMargins($leftMargin,$topMargin,$rightMargin);
-    $this->SetAutoPageBreak(TRUE, $bottomMargin);
+    $this->setAutoPageBreak(true, $bottomMargin);
     $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true,$rightMargin,$leftMargin);
     $this->setFontSize($fontsize);
     $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -214,13 +214,13 @@ class PMC_PDF extends TCPDF
     }
     // add TOC
     if($TOC){
-      $this->addTOCPage();
-      $this->SetFont($this->getFontFamily(), 'B', 14);
-      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      $this->Ln();    
-      $this->SetFont($this->getFontFamily(), '', 10);
-      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      $this->endTOCPage();
+      // $this->addTOCPage();
+      // $this->SetFont($this->getFontFamily(), 'B', 14);
+      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      // $this->Ln();    
+      // $this->SetFont($this->getFontFamily(), '', 10);
+      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      // $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -598,11 +598,11 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
@@ -610,11 +610,11 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -2022,6 +2022,7 @@ class PMC_PDF extends TCPDF
     // if(!$tes) dump($this->print_header, $html);
     // dump($html);
     $gvars = $this->getGraphicVars();
+    
 		// store current values
 		$prev_cell_margin = $this->cell_margin;
 		$prev_cell_padding = $this->cell_padding;
@@ -2141,6 +2142,8 @@ class PMC_PDF extends TCPDF
 
 		while ($key < $maxel) {
 
+      // if($who == 'thead') dump($this->page);
+
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
         $h = $this->getCellHeight($dom[$key]['fontsize']) * 3; // dikali tiga biar kalau ga break, ada text paragraph yang membersamainya 
@@ -2244,10 +2247,16 @@ class PMC_PDF extends TCPDF
 			// print THEAD block
 			if (($dom[$key]['value'] == 'tr') AND isset($dom[$key]['thead']) AND $dom[$key]['thead']) {
 				if (isset($dom[$key]['parent']) AND isset($dom[$dom[$key]['parent']]['thead']) AND !TCPDF_STATIC::empty_string($dom[$dom[$key]['parent']]['thead'])) {
+          // $this->Ln(3);
+          // dump('thead');
 					$this->inthead = true;
+          // dump('foooo >>> '.$this->PageBreakTrigger."|".$this->page);
 					// print table header (thead)
           // dump($this->thead);
-					$this->writeHTML($this->thead, false, false, false, false, '');
+          
+					$this->writeHTML($this->thead, false, false, false, false, '', false, null, false, false, 'thead');
+          // dump('inthead');
+          // break;
 					// check if we are on a new page or on a new column
 					if (($this->y < $this->start_transaction_y) OR ($this->checkPageBreak($this->lasth, '', false))) {
 						// we are on a new page or on a new column and the total object height is less than the available vertical space.
@@ -2285,7 +2294,6 @@ class PMC_PDF extends TCPDF
 						$dom[$dom[$key]['parent']]['borderposition']['x'] += $xoffset;
 						$dom[$dom[$key]['parent']]['borderposition']['xmax'] += $xoffset;
 						// print table header (thead)
-            
 						$this->writeHTML($this->thead, false, false, false, false, '');
 					}
 				}
@@ -2297,9 +2305,10 @@ class PMC_PDF extends TCPDF
 				}
         // dd($key);
         // dd($dom);
+        // dump('end table');
 			}
 			if ($dom[$key]['tag'] OR ($key == 0)) {
-
+        // if ($this->inthead) dump('this is in thead', $dom[$key]['value']);
 				if ((($dom[$key]['value'] == 'table') OR ($dom[$key]['value'] == 'tr')) AND (isset($dom[$key]['align']))) {
 					$dom[$key]['align'] = ($this->rtl) ? 'R' : 'L';
 				}
@@ -2514,12 +2523,14 @@ class PMC_PDF extends TCPDF
 			// align lines
 			if ($this->newline AND (strlen($dom[$key]['value']) > 0) AND ($dom[$key]['value'] != 'td') AND ($dom[$key]['value'] != 'th')) {
         // dump($key."|".$dom[$key]['value']);
+        // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 				$newline = true;
         // dump($key."|".$this->newline, $dom[$key]['value']);
 				$fontaligned = false;
 				// we are at the beginning of a new line
 				if (isset($startlinex)) {
-
+          // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
+          // if ($this->inthead) dump('this is in thead', $dom[$key]['value']);
 					$yshift = ($minstartliney - $startliney);
 					if (($yshift > 0) OR ($this->page > $startlinepage)) {
 						$yshift = 0;
@@ -2544,6 +2555,7 @@ class PMC_PDF extends TCPDF
 							$pend = '';
 						}
 					} else {
+            // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 						$pstart = substr($this->getPageBuffer($startlinepage), 0, $startlinepos);
 						if (isset($opentagpos) AND isset($this->footerlen[$startlinepage]) AND (!$this->InFooter)) {
 							$this->footerpos[$startlinepage] = $this->pagelen[$startlinepage] - $this->footerlen[$startlinepage];
@@ -2902,6 +2914,7 @@ class PMC_PDF extends TCPDF
 						} // end of J
 					} // end if $startlinex
 					if (($t_x != 0) OR ($yshift < 0)) {
+            // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 						// shift the line
 						$trx = sprintf('1 0 0 1 %F %F cm', ($t_x * $this->k), ($yshift * $this->k));
 						$pstart .= "\nq\n".$trx."\n".$pmid."\nQ\n";
@@ -2930,6 +2943,7 @@ class PMC_PDF extends TCPDF
 						$this->y -= $yshift;
 					}
 				}
+        // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 				$pbrk = $this->checkPageBreak($this->lasth);
         // $this->Line(0, $this->y, 100, $this->y);
 				// $pbrk = $this->checkPageBreak($this->lasth * 1); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
@@ -2993,7 +3007,7 @@ class PMC_PDF extends TCPDF
 				unset($opentagpos);
 			}
 			if ($dom[$key]['tag']) {
-
+        // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
         // footnote #2 staging the footnotes which has been push
         $qtyfnt = count($this->footnotes['collection']);
         $yy = $this->y;
@@ -3004,12 +3018,19 @@ class PMC_PDF extends TCPDF
               if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
                 $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
                 if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
-                  $ypos = $this->PageBreakTrigger - $hg - 1;
+                  $ypos = $this->PageBreakTrigger - $hg;
                   $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
                   $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
                   $this->footnotes['staging']['startypos'][$this->page] = $ypos;
                   $this->footnotes['staging']['height'][$this->page][] = $hg;
                   $this->PageBreakTrigger -= $hg;
+
+                  // dump('staging footnote');
+                  $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
+                  // dump($this->pagedim[$this->page]['PageBreakTrigger'], $this->page);
+                  // dump($this->page."|".$this->PageBreakTrigger);
+                  // $this->bMargin += $hg;
+                  // $this->PageBreakTrigger -= ($hg + $this->getCellHeight(6));
                   unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
                   $this->y = $yy;
                   // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
@@ -3033,7 +3054,19 @@ class PMC_PDF extends TCPDF
 						$this->newline = true;
 					}
 					// table
+          // $pbt = $this->PageBreakTrigger;
+          // $this->PageBreakTrigger = $this->pagedim[$this->page]['PageBreakTrigger'];
 					if (($dom[$key]['value'] == 'table') AND isset($dom[$key]['cols']) AND ($dom[$key]['cols'] > 0)) {
+            
+            // dump('table tag is true, page: '. $this->page);
+            // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
+            // dump('table');
+            // break;
+            // dump("---------------------------->>>>>>>>>>> ".$this->page ."|". $pbt);
+            // dump("---------------------------->>>>>>>>>>> ".$this->pagedim[$this->page]['PageBreakTrigger']);
+            // dump($this->page ."|". $this->y  ."|". $this->PageBreakTrigger, $this->pagedim[$this->page]);
+            // dump($this->page);
+            // $this->Write('','foobarbasa');
 						// available page width
 						if ($this->rtl) {
 							$wtmp = $this->x - $this->lMargin;
@@ -3075,9 +3108,18 @@ class PMC_PDF extends TCPDF
 					if ($dom[$key]['value'] == 'tr') {
 						// reset column counter
 						$colid = 0;
+            // dump('tr');
+           
+            $pg = $this->page;
+            $pbt = $this->PageBreakTrigger;
+            // dump('set row, page: '.$pg);
 					}
 					// table cell
 					if (($dom[$key]['value'] == 'td') OR ($dom[$key]['value'] == 'th')) {
+            // dump($this->page, $dom[$key]['content']);
+            // dump('td');
+            // dump($this->page ."|". $this->y. "|". $this->PageBreakTrigger. "|". $dom[$key]['content']);
+            // $this->Write('','foxx');
 						$trid = $dom[$key]['parent'];
 						$table_el = $dom[$trid]['parent'];
 						if (!isset($dom[$table_el]['cols'])) {
@@ -3086,7 +3128,7 @@ class PMC_PDF extends TCPDF
 						// store border info
 						$tdborder = 0;
 						if (isset($dom[$key]['border']) AND !empty($dom[$key]['border'])) {
-							$tdborder = $dom[$key]['border'];
+							$tdborder = $dom[$key]['border']; // disable/enable td border
 						}
 						$colspan = intval($dom[$key]['attribute']['colspan']);
 						if ($colspan <= 0) {
@@ -3236,7 +3278,52 @@ class PMC_PDF extends TCPDF
 						// ****** write the cell content ******
             // dump($cell_content);
             // Lokasi mencetak <td>
+
+            // footnote #3 tambahan
+            // $prevpbt = $this->PageBreakTrigger;
+            
+            // if(isset($this->pagedim[$this->page]['PageBreakTrigger'])){
+            //   $this->PageBreakTrigger = $this->pagedim[$this->page]['PageBreakTrigger'];
+            // }
+            // $this->PageBreakTrigger = $pbt;
+            // if($this->page == 5) {
+            //   $this->PageBreakTrigger = 190;
+            // }
+            // dd($this->footnotes);
+            // $this->PageBreakTrigger = $prevpbt;
+            // if($this->page == 5) dump($this->page, $this->pagedim[$this->page]);
+            // $this->PageBreakTrigger = pbt.$this->page;
+            // $this->PageBreakTrigger = $pbt;
+            // dump($this->page ."|". $pbt);
+            // if($this->page >= 5) dump($this->pagedim, $this->pagedim[$this->page]['PageBreakTrigger']);
+            // dump($this->page, $this->PageBreakTrigger);
+            
+            // dump($cell_content);
+
+            // end tambahan
+
+            // dump($pg ."|". $pbt ."|". $cell_content);
+            // dump($pg ."|". $pbt ."|". $cell_content);
+            // dump('Multi Cell'. "|". $this->page ."|". $this->PageBreakTrigger);
+            // if($who == 'thead') dump($this->page . "|". $cell_content);
+            // dump($this->page ."|". $cellh ."|". $this->y ."|". ($this->PageBreakTrigger) ."|". $cell_content);
+
+            // if(isset($this->pagedim[$this->page]['PageBreakTrigger'])) dump($this->pagedim[$this->page]['PageBreakTrigger']);
+            // dump($this->page, $this->footnotes);
+            // dump($this->PageBreakTrigger);
+            $pbt = ( isset($this->footnotes['staging']['startypos'][$this->page]) ? $this->footnotes['staging']['startypos'][$this->page] : null );
+            if($pbt) $this->PageBreakTrigger = $pbt;
 						$this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
+
+
+            // if(isset($this->pagedim[$this->page]['PageBreakTrigger'])){
+            //   $this->PageBreakTrigger = $this->pagedim[$this->page]['PageBreakTrigger'];
+            // } 
+            // $this->pagedim[$this->page]['PageBreakTrigger'] = $prevpbt;
+            // dump($this->page."|".$prevpbt);
+            // $this->PageBreakTrigger = $prevpbt;
+            // if($this->page == 5) dump($this->page, $this->pagedim[$this->page]);
+            
 						// restore some values
 						$this->colxshift = array('x' => 0, 's' => array('H' => 0, 'V' => 0), 'p' => array('L' => 0, 'T' => 0, 'R' => 0, 'B' => 0));
 						$this->lasth = $prevLastH;
@@ -3653,7 +3740,8 @@ class PMC_PDF extends TCPDF
             if ($strlinelen < $cwa){
 
 
-              // $this->Line(0,163.5,100,163.5);
+              // $this->Line(0,168.91,100,168.91);
+              // $this->Line(0,174.87,100,174.87);
 
               // footnote #1 - create footnoteRef
               $v = $dom[$key]['value'];
@@ -3736,6 +3824,8 @@ class PMC_PDF extends TCPDF
                 }
                 $this->endTemplate();
 
+                // dump('start to push footnote');
+
                 // push to footnotes collection 
                 $lastIndexfnt = count($this->footnotes['collection']) + 1;
                 $this->footnotes['collection'][$lastIndexfnt]['id'][] = $dom[$key+1]['attribute']['id'];
@@ -3743,6 +3833,9 @@ class PMC_PDF extends TCPDF
                 $this->footnotes['collection'][$lastIndexfnt]['template_dump'][] = $template;
                 $this->footnotes['collection'][$lastIndexfnt]['height'][] = $footnoteh;                
                 
+
+                // dump($this->footnotes);
+
                 // change dom[$key] to outside <footer>
                 $kk = $kstartfnt;
                 while (isset($dom[$kk])){
@@ -3789,7 +3882,7 @@ class PMC_PDF extends TCPDF
                 // }
               }
             }
-
+            // if($this->inthead) dump('is this in thead?', $dom[$key]['value'], $this->y, $this->page);
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
             
             // footnote #1 writing footnoteRefTxt
@@ -3798,7 +3891,41 @@ class PMC_PDF extends TCPDF
               $footnoteRefTxt = preg_replace("/idfnt/", end($this->footnotes['collection'])['id'][0], $footnoteRefTxt);
               $this->writeHTML($footnoteRefTxt,false);
               unset($footnoteRefTxt);
+              // dump('footnoteRefText has been created');
             }
+
+            
+
+            // $qtyfnt = count($this->footnotes['collection']);
+            // $yy = $this->y;
+            // for ($i= 1; $i <= $qtyfnt; $i++) {
+            //   if(isset($this->footnotes['collection'][$i]) ){                    
+            //     foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
+            //       if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
+            //         $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
+            //         if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
+            //           dump('staging footnote');
+            //           $ypos = $this->PageBreakTrigger - $hg;
+            //           $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
+            //           $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
+            //           $this->footnotes['staging']['startypos'][$this->page] = $ypos;
+            //           $this->footnotes['staging']['height'][$this->page][] = $hg;
+            //           $this->PageBreakTrigger -= $hg;
+
+            //           // dump('staging footnote');
+            //           $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
+            //           // dump($this->pagedim[$this->page]['PageBreakTrigger'], $this->page);
+            //           // dump($this->page."|".$this->PageBreakTrigger);
+            //           // $this->bMargin += $hg;
+            //           // $this->PageBreakTrigger -= ($hg + $this->getCellHeight(6));
+            //           unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
+            //           $this->y = $yy;
+            //           // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
+            //         }        
+            //       }
+            //     }
+            //   }
+            // }
             
             // restore default direction
 						if ($reverse_dir AND ($wadj == 0)) {
@@ -4067,6 +4194,7 @@ class PMC_PDF extends TCPDF
 	}
 
   public function AddPage($orientation='', $format='', $keepmargins=false, $tocpage=false) {
+    // dump('end_page '. $this->page ."|". $this->PageBreakTrigger);
     // dump($this->PageBreakTrigger."|".$this->page);
 		if ($this->inxobj) {
 			// we are inside an XObject template
@@ -4101,49 +4229,15 @@ class PMC_PDF extends TCPDF
 		// terminate previous page
     $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
     $this->pagedim[$this->page]['lasth'] = ($this->lasth > 0 ? $this->lasth : 2 );
+    // dump('end_page '. $this->page ."|". $this->PageBreakTrigger);
 		$this->endPage();
-		// start new page    
-		
 
-    if($this->vgutter){
-      // if($this->page % 2 == 0){
-        // $this->header_margin += 10;
-        // $this->tMargin += 10;
-        // $this->footer_margin += 10;
-        // $this->bMargin += 10;
-      // }
-    }
+    // dump($this->pagedim[$this->page]['PageBreakTrigger'] ."|". $this->PageBreakTrigger);
+    // dump($this->page ."|". $this->PageBreakTrigger);
 
+		// start new page
     $this->startPage($orientation, $format, $tocpage);
-    // if($this->vgutter){
-    //   // $this->header_margin = $this->normal_header_margin;
-    //   $this->header_margin = 15;
-    //   $this->footer_margin = $this->normal_footer_margin;
-    //   $this->tMargin = $this->normal_tMargin;
-    //   $this->bMargin = $this->normal_bMargin;
-
-    //   if(($this->page % 2) == 0){
-    //     // $this->bMargin += $this->horgutter_footer;
-    //     $this->footer_margin += $this->horgutter_footer;
-    //   } else {
-    //     $this->tMargin += $this->horgutter_header;
-    //     // $this->header_margin += $this->horgutter_header;
-    //   }
-    //     // dump($this->page);
-    //     // $this->tMargin += $this->horgutter_header;
-    //     // $this->header_margin += $this->horgutter_header;
-    //     // $this->bMargin += $this->horgutter_footer;
-    //     // $this->footer_margin += $this->horgutter_footer;
-
-    //     // dump($this->tMargin ."|".
-    //     // $this->header_margin ."|".
-    //     // $this->bMargin ."|".
-    //     // $this->footer_margin."|||".$this->page);
-        
-    //     // dump($this->horgutter_header."|".$this->horgutter_footer."|||".$this->page);
-
-    //     // dump($this->normal_header_margin. "|". $this->normal_footer_margin."---".$this->page);
-    // }
+    // dump('>>>>>>>>> start_page '. $this->page ."|". $this->PageBreakTrigger);
 	}
   
 
@@ -4174,6 +4268,8 @@ class PMC_PDF extends TCPDF
 	 * @see SetFont(), SetDrawColor(), SetFillColor(), SetTextColor(), SetLineWidth(), Cell(), Write(), SetAutoPageBreak()
 	 */
 	public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false, $ln=1, $x=null, $y=null, $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0, $valign='T', $fitcell=false) {
+    // dd('aa');
+    // dump("start Multi Cell ------------------->>>". $this->page ."|". $this->PageBreakTrigger);
 		$prev_cell_margin = $this->cell_margin;
 		$prev_cell_padding = $this->cell_padding;
 		// adjust internal padding
@@ -4192,6 +4288,7 @@ class PMC_PDF extends TCPDF
 		}
 		$y = $this->GetY();
 		$resth = 0;
+
 		if (($h > 0) AND $this->inPageBody() AND (($y + $h + $mc_margin['T'] + $mc_margin['B']) > $this->PageBreakTrigger)) {
 			// spit cell in more pages/columns
 			$newh = ($this->PageBreakTrigger - $y);
@@ -4243,7 +4340,7 @@ class PMC_PDF extends TCPDF
 			$this->y += $mc_padding['T'];
 		}
 		if ($ishtml) { // ******* Write HTML text
-      // dump($txt);
+      // if($this->page == 5) dump($this->page ."|". $this->PageBreakTrigger, $this->pagedim[$this->page]);
 			$this->writeHTML($txt, true, false, $reseth, true, $align, true); // revmark
 			$nl = 1;
 		} else { // ******* Write simple text
@@ -4392,7 +4489,7 @@ class PMC_PDF extends TCPDF
 					}
 					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
-			} elseif ($page == $startpage) { // first page
+			 } elseif ($page == $startpage) { // first page
 				for ($column = $startcolumn; $column < $this->num_columns; ++$column) { // for each column
 					if ($column != $this->current_column) {
 						$this->selectColumn($column);
@@ -4413,7 +4510,7 @@ class PMC_PDF extends TCPDF
 					}
 					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
-			} elseif ($page == $endpage) { // last page
+			 } elseif ($page == $endpage) { // last page
 				for ($column = 0; $column <= $endcolumn; ++$column) { // for each column
 					if ($column != $this->current_column) {
 						$this->selectColumn($column);
@@ -4438,7 +4535,7 @@ class PMC_PDF extends TCPDF
 					}
 					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
-			} else { // middle page
+			 } else { // middle page
 				for ($column = 0; $column < $this->num_columns; ++$column) { // for each column
 					$this->selectColumn($column);
 					if ($this->rtl) {
@@ -4526,6 +4623,9 @@ class PMC_PDF extends TCPDF
 		$this->cell_margin = $prev_cell_margin;
 		$this->clMargin = $this->lMargin;
 		$this->crMargin = $this->rMargin;
+
+    // dump("end Multi Cell". $this->page ."|". $this->PageBreakTrigger);
+
 		return $nl;
 	}
 
