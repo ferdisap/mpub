@@ -214,13 +214,13 @@ class PMC_PDF extends TCPDF
     }
     // add TOC
     if($TOC){
-      // $this->addTOCPage();
-      // $this->SetFont($this->getFontFamily(), 'B', 14);
-      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      // $this->Ln();    
-      // $this->SetFont($this->getFontFamily(), '', 10);
-      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      // $this->endTOCPage();
+      $this->addTOCPage();
+      $this->SetFont($this->getFontFamily(), 'B', 14);
+      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      $this->Ln();    
+      $this->SetFont($this->getFontFamily(), '', 10);
+      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -2993,8 +2993,33 @@ class PMC_PDF extends TCPDF
 				unset($opentagpos);
 			}
 			if ($dom[$key]['tag']) {
-				if ($dom[$key]['opening']) {
 
+        // footnote #2 staging the footnotes which has been push
+        $qtyfnt = count($this->footnotes['collection']);
+        $yy = $this->y;
+        // for ($i= $qtyfnt; $i >= 0; $i--) {
+        for ($i= 1; $i <= $qtyfnt; $i++) {
+          if(isset($this->footnotes['collection'][$i]) ){                    
+            foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
+              if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
+                $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
+                if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
+                  $ypos = $this->PageBreakTrigger - $hg - 1;
+                  $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
+                  $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
+                  $this->footnotes['staging']['startypos'][$this->page] = $ypos;
+                  $this->footnotes['staging']['height'][$this->page][] = $hg;
+                  $this->PageBreakTrigger -= $hg;
+                  unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
+                  $this->y = $yy;
+                  // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
+                }        
+              }
+            }
+          }
+        }
+
+				if ($dom[$key]['opening']) {
 					// get text indentation (if any)
 					if (isset($dom[$key]['text-indent']) AND $dom[$key]['block']) {
             // tambahan
@@ -3002,7 +3027,7 @@ class PMC_PDF extends TCPDF
               // dump($this->y."+".$this->lasth."+".(2.645833 * 2)."|".$this->page." and ". $this->lastpageIntentionallyLeftBlank. "|". $this->PageBreakTrigger."|". $this->page."|".$dom[$key]['value']."|".$key);
               $this->checkPageBreak($this->lasth); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
             } else {
-              $this->checkPageBreak($this->lasth + (2.645833 * 2)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
+              // $this->checkPageBreak($this->lasth + (2.645833 * 2)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote. // kalau ini dilakukan, pagbreak saat di tengah2 table terganggu
             }
 						$this->textindent = $dom[$key]['text-indent'];
 						$this->newline = true;
@@ -3626,6 +3651,10 @@ class PMC_PDF extends TCPDF
 
 
             if ($strlinelen < $cwa){
+
+
+              // $this->Line(0,163.5,100,163.5);
+
               // footnote #1 - create footnoteRef
               $v = $dom[$key]['value'];
               $v_n = preg_replace("/\[\?f\]/",'', $v);
@@ -3682,7 +3711,13 @@ class PMC_PDF extends TCPDF
                 }
                 
                 // reinstate template after we got the footnoteh
-                $template = $this->startTemplate($this->w,$footnoteh);                
+                $template = $this->startTemplate($this->w,$footnoteh);   
+                
+                // dump($template);
+                if($template == 'XT28'){
+                  // dump($this->page);
+                }
+                
                 $this->lMargin = $lMargin;
                 $this->rMargin = $rMargin;
                 $this->cell_padding['L'] = $lPadding ;
@@ -3727,31 +3762,32 @@ class PMC_PDF extends TCPDF
 
                 $this->inFootnote = false;
 
+                // staging ada 2. saat sebelum opening tag, dan di sini. (yang di sini diabaikan dulu) 
                 // staging the footnotes which has been push
-                $qtyfnt = count($this->footnotes['collection']);
-                $yy = $this->y;
-                // for ($i= $qtyfnt; $i >= 0; $i--) {
-                for ($i= 1; $i <= $qtyfnt; $i++) {
-                  if(isset($this->footnotes['collection'][$i]) ){                    
-                    foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
-                      if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
-                        $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
-                        if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
-                          $ypos = $this->PageBreakTrigger - $hg;
-                          // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
-                          $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
-                          $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
-                          $this->footnotes['staging']['startypos'][$this->page] = $ypos;
-                          $this->footnotes['staging']['height'][$this->page][] = $hg;
-                          $this->PageBreakTrigger -= $hg;
-                          unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
-                          $this->y = $yy;
-                        }        
-                      }
-                    }
-                  }
+                // $qtyfnt = count($this->footnotes['collection']);
+                // $yy = $this->y;
+                // // for ($i= $qtyfnt; $i >= 0; $i--) {
+                // for ($i= 1; $i <= $qtyfnt; $i++) {
+                //   if(isset($this->footnotes['collection'][$i]) ){                    
+                //     foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
+                //       if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
+                //         $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
+                //         if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
+                //           $ypos = $this->PageBreakTrigger - $hg - 1;
+                //           $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
+                //           $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
+                //           $this->footnotes['staging']['startypos'][$this->page] = $ypos;
+                //           $this->footnotes['staging']['height'][$this->page][] = $hg;
+                //           $this->PageBreakTrigger -= $hg;
+                //           unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
+                //           $this->y = $yy;
+                //           // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
+                //         }        
+                //       }
+                //     }
+                //   }
+                // }
               }
-            }
             }
 
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
@@ -4006,6 +4042,9 @@ class PMC_PDF extends TCPDF
         $yline = $this->footnotes['staging']['startypos'][$p] - (2.645833); // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
         $this->Line($x1line, $yline, ($x1line + 50), $yline);
         foreach($xobjs as $i => $xobj){
+          // if($xobj == 'XT40'){
+          //   break;
+          // }
           // dump($this->lMargin."|".$this->page."|".$this->x);
           $this->printTemplate($xobj,1,$this->footnotes['staging']['startypos'][$p], $this->w);
           

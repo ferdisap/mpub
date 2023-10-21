@@ -18,7 +18,7 @@
       <xsl:value-of select="count(parent::table/tgroup)"/>
     </xsl:variable>
 
-    <div style="text-align:center;border:1px solid red">
+    <div style="text-align:center">
       <xsl:for-each select="parent::table">
         <xsl:call-template name="cgmark"/>
       </xsl:for-each>
@@ -35,7 +35,6 @@
           </xsl:apply-templates>
           <xsl:for-each select="$footnote">
             <tr>
-              <!-- <xsl:call-template name="cgmark"/> -->
               <td colspan="{ancestor::table/@cols}" style="line-height:0.5"> 
                 <xsl:variable name="fnt" select="."/>
                 <xsl:for-each select="ancestor::table/descendant::footnote">
@@ -76,6 +75,7 @@
   <xsl:template match="entry">
     <xsl:param name="userowsep" select="'yes'"/>
     <td>
+      <!-- <xsl:text>foo</xsl:text> -->
       <xsl:call-template name="tb_tdstyle">
         <xsl:with-param name="userowsep" select="$userowsep"/>
       </xsl:call-template>
