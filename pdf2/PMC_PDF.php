@@ -34,6 +34,8 @@ class PMC_PDF extends TCPDF
   public $lastpageIntentionallyLeftBlank = 0;
   public int $pmEntry_level = 0;
 
+  public array $paper_color = array(255,255,255);
+
   public bool $inFootnote = false;
   public array $footnotes = [
     'staging' => [],
@@ -214,13 +216,13 @@ class PMC_PDF extends TCPDF
     }
     // add TOC
     if($TOC){
-      // $this->addTOCPage();
-      // $this->SetFont($this->getFontFamily(), 'B', 14);
-      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      // $this->Ln();    
-      // $this->SetFont($this->getFontFamily(), '', 10);
-      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      // $this->endTOCPage();
+      $this->addTOCPage();
+      $this->SetFont($this->getFontFamily(), 'B', 14);
+      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      $this->Ln();    
+      $this->SetFont($this->getFontFamily(), '', 10);
+      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -598,11 +600,11 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
@@ -610,11 +612,11 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      // $this->writeHTML($footer, true, false, true, false, 'C');
+      $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -2247,16 +2249,8 @@ class PMC_PDF extends TCPDF
 			// print THEAD block
 			if (($dom[$key]['value'] == 'tr') AND isset($dom[$key]['thead']) AND $dom[$key]['thead']) {
 				if (isset($dom[$key]['parent']) AND isset($dom[$dom[$key]['parent']]['thead']) AND !TCPDF_STATIC::empty_string($dom[$dom[$key]['parent']]['thead'])) {
-          // $this->Ln(3);
-          // dump('thead');
-					$this->inthead = true;
-          // dump('foooo >>> '.$this->PageBreakTrigger."|".$this->page);
-					// print table header (thead)
-          // dump($this->thead);
-          
+					$this->inthead = true;          
 					$this->writeHTML($this->thead, false, false, false, false, '', false, null, false, false, 'thead');
-          // dump('inthead');
-          // break;
 					// check if we are on a new page or on a new column
 					if (($this->y < $this->start_transaction_y) OR ($this->checkPageBreak($this->lasth, '', false))) {
 						// we are on a new page or on a new column and the total object height is less than the available vertical space.
@@ -2303,12 +2297,8 @@ class PMC_PDF extends TCPDF
 					OR ($dom[$key]['tag'] AND (!$dom[$key]['opening']) AND ($dom[$key]['value'] == 'table'))) )) {
 					++$key;
 				}
-        // dd($key);
-        // dd($dom);
-        // dump('end table');
 			}
 			if ($dom[$key]['tag'] OR ($key == 0)) {
-        // if ($this->inthead) dump('this is in thead', $dom[$key]['value']);
 				if ((($dom[$key]['value'] == 'table') OR ($dom[$key]['value'] == 'tr')) AND (isset($dom[$key]['align']))) {
 					$dom[$key]['align'] = ($this->rtl) ? 'R' : 'L';
 				}
@@ -2483,7 +2473,6 @@ class PMC_PDF extends TCPDF
 						$curfontdescent = $fontdescent;
 					}
 				}
-        // dd($curfontsize,$fontsize,$fontname,$fontstyle,$fontascent, $fontdescent,__LINE__);
 				// set text rendering mode
 				$textstroke = isset($dom[$key]['stroke']) ? $dom[$key]['stroke'] : $this->textstrokewidth;
 				$textfill = isset($dom[$key]['fill']) ? $dom[$key]['fill'] : (($this->textrendermode % 2) == 0);
@@ -2522,15 +2511,10 @@ class PMC_PDF extends TCPDF
       
 			// align lines
 			if ($this->newline AND (strlen($dom[$key]['value']) > 0) AND ($dom[$key]['value'] != 'td') AND ($dom[$key]['value'] != 'th')) {
-        // dump($key."|".$dom[$key]['value']);
-        // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 				$newline = true;
-        // dump($key."|".$this->newline, $dom[$key]['value']);
 				$fontaligned = false;
 				// we are at the beginning of a new line
 				if (isset($startlinex)) {
-          // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
-          // if ($this->inthead) dump('this is in thead', $dom[$key]['value']);
 					$yshift = ($minstartliney - $startliney);
 					if (($yshift > 0) OR ($this->page > $startlinepage)) {
 						$yshift = 0;
@@ -2538,7 +2522,6 @@ class PMC_PDF extends TCPDF
 					$t_x = 0;
 					// the last line must be shifted to be aligned as requested
 					$linew = abs($this->endlinex - $startlinex);
-          // if($this->inFootnote) $startlinepos = strlen($this->xobjects[$this->xobjid]['outdata']); // tambahan untuk footnote
 					if ($this->inxobj) {
 						// we are inside an XObject template
 						$pstart = substr($this->xobjects[$this->xobjid]['outdata'], 0, $startlinepos);
@@ -2555,7 +2538,6 @@ class PMC_PDF extends TCPDF
 							$pend = '';
 						}
 					} else {
-            // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 						$pstart = substr($this->getPageBuffer($startlinepage), 0, $startlinepos);
 						if (isset($opentagpos) AND isset($this->footerlen[$startlinepage]) AND (!$this->InFooter)) {
 							$this->footerpos[$startlinepage] = $this->pagelen[$startlinepage] - $this->footerlen[$startlinepage];
@@ -2914,7 +2896,6 @@ class PMC_PDF extends TCPDF
 						} // end of J
 					} // end if $startlinex
 					if (($t_x != 0) OR ($yshift < 0)) {
-            // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 						// shift the line
 						$trx = sprintf('1 0 0 1 %F %F cm', ($t_x * $this->k), ($yshift * $this->k));
 						$pstart .= "\nq\n".$trx."\n".$pmid."\nQ\n";
@@ -2943,16 +2924,10 @@ class PMC_PDF extends TCPDF
 						$this->y -= $yshift;
 					}
 				}
-        // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
 				$pbrk = $this->checkPageBreak($this->lasth);
-        // $this->Line(0, $this->y, 100, $this->y);
-				// $pbrk = $this->checkPageBreak($this->lasth * 1); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
 				$this->newline = false;
 				$startlinex = $this->x;
 				$startliney = $this->y;
-        // $startliney += $this->lasth;
-        // $this->Line(0,$startliney + $this->lasth, 100, $startliney + $this->lasth);
-        // $this->Line(0,$startliney, 100, $startliney);
 				if ($dom[$dom[$key]['parent']]['value'] == 'sup') {
 					$startliney -= ((0.3 * $this->FontSizePt) / $this->k);
 				} elseif ($dom[$dom[$key]['parent']]['value'] == 'sub') {
@@ -3007,11 +2982,9 @@ class PMC_PDF extends TCPDF
 				unset($opentagpos);
 			}
 			if ($dom[$key]['tag']) {
-        // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
         // footnote #2 staging the footnotes which has been push
         $qtyfnt = count($this->footnotes['collection']);
         $yy = $this->y;
-        // for ($i= $qtyfnt; $i >= 0; $i--) {
         for ($i= 1; $i <= $qtyfnt; $i++) {
           if(isset($this->footnotes['collection'][$i]) ){                    
             foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
@@ -3024,16 +2997,9 @@ class PMC_PDF extends TCPDF
                   $this->footnotes['staging']['startypos'][$this->page] = $ypos;
                   $this->footnotes['staging']['height'][$this->page][] = $hg;
                   $this->PageBreakTrigger -= $hg;
-
-                  // dump('staging footnote');
                   $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
-                  // dump($this->pagedim[$this->page]['PageBreakTrigger'], $this->page);
-                  // dump($this->page."|".$this->PageBreakTrigger);
-                  // $this->bMargin += $hg;
-                  // $this->PageBreakTrigger -= ($hg + $this->getCellHeight(6));
                   unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
                   $this->y = $yy;
-                  // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
                 }        
               }
             }
@@ -3054,20 +3020,7 @@ class PMC_PDF extends TCPDF
 						$this->newline = true;
 					}
 					// table
-          // $pbt = $this->PageBreakTrigger;
-          // $this->PageBreakTrigger = $this->pagedim[$this->page]['PageBreakTrigger'];
 					if (($dom[$key]['value'] == 'table') AND isset($dom[$key]['cols']) AND ($dom[$key]['cols'] > 0)) {
-            
-            // dump('table tag is true, page: '. $this->page);
-            // if ($this->inthead) dump('this is in thead: ' ."|". $dom[$key]['value']);
-            // dump('table');
-            // break;
-            // dump("---------------------------->>>>>>>>>>> ".$this->page ."|". $pbt);
-            // dump("---------------------------->>>>>>>>>>> ".$this->pagedim[$this->page]['PageBreakTrigger']);
-            // dump($this->page ."|". $this->y  ."|". $this->PageBreakTrigger, $this->pagedim[$this->page]);
-            // dump($this->page);
-            // $this->Write('','foobarbasa');
-						// available page width
 						if ($this->rtl) {
 							$wtmp = $this->x - $this->lMargin;
 						} else {
@@ -3108,18 +3061,10 @@ class PMC_PDF extends TCPDF
 					if ($dom[$key]['value'] == 'tr') {
 						// reset column counter
 						$colid = 0;
-            // dump('tr');
-           
-            $pg = $this->page;
             $pbt = $this->PageBreakTrigger;
-            // dump('set row, page: '.$pg);
 					}
 					// table cell
 					if (($dom[$key]['value'] == 'td') OR ($dom[$key]['value'] == 'th')) {
-            // dump($this->page, $dom[$key]['content']);
-            // dump('td');
-            // dump($this->page ."|". $this->y. "|". $this->PageBreakTrigger. "|". $dom[$key]['content']);
-            // $this->Write('','foxx');
 						$trid = $dom[$key]['parent'];
 						$table_el = $dom[$trid]['parent'];
 						if (!isset($dom[$table_el]['cols'])) {
@@ -3265,6 +3210,7 @@ class PMC_PDF extends TCPDF
 						// store border info
 						if (!empty($tdborder)) {
 							$dom[$trid]['cellpos'][($cellid - 1)]['border'] = $tdborder;
+							// $dom[$trid]['cellpos'][($cellid - 1)]['border'] = 0;
 						}
 						$prevLastH = $this->lasth;
 						// store some info for multicolumn mode
@@ -3276,54 +3222,16 @@ class PMC_PDF extends TCPDF
 						$this->colxshift['s'] = $cellspacing;
 						$this->colxshift['p'] = $current_cell_padding;
 						// ****** write the cell content ******
-            // dump($cell_content);
-            // Lokasi mencetak <td>
-
-            // footnote #3 tambahan
-            // $prevpbt = $this->PageBreakTrigger;
-            
-            // if(isset($this->pagedim[$this->page]['PageBreakTrigger'])){
-            //   $this->PageBreakTrigger = $this->pagedim[$this->page]['PageBreakTrigger'];
-            // }
-            // $this->PageBreakTrigger = $pbt;
-            // if($this->page == 5) {
-            //   $this->PageBreakTrigger = 190;
-            // }
-            // dd($this->footnotes);
-            // $this->PageBreakTrigger = $prevpbt;
-            // if($this->page == 5) dump($this->page, $this->pagedim[$this->page]);
-            // $this->PageBreakTrigger = pbt.$this->page;
-            // $this->PageBreakTrigger = $pbt;
-            // dump($this->page ."|". $pbt);
-            // if($this->page >= 5) dump($this->pagedim, $this->pagedim[$this->page]['PageBreakTrigger']);
-            // dump($this->page, $this->PageBreakTrigger);
-            
-            // dump($cell_content);
-
-            // end tambahan
-
-            // dump($pg ."|". $pbt ."|". $cell_content);
-            // dump($pg ."|". $pbt ."|". $cell_content);
-            // dump('Multi Cell'. "|". $this->page ."|". $this->PageBreakTrigger);
-            // if($who == 'thead') dump($this->page . "|". $cell_content);
-            // dump($this->page ."|". $cellh ."|". $this->y ."|". ($this->PageBreakTrigger) ."|". $cell_content);
-
-            // if(isset($this->pagedim[$this->page]['PageBreakTrigger'])) dump($this->pagedim[$this->page]['PageBreakTrigger']);
-            // dump($this->page, $this->footnotes);
-            // dump($this->PageBreakTrigger);
+            // tambahan supaya pagebreak saat ada footnote
             $pbt = ( isset($this->footnotes['staging']['startypos'][$this->page]) ? $this->footnotes['staging']['startypos'][$this->page] : null );
             if($pbt) $this->PageBreakTrigger = $pbt;
+            //  end tambahan
+            $this->tdcellprintted = $this->tdcellprintted ?? 0; 
 						$this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
-
-
-            // if(isset($this->pagedim[$this->page]['PageBreakTrigger'])){
-            //   $this->PageBreakTrigger = $this->pagedim[$this->page]['PageBreakTrigger'];
-            // } 
-            // $this->pagedim[$this->page]['PageBreakTrigger'] = $prevpbt;
-            // dump($this->page."|".$prevpbt);
-            // $this->PageBreakTrigger = $prevpbt;
-            // if($this->page == 5) dump($this->page, $this->pagedim[$this->page]);
-            
+            $this->tdcellprintted += 1;
+            // if($this->tdcellprintted >= 85) {
+            //   break;
+            // }
 						// restore some values
 						$this->colxshift = array('x' => 0, 's' => array('H' => 0, 'V' => 0), 'p' => array('L' => 0, 'T' => 0, 'R' => 0, 'B' => 0));
 						$this->lasth = $prevLastH;
@@ -3428,7 +3336,9 @@ class PMC_PDF extends TCPDF
 					}
 				} 
         else { // closing tag
-
+          // if(isset($this->tdcellprintted) AND $this->tdcellprintted == 85){
+          //   break;
+          // }
           /** EDITED - Tambahan agar jika didalam paragrap berakhir dengan ul/ol, tidak diberi v space 2x tinggi text. 
            * tapi setelah di coba dengan html ol/ul yang ada border, berhasil
            * jika tidak diberi border, v space tidak ada sama sekali padahal butuh 1x vspace
@@ -3452,7 +3362,18 @@ class PMC_PDF extends TCPDF
               $this->addCgMark($this->start_cgmark[$parent_cgmarkid], null, ($this->y + $this->getLastH()), $this->getPage(), $dom[$dom[$key]['parent']]['attribute']['reasonforupdaterefids'], ''); // asign end position ('ed_pos_y')
             }
           }
-          $dom = $this->closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney);
+          if($dom[$key]['elkey'] == 570) {
+            // dump($dom[$key]);
+            // $key++;
+            // continue;
+            // break;
+          }
+          $dom = $this->closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney, $elkey_tes = $dom[$key]['elkey']);
+          // if(isset($this->tdcellprintted) AND $this->tdcellprintted == 85){
+          //   dd($dom[$key], $dom[$key+1], $dom[$key+2], $dom[$key+3]);
+          //   break;
+          // }
+
 
 					if ($this->bordermrk[$this->page] > $old_bordermrk) {
 						$startlinepos += ($this->bordermrk[$this->page] - $old_bordermrk);
@@ -3799,13 +3720,9 @@ class PMC_PDF extends TCPDF
                 }
                 
                 // reinstate template after we got the footnoteh
-                $template = $this->startTemplate($this->w,$footnoteh);   
-                
-                // dump($template);
-                if($template == 'XT28'){
-                  // dump($this->page);
-                }
-                
+                $template = $this->startTemplate($this->w,$footnoteh);
+                // $this->Rect(0,0,$this->w, $footnoteh, 'F', array(), array(255,255,255));
+                $this->Rect(0,0,$this->w, $footnoteh, 'F', array(), $this->paper_color);
                 $this->lMargin = $lMargin;
                 $this->rMargin = $rMargin;
                 $this->cell_padding['L'] = $lPadding ;
@@ -3817,7 +3734,7 @@ class PMC_PDF extends TCPDF
                 $this->Write('',"[{$lastIndexfnt}]    ",'',false,'L',false,0,true, true,0,0);
                 $this->lMargin += $this->GetStringWidth("[{$lastIndexfnt}]    ",'helvetica', '', 6);
 
-                $this->writeHTML("{$footnoteshtmlstring}", false,false, false, false, 'J', true, $DOMDocument);
+                $this->writeHTML("{$footnoteshtmlstring}", false, false, false, false, 'J', true, $DOMDocument);
                 $this->lMargin = $lMargin;
                 if($DOMDocument){
                   $this->applyCgMark($DOMDocument, true);
@@ -3891,42 +3808,7 @@ class PMC_PDF extends TCPDF
               $footnoteRefTxt = preg_replace("/idfnt/", end($this->footnotes['collection'])['id'][0], $footnoteRefTxt);
               $this->writeHTML($footnoteRefTxt,false);
               unset($footnoteRefTxt);
-              // dump('footnoteRefText has been created');
             }
-
-            
-
-            // $qtyfnt = count($this->footnotes['collection']);
-            // $yy = $this->y;
-            // for ($i= 1; $i <= $qtyfnt; $i++) {
-            //   if(isset($this->footnotes['collection'][$i]) ){                    
-            //     foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
-            //       if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
-            //         $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
-            //         if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
-            //           dump('staging footnote');
-            //           $ypos = $this->PageBreakTrigger - $hg;
-            //           $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
-            //           $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
-            //           $this->footnotes['staging']['startypos'][$this->page] = $ypos;
-            //           $this->footnotes['staging']['height'][$this->page][] = $hg;
-            //           $this->PageBreakTrigger -= $hg;
-
-            //           // dump('staging footnote');
-            //           $this->pagedim[$this->page]['PageBreakTrigger'] = $this->PageBreakTrigger;
-            //           // dump($this->pagedim[$this->page]['PageBreakTrigger'], $this->page);
-            //           // dump($this->page."|".$this->PageBreakTrigger);
-            //           // $this->bMargin += $hg;
-            //           // $this->PageBreakTrigger -= ($hg + $this->getCellHeight(6));
-            //           unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
-            //           $this->y = $yy;
-            //           // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
-            //         }        
-            //       }
-            //     }
-            //   }
-            // }
-            
             // restore default direction
 						if ($reverse_dir AND ($wadj == 0)) {
 							$this->x = $xws; // @phpstan-ignore-line
@@ -4167,6 +4049,7 @@ class PMC_PDF extends TCPDF
         $this->setPage($p);
         $x1line = $this->lMargin + 1;
         $yline = $this->footnotes['staging']['startypos'][$p] - (2.645833); // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
+        $this->Rect(0, $yline, $this->w, (2.645833), 'F', array(), $this->paper_color);
         $this->Line($x1line, $yline, ($x1line + 50), $yline);
         foreach($xobjs as $i => $xobj){
           // if($xobj == 'XT40'){
@@ -4442,6 +4325,11 @@ class PMC_PDF extends TCPDF
 		$border_middle = TCPDF_STATIC::getBorderMode($border, $position='middle', $this->opencell);
 		// design borders around HTML cells.
 		for ($page = $startpage; $page <= $endpage; ++$page) { // for each page
+      //  footnote #4 agar border table tidak di print melewati footnote. Sengaja tidak pakai PageBreakTrigger karena $h nya nilanya sama dengan PageBreakTrigger
+      // sementara ini tidak dipakai karena footnote akan dibuatkan background putih jadi akan border akan tertutupi
+      // if(isset($this->footnotes['staging']['startypos'][$page])){
+      //   $reducer_h = $this->footnotes['staging']['height'][$page][0] +  2.645833;  // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
+      // }
 			$ccode = '';
 			$this->setPage($page);
 			if ($this->num_columns < 2) {
@@ -4487,7 +4375,8 @@ class PMC_PDF extends TCPDF
 						$h = $this->h - $this->y - $this->bMargin;
 						$resth -= $h;
 					}
-					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+          // (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+          $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
 			 } elseif ($page == $startpage) { // first page
 				for ($column = $startcolumn; $column < $this->num_columns; ++$column) { // for each column
@@ -4508,7 +4397,8 @@ class PMC_PDF extends TCPDF
 						$h = $this->h - $this->y - $this->bMargin;
 						$resth -= $h;
 					}
-					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+          // (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+          $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
 			 } elseif ($page == $endpage) { // last page
 				for ($column = 0; $column <= $endcolumn; ++$column) { // for each column
@@ -4533,7 +4423,8 @@ class PMC_PDF extends TCPDF
 						$h = $this->h - $this->y - $this->bMargin;
 						$resth -= $h;
 					}
-					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+          // (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+          $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
 			 } else { // middle page
 				for ($column = 0; $column < $this->num_columns; ++$column) { // for each column
@@ -4546,7 +4437,8 @@ class PMC_PDF extends TCPDF
 					$cborder = $border_middle;
 					$h = $this->h - $this->y - $this->bMargin;
 					$resth -= $h;
-					$ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+          // (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+          $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
 				} // end for each column
 			}
 			if ($cborder OR $fill) {
@@ -4628,6 +4520,792 @@ class PMC_PDF extends TCPDF
 
 		return $nl;
 	}
+
+	// /**
+  //  * tambahannya: terkait footnote #4, aar border tidak di print melebihi footnote
+	//  * Process closing tags.
+	//  * @param array $dom html dom array
+	//  * @param int $key current element id
+	//  * @param boolean $cell if true add the default left (or right if RTL) padding to each new line (default false).
+	//  * @param int $maxbottomliney maximum y value of current line
+	//  * @return array $dom
+	//  * @protected
+	//  */
+	// protected function closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney=0) {
+	// 	$tag = $dom[$key];
+	// 	$parent = $dom[($dom[$key]['parent'])];
+	// 	$lasttag = ((!isset($dom[($key + 1)])) OR ((!isset($dom[($key + 2)])) AND ($dom[($key + 1)]['value'] == 'marker')));
+	// 	$in_table_head = false;
+	// 	// maximum x position (used to draw borders)
+	// 	if ($this->rtl) {
+	// 		$xmax = $this->w;
+	// 	} else {
+	// 		$xmax = 0;
+	// 	}
+	// 	if ($tag['block']) {
+	// 		$hbz = 0; // distance from y to line bottom
+	// 		$hb = 0; // vertical space between block tags
+	// 		// calculate vertical space for block tags
+	// 		if (isset($this->tagvspaces[$tag['value']][1]['h']) && !empty($this->tagvspaces[$tag['value']][1]['h']) && ($this->tagvspaces[$tag['value']][1]['h'] >= 0)) {
+	// 			$pre_h = $this->tagvspaces[$tag['value']][1]['h'];
+	// 		} elseif (isset($parent['fontsize'])) {
+	// 			$pre_h = $this->getCellHeight($parent['fontsize'] / $this->k);
+	// 		} else {
+	// 			$pre_h = $this->getCellHeight($this->FontSize);
+	// 		}
+	// 		if (isset($this->tagvspaces[$tag['value']][1]['n'])) {
+	// 			$cn = $this->tagvspaces[$tag['value']][1]['n'];
+	// 		} elseif (preg_match('/[h][0-9]/', $tag['value']) > 0) {
+	// 			$cn = 0.6;
+	// 		} else {
+	// 			$cn = 1;
+	// 		}
+	// 		if ((!isset($this->tagvspaces[$tag['value']])) AND ($tag['value'] == 'div')) {
+	// 			$hb = 0;
+	// 		} else {
+	// 			$hb = ($cn * $pre_h);
+	// 		}
+	// 		if ($maxbottomliney > $this->PageBreakTrigger) {
+	// 			$hbz = $this->getCellHeight($this->FontSize);
+	// 		} elseif ($this->y < $maxbottomliney) {
+	// 			$hbz = ($maxbottomliney - $this->y);
+	// 		}
+	// 	}
+	// 	// Closing tag
+	// 	switch($tag['value']) {
+	// 		case 'tr': {
+	// 			$table_el = $dom[($dom[$key]['parent'])]['parent'];
+	// 			if (!isset($parent['endy'])) {
+	// 				$dom[($dom[$key]['parent'])]['endy'] = $this->y;
+	// 				$parent['endy'] = $this->y;
+	// 			}
+	// 			if (!isset($parent['endpage'])) {
+	// 				$dom[($dom[$key]['parent'])]['endpage'] = $this->page;
+	// 				$parent['endpage'] = $this->page;
+	// 			}
+	// 			if (!isset($parent['endcolumn'])) {
+	// 				$dom[($dom[$key]['parent'])]['endcolumn'] = $this->current_column;
+	// 				$parent['endcolumn'] = $this->current_column;
+	// 			}
+	// 			// update row-spanned cells
+	// 			if (isset($dom[$table_el]['rowspans'])) {
+	// 				foreach ($dom[$table_el]['rowspans'] as $k => $trwsp) {
+	// 					$dom[$table_el]['rowspans'][$k]['rowspan'] -= 1;
+	// 					if ($dom[$table_el]['rowspans'][$k]['rowspan'] == 0) {
+	// 						if (($dom[$table_el]['rowspans'][$k]['endpage'] == $parent['endpage']) AND ($dom[$table_el]['rowspans'][$k]['endcolumn'] == $parent['endcolumn'])) {
+	// 							$dom[($dom[$key]['parent'])]['endy'] = max($dom[$table_el]['rowspans'][$k]['endy'], $parent['endy']);
+	// 						} elseif (($dom[$table_el]['rowspans'][$k]['endpage'] > $parent['endpage']) OR ($dom[$table_el]['rowspans'][$k]['endcolumn'] > $parent['endcolumn'])) {
+	// 							$dom[($dom[$key]['parent'])]['endy'] = $dom[$table_el]['rowspans'][$k]['endy'];
+	// 							$dom[($dom[$key]['parent'])]['endpage'] = $dom[$table_el]['rowspans'][$k]['endpage'];
+	// 							$dom[($dom[$key]['parent'])]['endcolumn'] = $dom[$table_el]['rowspans'][$k]['endcolumn'];
+	// 						}
+	// 					}
+	// 				}
+	// 				// report new endy and endpage to the rowspanned cells
+	// 				foreach ($dom[$table_el]['rowspans'] as $k => $trwsp) {
+	// 					if ($dom[$table_el]['rowspans'][$k]['rowspan'] == 0) {
+	// 						$dom[$table_el]['rowspans'][$k]['endpage'] = max($dom[$table_el]['rowspans'][$k]['endpage'], $dom[($dom[$key]['parent'])]['endpage']);
+	// 						$dom[($dom[$key]['parent'])]['endpage'] = $dom[$table_el]['rowspans'][$k]['endpage'];
+	// 						$dom[$table_el]['rowspans'][$k]['endcolumn'] = max($dom[$table_el]['rowspans'][$k]['endcolumn'], $dom[($dom[$key]['parent'])]['endcolumn']);
+	// 						$dom[($dom[$key]['parent'])]['endcolumn'] = $dom[$table_el]['rowspans'][$k]['endcolumn'];
+	// 						$dom[$table_el]['rowspans'][$k]['endy'] = max($dom[$table_el]['rowspans'][$k]['endy'], $dom[($dom[$key]['parent'])]['endy']);
+	// 						$dom[($dom[$key]['parent'])]['endy'] = $dom[$table_el]['rowspans'][$k]['endy'];
+	// 					}
+	// 				}
+	// 				// update remaining rowspanned cells
+	// 				foreach ($dom[$table_el]['rowspans'] as $k => $trwsp) {
+	// 					if ($dom[$table_el]['rowspans'][$k]['rowspan'] == 0) {
+	// 						$dom[$table_el]['rowspans'][$k]['endpage'] = $dom[($dom[$key]['parent'])]['endpage'];
+	// 						$dom[$table_el]['rowspans'][$k]['endcolumn'] = $dom[($dom[$key]['parent'])]['endcolumn'];
+	// 						$dom[$table_el]['rowspans'][$k]['endy'] = $dom[($dom[$key]['parent'])]['endy'];
+	// 					}
+	// 				}
+	// 			}
+	// 			$prev_page = $this->page;
+	// 			$this->setPage($dom[($dom[$key]['parent'])]['endpage']);
+	// 			if ($this->num_columns > 1) {
+	// 				if (($prev_page < $this->page)
+	// 					AND ((($this->current_column == 0) AND ($dom[($dom[$key]['parent'])]['endcolumn'] == ($this->num_columns - 1)))
+	// 						OR ($this->current_column == $dom[($dom[$key]['parent'])]['endcolumn']))) {
+	// 					// page jump
+	// 					$this->selectColumn(0);
+	// 					$dom[($dom[$key]['parent'])]['endcolumn'] = 0;
+	// 					$dom[($dom[$key]['parent'])]['endy'] = $this->y;
+	// 				} else {
+	// 					$this->selectColumn($dom[($dom[$key]['parent'])]['endcolumn']);
+	// 					$this->y = $dom[($dom[$key]['parent'])]['endy'];
+	// 				}
+	// 			} else {
+	// 				$this->y = $dom[($dom[$key]['parent'])]['endy'];
+	// 			}
+	// 			if (isset($dom[$table_el]['attribute']['cellspacing'])) {
+	// 				$this->y += $this->getHTMLUnitToUnits($dom[$table_el]['attribute']['cellspacing'], 1, 'px');
+	// 			} elseif (isset($dom[$table_el]['border-spacing'])) {
+	// 				$this->y += $dom[$table_el]['border-spacing']['V'];
+	// 			}
+	// 			$this->Ln(0, $cell);
+	// 			if ($this->current_column == $parent['startcolumn']) {
+	// 				$this->x = $parent['startx'];
+	// 			}
+	// 			// account for booklet mode
+	// 			if ($this->page > $parent['startpage']) {
+	// 				if (($this->rtl) AND ($this->pagedim[$this->page]['orm'] != $this->pagedim[$parent['startpage']]['orm'])) {
+	// 					$this->x -= ($this->pagedim[$this->page]['orm'] - $this->pagedim[$parent['startpage']]['orm']);
+	// 				} elseif ((!$this->rtl) AND ($this->pagedim[$this->page]['olm'] != $this->pagedim[$parent['startpage']]['olm'])) {
+	// 					$this->x += ($this->pagedim[$this->page]['olm'] - $this->pagedim[$parent['startpage']]['olm']);
+	// 				}
+	// 			}
+	// 			break;
+	// 		}
+	// 		case 'tablehead':
+	// 			// closing tag used for the thead part
+	// 			$in_table_head = true;
+	// 			$this->inthead = false;
+	// 		case 'table': {
+	// 			$table_el = $parent;
+	// 			// set default border
+	// 			if (isset($table_el['attribute']['border']) AND ($table_el['attribute']['border'] > 0)) {
+	// 				// set default border
+	// 				$border = array('LTRB' => array('width' => $this->getCSSBorderWidth($table_el['attribute']['border']), 'cap'=>'square', 'join'=>'miter', 'dash'=> 0, 'color'=>array(0,0,0)));
+	// 			} else {
+	// 				$border = 0;
+	// 			}
+  //       // if($key == 569) dump($border);
+	// 			$default_border = $border;
+	// 			// fix bottom line alignment of last line before page break
+	// 			foreach ($dom[($dom[$key]['parent'])]['trids'] as $j => $trkey) {
+	// 				// update row-spanned cells
+	// 				if (isset($dom[($dom[$key]['parent'])]['rowspans'])) {
+	// 					foreach ($dom[($dom[$key]['parent'])]['rowspans'] as $k => $trwsp) {
+	// 						if (isset($prevtrkey) AND ($trwsp['trid'] == $prevtrkey) AND ($trwsp['mrowspan'] > 0)) {
+	// 							$dom[($dom[$key]['parent'])]['rowspans'][$k]['trid'] = $trkey;
+	// 						}
+	// 						if ($dom[($dom[$key]['parent'])]['rowspans'][$k]['trid'] == $trkey) {
+	// 							$dom[($dom[$key]['parent'])]['rowspans'][$k]['mrowspan'] -= 1;
+	// 						}
+	// 					}
+	// 				}
+	// 				if (isset($prevtrkey) AND ($dom[$trkey]['startpage'] > $dom[$prevtrkey]['endpage'])) {
+	// 					$pgendy = $this->pagedim[$dom[$prevtrkey]['endpage']]['hk'] - $this->pagedim[$dom[$prevtrkey]['endpage']]['bm'];
+	// 					$dom[$prevtrkey]['endy'] = $pgendy;
+	// 					// update row-spanned cells
+	// 					if (isset($dom[($dom[$key]['parent'])]['rowspans'])) {
+	// 						foreach ($dom[($dom[$key]['parent'])]['rowspans'] as $k => $trwsp) {
+	// 							if (($trwsp['trid'] == $prevtrkey) AND ($trwsp['mrowspan'] >= 0) AND ($trwsp['endpage'] == $dom[$prevtrkey]['endpage'])) {
+	// 								$dom[($dom[$key]['parent'])]['rowspans'][$k]['endy'] = $pgendy;
+	// 								$dom[($dom[$key]['parent'])]['rowspans'][$k]['mrowspan'] = -1;
+	// 							}
+	// 						}
+	// 					}
+	// 				}
+	// 				$prevtrkey = $trkey;
+	// 				$table_el = $dom[($dom[$key]['parent'])];
+	// 			}
+	// 			// for each row
+	// 			if (!empty($table_el['trids'])) {
+	// 				unset($xmax);
+	// 			}
+	// 			foreach ($table_el['trids'] as $j => $trkey) {
+	// 				$parent = $dom[$trkey];
+	// 				if (!isset($xmax)) {
+	// 					$xmax = $parent['cellpos'][(count($parent['cellpos']) - 1)]['endx'];
+	// 				}
+	// 				// for each cell on the row
+	// 				foreach ($parent['cellpos'] as $k => $cellpos) {
+	// 					if (isset($cellpos['rowspanid']) AND ($cellpos['rowspanid'] >= 0)) {
+	// 						$cellpos['startx'] = $table_el['rowspans'][($cellpos['rowspanid'])]['startx'];
+	// 						$cellpos['endx'] = $table_el['rowspans'][($cellpos['rowspanid'])]['endx'];
+	// 						$endy = $table_el['rowspans'][($cellpos['rowspanid'])]['endy'];
+	// 						$startpage = $table_el['rowspans'][($cellpos['rowspanid'])]['startpage'];
+	// 						$endpage = $table_el['rowspans'][($cellpos['rowspanid'])]['endpage'];
+	// 						$startcolumn = $table_el['rowspans'][($cellpos['rowspanid'])]['startcolumn'];
+	// 						$endcolumn = $table_el['rowspans'][($cellpos['rowspanid'])]['endcolumn'];
+	// 					} else {
+	// 						$endy = $parent['endy'];
+	// 						$startpage = $parent['startpage'];
+	// 						$endpage = $parent['endpage'];
+	// 						$startcolumn = $parent['startcolumn'];
+	// 						$endcolumn = $parent['endcolumn'];
+	// 					}
+	// 					if ($this->num_columns == 0) {
+	// 						$this->num_columns = 1;
+	// 					}
+	// 					if (isset($cellpos['border'])) {
+	// 						$border = $cellpos['border'];
+	// 					}
+	// 					if (isset($cellpos['bgcolor']) AND ($cellpos['bgcolor']) !== false) {
+	// 						$this->setFillColorArray($cellpos['bgcolor']);
+	// 						$fill = true;
+	// 					} else {
+	// 						$fill = false;
+	// 					}
+	// 					$x = $cellpos['startx'];
+	// 					$y = $parent['starty'];
+	// 					$starty = $y;
+	// 					$w = abs($cellpos['endx'] - $cellpos['startx']);
+	// 					// get border modes
+	// 					$border_start = TCPDF_STATIC::getBorderMode($border, $position='start', $this->opencell);
+	// 					$border_end = TCPDF_STATIC::getBorderMode($border, $position='end', $this->opencell);
+	// 					$border_middle = TCPDF_STATIC::getBorderMode($border, $position='middle', $this->opencell);
+	// 					// design borders around HTML cells.
+	// 					for ($page = $startpage; $page <= $endpage; ++$page) { // for each page
+  //             //  footnote #4 agar border table tidak di print melewati footnote. Sengaja tidak pakai PageBreakTrigger karena $h nya nilanya sama dengan PageBreakTrigger
+  //             if(isset($this->footnotes['staging']['startypos'][$page])){
+  //               $reducer_h = $this->footnotes['staging']['height'][$page][0] +  2.645833;  // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
+  //             }
+	// 						$ccode = '';
+	// 						$this->setPage($page);
+	// 						if ($this->num_columns < 2) {
+	// 							// single-column mode
+	// 							$this->x = $x;
+	// 							$this->y = $this->tMargin;
+	// 						}
+	// 						// account for margin changes
+	// 						if ($page > $startpage) {
+	// 							if (($this->rtl) AND ($this->pagedim[$page]['orm'] != $this->pagedim[$startpage]['orm'])) {
+	// 								$this->x -= ($this->pagedim[$page]['orm'] - $this->pagedim[$startpage]['orm']);
+	// 							} elseif ((!$this->rtl) AND ($this->pagedim[$page]['olm'] != $this->pagedim[$startpage]['olm'])) {
+	// 								$this->x += ($this->pagedim[$page]['olm'] - $this->pagedim[$startpage]['olm']);
+	// 							}
+	// 						}
+	// 						if ($startpage == $endpage) { // single page
+	// 							$deltacol = 0;
+	// 							$deltath = 0;
+	// 							for ($column = $startcolumn; $column <= $endcolumn; ++$column) { // for each column
+	// 								$this->selectColumn($column);
+	// 								if ($startcolumn == $endcolumn) { // single column
+	// 									$cborder = $border;
+	// 									$h = $endy - $parent['starty'];
+	// 									$this->y = $y;
+	// 									$this->x = $x;
+	// 								} elseif ($column == $startcolumn) { // first column
+	// 									$cborder = $border_start;
+	// 									$this->y = $starty;
+	// 									$this->x = $x;
+	// 									$h = $this->h - $this->y - $this->bMargin;
+	// 									if ($this->rtl) {
+	// 										$deltacol = $this->x + $this->rMargin - $this->w;
+	// 									} else {
+	// 										$deltacol = $this->x - $this->lMargin;
+	// 									}
+	// 								} elseif ($column == $endcolumn) { // end column
+	// 									$cborder = $border_end;
+	// 									if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+	// 										$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+	// 									}
+	// 									$this->x += $deltacol;
+	// 									$h = $endy - $this->y;
+	// 								} else { // middle column
+	// 									$cborder = $border_middle;
+	// 									if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+	// 										$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+	// 									}
+	// 									$this->x += $deltacol;
+	// 									$h = $this->h - $this->y - $this->bMargin;
+	// 								}
+  //                 // if($key == 569) dump($cborder);
+  //                 // $cborder = 0; // tes disable border (harusnya ini ga ada)
+  //                 (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //                 $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+	// 							} // end for each column
+	// 						} elseif ($page == $startpage) { // first page
+	// 							$deltacol = 0;
+	// 							$deltath = 0;
+	// 							for ($column = $startcolumn; $column < $this->num_columns; ++$column) { // for each column
+	// 								$this->selectColumn($column);
+	// 								if ($column == $startcolumn) { // first column
+	// 									$cborder = $border_start;
+	// 									$this->y = $starty;
+	// 									$this->x = $x;
+	// 									$h = $this->h - $this->y - $this->bMargin;
+	// 									if ($this->rtl) {
+	// 										$deltacol = $this->x + $this->rMargin - $this->w;
+	// 									} else {
+	// 										$deltacol = $this->x - $this->lMargin;
+	// 									}
+	// 								} else { // middle column
+	// 									$cborder = $border_middle;
+	// 									if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+	// 										$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+	// 									}
+	// 									$this->x += $deltacol;
+	// 									$h = $this->h - $this->y - $this->bMargin;
+	// 								}
+  //                 // $cborder = 0; // tes disable border (harusnya ini ga ada)
+  //                 (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //                 $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+	// 							} // end for each column
+	// 						} elseif ($page == $endpage) { // last page
+	// 							$deltacol = 0;
+	// 							$deltath = 0;
+	// 							for ($column = 0; $column <= $endcolumn; ++$column) { // for each column
+	// 								$this->selectColumn($column);
+	// 								if ($column == $endcolumn) { // end column
+	// 									$cborder = $border_end;
+	// 									if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+	// 										$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+	// 									}
+	// 									$this->x += $deltacol;
+	// 									$h = $endy - $this->y;
+	// 								} else { // middle column
+	// 									$cborder = $border_middle;
+	// 									if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+	// 										$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+	// 									}
+	// 									$this->x += $deltacol;
+	// 									$h = $this->h - $this->y - $this->bMargin;
+	// 								}
+  //                 // $cborder = 0; // tes disable border (harusnya ini ga ada)
+  //                 (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //                 $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+	// 							} // end for each column
+	// 						} else { // middle page
+	// 							$deltacol = 0;
+	// 							$deltath = 0;
+	// 							for ($column = 0; $column < $this->num_columns; ++$column) { // for each column
+	// 								$this->selectColumn($column);
+	// 								$cborder = $border_middle;
+	// 								if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+	// 									$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+	// 								}
+	// 								$this->x += $deltacol;
+	// 								$h = $this->h - $this->y - $this->bMargin;
+  //                 // $cborder = 0; // tes disable border (harusnya ini ga ada)
+  //                 (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //                 $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+	// 							} // end for each column
+	// 						}
+	// 						if (!empty($cborder) OR !empty($fill)) {
+	// 							$offsetlen = strlen($ccode);
+	// 							// draw border and fill
+	// 							if ($this->inxobj) {
+	// 								// we are inside an XObject template
+	// 								if (end($this->xobjects[$this->xobjid]['transfmrk']) !== false) {
+	// 									$pagemarkkey = key($this->xobjects[$this->xobjid]['transfmrk']);
+	// 									$pagemark = $this->xobjects[$this->xobjid]['transfmrk'][$pagemarkkey];
+	// 									$this->xobjects[$this->xobjid]['transfmrk'][$pagemarkkey] += $offsetlen;
+	// 								} else {
+	// 									$pagemark = $this->xobjects[$this->xobjid]['intmrk'];
+	// 									$this->xobjects[$this->xobjid]['intmrk'] += $offsetlen;
+	// 								}
+	// 								$pagebuff = $this->xobjects[$this->xobjid]['outdata'];
+	// 								$pstart = substr($pagebuff, 0, $pagemark);
+	// 								$pend = substr($pagebuff, $pagemark);
+	// 								$this->xobjects[$this->xobjid]['outdata'] = $pstart.$ccode.$pend;
+	// 							} else {
+	// 								// draw border and fill
+	// 								if (end($this->transfmrk[$this->page]) !== false) {
+	// 									$pagemarkkey = key($this->transfmrk[$this->page]);
+	// 									$pagemark = $this->transfmrk[$this->page][$pagemarkkey];
+	// 								} elseif ($this->InFooter) {
+	// 									$pagemark = $this->footerpos[$this->page];
+	// 								} else {
+	// 									$pagemark = $this->intmrk[$this->page];
+	// 								}
+	// 								$pagebuff = $this->getPageBuffer($this->page);
+	// 								$pstart = substr($pagebuff, 0, $pagemark);
+	// 								$pend = substr($pagebuff, $pagemark);
+	// 								$this->setPageBuffer($this->page, $pstart.$ccode.$pend);
+	// 							}
+	// 						}
+	// 					} // end for each page
+	// 					// restore default border
+	// 					$border = $default_border;
+	// 				} // end for each cell on the row
+	// 				if (isset($table_el['attribute']['cellspacing'])) {
+	// 					$this->y += $this->getHTMLUnitToUnits($table_el['attribute']['cellspacing'], 1, 'px');
+	// 				} elseif (isset($table_el['border-spacing'])) {
+	// 					$this->y += $table_el['border-spacing']['V'];
+	// 				}
+	// 				$this->Ln(0, $cell);
+	// 				$this->x = $parent['startx'];
+	// 				if ($endpage > $startpage) {
+	// 					if (($this->rtl) AND ($this->pagedim[$endpage]['orm'] != $this->pagedim[$startpage]['orm'])) {
+	// 						$this->x += ($this->pagedim[$endpage]['orm'] - $this->pagedim[$startpage]['orm']);
+	// 					} elseif ((!$this->rtl) AND ($this->pagedim[$endpage]['olm'] != $this->pagedim[$startpage]['olm'])) {
+	// 						$this->x += ($this->pagedim[$endpage]['olm'] - $this->pagedim[$startpage]['olm']);
+	// 					}
+	// 				}
+	// 			}
+	// 			if (!$in_table_head) { // we are not inside a thead section
+	// 				$this->cell_padding = isset($table_el['old_cell_padding']) ? $table_el['old_cell_padding'] : null;
+	// 				// reset row height
+	// 				$this->resetLastH();
+	// 				if (($this->page == ($this->numpages - 1)) AND ($this->pageopen[$this->numpages])) {
+	// 					$plendiff = ($this->pagelen[$this->numpages] - $this->emptypagemrk[$this->numpages]);
+	// 					if (($plendiff > 0) AND ($plendiff < 60)) {
+	// 						$pagediff = substr($this->getPageBuffer($this->numpages), $this->emptypagemrk[$this->numpages], $plendiff);
+	// 						if (substr($pagediff, 0, 5) == 'BT /F') {
+	// 							// the difference is only a font setting
+	// 							$plendiff = 0;
+	// 						}
+	// 					}
+	// 					if ($plendiff == 0) {
+	// 						// remove last blank page
+	// 						$this->deletePage($this->numpages);
+	// 					}
+	// 				}
+	// 				if (isset($this->theadMargins['top'])) {
+	// 					// restore top margin
+	// 					$this->tMargin = $this->theadMargins['top'];
+	// 				}
+	// 				if (!isset($table_el['attribute']['nested']) OR ($table_el['attribute']['nested'] != 'true')) {
+	// 					// reset main table header
+	// 					$this->thead = '';
+	// 					$this->theadMargins = array();
+	// 					$this->pagedim[$this->page]['tm'] = $this->tMargin;
+	// 				}
+	// 			}
+	// 			$parent = $table_el;
+	// 			break;
+	// 		}
+	// 		case 'a': {
+	// 			$this->HREF = array();
+	// 			break;
+	// 		}
+	// 		case 'sup': {
+	// 			$this->setXY($this->GetX(), $this->GetY() + ((0.7 * $parent['fontsize']) / $this->k));
+	// 			break;
+	// 		}
+	// 		case 'sub': {
+	// 			$this->setXY($this->GetX(), $this->GetY() - ((0.3 * $parent['fontsize']) / $this->k));
+	// 			break;
+	// 		}
+	// 		case 'div': {
+	// 			$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		case 'blockquote': {
+	// 			if ($this->rtl) {
+	// 				$this->rMargin -= $this->listindent;
+	// 			} else {
+	// 				$this->lMargin -= $this->listindent;
+	// 			}
+	// 			--$this->listindentlevel;
+	// 			$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		case 'p': {
+	// 			$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		case 'pre': {
+	// 			$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			$this->premode = false;
+	// 			break;
+	// 		}
+	// 		case 'dl': {
+	// 			--$this->listnum;
+	// 			if ($this->listnum <= 0) {
+	// 				$this->listnum = 0;
+	// 				$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			} else {
+	// 				$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+	// 			}
+	// 			$this->resetLastH();
+	// 			break;
+	// 		}
+	// 		case 'dt': {
+	// 			$this->lispacer = '';
+	// 			$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		case 'dd': {
+	// 			$this->lispacer = '';
+	// 			if ($this->rtl) {
+	// 				$this->rMargin -= $this->listindent;
+	// 			} else {
+	// 				$this->lMargin -= $this->listindent;
+	// 			}
+	// 			--$this->listindentlevel;
+	// 			$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		case 'ul':
+	// 		case 'ol': {
+	// 			--$this->listnum;
+	// 			$this->lispacer = '';
+	// 			if ($this->rtl) {
+	// 				$this->rMargin -= $this->listindent;
+	// 			} else {
+	// 				$this->lMargin -= $this->listindent;
+	// 			}
+	// 			--$this->listindentlevel;
+	// 			if ($this->listnum <= 0) {
+	// 				$this->listnum = 0;
+	// 				$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			} else {
+	// 				$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+	// 			}
+	// 			$this->resetLastH();
+	// 			break;
+	// 		}
+	// 		case 'li': {
+	// 			$this->lispacer = '';
+	// 			$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		case 'h1':
+	// 		case 'h2':
+	// 		case 'h3':
+	// 		case 'h4':
+	// 		case 'h5':
+	// 		case 'h6': {
+	// 			$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+	// 			break;
+	// 		}
+	// 		// Form fields (since 4.8.000 - 2009-09-07)
+	// 		case 'form': {
+	// 			$this->form_action = '';
+	// 			$this->form_enctype = 'application/x-www-form-urlencoded';
+	// 			break;
+	// 		}
+	// 		default : {
+	// 			break;
+	// 		}
+	// 	}
+	// 	// draw border and background (if any)
+  //   // if($key == 569) dump($parent); // elkey = 39
+	// 	$this->drawHTMLTagBorder($parent, $xmax);
+	// 	if (isset($dom[($dom[$key]['parent'])]['attribute']['pagebreakafter'])) {
+	// 		$pba = $dom[($dom[$key]['parent'])]['attribute']['pagebreakafter'];
+	// 		// check for pagebreak
+	// 		if (($pba == 'true') OR ($pba == 'left') OR ($pba == 'right')) {
+	// 			// add a page (or trig AcceptPageBreak() for multicolumn mode)
+	// 			$this->checkPageBreak($this->PageBreakTrigger + 1);
+	// 		}
+	// 		if ((($pba == 'left') AND (((!$this->rtl) AND (($this->page % 2) == 0)) OR (($this->rtl) AND (($this->page % 2) != 0))))
+	// 			OR (($pba == 'right') AND (((!$this->rtl) AND (($this->page % 2) != 0)) OR (($this->rtl) AND (($this->page % 2) == 0))))) {
+	// 			// add a page (or trig AcceptPageBreak() for multicolumn mode)
+	// 			$this->checkPageBreak($this->PageBreakTrigger + 1);
+	// 		}
+	// 	}
+	// 	$this->tmprtl = false;
+	// 	return $dom;
+	// }
+
+  // /**
+  //  * tambahannya: terkait footnote #4, aar border tidak di print melebihi footnote
+	//  * Draw an HTML block border and fill
+	//  * @param array $tag array of tag properties.
+	//  * @param int $xmax end X coordinate for border.
+	//  * @protected
+	//  * @since 5.7.000 (2010-08-03)
+	//  */
+	// protected function drawHTMLTagBorder($tag, $xmax) {
+	// 	if (!isset($tag['borderposition'])) {
+	// 		// nothing to draw
+	// 		return;
+	// 	}
+	// 	$prev_x = $this->x;
+	// 	$prev_y = $this->y;
+	// 	$prev_lasth = $this->lasth;
+	// 	$border = 0;
+	// 	$fill = false;
+	// 	$this->lasth = 0;
+	// 	if (isset($tag['border']) AND !empty($tag['border'])) {
+	// 		// get border style
+	// 		$border = $tag['border'];
+	// 		if (!TCPDF_STATIC::empty_string($this->thead) AND (!$this->inthead)) {
+	// 			// border for table header
+	// 			$border = TCPDF_STATIC::getBorderMode($border, $position='middle', $this->opencell);
+	// 		}
+	// 	}
+	// 	if (isset($tag['bgcolor']) AND ($tag['bgcolor'] !== false)) {
+	// 		// get background color
+	// 		$old_bgcolor = $this->bgcolor;
+	// 		$this->setFillColorArray($tag['bgcolor']);
+	// 		$fill = true;
+	// 	}
+	// 	if (!$border AND !$fill) {
+	// 		// nothing to draw
+	// 		return;
+	// 	}
+	// 	if (isset($tag['attribute']['cellspacing'])) {
+	// 		$clsp = $this->getHTMLUnitToUnits($tag['attribute']['cellspacing'], 1, 'px');
+	// 		$cellspacing = array('H' => $clsp, 'V' => $clsp);
+	// 	} elseif (isset($tag['border-spacing'])) {
+	// 		$cellspacing = $tag['border-spacing'];
+	// 	} else {
+	// 		$cellspacing = array('H' => 0, 'V' => 0);
+	// 	}
+	// 	if (($tag['value'] != 'table') AND (is_array($border)) AND (!empty($border))) {
+	// 		// draw the border externally respect the sqare edge.
+	// 		$border['mode'] = 'ext';
+	// 	}
+	// 	if ($this->rtl) {
+	// 		if ($xmax >= $tag['borderposition']['x']) {
+	// 			$xmax = $tag['borderposition']['xmax'];
+	// 		}
+	// 		$w = ($tag['borderposition']['x'] - $xmax);
+	// 	} else {
+	// 		if ($xmax <= $tag['borderposition']['x']) {
+	// 			$xmax = $tag['borderposition']['xmax'];
+	// 		}
+	// 		$w = ($xmax - $tag['borderposition']['x']);
+	// 	}
+	// 	if ($w <= 0) {
+	// 		return;
+	// 	}
+	// 	$w += $cellspacing['H'];
+	// 	$startpage = $tag['borderposition']['page'];
+	// 	$startcolumn = $tag['borderposition']['column'];
+	// 	$x = $tag['borderposition']['x'];
+	// 	$y = $tag['borderposition']['y'];
+	// 	$endpage = $this->page;
+	// 	$starty = $tag['borderposition']['y'] - $cellspacing['V'];
+	// 	$currentY = $this->y;
+	// 	$this->x = $x;
+	// 	// get latest column
+	// 	$endcolumn = $this->current_column;
+	// 	if ($this->num_columns == 0) {
+	// 		$this->num_columns = 1;
+	// 	}
+	// 	// get border modes
+	// 	$border_start = TCPDF_STATIC::getBorderMode($border, $position='start', $this->opencell);
+	// 	$border_end = TCPDF_STATIC::getBorderMode($border, $position='end', $this->opencell);
+	// 	$border_middle = TCPDF_STATIC::getBorderMode($border, $position='middle', $this->opencell);
+	// 	// temporary disable page regions
+	// 	$temp_page_regions = $this->page_regions;
+	// 	$this->page_regions = array();
+	// 	// design borders around HTML cells.
+	// 	for ($page = $startpage; $page <= $endpage; ++$page) { // for each page
+  //     //  footnote #4 agar border table tidak di print melewati footnote. Sengaja tidak pakai PageBreakTrigger karena $h nya nilanya sama dengan PageBreakTrigger
+  //     if(isset($this->footnotes['staging']['startypos'][$page])){
+  //       // dump($page);
+  //       $reducer_h = $this->footnotes['staging']['height'][$page][0] +  2.645833;  // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
+  //     }
+	// 		$ccode = '';
+	// 		$this->setPage($page);
+	// 		if ($this->num_columns < 2) {
+	// 			// single-column mode
+	// 			$this->x = $x;
+	// 			$this->y = $this->tMargin;
+	// 		}
+	// 		// account for margin changes
+	// 		if ($page > $startpage) {
+	// 			if (($this->rtl) AND ($this->pagedim[$page]['orm'] != $this->pagedim[$startpage]['orm'])) {
+	// 				$this->x -= ($this->pagedim[$page]['orm'] - $this->pagedim[$startpage]['orm']);
+	// 			} elseif ((!$this->rtl) AND ($this->pagedim[$page]['olm'] != $this->pagedim[$startpage]['olm'])) {
+	// 				$this->x += ($this->pagedim[$page]['olm'] - $this->pagedim[$startpage]['olm']);
+	// 			}
+	// 		}
+	// 		if ($startpage == $endpage) {
+  //       // dump($tag['elkey'], $page);
+	// 			// single page
+	// 			for ($column = $startcolumn; $column <= $endcolumn; ++$column) { // for each column
+	// 				$this->selectColumn($column);
+	// 				if ($startcolumn == $endcolumn) { // single column
+	// 					$cborder = $border;
+	// 					$h = ($currentY - $y) + $cellspacing['V'];
+	// 					$this->y = $starty;
+	// 				} elseif ($column == $startcolumn) { // first column
+	// 					$cborder = $border_start;
+	// 					$this->y = $starty;
+	// 					$h = $this->h - $this->y - $this->bMargin;
+	// 				} elseif ($column == $endcolumn) { // end column
+	// 					$cborder = $border_end;
+	// 					$h = $currentY - $this->y;
+	// 				} else { // middle column
+	// 					$cborder = $border_middle;
+	// 					$h = $this->h - $this->y - $this->bMargin;
+	// 				}
+  //         (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //         $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+  //         // dump($reducer_h);
+  //         unset($reducer_h);
+	// 			} // end for each column
+	// 		} elseif ($page == $startpage) { // first page
+	// 			for ($column = $startcolumn; $column < $this->num_columns; ++$column) { // for each column
+	// 				$this->selectColumn($column);
+	// 				if ($column == $startcolumn) { // first column
+	// 					$cborder = $border_start;
+	// 					$this->y = $starty;
+	// 					$h = $this->h - $this->y - $this->bMargin;
+	// 				} else { // middle column
+	// 					$cborder = $border_middle;
+	// 					$h = $this->h - $this->y - $this->bMargin;
+	// 				}
+  //         (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //         $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+  //         // dump($reducer_h);
+  //         unset($reducer_h);
+	// 			} // end for each column
+	// 		} elseif ($page == $endpage) { // last page
+	// 			for ($column = 0; $column <= $endcolumn; ++$column) { // for each column
+	// 				$this->selectColumn($column);
+	// 				if ($column == $endcolumn) {
+	// 					// end column
+	// 					$cborder = $border_end;
+	// 					$h = $currentY - $this->y;
+	// 				} else {
+	// 					// middle column
+	// 					$cborder = $border_middle;
+	// 					$h = $this->h - $this->y - $this->bMargin;
+	// 				}
+  //         // dump($page);
+  //         (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //         $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+  //         // dump($reducer_h);
+  //         unset($reducer_h);
+	// 			} // end for each column
+	// 		} else { // middle page
+	// 			for ($column = 0; $column < $this->num_columns; ++$column) { // for each column
+	// 				$this->selectColumn($column);
+	// 				$cborder = $border_middle;
+	// 				$h = $this->h - $this->y - $this->bMargin;
+  //         (isset($reducer_h) AND (isset($this->footnotes['staging']['startypos'][$page])) AND ($h + 2.645833) >= $this->footnotes['staging']['startypos'][$page]) ? ($h -= $reducer_h) : null; // pengurangan jika ada footnote
+  //         $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+  //         // dump($reducer_h);
+  //         unset($reducer_h);
+	// 			} // end for each column
+	// 		}
+	// 		if ($cborder OR $fill) {
+	// 			$offsetlen = strlen($ccode);
+	// 			// draw border and fill
+	// 			if ($this->inxobj) {
+	// 				// we are inside an XObject template
+	// 				if (end($this->xobjects[$this->xobjid]['transfmrk']) !== false) {
+	// 					$pagemarkkey = key($this->xobjects[$this->xobjid]['transfmrk']);
+	// 					$pagemark = $this->xobjects[$this->xobjid]['transfmrk'][$pagemarkkey];
+	// 					$this->xobjects[$this->xobjid]['transfmrk'][$pagemarkkey] += $offsetlen;
+	// 				} else {
+	// 					$pagemark = $this->xobjects[$this->xobjid]['intmrk'];
+	// 					$this->xobjects[$this->xobjid]['intmrk'] += $offsetlen;
+	// 				}
+	// 				$pagebuff = $this->xobjects[$this->xobjid]['outdata'];
+	// 				$pstart = substr($pagebuff, 0, $pagemark);
+	// 				$pend = substr($pagebuff, $pagemark);
+	// 				$this->xobjects[$this->xobjid]['outdata'] = $pstart.$ccode.$pend;
+	// 			} else {
+	// 				if (end($this->transfmrk[$this->page]) !== false) {
+	// 					$pagemarkkey = key($this->transfmrk[$this->page]);
+	// 					$pagemark = $this->transfmrk[$this->page][$pagemarkkey];
+	// 				} elseif ($this->InFooter) {
+	// 					$pagemark = $this->footerpos[$this->page];
+	// 				} else {
+	// 					$pagemark = $this->intmrk[$this->page];
+	// 				}
+	// 				$pagebuff = $this->getPageBuffer($this->page);
+	// 				$pstart = substr($pagebuff, 0, $pagemark);
+	// 				$pend = substr($pagebuff, $pagemark);
+	// 				$this->setPageBuffer($this->page, $pstart.$ccode.$pend);
+	// 				$this->bordermrk[$this->page] += $offsetlen;
+	// 				$this->cntmrk[$this->page] += $offsetlen;
+	// 			}
+	// 		}
+	// 	} // end for each page
+	// 	// restore page regions
+	// 	$this->page_regions = $temp_page_regions;
+	// 	if (isset($old_bgcolor)) {
+	// 		// restore background color
+	// 		$this->setFillColorArray($old_bgcolor);
+	// 	}
+	// 	// restore pointer position
+	// 	$this->x = $prev_x;
+	// 	$this->y = $prev_y;
+	// 	$this->lasth = $prev_lasth;
+	// }
 
   public function isBooklet(){
     return $this->booklet;

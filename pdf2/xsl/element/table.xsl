@@ -32,6 +32,7 @@
         <tfoot>
           <xsl:apply-templates select="tfoot/row">
             <xsl:with-param name="userowsep" select="'no'"/>
+            <xsl:with-param name="usemaxcolspan" select="'yes'"/>
           </xsl:apply-templates>
           <xsl:for-each select="$footnote">
             <tr>
@@ -64,23 +65,35 @@
 
   <xsl:template match="row">
     <xsl:param name="userowsep" select="'yes'"/>
+    <xsl:param name="usemaxcolspan" select="'no'"/>
     <tr>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates select="entry">
         <xsl:with-param name="userowsep" select="$userowsep"/>
+        <xsl:with-param name="usemaxcolspan" select="$usemaxcolspan"/>
       </xsl:apply-templates>
     </tr>
   </xsl:template>
 
   <xsl:template match="entry">
     <xsl:param name="userowsep" select="'yes'"/>
+    <xsl:param name="usemaxcolspan" select="'yes'"/>
     <td>
       <!-- <xsl:text>foo</xsl:text> -->
       <xsl:call-template name="tb_tdstyle">
         <xsl:with-param name="userowsep" select="$userowsep"/>
       </xsl:call-template>
-      <xsl:call-template name="tb_colspan"/>
       <xsl:call-template name="tb_rowspan"/>
+      <xsl:choose>
+        <xsl:when test="$usemaxcolspan = 'yes'">
+          <xsl:attribute name="colspan">
+            <xsl:value-of select="ancestor::tgroup/@cols"/>
+          </xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="tb_colspan"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates>
         <xsl:with-param name="usefootnote" select="'no'"/>
       </xsl:apply-templates>
