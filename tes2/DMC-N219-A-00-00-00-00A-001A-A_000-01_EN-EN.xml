@@ -35,7 +35,9 @@
         <displayText>
           <simplePara>N219</simplePara>
         </displayText>
-        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/> -->
+        <!-- <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N010"/> -->
+        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N004|N006~N010"/>
       </applic>
       <brexDmRef>
         <dmRef>

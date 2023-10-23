@@ -49,7 +49,8 @@ class Assert extends Element
     $testedValues = [];
 
     // dump($this->applicPropertyValues, $producedValues, $nominalValues, __CLASS__,__LINE__);
-    if($nominalValues){
+    // if($nominalValues){ // harusnya if(!empty($nominalValues)) karena generateValue itu return array
+    if(!empty($nominalValues)){ // harusnya if(!empty($nominalValues)) karena generateValue itu return array
       foreach($producedValues as $value){
         if(!in_array($value, $nominalValues)){
           Message::generate(300, "The attribute @applicPropertyValue is not comply with {($this->applicPropertyType == 'prodattr' ? 'product attribute' : 'conditionTypeList attribute')} value.");

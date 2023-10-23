@@ -72,7 +72,7 @@
           <displayName>SN</displayName>
           <descr>Serial Number of Aircraft</descr>
           <!-- <enumeration applicPropertyValues="N001" /> -->
-          <enumeration applicPropertyValues="N001~N010|N011~N015" />
+          <enumeration applicPropertyValues="N001~N010|N012~N015" />
         </productAttribute>
         <!-- <productAttribute id="model" valueDataType="string" valuePattern="/(N219)/"> -->
         <!-- <productAttribute id="model" valueDataType="string" valuePattern="/N219/"> -->
@@ -91,7 +91,8 @@
               systemCode="00" subSystemCode="0" subSubSystemCode="0"
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
               infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
-              <issueInfo issueNumber="000" inWork="01"/>
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
         </dmRef>
       </condCrossRefTableRef>
@@ -102,7 +103,8 @@
               systemCode="00" subSystemCode="0" subSubSystemCode="0"
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
               infoCode="00Q" infoCodeVariant="A" itemLocationCode="D" />
-              <issueInfo issueNumber="000" inWork="01"/>
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
         </dmRef>
       </productCrossRefTableRef>

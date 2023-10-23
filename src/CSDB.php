@@ -6,7 +6,9 @@ use DOMElement;
 use DOMXPath;
 use Exception;
 
-abstract class CSDB {
+// abstract class CSDB {
+//  untuk keperluan program baru, ini dibuat tidak abstact
+class CSDB {
   
   protected string $modelIdentCode;
   protected string $CSDB_path;
@@ -350,17 +352,222 @@ abstract class CSDB {
   }
 
   public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = ''){
-    $docxpath = new DOMXPath($doc);
-    $dmRefIdent = $docxpath->evaluate("//identAndStatusSection/dmStatus/applicCrossRefTableRef/descendant::dmRefIdent")[0];
-    $ACTdoc = self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent), 'dmodule');
+    $CSDB = new self();
 
-    
+    $domxpath = new DOMXPath($doc);
+    $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/dmStatus/applicCrossRefTableRef/descendant::dmRefIdent")[0];
+    $ACTdoc = self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent),'', 'dmodule');
+    $CSDB->ACTdoc = $ACTdoc;
 
+    $actdomxpath = new DOMXPath($ACTdoc);
+    $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/condCrossRefTableRef/descendant::dmRefIdent")[0];
+    $CCTdoc =  self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent),'', 'dmodule');
+    $CSDB->CCTdoc = $CCTdoc;
 
+    $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/productCrossRefTableRef/descendant::dmRefIdent")[0];
+    $PCTdoc =  self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent),'', 'dmodule');
+    $CSDB->PCTdoc = $PCTdoc;
+
+    $CSDB->applics = array();
+    $applics = $domxpath->evaluate("//applic");
+    foreach($applics as $applic){
+      // $CSDB->applics[] = $applic;
+      foreach (self::get_childrenElement($applic) as $child){
+        switch ($child->tagName) {
+          case 'assert':
+            $CSDB->assertTest($child);
+            break;
+          case 'evaluate':
+            # code...
+            break;
+          case 'displayText':
+            break;
+        }
+      }
+    }
+    // dd(self::get_childrenElement($applics[0]));
+    dd(__CLASS__,__LINE__);
+    dd($ACTdoc);
 
     dd($ACTdoc);
     dd($dmCode, $issueInfo, $languange);
     // dd($ACT_doc);
     return '';
+  }
+
+  private function assertTest(\DOMElement $assert){
+    foreach($assert->attributes as $att){
+      if(!in_array($att->nodeName,['applicPropertyIdent', 'applicPropertyType', 'applicPropertyValues'])){
+        return false;
+      }
+    }
+
+    if($assert->firstChild instanceof \DOMText){
+      return ['text' => $assert->firstChild->nodeValue];
+    }
+
+    $applicPropertyIdent = $assert->getAttribute('applicPropertyIdent');
+    $applicPropertyType = $assert->getAttribute('applicPropertyType');
+    $applicPropertyValues = $assert->getAttribute('applicPropertyValues');
+
+    
+    // #1 getApplicPropertyValuesFromCrossRefTable
+    $crossRefTable = ($applicPropertyType == 'prodattr') ? $this->ACTdoc : $this->CCTdoc;
+    $crossRefTableDomXpath = new DOMXPath($crossRefTable);
+    if(str_contains(($schema = $crossRefTable->firstElementChild->getAttribute('xsi:noNamespaceSchemaLocation')), 'appliccrossreftable.xsd')){
+      $query_enum = "//enumeration[parent::*/@id = '{$applicPropertyIdent}']/@applicPropertyValues";
+      $valueDataType = $crossRefTableDomXpath->evaluate("//productAttribute[@id = '{$applicPropertyIdent}']");
+      $valueDataType = (count($valueDataType) > 0) ? ($valueDataType[0]->getAttribute('valueDataType') ?? null ) : null;
+    } 
+    elseif (str_contains(($schema = $crossRefTable->firstElementChild->getAttribute('xsi:noNamespaceSchemaLocation')), 'condcrossreftable.xsd') ){
+      $query_condTypeRefId = "//cond[@id = '{$applicPropertyIdent}']/@condTypeRefId";
+      $condTypeRefId = $crossRefTableDomXpath->evaluate($query_condTypeRefId);
+      $condTypeRefId = $condTypeRefId[0]->value;
+      $query_enum = "//enumeration[parent::*/@id = '{$condTypeRefId}']/@applicPropertyValues";
+
+      $valueDataType = $crossRefTableDomXpath->evaluate("//condType[@id = '{$condTypeRefId}']");
+      $valueDataType = (count($valueDataType) > 0) ? ($valueDataType[0]->getAttribute('valueDataType') ?? null ) : null;
+    }
+    else {
+      return false;
+    }
+    $enums = $crossRefTableDomXpath->evaluate($query_enum);
+    $applicPropertyValuesFromCrossRefTable = '';
+    $pattern = $crossRefTableDomXpath->evaluate("//@valuePattern[parent::*/@id = '$applicPropertyIdent']");
+    $pattern = (count($pattern) > 0) ? $pattern[0]->nodeValue : null;
+    if(count($enums) == 0){
+      // isexistValuePattern()
+      if($pattern){
+        $propertyValue = trim($pattern);
+        $propertyValue = substr_replace($propertyValue, "", 0,1);
+        $propertyValue = substr_replace($propertyValue, "", strlen($propertyValue)-1,1); 
+        $applicPropertyValuesFromCrossRefTable = $propertyValue;
+      }
+    } else {
+      $applicPropertyValuesFromCrossRefTable = $enums[0]->value;
+    }
+
+    // #2 generateValue for Nominal and Prodcued/actual value
+    $generateValue = function(string $applicPropertyValues) use($valueDataType, $pattern) {
+      $values_generated = array();
+      // breakApplicPropertyValues()
+      // $applicPropertyValues = "N071|N001N005`N010|N015throughN020|N020|N030~N035|N001~N005~N010";
+      // $regex[0] untuk match ->N030~N035<- ->N001~N005~N010<-
+      // $regex[1] untuk match ->N071<- ->N015throughN020<- ->N020<-
+      // semua value yang akan di cek terhadap @valuePattern (jika @valueDataType is string) ada dalam match-group ke 1(index ke 1) atau 2 atau 3
+      // jika range (tilde) maka $start = group 1; $end = group 2
+      // jika singe value maka group 3
+      $regex = ["([A-Za-z0-9\-\/]+)~([A-Za-z0-9\-\/]+)(?:[~`!@#$%^&*()\-_+={}\[\]\\;:'" . '",<.>\/? A-Za-z0-9]+)*', "|", "(?<![`~!@#$%^&*()-_=+{}\[\]\\;;'" . '",<.>\/? ])([A-Za-z0-9\-\/]+)(?![`~!@#$%^&*()-_=+{}\[\]\\;;' . "',<.>\/? ])"]; // https://regex101.com/r/vKhlJB/3 account ferdisaptoko@gmail.com
+      $regex = "/" . implode($regex) . "/";
+      preg_match_all($regex, $applicPropertyValues, $matches, PREG_SET_ORDER, 0); // matches1 = "N003~N005", matches2 = "N010~N015"
+      foreach($matches as $values){
+        // get start value for iterating
+        $start = null;
+        $end = null;
+        $singleValue = null;
+        if($valueDataType != 'string'){
+          $start = $values[1];
+          $end = $values[2];
+          $singleValue = (isset($values[3]) AND $values[3]) ? $values[3] : null;
+        } 
+        else {
+          if(!empty($pattern)){
+            preg_match_all($pattern, $values[1], $matches, PREG_SET_ORDER);
+            $start = isset($matches[0][0]) ? $matches[0][1] : null;
+            preg_match_all($pattern, $values[2], $matches, PREG_SET_ORDER);
+            $end = isset($matches[0][0]) ? $matches[0][1] : null;
+            if((isset($values[3]) AND $values[3])){
+              preg_match_all($pattern, $values[2], $matches, PREG_SET_ORDER);
+              $singleValue = isset($matches[0][0]) ? $matches[0][1] : null;
+            }
+          }
+        }
+        if($start AND $end){
+          $range = range($start, $end);
+          foreach($range as $v) ($values_generated[] = $v);
+        }
+        if($singleValue){
+          $values_generated[] = $singleValue;
+        }
+      }
+      return $values_generated;
+    };
+
+    $nominalValues = $generateValue($applicPropertyValuesFromCrossRefTable);
+    $producedValues = $generateValue($applicPropertyValues);
+
+    $testedValues = array();
+    if(!empty($nominalValues) AND !empty($producedValues)){
+      foreach($producedValues as $value){
+        if(in_array($value, $nominalValues)){
+          $testedValues[] = $value; // berbeda dengan script awal. Yang ini, walaupun aday ang ga match antara produced dan nominal values, tidak membuat semuanya false
+        }
+      }
+      
+      if(in_array($applicPropertyIdent, ['SERIALNUMBER', 'Serialnumber', 'serialnumber', 'serialNumber', 'SerialNumber', 'SERIAL_NUMBER', 'Serial_umber', 'serial_number', 'serial_Number', 'Serial_Number'])){
+        $keep = false; // ubah keep nya jika ingin oneByOne atau tidak
+        $oneByOne = false;
+        $s = [];
+        $i = 0;
+        while(isset($testedValues[$i])){;
+          
+          $s[] = $testedValues[$i];
+          if(isset($testedValues[$i+1]) AND 
+            (($testedValues[$i+1] - $testedValues[$i]) >= 1) 
+            ){
+              if( (count($s) > 1) AND !$oneByOne){
+                array_pop($s);
+                $oneByOne = false;
+              } else {
+                $keep ? null : ($s[] = 'through');
+              }
+              if(($testedValues[$i+1] - $testedValues[$i]) >= 2){
+                $s[] = $testedValues[$i];
+                $oneByOne =  true;
+              } 
+              else {
+                $oneByOne = ($keep) ? true : false;
+                // $oneByOne = false;
+              }
+            }
+          $i++;
+        }
+        if($pattern){
+          $regex = "/.*(\(.*\)).*/"; // akan match dengan yang didalam kurungnya /N(219)/ akan match dengan 219
+          preg_match_all($regex, $pattern, $structure, PREG_SET_ORDER, 0);
+        }
+        foreach($s as $n => $v){
+          if(!is_string($v)){
+            $s[$n] = sprintf('%03d',$s[$n]);
+            if($pattern){    
+              if($structure){
+                $newValue = str_replace($structure[0][1], $s[$n], $structure[0][0]); // $newValue = "/N001/"
+                $newValue = trim($newValue);
+                $newValue = substr_replace($newValue, "", 0,1); // delete "/" di depan
+                $newValue = substr_replace($newValue, "", strlen($newValue)-1,1); // delete "/" dibelakang
+                $s[$n] = $newValue;
+              }
+            }
+          }
+        }
+        dd('baru selesai sampai Assert.php line 94', __CLASS__, __LINE__);
+        
+        dd($s,$testedValues);
+      }
+    }
+
+
+
+
+
+
+
+    // $nominalValues = 
+    // dd($crossRefTable);
+
+
+    
+
+    
   }
 }
