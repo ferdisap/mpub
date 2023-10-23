@@ -51,9 +51,9 @@
   </xsl:template>
   
   <xsl:template match="description">
-  <div>
+  <!-- jangan dibungkus div karena div akan di render, dan akan menambah page kosong di akhir
+    <div>  </div> -->
     <xsl:apply-templates select="levelledPara"/>
-  </div>
   </xsl:template>
 
 </xsl:stylesheet>

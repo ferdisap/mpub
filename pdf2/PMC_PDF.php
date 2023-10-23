@@ -258,13 +258,14 @@ class PMC_PDF extends TCPDF
 
   public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
   {
-    // dump($pdf->getPage());
+    
     if (($pdf->getNumPages() % 2) == 0) {
       return false;
     } else {
       // if(!empty($pdf->tes) AND $pdf->tes){
         // dump($pdf->y, $pdf->page, $pdf->getLastH());
       // }
+      // dump($pdf->getPage());
       $pdf->AddPage();
       $topMargin = $pdf->pmType_config['page']['margins']['T'];
       $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
@@ -278,6 +279,7 @@ class PMC_PDF extends TCPDF
       $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
       // $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
       $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
+      // die;
       return $pdf->getPage();
     }
   }
@@ -2148,8 +2150,8 @@ class PMC_PDF extends TCPDF
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
-        $h = $this->getCellHeight($dom[$key]['fontsize']) * 3; // dikali tiga biar kalau ga break, ada text paragraph yang membersamainya 
-        $this->checkPageBreak($h, $this->y);
+        $hxx = $this->getCellHeight($dom[$key]['fontsize']) * 3; // dikali tiga biar kalau ga break, ada text paragraph yang membersamainya 
+        $this->checkPageBreak($hxx, $this->y);
       }
 
       // bookmark if such attribute exist
@@ -2938,9 +2940,10 @@ class PMC_PDF extends TCPDF
           $parentDom = $dom[$dom[$key]['parent']];
 
           /** EDITTED - tambahan agar ol dan ul tidak ada vspace after*/
-          if($parentDom['value'] == 'ol' OR $parentDom['value'] == 'ul'){
-            $maxbottomliney = 0;
-          }
+          // kayaknya ini tidak perlu karena bisa dikasi line heihgt
+          // if($parentDom['value'] == 'ol' OR $parentDom['value'] == 'ul'){
+          //   $maxbottomliney = 0;
+          // }
           /** end EDITTED */
 				}
 
@@ -3383,9 +3386,9 @@ class PMC_PDF extends TCPDF
 					}
 
           /** EDITTED - untuk tambah intentionally left blank atau page break */
-          // saat di closing tag ini, jika parent (open tag) ada atribute @addintentionallyleftblank, maka..
+          // saat di closing tag ini, jika parent (open tag) ada atribute @addintentionallyleftblank, maka.
           if(isset($dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank']) AND $dom[$dom[$key]['parent']]['attribute']['addintentionallyleftblank'] == 'true'){
-
+            // break;
             // jika tidak bisa ditambah intentionallyleftblank (karena page genap)
             if(!self::addIntentionallyLeftBlankPage($this)){
               $is_endpage = true;
@@ -3394,7 +3397,6 @@ class PMC_PDF extends TCPDF
                 // determine if the page is at the end or not. If not the end, it is page break. if end, add Intentionally leftblank or not (jika page genap)
                 // jika di next dom parentnya ada atribute @addintentionallyleftblank, maka.. bukan page terakhi, sehingga ditambah pagebreak saja untuk next title levelledPara
                 if(isset($dom[$i+1]) AND isset($dom[$dom[$i+1]['parent']]['attribute']['addintentionallyleftblank']) AND $dom[$dom[$i+1]['parent']]['attribute']['addintentionallyleftblank'] == 'true'){
-                  // dump($key."|".$this->page."|still exist at next page");
                   $is_endpage = false;
                   $this->checkPageBreak($this->PageBreakTrigger + 1);
                   $i = $maxel + 1;
@@ -3406,6 +3408,7 @@ class PMC_PDF extends TCPDF
                 self::addIntentionallyLeftBlankPage($this);
               }
             }
+            // dump($this->getPage(), $key, $dom);
           }
 				}
 			}
@@ -4039,6 +4042,7 @@ class PMC_PDF extends TCPDF
 			}
 		}
 		unset($dom);
+
     
     // footnote #3 - print the footnote
     // dump($this->footnotes, $this->references, $this->links);
