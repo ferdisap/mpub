@@ -27,6 +27,7 @@
   <xsl:include href="./group/textElemGroup.xsl" />
   <xsl:include href="./group/listElemGroup.xsl" />
   <xsl:include href="./element/levelledPara.xsl"/>
+  <xsl:include href="./element/warningcautionnote.xsl"/>
   
   <xsl:param name="padding_levelPara_1"/>
   <xsl:param name="padding_levelPara_2"/>
@@ -41,6 +42,7 @@
   <xsl:param name="fontsize_levelledPara_title_5"/>
 
   <xsl:param name="dmOwner"/>
+  <xsl:param name="absolute_asset_path"/>
   
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 
@@ -49,7 +51,9 @@
   </xsl:template>
   
   <xsl:template match="description">
+  <div>
     <xsl:apply-templates select="levelledPara"/>
+  </div>
   </xsl:template>
 
 </xsl:stylesheet>

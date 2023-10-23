@@ -71,11 +71,15 @@
       <levelledPara id="lvlp-001">
         <!-- <title>Introductions bar <emphasis emphasisType="em02">emphasis</emphasis> <superScript>sub sub </superScript> </title> -->
         <title>Try Caption</title>
+         <warning>
+          <warningAndCautionPara>Aircraft characteristic in one engine inoperative during takeoff roll, generate sudden yaw to inoperative engine.</warningAndCautionPara>
+          <warningAndCautionPara>Abort takeoff using step wise power idle (from MAX POWER, reduce to mid range, then smoothly to IDLE) is recommended. There will be a lot of directional changes, control the aircraft direction using rudder cautiously.</warningAndCautionPara>
+        </warning>
         <para changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Labore, voluptas, mollitia, fugit ullam delectus at sit necessitatibus reiciendis esse aspernatur sequi quae doloremque laborum maxime? Rem quo eaque natus expedita.
         </para>
 
-        <para>
+        <para changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">
           Lorem ipsum 
           <subScript>tes</subScript> dolor sit amet, <emphasis emphasisType="em01">tes emphasis</emphasis> consectetur adipisicing elit. Natus nesciunt 
           <superScript>foo</superScript> sunt praesentium nam. Similique odio sit <emphasis emphasisType="em01">tes emphasis</emphasis> ipsum saepe at ullam deserunt 
@@ -117,6 +121,7 @@
             <listItem><para>item 1</para></listItem>
             <listItem><para>item 2</para></listItem>
           </randomList>
+          w
           tes
           <footnote id="fnt-004">
             <para changeMark="1" changeType="modify" reasonForUpdateRefIds="rfu-002">tes 4 foot note.

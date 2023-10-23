@@ -12,6 +12,7 @@
   <xsl:param name="dmOwner"/>
   <xsl:param name="absolute_path_csdbInput"></xsl:param>
   <xsl:param name="logo_ptdi"></xsl:param>
+  <xsl:param name="absolute_asset_path"></xsl:param>
   <!-- <xsl:param name="resolve_dmCode_forXSLT"></xsl:param> -->
   <!-- <xsl:param name="tesfungsi"></xsl:param> -->
 

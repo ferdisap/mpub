@@ -100,7 +100,9 @@ class DMC
     
     $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
+    // harusnya logo_ptdi pakai absolute_asset_path
     $xsltproc->setParameter('','logo_ptdi', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR."Logo-PTDI.jpg");
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
     
     $html = $xsltproc->transformToXml($this->DOMDocument);
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
@@ -136,6 +138,7 @@ class DMC
 
     $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
 
     $html = $xsltproc->transformToXml($this->DOMDocument);
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
