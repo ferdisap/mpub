@@ -7,23 +7,29 @@
   <!-- <xsl:include href="listItem.xsl"/>  -->
 
   <xsl:template match="sequentialList">
-    <ol>
+    <xsl:if test="title">
+      <span><br style="line-height:1.25"/><b><xsl:value-of select="title"/></b></span>
+    </xsl:if>
+    <ol style="line-height:0.5">
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates />
     </ol>         
   </xsl:template> 
 
   <xsl:template match="randomList">
-    <ul>
+    <xsl:if test="title">
+      <span><br style="line-height:1.25"/><b><xsl:value-of select="title"/></b></span>
+    </xsl:if>
+    <ul style="line-height:0.5">
       <xsl:call-template name="cgmark"/>
-      <xsl:apply-templates />
+      <xsl:apply-templates/>
     </ul>         
   </xsl:template> 
   
   <xsl:template match="listItem">
-    <li>
+    <li style="line-height:1.25">
       <xsl:call-template name="cgmark"/>
-      <xsl:apply-templates />
+      <xsl:apply-templates/>
     </li>
   </xsl:template>
 
@@ -34,6 +40,10 @@
         <xsl:apply-templates/>
       </div>
     </div>
+  </xsl:template>
+
+  <xsl:template match="title">
+    <b>foo<xsl:apply-templates/></b>
   </xsl:template>
 
 
