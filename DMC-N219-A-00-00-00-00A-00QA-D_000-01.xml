@@ -38,9 +38,11 @@
         </dmRef>
       </applicCrossRefTableRef>
       <applic>
-        <displayText>
+        <!-- <displayText>
           <simplePara>N219 All</simplePara>
-        </displayText>
+        </displayText> -->
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/> -->
+        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N007~N009"/>
       </applic>
       <brexDmRef>
         <dmRef>

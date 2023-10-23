@@ -234,9 +234,7 @@ class PMC_PDF extends TCPDF
   }
 
   private function dmRef(\DOMElement $dmRef)
-  {
-    // dump($this->page);
-    
+  { 
     // if you want to utilize referredFragment, behavior, dmTitle, issueDate
     $referredFragment = $dmRef->getAttribute('referredFragment');
     $dmRefIdent = $dmRef->firstElementChild;

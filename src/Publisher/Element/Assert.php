@@ -59,6 +59,8 @@ class Assert extends Element
         }
       }
 
+      //  disini bisa diconfigurasi untuk "through" nanti, ex: N001 through N010
+      // ini belum ada prefix N-xx nya
       $ejaan_serialnumber = ['SERIALNUMBER', 'Serialnumber', 'serialnumber', 'serialNumber', 'SerialNumber', 'SERIAL_NUMBER', 'Serial_umber', 'serial_number', 'serial_Number', 'Serial_Number'];
         if(in_array($this->applicPropertyIdent, $ejaan_serialnumber)){
           foreach($testedValues as $n => $v){                
@@ -70,18 +72,21 @@ class Assert extends Element
         }          
       }
 
+      // atau disini bisa diconfigurasi untuk "through" nanti, ex: N001 through N010
       // @valuePattern kan cuma dipakai saat @valueDataType == 'string', sehingga ini tidak akan dijalankan kalau tidak ada pattern nya. Jadi aman jika assert berisi integer/booelan
       // @valuePattern harus memiliki 1 capturing group yang akan diganti dengan nilai baru.
       $pattern = $crossRefTable->isexistValuePattern($this->applicPropertyIdent);
       if($pattern){
         $regex = "/.*(\(.*\)).*/"; // akan match dengan yang didalam kurungnya /N(219)/ akan match dengan 219
         preg_match_all($regex, $pattern, $structure, PREG_SET_ORDER, 0);
+        // dump($regex, $pattern, $structure);
+        // dump($structure, $pattern);
         if($structure){
           for ($i=0; $i < count($testedValues); $i++) { 
-            $newValue = str_replace($structure[0][1], $testedValues[$i], $structure[0][0]);
+            $newValue = str_replace($structure[0][1], $testedValues[$i], $structure[0][0]); // $newValue = "/N001/"
             $newValue = trim($newValue);
-            $newValue = substr_replace($newValue, "", 0,1);
-            $newValue = substr_replace($newValue, "", strlen($newValue)-1,1);
+            $newValue = substr_replace($newValue, "", 0,1); // delete "/" di depan
+            $newValue = substr_replace($newValue, "", strlen($newValue)-1,1); // delete "/" dibelakang
             $testedValues[$i] = $newValue;
           }
         }
@@ -101,7 +106,7 @@ class Assert extends Element
 
     $values_generated = [];
     $matches = $this->breakApplicPropertyValues($applicPropertyValues);
-
+    
     foreach($matches as $values){
       $start = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent, $values[1], $this->valueDataType);
       $end = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent, $values[2], $this->valueDataType);
@@ -113,7 +118,7 @@ class Assert extends Element
         }
       }
 
-      if($values[3]){
+      if(isset($values[3]) AND $values[3]){ // value [3] ini untuk single value (tidak untuk di iterasi)
         $singleValue = $this->crossRefTable->validateTowardsPattern($this->applicPropertyIdent ,$values[3], $this->valueDataType);
         if($singleValue){
           array_push($values_generated, $singleValue);

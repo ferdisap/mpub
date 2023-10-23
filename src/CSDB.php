@@ -3,6 +3,7 @@
 namespace Ptdi\Mpub;
 
 use DOMElement;
+use DOMXPath;
 use Exception;
 
 abstract class CSDB {
@@ -274,7 +275,6 @@ abstract class CSDB {
         break;
     }
   }
-
   
   public static function resolve_dmCode($dmCode, string $prefix = 'DMC-')
   {
@@ -338,5 +338,29 @@ abstract class CSDB {
     $languangeIsoCode = $languange->getAttribute('languageIsoCode');
     $countryIsoCode = $languange->getAttribute('countryIsoCode');
     return $languangeIsoCode."-".$countryIsoCode;
+  }
+
+  public static function resolve_dmIdent(\DOMElement $dmIdent){
+    $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0]);
+    $issueInfo = ($if = self::resolve_issueInfo($dmIdent->getElementsByTagName('issueInfo')[0])) ? "_".$if : '';
+    $languange = ($lg = self::resolve_languange($dmIdent->getElementsByTagName('language')[0])) ? "_".$lg : '';
+
+    return strtoupper($dmCode.$issueInfo.$languange).".xml";
+
+  }
+
+  public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = ''){
+    $docxpath = new DOMXPath($doc);
+    $dmRefIdent = $docxpath->evaluate("//identAndStatusSection/dmStatus/applicCrossRefTableRef/descendant::dmRefIdent")[0];
+    $ACTdoc = self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent), 'dmodule');
+
+    
+
+
+
+    dd($ACTdoc);
+    dd($dmCode, $issueInfo, $languange);
+    // dd($ACT_doc);
+    return '';
   }
 }

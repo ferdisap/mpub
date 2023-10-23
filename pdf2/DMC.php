@@ -16,6 +16,7 @@ class DMC
   protected bool $validateSchema = true;
   protected bool $validateBrex = true;
   protected string $schemaXsd;
+  protected string $applicability = '';
 
   public function importDocument_byIdent(\DOMElement $identExtension = null, \DOMElement $dmCode, \DOMElement $issueInfo = null, \DOMElement $languange = null)
   {
@@ -45,6 +46,10 @@ class DMC
 
   public function render()
   {
+    $this->applicability = CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
+    dd($this->applicability);
+
+
     // note the first page of DMC
     $first_page = $this->pdf->getPage();
 
@@ -111,8 +116,6 @@ class DMC
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
 
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = false ,$tes = true);
-    
-    // $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
   }
 
   public function render_descriptXsd()
@@ -148,8 +151,6 @@ class DMC
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
-
-    // $this->pdf->addIntentionallyLeftBlankPage($this->pdf);
   }
   public static function getSchemaName(\DOMElement $dmodule)
   {

@@ -44,11 +44,14 @@ trait Applicability
     if ($valueDataType != 'string') {
       return $subject;
     }
+    // dump($applicPropertyIdent, $subject);
     $valuePattern = $this->isexistValuePattern($applicPropertyIdent);
     if($valuePattern){
       preg_match_all($valuePattern, $subject, $matches, PREG_SET_ORDER);
-      $match = $matches[0][0];
-      $value = $matches[0][1] ?: $match;
+      // $match = $matches[0][0];
+      $match = $matches[0][0] ?? null ;
+      // $value = $matches[0][1] ?: $match;
+      $value = $matches[0][1] ?? $match;
       if ($match) {
         return $value;
       } else {

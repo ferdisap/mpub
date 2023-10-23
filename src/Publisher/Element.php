@@ -91,8 +91,11 @@ class Element {
    * intended to get $attribute
    */
   public function __get($name){
+    // dump($this);
+    // dump('2');
     // dd($name, __CLASS__,__LINE__  );
-    if (!$this->{$name}){
+    if (!(isset($this->{$name}))){
+    // if (!$this->{$name}){
       foreach ($this->attributes as $attribute){
         if($attribute[0] == $name)
         return $attribute[1];
