@@ -39,7 +39,7 @@
 
       <!-- Doc No -->
       <div style="text-align:center;color:blue">
-        <b>DOCUMENT NO. D661ND1001</b>
+        <!-- <b>DOCUMENT NO. D661ND1001</b> -->
       </div>
 
       <!-- Logo 2 -->
@@ -76,10 +76,11 @@
             <td align="left" style="width:20%;">&#160;</td>
             <td align="left" style="width:60%;border:1px solid black">
               <div>
-                <b style="font-size:11">Airplane Serial Number: ___</b>
-              </div>
-              <div>
-                <b style="font-size:11">Airplane Registration: ___</b>
+                <span style="font-size:11;font-weight:bold">
+                  <xsl:text>Applicability: </xsl:text>
+                  <br/>
+                </span>
+                <span style="font-size:9"><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty','','first')"/></span>
               </div>
                 
             </td>
@@ -131,7 +132,8 @@
         </div>
 
         <div style="text-align:center">
-          <span>(Serial Numbers ______)</span>
+          <!-- <span>(Applicability: <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty','appl-001','')"/>)</span> -->
+          <span>(Applicability: <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty','','first')"/>)</span>
           <br/>
           <span>Type Certificate A118 (Indonesia)</span>
         </div>

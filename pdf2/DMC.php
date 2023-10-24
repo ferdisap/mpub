@@ -3,6 +3,7 @@
 namespace Ptdi\Mpub\Pdf2;
 
 use DOMXPath;
+use Exception;
 use Ptdi\Mpub\CSDB;
 // use Ptdi\Mpub\Pdf2\Helper\TextElemGroup;
 use TCPDF;
@@ -16,23 +17,49 @@ class DMC
   protected bool $validateSchema = true;
   protected bool $validateBrex = true;
   protected string $schemaXsd;
-  protected string $applicability = '';
+  protected $applicability = '';
 
-  public function importDocument_byIdent(\DOMElement $identExtension = null, \DOMElement $dmCode, \DOMElement $issueInfo = null, \DOMElement $languange = null)
-  {
-    $dmCode = CSDB::resolve_dmCode($dmCode);
-    $issueInfo = ($if = CSDB::resolve_issueInfo($issueInfo)) ? "_". $if : '';
-    $languange = ($lg = CSDB::resolve_languange($languange)) ? "_". $lg : '';
+  // public function importDocument_byIdent(\DOMElement $identExtension = null, \DOMElement $dmCode, \DOMElement $issueInfo = null, \DOMElement $languange = null)
+  // {
+  //   $dmCode = CSDB::resolve_dmCode($dmCode);
+  //   $issueInfo = ($if = CSDB::resolve_issueInfo($issueInfo)) ? "_". $if : '';
+  //   $languange = ($lg = CSDB::resolve_languange($languange)) ? "_". $lg : '';
 
-    $this->dmCode = $dmCode;
-    $this->issueInfo = $issueInfo;
-    $this->languange = $languange;
-    $this->pdf->curEntry = $this->dmCode.$this->issueInfo.$this->languange;
+  //   $this->dmCode = $dmCode;
+  //   $this->issueInfo = $issueInfo;
+  //   $this->languange = $languange;
+  //   $this->pdf->curEntry = $this->dmCode.$this->issueInfo.$this->languange;
 
-    $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($dmCode.$issueInfo.$languange).".xml";
+  //   $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($dmCode.$issueInfo.$languange).".xml";
 
-    $this->DOMDocument = CSDB::importDocument($file_withLanguangeCode,'','dmodule');
+  //   $this->DOMDocument = CSDB::importDocument($file_withLanguangeCode,'','dmodule');
     
+  //   $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
+  //   $this->schemaXsd = $schemaXsd;
+  //   $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
+
+  //   $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
+  //   $techname = $dmTitle->firstElementChild->nodeValue;
+  //   $infoname = $dmTitle->firstElementChild->nextElementSibling ? $dmTitle->firstElementChild->nextElementSibling->nodeValue : null;
+    
+  //   $this->pdf->Bookmark($techname.($infoname ? '-'. $infoname : ''),$this->pdf->pmEntry_level += 1);
+  // }
+
+  public function setDocument(\DOMElement $dmRef){
+    $dmIdent =  $dmRef->getElementsByTagName('dmRefIdent')[0];
+    if(!$dmIdent) return false;
+    $filename = CSDB::resolve_dmIdent($dmIdent);
+    
+    $this->pdf->curEntry = preg_replace("/.xml/",'',$filename);
+    $this->dmIdent = $this->pdf->curEntry;
+
+    preg_match('/(\S+)_(\S+)_(\S+)/', $this->pdf->curEntry, $matches, PREG_OFFSET_CAPTURE, 0);
+    $this->dmCode = $matches[1][0];
+    $this->issueInfo = $matches[2][0];
+    $this->language = $matches[3][0];
+
+    $this->DOMDocument = CSDB::importDocument($this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.$filename,'','dmodule');
+
     $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
     $this->schemaXsd = $schemaXsd;
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
@@ -40,16 +67,38 @@ class DMC
     $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
     $techname = $dmTitle->firstElementChild->nodeValue;
     $infoname = $dmTitle->firstElementChild->nextElementSibling ? $dmTitle->firstElementChild->nextElementSibling->nodeValue : null;
-    
+
     $this->pdf->Bookmark($techname.($infoname ? '-'. $infoname : ''),$this->pdf->pmEntry_level += 1);
   }
 
-  public function render()
-  {
+  public function getApplicabilty($id = '', $options = ''){
     $this->applicability = CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
-    dd($this->applicability);
+    // dd($this->applicability, __CLASS__,__LINE__);
+    if($id){
+      if(!isset($this->applicability[$id])) {
+        throw new Exception("No such $id inside $this->dmIdent", 1);
+      };      
+      $str = '';
+      foreach($this->applicability[$id] as $applicPropertyIdent => $stringApplic){
+        $str .= $stringApplic;
+        if($applicPropertyIdent != array_key_last($this->applicability[$id])) $str .= ", ";
+      }
+      return $str;
+    }
+    switch ($options) {
+      case 'first':
+        $str = '';
+        foreach($this->applicability[array_key_first($this->applicability)] as $applicPropertyIdent => $stringApplic){
+          $str .= $stringApplic;
+          if($applicPropertyIdent != array_key_last($this->applicability[array_key_first($this->applicability)])) $str .= ", ";
+        }
+        return $str;
+    }
+    return $this->applicability; // array
+  }
 
-
+  public function render()
+  {    
     // note the first page of DMC
     $first_page = $this->pdf->getPage();
 
@@ -90,8 +139,8 @@ class DMC
     }
   }
 
-  public function render_frontmatterXsd(){
-    
+  public function render_frontmatterXsd()
+  {    
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
     $CSDB_class_methods = array_map(function($name){
       return CSDB::class."::$name";
@@ -101,9 +150,10 @@ class DMC
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
+    $xsltproc->registerPHPFunctions(__CLASS__."::"."getApplicabilty");
     $xsltproc->registerPHPFunctions();
     
-    $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
+    $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     // harusnya logo_ptdi pakai absolute_asset_path
     $xsltproc->setParameter('','logo_ptdi', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR."Logo-PTDI.jpg");
@@ -139,7 +189,7 @@ class DMC
     $xsltproc->setParameter('',"fontsize_levelledPara_title_4", $fontsize_levelPara_title[3]);
     $xsltproc->setParameter('',"fontsize_levelledPara_title_5", $fontsize_levelPara_title[4]);
 
-    $xsltproc->setParameter('','dmOwner',$this->dmCode.$this->issueInfo.$this->languange);
+    $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
 

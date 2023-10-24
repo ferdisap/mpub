@@ -213,11 +213,11 @@ class CSDB {
     }
   }
 
-  public static function get_childrenElement(\DOMElement $element)
+  public static function get_childrenElement(\DOMElement $element, string $excludeElement = '')
   {
     $arr = [];
     foreach ($element->childNodes as $childNodes) {
-      $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
+      ( ($childNodes instanceof \DOMElement) AND ($childNodes->nodeName != $excludeElement) ) ? array_push($arr, $childNodes) : null;
     }
     return $arr;
   }  
@@ -234,7 +234,7 @@ class CSDB {
     return date($format, mktime(0,0,0, $m, $d, $y));
   }
 
-  public static function get_applic_display_text($applic, $separator = '|'){
+  public static function get_applic_display_text($applic, $separator = ', '){
     // untuk mengakomodir penggunaan fungsi di XSLT
     if(is_array($applic)){
       $applic = $applic[0];
@@ -248,6 +248,7 @@ class CSDB {
       $txt .= $simpleParas[$i]->nodeValue;
       if($i != ($c-1)) $txt .= $separator;
     }
+    // dd($txt);
     return $txt;
     
   }
@@ -342,10 +343,16 @@ class CSDB {
     return $languangeIsoCode."-".$countryIsoCode;
   }
 
-  public static function resolve_dmIdent(\DOMElement $dmIdent){
-    $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0]);
-    $issueInfo = ($if = self::resolve_issueInfo($dmIdent->getElementsByTagName('issueInfo')[0])) ? "_".$if : '';
-    $languange = ($lg = self::resolve_languange($dmIdent->getElementsByTagName('language')[0])) ? "_".$lg : '';
+  public static function resolve_dmIdent(\DOMElement $dmIdent = null, array $idents = []){
+    if(empty($idents)){
+      $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0]);
+      $issueInfo = ($if = self::resolve_issueInfo($dmIdent->getElementsByTagName('issueInfo')[0])) ? "_".$if : '';
+      $languange = ($lg = self::resolve_languange($dmIdent->getElementsByTagName('language')[0])) ? "_".$lg : '';
+    } else {
+      $dmCode = $idents[0];
+      $issueInfo = isset($idents[1]) ? "_".$idents[1] : '';
+      $languange = isset($idents[2]) ? "_".$idents[2] : '';
+    }
 
     return strtoupper($dmCode.$issueInfo.$languange).".xml";
 
@@ -370,29 +377,101 @@ class CSDB {
 
     $CSDB->applics = array();
     $applics = $domxpath->evaluate("//applic");
+    $result = [];
+
+    $resolve = function($childApplic, $resolve_fn) use ($CSDB){
+      switch ($childApplic->tagName) {
+        case 'assert':
+          $assert = $childApplic;
+          $test =  $CSDB->assertTest($assert);
+
+          // dd($assert->parentNode->nodeName);
+          if($assert->parentNode->nodeName == 'evaluate'){
+            return $test;
+          }
+          else {
+            if($test[array_key_first($test)]['STATUS'] == 'fail'){
+              $xpath = new DOMXPath($assert->ownerDocument);
+              $dmIdent = $xpath->evaluate("//identAndStatusSection/descendant::dmIdent")[0];
+              $dmIdent = self::resolve_dmIdent($dmIdent);
+              throw new Exception("Error processing applicability inside $dmIdent.", 1);
+            } else {
+              unset($test[array_key_first($test)]['STATUS']);
+              // dump($test);
+              return $test;
+            }
+          }
+          break;
+        case 'evaluate':
+          $evaluate = $childApplic;
+          $children = self::get_childrenElement($evaluate);
+          $results = [];
+          foreach($children as $child){
+            $results[] = $resolve_fn($child, $resolve_fn);
+          }
+          $andOr = $evaluate->getAttribute('andOr') ?? null;
+          // buat semua kayak 'and'
+          switch ($andOr) {
+            case 'and':
+              $res1 = $results[0];
+              $res2 = $results[1];
+              if(array_key_first($res1) == array_key_first($res2)){ // jika $applicPropertyIdent nya sama
+                $r[array_key_first($res1)] = array_merge($res1[array_key_first($res1)], [", "], $res2[array_key_first($res2)]);
+                $results = $r;
+              }
+              else {
+                $results = array_merge($res1, $res2);
+              }
+              foreach($results as $applicPropertyIdent => $values){
+                if($results[$applicPropertyIdent]['STATUS'] == 'fail'){
+                  $xpath = new DOMXPath($evaluate->ownerDocument);
+                  $dmIdent = $xpath->evaluate("//identAndStatusSection/descendant::dmIdent")[0];
+                  $dmIdent = self::resolve_dmIdent($dmIdent);
+                  
+                  throw new Exception("Error processing applicability inside $dmIdent.", 1);
+                }
+                unset($results[$applicPropertyIdent]['STATUS']);
+              }
+              // dd('bbb', $results);
+              break;
+            case 'or':
+              $res1 = $results[0];
+              $res2 = $results[1];
+              if($res1[array_key_first($res1)]['STATUS'] != 'fail'){
+                unset($res1[array_key_first($res1)]['STATUS']);
+                $r[array_key_first($res1)] = $res1[array_key_first($res1)];
+                $results = $r;
+              } 
+              elseif($res2[array_key_first($res2)]['STATUS'] != 'fail'){
+                unset($res2[array_key_first($res2)]['STATUS']);
+                $r[array_key_first($res2)] = $res2[array_key_first($res2)];
+                $results = $r;
+              } else {
+                $xpath = new DOMXPath($evaluate->ownerDocument);
+                $dmIdent = $xpath->evaluate("//identAndStatusSection/descendant::dmIdent")[0];
+                $dmIdent = self::resolve_dmIdent($dmIdent);                  
+                throw new Exception("Error processing applicability inside $dmIdent.", 1);
+              }
+              break;
+          }
+          return $results;
+      }
+    };
+
+    $applicability = [];
     foreach($applics as $applic){
-      // $CSDB->applics[] = $applic;
-      foreach (self::get_childrenElement($applic) as $child){
-        switch ($child->tagName) {
-          case 'assert':
-            $CSDB->assertTest($child);
-            break;
-          case 'evaluate':
-            # code...
-            break;
-          case 'displayText':
-            break;
+      $id = $applic->getAttribute('id');
+      foreach (self::get_childrenElement($applic, 'displayText') as $child){
+        $result = [];
+        $r = $resolve($child, $resolve);
+        // dd($r,__CLASS__,__LINE__);
+        foreach($r as $applicPropertyIdent => $testedValues){
+          $result[$applicPropertyIdent] = join('',$testedValues); // setiap testedValues sudah ada separator nya
         }
       }
+      ($id) ? ($applicability[$id] = $result) : $applicability[]  = $result;
     }
-    // dd(self::get_childrenElement($applics[0]));
-    dd(__CLASS__,__LINE__);
-    dd($ACTdoc);
-
-    dd($ACTdoc);
-    dd($dmCode, $issueInfo, $languange);
-    // dd($ACT_doc);
-    return '';
+    return $applicability;
   }
 
   private function assertTest(\DOMElement $assert){
@@ -410,6 +489,7 @@ class CSDB {
     $applicPropertyType = $assert->getAttribute('applicPropertyType');
     $applicPropertyValues = $assert->getAttribute('applicPropertyValues');
 
+    // $this->applicPropertyValues = $applicPropertyValues;
     
     // #1 getApplicPropertyValuesFromCrossRefTable
     $crossRefTable = ($applicPropertyType == 'prodattr') ? $this->ACTdoc : $this->CCTdoc;
@@ -471,7 +551,7 @@ class CSDB {
           $singleValue = (isset($values[3]) AND $values[3]) ? $values[3] : null;
         } 
         else {
-          if(!empty($pattern)){
+          if(!empty($pattern)){ // jika mau di iterate
             preg_match_all($pattern, $values[1], $matches, PREG_SET_ORDER);
             $start = isset($matches[0][0]) ? $matches[0][1] : null;
             preg_match_all($pattern, $values[2], $matches, PREG_SET_ORDER);
@@ -498,36 +578,44 @@ class CSDB {
 
     $testedValues = array();
     if(!empty($nominalValues) AND !empty($producedValues)){
+      $status = 'success';
       foreach($producedValues as $value){
-        if(in_array($value, $nominalValues)){
-          $testedValues[] = $value; // berbeda dengan script awal. Yang ini, walaupun aday ang ga match antara produced dan nominal values, tidak membuat semuanya false
-        }
+        // if(in_array($value, $nominalValues)){
+        //   $testedValues[] = $value; // berbeda dengan script awal. Yang ini, walaupun aday ang ga match antara produced dan nominal values, tidak membuat semuanya false
+        // }
+        $testedValues[] = $value;
+        if(!in_array($value, $nominalValues)) $status = 'fail'; // jika ada yang tidak sama, maka dikasi status fail, tapi tetap masuk ke testedValue. Intinya testedValues = produced Values
       }
       
       if(in_array($applicPropertyIdent, ['SERIALNUMBER', 'Serialnumber', 'serialnumber', 'serialNumber', 'SerialNumber', 'SERIAL_NUMBER', 'Serial_umber', 'serial_number', 'serial_Number', 'Serial_Number'])){
-        $keep = false; // ubah keep nya jika ingin oneByOne atau tidak
+        $keepOneByOne = false; // ubah keep nya jika ingin oneByOne atau tidak
         $oneByOne = false;
+        $length = count($testedValues);
         $s = [];
         $i = 0;
         while(isset($testedValues[$i])){;
           
           $s[] = $testedValues[$i];
+          if($keepOneByOne AND ($i < $length-1)) $s[] = ', ';
+
           if(isset($testedValues[$i+1]) AND 
             (($testedValues[$i+1] - $testedValues[$i]) >= 1) 
             ){
               if( (count($s) > 1) AND !$oneByOne){
                 array_pop($s);
+                if($keepOneByOne) $s[] = ', ';
                 $oneByOne = false;
               } else {
-                $keep ? null : ($s[] = 'through');
+                // $keepOneByOne ? null : ($s[] = ' through ');
+                $keepOneByOne ? null : ($s[] = ' ~ ');
               }
               if(($testedValues[$i+1] - $testedValues[$i]) >= 2){
-                $s[] = $testedValues[$i];
+                if(!$keepOneByOne) $s[] = $testedValues[$i];
+                if(!$keepOneByOne) $s[] = ', ';
                 $oneByOne =  true;
               } 
               else {
-                $oneByOne = ($keep) ? true : false;
-                // $oneByOne = false;
+                $oneByOne = ($keepOneByOne) ? true : false;
               }
             }
           $i++;
@@ -550,24 +638,12 @@ class CSDB {
             }
           }
         }
-        dd('baru selesai sampai Assert.php line 94', __CLASS__, __LINE__);
-        
-        dd($s,$testedValues);
+        $testedValues = $s;
       }
+      $testedValues['STATUS'] = $status;
     }
-
-
-
-
-
-
-
-    // $nominalValues = 
-    // dd($crossRefTable);
-
-
-    
-
-    
+    $ret = array($applicPropertyIdent => $testedValues);
+    // dump($ret);
+    return $ret;
   }
 }

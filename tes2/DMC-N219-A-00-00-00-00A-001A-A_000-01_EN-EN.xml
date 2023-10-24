@@ -31,14 +31,23 @@
           </dmRefIdent>
         </dmRef>
       </applicCrossRefTableRef>
-      <applic>
+      <applic id="appl-001">
         <displayText>
           <simplePara>N219</simplePara>
         </displayText>
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219|Amphibi"/> -->
+        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N012~N015"/>
         <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/> -->
         <!-- <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N010"/> -->
-        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N004|N006~N010"/>
+        <!-- <evaluate andOr="or">
+          <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N004|N006~N008"/>
+          <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+        </evaluate> -->
+          <!-- <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N011~N014"/> -->
       </applic>
+      <!-- <applic>
+        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N010"/>
+      </applic> -->
       <brexDmRef>
         <dmRef>
           <dmRefIdent>

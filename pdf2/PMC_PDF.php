@@ -236,22 +236,21 @@ class PMC_PDF extends TCPDF
   private function dmRef(\DOMElement $dmRef)
   { 
     // if you want to utilize referredFragment, behavior, dmTitle, issueDate
-    $referredFragment = $dmRef->getAttribute('referredFragment');
-    $dmRefIdent = $dmRef->firstElementChild;
-    $dmRefAddressItems = $dmRefIdent->nextElementSibling;
-    $behavior = $dmRefAddressItems ? $dmRefAddressItems->nextElementSibling : null;
+    // $referredFragment = $dmRef->getAttribute('referredFragment');
+    // $dmRefIdent = $dmRef->firstElementChild;
+    // $dmRefAddressItems = $dmRefIdent->nextElementSibling;
+    // $behavior = $dmRefAddressItems ? $dmRefAddressItems->nextElementSibling : null;
 
-    $identExtension_el = ($idnt = $dmRefIdent->firstElementChild)->tagName == 'identExtension' ? $idnt : null;
-    $dmCode_el = $identExtension_el ? $identExtension_el->nextElementSibling : $dmRefIdent->firstElementChild;
-    $issueInfo_el = $dmCode_el->nextElementSibling;
-    $languange_el = $issueInfo_el ? $issueInfo_el->nextElementSibling : null;
+    // $identExtension_el = ($idnt = $dmRefIdent->firstElementChild)->tagName == 'identExtension' ? $idnt : null;
+    // $dmCode_el = $identExtension_el ? $identExtension_el->nextElementSibling : $dmRefIdent->firstElementChild;
+    // $issueInfo_el = $dmCode_el->nextElementSibling;
+    // $languange_el = $issueInfo_el ? $issueInfo_el->nextElementSibling : null;
 
     $dmc = new DMC();
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
-    $dmc->importDocument_byIdent($identExtension_el, $dmCode_el, $issueInfo_el, $languange_el);
+    $dmc->setDocument($dmRef);
     $dmc->render();
-    // dump($this->page);
   }
 
   public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')

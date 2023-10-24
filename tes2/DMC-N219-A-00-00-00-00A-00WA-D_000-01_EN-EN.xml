@@ -27,14 +27,12 @@
       <originator enterpriseCode="SI">
         <enterpriseName>0001Z</enterpriseName>
       </originator>
-      <applicCrossRefTableRef>
+     <applicCrossRefTableRef>
         <dmRef>
           <dmRefIdent>
-            <dmCode modelIdentCode="N219" systemDiffCode="A"
-              systemCode="00" subSystemCode="0" subSubSystemCode="0"
-              assyCode="00" disassyCode="00" disassyCodeVariant="A"
-              infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
-              <issueInfo issueNumber="000" inWork="01" />
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />                -->
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
         </dmRef>
       </applicCrossRefTableRef>
@@ -59,12 +57,17 @@
   <content>
     <applicCrossRefTable>
       <productAttributeList>
-        <productAttribute id="aircraft" valuePattern="/(N219)/">
+        <!-- lebih baik dikasi value pattern-->
+        <!-- <productAttribute id="aircraft" valuePattern="/(N219)/"> -->
+        <!-- <productAttribute id="aircraft" valuePattern="/(Amphibi)/"> -->
+        <productAttribute id="aircraft">
         <!-- <productAttribute id="aircraft"> -->
           <name>N219</name>
           <displayName>N219</displayName>
           <descr>The name of the Aircraft</descr>
-          <enumeration applicPropertyValues="N219" />
+          <!-- <enumeration applicPropertyValues="N219" /> -->
+          <enumeration applicPropertyValues="N219|Amphibi" />
+          <!-- <enumeration applicPropertyValues="Amphibi" /> -->
           <!-- <enumeration applicPropertyValues="3~5|10~15" /> -->
         </productAttribute>
         <productAttribute id="serialnumber" valueDataType="string" valuePattern="/N([0-9]{3})/">

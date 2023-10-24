@@ -25,18 +25,20 @@
       <applicCrossRefTableRef>
         <dmRef>
           <dmRefIdent>
-             <dmCode modelIdentCode="N219" systemDiffCode="A"
-                systemCode="00" subSystemCode="0" subSubSystemCode="0"
-                assyCode="00" disassyCode="00" disassyCodeVariant="A"
-                infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />                -->
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
         </dmRef>
-      </applicCrossRefTableRef>
+      </applicCrossRefTableRef>      
       <applic>
         <displayText>
           <simplePara>N219</simplePara>
+          <simplePara>Amphibi</simplePara>
         </displayText>
-        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/> -->
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219|Amphibi"/>
+        <!-- <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N012~N013"/> -->
       </applic>
       <brexDmRef>
         <dmRef>
