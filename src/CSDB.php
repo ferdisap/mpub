@@ -384,7 +384,6 @@ class CSDB {
         case 'assert':
           $assert = $childApplic;
           $test =  $CSDB->assertTest($assert);
-
           // dd($assert->parentNode->nodeName);
           if($assert->parentNode->nodeName == 'evaluate'){
             return $test;
@@ -397,7 +396,6 @@ class CSDB {
               throw new Exception("Error processing applicability inside $dmIdent.", 1);
             } else {
               unset($test[array_key_first($test)]['STATUS']);
-              // dump($test);
               return $test;
             }
           }
@@ -466,12 +464,21 @@ class CSDB {
         $r = $resolve($child, $resolve);
         // dd($r,__CLASS__,__LINE__);
         foreach($r as $applicPropertyIdent => $testedValues){
-          $result[$applicPropertyIdent] = join('',$testedValues); // setiap testedValues sudah ada separator nya
+          $result[$applicPropertyIdent] = $testedValues[0];
+          unset($testedValues[0]);
+          foreach($testedValues as $conf => $val){
+            $result[$conf] = $val;
+          }
+          // tidak dipakai karena akan menjoin semua value element (ada 'STATUS', 'APPLICPROPERTYTYPE);
+          // $result[$applicPropertyIdent] = join('',$testedValues); // setiap testedValues sudah ada separator nya
         }
       }
       ($id) ? ($applicability[$id] = $result) : $applicability[]  = $result;
     }
-    return $applicability;
+    return [
+      'applicability' => $applicability,
+      'CSDB' => $CSDB,
+    ];
   }
 
   private function assertTest(\DOMElement $assert){
@@ -589,12 +596,13 @@ class CSDB {
       
       if(in_array($applicPropertyIdent, ['SERIALNUMBER', 'Serialnumber', 'serialnumber', 'serialNumber', 'SerialNumber', 'SERIAL_NUMBER', 'Serial_umber', 'serial_number', 'serial_Number', 'Serial_Number'])){
         $keepOneByOne = false; // ubah keep nya jika ingin oneByOne atau tidak
+        // $keepOneByOne = true; // ubah keep nya jika ingin oneByOne atau tidak
         $oneByOne = false;
         $length = count($testedValues);
         $s = [];
         $i = 0;
-        while(isset($testedValues[$i])){;
-          
+        $span = ' ~ ';
+        while(isset($testedValues[$i])){
           $s[] = $testedValues[$i];
           if($keepOneByOne AND ($i < $length-1)) $s[] = ', ';
 
@@ -620,6 +628,13 @@ class CSDB {
             }
           $i++;
         }
+        foreach($s as $k => $v){
+          if($v == $span){
+            if(abs($s[$k+1] - $s[$k-1]) == 1){
+              $s[$k] = ', ';
+            }
+          }
+        }
         if($pattern){
           $regex = "/.*(\(.*\)).*/"; // akan match dengan yang didalam kurungnya /N(219)/ akan match dengan 219
           preg_match_all($regex, $pattern, $structure, PREG_SET_ORDER, 0);
@@ -638,12 +653,18 @@ class CSDB {
             }
           }
         }
-        $testedValues = $s;
+        $testedValues = [];
+        $s = (join("",$s));
+        $testedValues[] = $s;
+      } else{
+        $r = join(", ", $testedValues);
+        $testedValues = [];
+        $testedValues[] = $r;
       }
       $testedValues['STATUS'] = $status;
+      $testedValues['%APPLICPROPERTYTYPE'] = $applicPropertyType;
     }
     $ret = array($applicPropertyIdent => $testedValues);
-    // dump($ret);
     return $ret;
   }
 }

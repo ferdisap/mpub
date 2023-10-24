@@ -63,7 +63,7 @@
         <productAttribute id="aircraft">
         <!-- <productAttribute id="aircraft"> -->
           <name>N219</name>
-          <displayName>N219</displayName>
+          <displayName></displayName>
           <descr>The name of the Aircraft</descr>
           <!-- <enumeration applicPropertyValues="N219" /> -->
           <enumeration applicPropertyValues="N219|Amphibi" />
@@ -72,7 +72,7 @@
         </productAttribute>
         <productAttribute id="serialnumber" valueDataType="string" valuePattern="/N([0-9]{3})/">
           <name>Serial Number</name>
-          <displayName>SN</displayName>
+          <displayName>SN: </displayName>
           <descr>Serial Number of Aircraft</descr>
           <!-- <enumeration applicPropertyValues="N001" /> -->
           <enumeration applicPropertyValues="N001~N010|N012~N015" />
@@ -81,7 +81,7 @@
         <!-- <productAttribute id="model" valueDataType="string" valuePattern="/N219/"> -->
         <productAttribute id="model" valueDataType="string">
           <name>Model Aircraft</name>
-          <displayName>MODEL</displayName>
+          <displayName>Model: </displayName>
           <descr>Model of Aircraft</descr>
           <!-- Harus punya minimal valuePattern untuk value, else is null -->
           <!-- <enumeration applicPropertyValues="N2189" /> -->

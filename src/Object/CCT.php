@@ -33,7 +33,7 @@ class CCT extends DModule {
     $query_condType = "//condType[@id = '{$condTypeRefId}']";
 
     $condType = $domXpath->evaluate($query_condType);
-    if($condType){
+    if($condType){validateTowardsPattern
       return $condType[0] ? $condType[0] : null;
     } else {
       return null;
