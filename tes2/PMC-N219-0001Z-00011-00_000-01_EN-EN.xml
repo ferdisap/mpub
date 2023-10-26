@@ -60,7 +60,7 @@
         </dmRefIdent>
       </dmRef>
     </pmEntry>
-    <!-- <pmEntry pmEntryType="pmt06">
+    <pmEntry pmEntryType="pmt06">
       <pmEntryTitle>LEODM</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
@@ -79,6 +79,6 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
-    </pmEntry> -->
+    </pmEntry>
   </content>
 </pm>

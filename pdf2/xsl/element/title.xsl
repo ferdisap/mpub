@@ -65,6 +65,8 @@
                 <xsl:text>&#160;&#160;</xsl:text>
                 <xsl:value-of select="text()"/>
               </xsl:attribute>
+              <!-- <xsl:if test="not(boolean(parent::crewDrill))">
+              </xsl:if> -->
 
               <!-- applying text -->
               <xsl:value-of select="$numberedPar"/>

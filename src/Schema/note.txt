@@ -24,6 +24,7 @@ dml.xsd,
 brex.xsd,
 brdoc.xsd,
 pm.xsd,
+crew.xsd,
 ###
 
 ###
@@ -75,4 +76,5 @@ dml.xsd,
 brex.xsd,
 brdoc.xsd,
 pm.xsd,
+crew.xsd
 ###

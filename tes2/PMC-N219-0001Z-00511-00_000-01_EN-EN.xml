@@ -51,7 +51,7 @@
     </pmStatus>
   </identAndStatusSection>
   <content>
-    <pmEntry pmEntryType="pmt61">
+    <!-- <pmEntry pmEntryType="pmt61">
       <pmEntryTitle>SECTION 04 - NORMAL PROCEDURES</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
@@ -60,23 +60,23 @@
           <language languageIsoCode="en" countryIsoCode="EN"/>
         </dmRefIdent>
       </dmRef>
-      <!-- <dmRef>
+      <dmRef>
         <dmRefIdent>
           <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
           <issueInfo issueNumber="000" inWork="01"/>
           <language languageIsoCode="en" countryIsoCode="EN"/>
         </dmRefIdent>
-      </dmRef> -->
-    </pmEntry>
-    <!-- <pmEntry pmEntryType="pmt61">
+      </dmRef>
+    </pmEntry> -->
+    <pmEntry pmEntryType="pmt61">
       <pmEntryTitle>SECTION 05 - EMERGENCY PROCEDURES</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
-          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+          <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="2" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
           <issueInfo issueNumber="000" inWork="01"/>
           <language languageIsoCode="en" countryIsoCode="EN"/>
         </dmRefIdent>
       </dmRef>
-    </pmEntry> -->
+    </pmEntry>
   </content>
 </pm>
