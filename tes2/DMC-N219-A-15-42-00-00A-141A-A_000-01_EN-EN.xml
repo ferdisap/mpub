@@ -58,7 +58,11 @@
         <levelledPara>
           <title>Engine Fire On Ground</title>
           <para>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
+            <!-- Lorem <caption color="co03"><captionLine>L ENG FIRE</captionLine></caption> ipsum, <caption color="co66"><captionLine>L ENG FIRE</captionLine></caption>  dolor sit amet consectetur  -->
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, amet tempore consectetur nisi eveniet laboriosam saepe excepturi maiores corrupti a, labore atque? Doloribus laudantium vero eligendi accusamus, ea quibusda asasasa
+            <!-- <caption color="co66" captionHeight="10mm"><captionLine>R ENG FIRE</captionLine></caption>  -->
+            <caption color="co66"><captionLine>L ENG FIRE</captionLine></caption> 
+            adipisicing elit. Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
           </para>
           <crewDrill orderedStepsFlag="1">
           <!-- <crewDrill> -->
@@ -67,7 +71,11 @@
               <para>
                 <sequentialList>
                   <listItem><para>Illumination of the WARNING lights.</para></listItem>
-                  <listItem><para>Display of the L ENG FIRE and/or R ENG FIRE in CAS Window.</para></listItem>
+                  <listItem><para>Display of the 
+                    <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
+                    and/or 
+                    <!-- <caption color="co66"><captionLine>R ENG FIRE</captionLine></caption>  -->
+                    in CAS Window.</para></listItem>
                 </sequentialList>
                 <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur cupiditate animi minus aperiam officiis voluptas nobis temporibus dolores ex repudiandae facere velit, quibusdam nihil voluptate molestias vitae itaque odio rem? -->
               </para>
@@ -89,6 +97,15 @@
               <note>
                 <notePara>Stop the aircraft in runway or continue taxiing and stop the aircraft outside the runway is pilots descretion</notePara>
               </note>
+              <crewDrillStep separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>PARKING brake Lorem ipsum dolor sit amet consectetur, adipisicing</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>Set</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
               <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
                 <challengeAndResponse>
                   <challenge><para>POWER levers (both engines) Lorem ipsum</para></challenge>
@@ -97,15 +114,6 @@
                     <crewMember crewMemberType="cm03"/>
                   </crewMemberGroup>
                   <response><para>IDLE</para></response>
-                </challengeAndResponse>
-              </crewDrillStep>
-              <crewDrillStep separatorStyle="line">
-                <challengeAndResponse>
-                  <challenge><para>PARKING brake</para></challenge>
-                  <crewMemberGroup>
-                    <crewMember crewMemberType="cm03"/>
-                  </crewMemberGroup>
-                  <response><para>Set</para></response>
                 </challengeAndResponse>
               </crewDrillStep>
             </subCrewDrill>

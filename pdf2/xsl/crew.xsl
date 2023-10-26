@@ -113,7 +113,6 @@
           </xsl:apply-templates>
         </td>
         <td style="width:10%;"><xsl:apply-templates select="response"/></td>
-        <!-- <td style="width:20%;text-align:center"><xsl:apply-templates select="descendant::crewMember"/></td> -->
         <td style="width:20%;text-align:center"><xsl:apply-templates select="descendant::crewMemberGroup"/></td>
       </tr>
     </table>
@@ -125,7 +124,7 @@
     <table style="width:100%">
       <tr>
         <td style="width:10%"><xsl:value-of select="$num"/>&#160;</td>
-        <td style="width:90%">
+        <td style="width:90%;text-align:left">
           <xsl:apply-templates/>
           <span separator="{$separator}">&#160;</span>
         </td>

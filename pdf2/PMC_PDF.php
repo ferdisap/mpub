@@ -216,13 +216,13 @@ class PMC_PDF extends TCPDF
     }
     // add TOC
     if($TOC){
-      // $this->addTOCPage();
-      // $this->SetFont($this->getFontFamily(), 'B', 14);
-      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      // $this->Ln();    
-      // $this->SetFont($this->getFontFamily(), '', 10);
-      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      // $this->endTOCPage();
+      $this->addTOCPage();
+      $this->SetFont($this->getFontFamily(), 'B', 14);
+      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      $this->Ln();    
+      $this->SetFont($this->getFontFamily(), '', 10);
+      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -3427,7 +3427,6 @@ class PMC_PDF extends TCPDF
       elseif (strlen($dom[$key]['value']) > 0) {
         $dom[$key]['value']  = preg_replace("/#ln;/",chr(10),$dom[$key]['value']);
         // dump($dom[$key]['value']);
-        // dump($dom[$key]['value']);
         // dump($this->y + $this->lasth + (2.9 * 2). "|". $dom[$key]['value']."|". $this->PageBreakTrigger);
         $this->checkPageBreak($this->lasth + (2.645833 * 2)); // footnote #3 supaya ada space sebelum pagebreak diatas footnote . Berfungi juga ketika ada footnote di line terakhir sebelum PageBreakTrigger, akan dipindah ke halaman selanjutnya
         // $this->checkPageBreak($this->lasth + (2.645833 * 1)); // footnote #3
@@ -3436,7 +3435,7 @@ class PMC_PDF extends TCPDF
 
         // dump($key);
         // dump($dom[38]);
-        // #2 untuk mencetak caption. Code ini berada di saat $key value = text
+        // caption #2 untuk mencetak caption. Code ini berada di saat $key value = text
         if(
           ($dom[$dom[$key]['parent']]['value'] == 'span')
           AND isset($dom[$dom[$key]['parent']]['attribute']['captionline'])
@@ -3444,8 +3443,10 @@ class PMC_PDF extends TCPDF
           AND !isset($dom[$key]['opening'])
           )
         {
+          // dump('#2');
           $lh = $this->lasth;
           $value = $this->captionLineText;
+          // dump($value);
           $height = isset($dom[$dom[$key]['parent']]['height']) ? $this->getHTMLUnitToUnits($dom[$dom[$key]['parent']]['height']) : $this->getCellHeight($this->FontSize, true);
           $calign = $dom[$dom[$key]['parent']]['attribute']['calign'] ?? 'B';
           $fillcolor = isset($dom[$dom[$key]['parent']]['attribute']['fillcolor']) ? $dom[$dom[$key]['parent']]['attribute']['fillcolor'] : '255,255,255,10';
@@ -3454,17 +3455,36 @@ class PMC_PDF extends TCPDF
           $fillcolor = explode(",",$fillcolor);
           $textcolor = explode(",",$textcolor);
           $cwa = ($this->w - $this->rMargin - $this->x - $this->cell_padding['L'] - $this->cell_padding['R']);
+          // dump($captionWidth, $cwa);
+          // $captionWidth = $this->captionWidth;
           if($captionWidth > $cwa){ // jika caption ada di ujung tulisan
+            // dump($startlinex);
+            // dump($this->x);
+            // $this->x = $startlinex;
+            // $calign == 'B' ? ($this->y += $height) : (
+              // $calign == 'T' ? ($this->y += $this->stringHeight) : null);
+              
+            // tambahan baru
+            // $this->x = $this->lMargin;
             $this->x = $startlinex;
-            $calign == 'B' ? ($this->y += $height) : (
-            $calign == 'T' ? ($this->y += $this->stringHeight) : null);
+            // $this->x = $this->lMargin;
+            // $this->Line($this->x,0, $this->x,200);
+            if($calign == 'B'){
+              $this->y += $height - $this->stringHeight;
+            } 
+            elseif($calign == 'T'){
+               $this->y += $this->stringHeight;
+            }
             $cwa = ($this->w - $this->rMargin - $this->x - $this->cell_padding['L'] - $this->cell_padding['R']); 
           }
           if($captionWidth < $cwa){
             $calign == 'B' ? ($this->y += $this->stringHeight) : null;
             $this->setColor('fill', $fillcolor[0],$fillcolor[1],$fillcolor[2], $fillcolor[3] ?? -1);
             $this->setColor('text', $textcolor[0],$textcolor[1],$textcolor[2], $fillcolor[3] ?? -1);
-            $this->Cell($captionWidth,$height,$value,1,0,'C',true,'',0,false,$calign);
+            // dump($this->x);
+            // $this->x -= 0.99;
+            $this->Cell($captionWidth,$height,$value,0,0,'C',true,'',0,false,$calign);
+            // $this->Line($this->x,0,$this->x,100);
             $calign == 'B' ? ($this->y -= $this->stringHeight) : null;
 
             $this->lasth = $lh;
@@ -3512,7 +3532,7 @@ class PMC_PDF extends TCPDF
 				}
         
 				if ($newline) {  
-          // #3 untuk menyetel posisi Y setelah text sebaris dengan caption
+          // caption #3 untuk menyetel posisi Y setelah text sebaris dengan caption
           if(isset($this->captionLineHeight) AND $this->captionLineHeight){
             $this->y += ($this->lastCaptionLineHeight ?? 0);
             $this->captionLineHeight = false;
@@ -3629,15 +3649,18 @@ class PMC_PDF extends TCPDF
 						}
 
             /** EDITTED - tambahan untuk set y jika didepannya ada span height */
-            // #1 untuk text sebelum spanheight, untuk menyetel y position sesuai caption height
+            // caption #1 untuk text sebelum spanheight, untuk menyetel y position sesuai caption height
             $this->stringHeight = $this->getCellHeight($this->FontSize, true);
             if(
               isset($dom[$key+1]['tag'])
               AND isset($dom[$key+1]['attribute']['captionline'])
               AND $dom[$key+1]['value'] == 'span'
               AND $dom[$key+1]['attribute']['captionline'] == 'true'
+              AND ($strlinelen < $cwa) // tambahan
               )
             {
+              // dump('#1');
+              $captionkey = $key+1; // tambahan, niatnya agar supaya jika ada dua caption dalam satu baris, $this->y tidak bertambah
               $fname = $dom[$key+1]['fontname'];
               $fstyle = $dom[$key+1]['fontstyle'];
               $fsize = $dom[$key+1]['fontsize'];
@@ -3649,6 +3672,9 @@ class PMC_PDF extends TCPDF
               // untuk mengambil isi span text. Belum bisa mengakomodir jika didalam spantext ada text
               while((!$dom[$captionLineKey+$i]['tag'])){
                 $captionLineText .= $dom[$captionLineKey+$i]['value'];
+                // $dom[$captionLineKey+$i]['value'] = ''; // coba-coba
+                $dom[$captionLineKey+$i]['value'] = chr(160); // coba-coba
+                // unset($dom[$key+1]['attribute']['captionline']); // coba-coba
                 if((!$dom[$captionLineKey+$i+1]['opening']) 
                     AND $dom[$captionLineKey+$i+1]['parent'] == $captionLineKey)
                 {
@@ -3662,23 +3688,27 @@ class PMC_PDF extends TCPDF
               }              
               $this->captionLineText = $captionLineText;
               $captionWidth = !empty($dom[$key+1]['width']) ? $this->getHTMLUnitToUnits($dom[$key+1]['width']) : $this->GetStringWidth($captionLineText,$fname, $fstyle, $fsize);
+              $this->captionWidth = $captionWidth;
               // jika text terakhir + panjang span <= available space ?
               if($strlinelen + $captionWidth <= $cwa){
                 if($calign == 'B'){
-                  $this->y += isset($dom[$key+1]['height']) ? ($this->getHTMLUnitToUnits($dom[$key+1]['height']) - $this->stringHeight) : $this->stringHeight; // tidak boleh ada "mm" di height nya
+                  // $this->y += isset($dom[$key+1]['height']) ? ($this->getHTMLUnitToUnits($dom[$key+1]['height']) - $this->stringHeight) : $this->stringHeight; // tidak boleh ada "mm" di height nya
+                  // tambahan, niatnya agar supaya jika ada dua caption dalam satu baris, $this->y tidak bertambah
+                  if(isset($dom[$captionkey]['attribute']['height'])){
+                    $this->y += $dom[$captionkey]['attribute']['height'] - $this->stringHeight;
+                  }
                 }
+              } 
+              else{
+                $dom[$key]['value'] .= chr(10); // supaya ketika ada caption diujung, text justify dan tidak terganggu captionnya
               }
+              // dump($this->captionLineText);
             }
             // $this->stringHeight = $this->getCellHeight($this->FontSize, true); // dipindah ke atas
             // end #1
 
 
             if ($strlinelen < $cwa){
-
-
-              // $this->Line(0,168.91,100,168.91);
-              // $this->Line(0,174.87,100,174.87);
-
               // footnote #1 - create footnoteRef
               $v = $dom[$key]['value'];
               $v_n = preg_replace("/\[\?f\]/",'', $v);

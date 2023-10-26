@@ -171,7 +171,8 @@
   </xsl:template>
   
   <xsl:template match="caption">
-    &#160;<span captionline="true" style="font-weight:bold" calgin="B">
+    <!-- &#160;<span captionline="true" style="font-weight:bold" calgin="T"> -->
+    &#160;<span captionline="true" style="font-weight:bold" calign="T">
       <xsl:call-template name="cgmark"/>
 
       <xsl:if test="@captionWidth">
@@ -184,7 +185,9 @@
 
       <xsl:call-template name="color"/>
 
+      <xsl:text> </xsl:text>
       <xsl:apply-templates select="captionLine"/>
+      <xsl:text> </xsl:text>
 
     </span>&#160;
   </xsl:template>
