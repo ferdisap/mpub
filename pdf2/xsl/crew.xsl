@@ -63,6 +63,11 @@
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>
+      <style>
+        td {
+          <!-- border:1px solid red; -->
+        }
+      </style>
     </span>
   </xsl:template>
 
@@ -104,7 +109,7 @@
         <xsl:text>- </xsl:text>
       </xsl:if>
     </xsl:variable>
-    <table style="width:100%">
+    <table style="width:100%;page-break-inside: avoid;">
       <tr>
         <td style="width:70%;">
           <xsl:apply-templates select="challenge">
@@ -121,12 +126,13 @@
   <xsl:template match="challenge">
     <xsl:param name="num"/>
     <xsl:param name="separator"/>
-    <table style="width:100%">
+    <table style="width:100%;">
       <tr>
         <td style="width:10%"><xsl:value-of select="$num"/>&#160;</td>
-        <td style="width:90%;text-align:left">
+        <td style="width:90%;text-align:left;">
           <xsl:apply-templates/>
           <span separator="{$separator}">&#160;</span>
+          <br/>
         </td>
       </tr>
     </table>

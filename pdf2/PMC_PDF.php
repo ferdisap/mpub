@@ -599,11 +599,11 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
@@ -611,11 +611,11 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -3230,8 +3230,16 @@ class PMC_PDF extends TCPDF
             // separatorstyle #1 initiate event
             $this->cellw = $cellw; // tambahan
             $this->sx = $this->x;
+            // dump($this->sx, $cell_content);
             
             $this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
+            // $this->mc = $this->mc ?? 0;
+            // $this->mc += 1;
+            // dump($this->mc);
+            // if($this->mc == 31){
+              // dump($cell_content);
+              // break;
+            // }
             
             $this->tdcellprintted += 1;
             // if($this->tdcellprintted >= 85) {
@@ -5013,10 +5021,12 @@ class PMC_PDF extends TCPDF
       
       // separatorstyle #3 append separator to text 
       if(isset($this->cellw) AND isset($this->separator)){
+        // $endcell = $pw + ($this->sx <= $pw ? $this->sx : 0); // $numfills akan minus jika dilakukan ini
         $endcell = $pw + $this->sx;
         $wfiller = $this->GetStringWidth($this->separator);
         $fw = $endcell - $this->x;
         $numfills = floor($fw/$wfiller);
+        // dump($this->separator,$numfills);
         $rowfill = str_repeat($this->separator, $numfills);
         $tmpstr .= $rowfill;
         // $this->Line($this->x,$this->y+2, $pw + $this->sx, $this->y+2);

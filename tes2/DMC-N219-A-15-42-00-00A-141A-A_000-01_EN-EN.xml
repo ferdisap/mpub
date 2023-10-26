@@ -58,11 +58,12 @@
         <levelledPara>
           <title>Engine Fire On Ground</title>
           <para>
-            <!-- Lorem <caption color="co03"><captionLine>L ENG FIRE</captionLine></caption> ipsum, <caption color="co66"><captionLine>L ENG FIRE</captionLine></caption>  dolor sit amet consectetur  -->
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, amet tempore consectetur nisi eveniet laboriosam saepe excepturi maiores corrupti a, labore atque? Doloribus laudantium vero eligendi accusamus, ea quibusda asasasa
+            Lorem <caption color="co03"><captionLine>L ENG FIRE</captionLine></caption> ipsum, <caption color="co66"><captionLine>L ENG FIRE</captionLine></caption>  dolor sit amet consectetur 
+            <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, amet tempore consectetur nisi eveniet laboriosam saepe excepturi maiores corrupti a, labore atque? Doloribus laudantium vero eligendi accusamus, ea quibusda asasasa -->
             <!-- <caption color="co66" captionHeight="10mm"><captionLine>R ENG FIRE</captionLine></caption>  -->
             <caption color="co66"><captionLine>L ENG FIRE</captionLine></caption> 
             adipisicing elit. Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, esse?
           </para>
           <crewDrill orderedStepsFlag="1">
           <!-- <crewDrill> -->
@@ -109,6 +110,236 @@
               <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
                 <challengeAndResponse>
                   <challenge><para>POWER levers (both engines) Lorem ipsum</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
                   <crewMemberGroup>
                     <crewMember crewMemberType="cm02"/>
                     <crewMember crewMemberType="cm03"/>
