@@ -599,11 +599,11 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
@@ -611,11 +611,11 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      // $this->writeHTML($footer, true, false, true, false, 'C');
+      $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -5808,6 +5808,8 @@ class PMC_PDF extends TCPDF
       $this->vgutter = $inner;
     }
   }
+
+  
   /**
    * tambahanya hanya menambah tulisan intentionally left blank saja, tapi tidak jadi
 	 * Add page if needed.

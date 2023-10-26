@@ -25,9 +25,6 @@
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
           <xsl:apply-templates/>
-          <!-- <xsl:text> asaasasa </xsl:text> -->
-          <!-- coba untuk separator style -->
-          <!-- <xsl:text> %s%</xsl:text>  -->
         </span>      
       </xsl:when>
       <xsl:otherwise>

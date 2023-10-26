@@ -186,12 +186,40 @@ class DMC
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = false ,$tes = true);
   }
 
+  /**
+   * $type bisa berupa DOMElement(crewMemberGroup), atau DOMattr (crewMemberType)
+   */
+  public function getCrewMember($type){
+    if(is_array($type)) $type = $type[0];
+
+    if(($type instanceof \DOMElement) AND $type->nodeName == 'crewMemberGroup'){
+      $typearr = [];
+      foreach(CSDB::get_childrenElement($type) as $crewMember){
+        $typearr[] = $crewMember->getAttribute('crewMemberType');
+      }
+      foreach($typearr as $i => $cm){
+        if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$cm])){
+          $typearr[$i] = $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$cm];
+        }
+      }
+      return join(', ',$typearr);
+    }
+    
+    if($type instanceof \DOMAttr) $type = $type->nodeValue;
+    if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type])){
+      return $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type];
+    }
+  }
+
   public function render_crewXsd()
   {
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
     $xsl = CSDB::importDocument(__DIR__."./xsl/crew.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
+    // dd(__CLASS__."::"."getApplicabilty", PMC_PDF::class."::".'getCrewMember');
+    $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
+    // $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
     $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];

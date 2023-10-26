@@ -61,6 +61,7 @@
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
           </para>
           <crewDrill orderedStepsFlag="1">
+          <!-- <crewDrill> -->
             <subCrewDrill orderedStepsFlag="1">
               <title>Indication</title>
               <para>
@@ -68,13 +69,14 @@
                   <listItem><para>Illumination of the WARNING lights.</para></listItem>
                   <listItem><para>Display of the L ENG FIRE and/or R ENG FIRE in CAS Window.</para></listItem>
                 </sequentialList>
+                <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur cupiditate animi minus aperiam officiis voluptas nobis temporibus dolores ex repudiandae facere velit, quibusdam nihil voluptate molestias vitae itaque odio rem? -->
               </para>
             </subCrewDrill>
             <subCrewDrill orderedStepsFlag="1">
               <title>Probable Cause</title>
               <para>Fire is detected within nacelle of the affected engine(s).</para>
             </subCrewDrill>
-            <subCrewDrill orderedStepsFlag="1">
+            <subCrewDrill>
               <title>Action</title>
               <warning>
                 <warningAndCautionPara>Aircraft characteristic in one engine inoperative during takeoff roll, generate sudden yaw to inoperative engine.</warningAndCautionPara>

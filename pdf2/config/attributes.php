@@ -38,7 +38,14 @@ $pmType = [
       ],
       'header' => '/template/pt51_header.php',
       'footer' => '/template/pt51_footer.php'
-    ]
+    ],
+    'attributes' =>[
+      'crewMemberType' => [
+        'cm02' => 'CM1',
+        'cm03' => 'CM2',
+        'cm04' => 'FN',
+      ]
+    ],
   ],
 ];
 
