@@ -51,7 +51,7 @@
     </pmStatus>
   </identAndStatusSection>
   <content>
-    <!-- <pmEntry pmEntryType="pmt61">
+    <pmEntry pmEntryType="pmt61">
       <pmEntryTitle>SECTION 04 - NORMAL PROCEDURES</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
@@ -60,7 +60,7 @@
           <language languageIsoCode="en" countryIsoCode="EN"/>
         </dmRefIdent>
       </dmRef>
-    </pmEntry> -->
+    </pmEntry>
     <pmEntry pmEntryType="pmt61">
       <pmEntryTitle>SECTION 05 - EMERGENCY PROCEDURES</pmEntryTitle>
       <dmRef>

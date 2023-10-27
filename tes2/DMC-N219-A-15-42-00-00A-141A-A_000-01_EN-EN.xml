@@ -87,7 +87,7 @@
             </subCrewDrill>
             <subCrewDrill>
               <title>Action</title>
-              <warning>
+              <!-- <warning>
                 <warningAndCautionPara>Aircraft characteristic in one engine inoperative during takeoff roll, generate sudden yaw to inoperative engine.</warningAndCautionPara>
                 <warningAndCautionPara>Abort takeoff using step wise power idle (from MAX POWER, reduce to mid range, then smoothly to IDLE) is recommended. There will be a lot of directional changes, control the aircraft direction using rudder cautiously.</warningAndCautionPara>
               </warning>
@@ -97,14 +97,16 @@
               </caution>
               <note>
                 <notePara>Stop the aircraft in runway or continue taxiing and stop the aircraft outside the runway is pilots descretion</notePara>
-              </note>
+              </note> -->
+              <!-- saat ini, <response> tidak bisa pakai style selain text biasa -->
               <crewDrillStep separatorStyle="dot">
                 <challengeAndResponse>
-                  <challenge><para>PARKING brake Lorem ipsum dolor sit amet consectetur, adipisicing</para></challenge>
+                  <challenge><para>PARKING brake Lorem <caption><captionLine>ipsum</captionLine></caption> dolor sit amet <caption><captionLine>tesasasa</captionLine></caption> consectetur, adipisicing</para></challenge>
                   <crewMemberGroup>
                     <crewMember crewMemberType="cm03"/>
                   </crewMemberGroup>
-                  <response><para>Set</para></response>
+                  <response><para><caption><captionLine>Set</captionLine></caption></para></response>
+                  <!-- <response><para>asa</para></response> -->
                 </challengeAndResponse>
               </crewDrillStep>
               <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
@@ -114,12 +116,34 @@
                     <crewMember crewMemberType="cm02"/>
                     <crewMember crewMemberType="cm03"/>
                   </crewMemberGroup>
-                  <response><para>IDLE</para></response>
+                  <response><para>IDLE SASA</para></response>
                 </challengeAndResponse>
               </crewDrillStep>
+              <subCrewDrill orderedStepsFlag="0">
+                <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                  <challengeAndResponse>
+                    <challenge><para>POWER levers (both engines) Lorem ipsum</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>IDLE SASA</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
+                  <challengeAndResponse>
+                    <challenge><para>POWER levers (both engines) Lorem ipsum</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>IDLE SASA</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+              </subCrewDrill>
               <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
                 <challengeAndResponse>
-                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commo</para></challenge>
                   <crewMemberGroup>
                     <crewMember crewMemberType="cm02"/>
                     <crewMember crewMemberType="cm03"/>
@@ -129,7 +153,7 @@
               </crewDrillStep>
               <crewDrillStep memorizeStepsFlag="1" separatorStyle="dot">
                 <challengeAndResponse>
-                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commod</para></challenge>
                   <crewMemberGroup>
                     <crewMember crewMemberType="cm02"/>
                     <crewMember crewMemberType="cm03"/>

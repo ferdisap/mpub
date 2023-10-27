@@ -599,11 +599,11 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
@@ -611,11 +611,11 @@ class PMC_PDF extends TCPDF
   {
     if (($this->getPage() % 2) == 0) {
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
-      // $this->writeHTML($footer, true, false, true, false, 'C');
+      $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
-      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -3006,6 +3006,22 @@ class PMC_PDF extends TCPDF
         }
 
 				if ($dom[$key]['opening']) {
+
+          // separator style  #1 final
+          if(isset($dom[$key]['attribute']['challenge'])){
+            $this->aw = $this->aw ?? round($this->rMargin * 3); // 36 saat tes dengan kertas A5
+            $this->rMargin += $this->aw; 
+          }
+          if(isset($dom[$key]['attribute']['response'])){
+            $this->x = $this->w - $this->rMargin;
+            $awr = 2/3 * ($this->aw); // 24 saat tes dengan kertas A5
+            $this->rMargin -= $awr; 
+          }
+          if(isset($dom[$key]['attribute']['crewmember'])){
+            $aw = 1/3 * ($this->aw);
+            $this->rMargin -= $aw; // -10 saat tes dengan kertas A5
+          }
+          
 					// get text indentation (if any)
 					if (isset($dom[$key]['text-indent']) AND $dom[$key]['block']) {
             // tambahan
@@ -3228,8 +3244,8 @@ class PMC_PDF extends TCPDF
             $this->tdcellprintted = $this->tdcellprintted ?? 0; 
             
             // separatorstyle #1 initiate event
-            $this->cellw = $cellw; // tambahan
-            $this->sx = $this->x;
+            // $this->cellw = $cellw; // tambahan
+            // $this->sx = $this->x;
             // dump($this->sx, $cell_content);
             
             $this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
@@ -3346,6 +3362,13 @@ class PMC_PDF extends TCPDF
               // dump('addInternalReference'."|".$dom[$key]['attribute']['id']);
             }
 
+            // separatorstyle #coba
+            if(isset($dom[$key]['attribute']['crewdrill'])){
+              $this->rMargin += 30;
+              $this->crewDrill = true;
+            }
+
+            
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
@@ -3428,11 +3451,22 @@ class PMC_PDF extends TCPDF
                 self::addIntentionallyLeftBlankPage($this);
               }
             }
-            // dump($this->getPage(), $key, $dom);
           }
+
+          // separator style #2  final - print wfill 
+          if(isset($dom[$key+1]['attribute']['response'])){
+            $cwa = ($this->w - $this->x - $this->rMargin - $this->cell_padding['R']);
+            $wfiller = $this->GetStringWidth('.');
+            $fw = $cwa - 1; // 3 supaya ada space
+            $numfills = floor($fw/$wfiller);
+            $rowfill = str_repeat('.', $numfills);
+            $this->Write('',$rowfill,'');
+          }
+          
 				}
 			}
       elseif (strlen($dom[$key]['value']) > 0) {
+
         $dom[$key]['value']  = preg_replace("/#ln;/",chr(10),$dom[$key]['value']);
         // dump($dom[$key]['value']);
         // dump($this->y + $this->lasth + (2.9 * 2). "|". $dom[$key]['value']."|". $this->PageBreakTrigger);
@@ -3824,43 +3858,9 @@ class PMC_PDF extends TCPDF
                 }
 
                 $this->inFootnote = false;
-
-                // staging ada 2. saat sebelum opening tag, dan di sini. (yang di sini diabaikan dulu) 
-                // staging the footnotes which has been push
-                // $qtyfnt = count($this->footnotes['collection']);
-                // $yy = $this->y;
-                // // for ($i= $qtyfnt; $i >= 0; $i--) {
-                // for ($i= 1; $i <= $qtyfnt; $i++) {
-                //   if(isset($this->footnotes['collection'][$i]) ){                    
-                //     foreach ( $this->footnotes['collection'][$i]['template'] as $separated_footnote => $fntxobjectid){
-                //       if(isset($this->footnotes['collection'][$i]['height'][$separated_footnote])){
-                //         $hg = $this->footnotes['collection'][$i]['height'][$separated_footnote];
-                //         if($this->y + $hg + (2 * $this->getCellHeight($this->FontSize)) <= $this->PageBreakTrigger){
-                //           $ypos = $this->PageBreakTrigger - $hg - 1;
-                //           $this->footnotes['staging']['xobjects'][$this->page][] = $fntxobjectid;
-                //           $this->footnotes['staging']['collectionRef'][$this->page][] = $i;
-                //           $this->footnotes['staging']['startypos'][$this->page] = $ypos;
-                //           $this->footnotes['staging']['height'][$this->page][] = $hg;
-                //           $this->PageBreakTrigger -= $hg;
-                //           unset($this->footnotes['collection'][$i]['template'][$separated_footnote]);                          
-                //           $this->y = $yy;
-                //           // dump($fntxobjectid."|".$i."|".$ypos."|".$this->page);
-                //         }        
-                //       }
-                //     }
-                //   }
-                // }
               }
             }
             
-            // $str = "POWER levers (both engines) Lorem ipsum %s%";
-            
-            
-            // separatorstyle #2 initiate event
-            if(isset($dom[$dom[$key]['parent']]['attribute']['separator'])){
-              $this->separator = $dom[$dom[$key]['parent']]['attribute']['separator'];
-              // $this->separator = '.';
-            }
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
             
             // footnote #1 writing footnoteRefTxt
@@ -4584,470 +4584,470 @@ class PMC_PDF extends TCPDF
 		return $nl;
 	}
 
-  /**
-   * tambahan: menambah fungsi untuk generate separator style yang digunakan di crew.xsd 
-	 * This method prints text from the current position.<br />
-	 * @param float $h Line height
-	 * @param string $txt String to print
-	 * @param mixed $link URL or identifier returned by AddLink()
-	 * @param boolean $fill Indicates if the cell background must be painted (true) or transparent (false).
-	 * @param string $align Allows to center or align the text. Possible values are:<ul><li>L or empty string: left align (default value)</li><li>C: center</li><li>R: right align</li><li>J: justify</li></ul>
-	 * @param boolean $ln if true set cursor at the bottom of the line, otherwise set cursor at the top of the line.
-	 * @param int $stretch font stretch mode: <ul><li>0 = disabled</li><li>1 = horizontal scaling only if text is larger than cell width</li><li>2 = forced horizontal scaling to fit cell width</li><li>3 = character spacing only if text is larger than cell width</li><li>4 = forced character spacing to fit cell width</li></ul> General font stretching and scaling values will be preserved when possible.
-	 * @param boolean $firstline if true prints only the first line and return the remaining string.
-	 * @param boolean $firstblock if true the string is the starting of a line.
-	 * @param float $maxh maximum height. It should be >= $h and less then remaining space to the bottom of the page, or 0 for disable this feature.
-	 * @param float $wadj first line width will be reduced by this amount (used in HTML mode).
-	 * @param array|null $margin margin array of the parent container
-	 * @return mixed Return the number of cells or the remaining string if $firstline = true.
-	 * @public
-	 * @since 1.5
-	 */
-	public function Write($h, $txt, $link='', $fill=false, $align='', $ln=false, $stretch=0, $firstline=false, $firstblock=false, $maxh=0, $wadj=0, $margin=null) {
-    // if(isset($this->stop) AND (str_contains($txt, "%s%"))) {
-      // $txt = preg_replace("/%s%/",'',$txt);
-    // };
-		// check page for no-write regions and adapt page margins if necessary
-		list($this->x, $this->y) = $this->checkPageRegions($h, $this->x, $this->y);
-		if (strlen($txt) == 0) {
-			// fix empty text
-			$txt = ' ';
-		}
-		if (!is_array($margin)) {
-			// set default margins
-			$margin = $this->cell_margin;
-		}
-		// remove carriage returns
-		$s = str_replace("\r", '', $txt);
-		// check if string contains arabic text
-		if (preg_match(TCPDF_FONT_DATA::$uni_RE_PATTERN_ARABIC, $s)) {
-			$arabic = true;
-		} else {
-			$arabic = false;
-		}
-		// check if string contains RTL text
-		if ($arabic OR ($this->tmprtl == 'R') OR preg_match(TCPDF_FONT_DATA::$uni_RE_PATTERN_RTL, $s)) {
-			$rtlmode = true;
-		} else {
-			$rtlmode = false;
-		}
-		// get a char width
-		$chrwidth = $this->GetCharWidth(46); // dot character
-		// get array of unicode values
-		$chars = TCPDF_FONTS::UTF8StringToArray($s, $this->isunicode, $this->CurrentFont);
-		// calculate maximum width for a single character on string
-		$chrw = $this->GetArrStringWidth($chars, '', '', 0, true);
-		array_walk($chrw, array($this, 'getRawCharWidth'));
-		$maxchwidth = ((is_array($chrw) || $chrw instanceof Countable) && count($chrw) > 0) ? max($chrw) : 0;
-		// get array of chars
-		$uchars = TCPDF_FONTS::UTF8ArrayToUniArray($chars, $this->isunicode);
-		// get the number of characters
-		$nb = count($chars);
-		// replacement for SHY character (minus symbol)
-		$shy_replacement = 45;
-		$shy_replacement_char = TCPDF_FONTS::unichr($shy_replacement, $this->isunicode);
-		// widht for SHY replacement
-		$shy_replacement_width = $this->GetCharWidth($shy_replacement);
-		// page width
-		$pw = $w = $this->w - $this->lMargin - $this->rMargin;
-		// calculate remaining line width ($w)
-		if ($this->rtl) {
-			$w = $this->x - $this->lMargin;
-		} else {
-			$w = $this->w - $this->rMargin - $this->x;
-		}
-		// max column width
-		$wmax = ($w - $wadj);
-		if (!$firstline) {
-			$wmax -= ($this->cell_padding['L'] + $this->cell_padding['R']);
-		}
-		if ((!$firstline) AND (($chrwidth > $wmax) OR ($maxchwidth > $wmax))) {
-			// the maximum width character do not fit on column
-			return '';
-		}
-		// minimum row height
-		$row_height = max($h, $this->getCellHeight($this->FontSize));
-		// max Y
-		$maxy = $this->y + $maxh - max($row_height, $h);
-		$start_page = $this->page;
-		$i = 0; // character position
-		$j = 0; // current starting position
-		$sep = -1; // position of the last blank space
-		$prevsep = $sep; // previous separator
-		$shy = false; // true if the last blank is a soft hypen (SHY)
-		$prevshy = $shy; // previous shy mode
-		$l = 0; // current string length
-		$nl = 0; //number of lines
-		$linebreak = false;
-		$pc = 0; // previous character
-		// for each character
-    // $sx = $this->x;
-		while ($i < $nb) {
-			if (($maxh > 0) AND ($this->y > $maxy) ) {
-				break;
-			}
-			//Get the current character
-			$c = $chars[$i];
-			if ($c == 10) { // 10 = "\n" = new line
-				//Explicit line break
-				if ($align == 'J') {
-					if ($this->rtl) {
-						$talign = 'R';
-					} else {
-						$talign = 'L';
-					}
-				} else {
-					$talign = $align;
-				}
-				$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $i);
-				if ($firstline) {
-					$startx = $this->x;
-					$tmparr = array_slice($chars, $j, ($i - $j));
-					if ($rtlmode) {
-						$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
-					}
-					$linew = $this->GetArrStringWidth($tmparr);
-					unset($tmparr);
-					if ($this->rtl) {
-						$this->endlinex = $startx - $linew;
-					} else {
-						$this->endlinex = $startx + $linew;
-					}
-					$w = $linew;
-					$tmpcellpadding = $this->cell_padding;
-					if ($maxh == 0) {
-						$this->setCellPadding(0);
-					}
-				}
-				if ($firstblock AND $this->isRTLTextDir()) {
-					$tmpstr = $this->stringRightTrim($tmpstr);
-				}
-				// Skip newlines at the beginning of a page or column
-				if (!empty($tmpstr) OR ($this->y < ($this->PageBreakTrigger - $row_height))) {
-					$this->Cell($w, $h, $tmpstr, 0, 1, $talign, $fill, $link, $stretch);
-				}
-				unset($tmpstr);
-				if ($firstline) {
-					$this->cell_padding = $tmpcellpadding;
-					return (TCPDF_FONTS::UniArrSubString($uchars, $i));
-				}
-				++$nl;
-				$j = $i + 1;
-				$l = 0;
-				$sep = -1;
-				$prevsep = $sep;
-				$shy = false;
-				// account for margin changes
-				if ((($this->y + $this->lasth) > $this->PageBreakTrigger) AND ($this->inPageBody())) {
-					if ($this->AcceptPageBreak())
-					{
-						if ($this->rtl) {
-							$this->x -= $margin['R'];
-						} else {
-							$this->x += $margin['L'];
-						}
-						$this->lMargin += $margin['L'];
-						$this->rMargin += $margin['R'];
-					}
-				}
-				$w = $this->getRemainingWidth();
-				$wmax = ($w - $this->cell_padding['L'] - $this->cell_padding['R']);
-			} else {
-				// 160 is the non-breaking space.
-				// 173 is SHY (Soft Hypen).
-				// \p{Z} or \p{Separator}: any kind of Unicode whitespace or invisible separator.
-				// \p{Lo} or \p{Other_Letter}: a Unicode letter or ideograph that does not have lowercase and uppercase variants.
-				// \p{Lo} is needed because Chinese characters are packed next to each other without spaces in between.
-				if (($c != 160)
-					AND (($c == 173)
-						OR preg_match($this->re_spaces, TCPDF_FONTS::unichr($c, $this->isunicode))
-						OR (($c == 45)
-							AND ($i < ($nb - 1))
-							AND @preg_match('/[\p{L}]/'.$this->re_space['m'], TCPDF_FONTS::unichr($pc, $this->isunicode))
-							AND @preg_match('/[\p{L}]/'.$this->re_space['m'], TCPDF_FONTS::unichr($chars[($i + 1)], $this->isunicode))
-						)
-					)
-				) {
-					// update last blank space position
-					$prevsep = $sep;
-					$sep = $i;
-					// check if is a SHY
-					if (($c == 173) OR ($c == 45)) {
-						$prevshy = $shy;
-						$shy = true;
-						if ($pc == 45) {
-							$tmp_shy_replacement_width = 0;
-							$tmp_shy_replacement_char = '';
-						} else {
-							$tmp_shy_replacement_width = $shy_replacement_width;
-							$tmp_shy_replacement_char = $shy_replacement_char;
-						}
-					} else {
-						$shy = false;
-					}
-				}
-				// update string length
-				if ($this->isUnicodeFont() AND ($arabic)) {
-					// with bidirectional algorithm some chars may be changed affecting the line length
-					// *** very slow ***
-					$l = $this->GetArrStringWidth(TCPDF_FONTS::utf8Bidi(array_slice($chars, $j, ($i - $j)), '', $this->tmprtl, $this->isunicode, $this->CurrentFont));
-				} else {
-					$l += $this->GetCharWidth($c, ($i+1 < $nb));
-				}
-				if (($l > $wmax) OR (($c == 173) AND (($l + $tmp_shy_replacement_width) >= $wmax))) {
-					if (($c == 173) AND (($l + $tmp_shy_replacement_width) > $wmax)) {
-						$sep = $prevsep;
-						$shy = $prevshy;
-					}
-					// we have reached the end of column
-					if ($sep == -1) {
-						// check if the line was already started
-						if (($this->rtl AND ($this->x <= ($this->w - $this->rMargin - $this->cell_padding['R'] - $margin['R'] - $chrwidth)))
-							OR ((!$this->rtl) AND ($this->x >= ($this->lMargin + $this->cell_padding['L'] + $margin['L'] + $chrwidth)))) {
-							// print a void cell and go to next line
-							$this->Cell($w, $h, '', 0, 1);
-							$linebreak = true;
-							if ($firstline) {
-								return (TCPDF_FONTS::UniArrSubString($uchars, $j));
-							}
-						} else {
-							// truncate the word because do not fit on column
-							$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $i);
-							if ($firstline) {
-								$startx = $this->x;
-								$tmparr = array_slice($chars, $j, ($i - $j));
-								if ($rtlmode) {
-									$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
-								}
-								$linew = $this->GetArrStringWidth($tmparr);
-								unset($tmparr);
-								if ($this->rtl) {
-									$this->endlinex = $startx - $linew;
-								} else {
-									$this->endlinex = $startx + $linew;
-								}
-								$w = $linew;
-								$tmpcellpadding = $this->cell_padding;
-								if ($maxh == 0) {
-									$this->setCellPadding(0);
-								}
-							}
-							if ($firstblock AND $this->isRTLTextDir()) {
-								$tmpstr = $this->stringRightTrim($tmpstr);
-							}
-							$this->Cell($w, $h, $tmpstr, 0, 1, $align, $fill, $link, $stretch);
-							unset($tmpstr);
-							if ($firstline) {
-								$this->cell_padding = $tmpcellpadding;
-								return (TCPDF_FONTS::UniArrSubString($uchars, $i));
-							}
-							$j = $i;
-							--$i;
-						}
-					 } else {
-						// word wrapping
-						if ($this->rtl AND (!$firstblock) AND ($sep < $i)) {
-							$endspace = 1;
-						} else {
-							$endspace = 0;
-						}
-						// check the length of the next string
-						$strrest = TCPDF_FONTS::UniArrSubString($uchars, ($sep + $endspace));
-						$nextstr = TCPDF_STATIC::pregSplit('/'.$this->re_space['p'].'/', $this->re_space['m'], $this->stringTrim($strrest));
-						if (isset($nextstr[0]) AND ($this->GetStringWidth($nextstr[0]) > $pw)) {
-							// truncate the word because do not fit on a full page width
-							$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $i);
-							if ($firstline) {
-								$startx = $this->x;
-								$tmparr = array_slice($chars, $j, ($i - $j));
-								if ($rtlmode) {
-									$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
-								}
-								$linew = $this->GetArrStringWidth($tmparr);
-								unset($tmparr);
-								if ($this->rtl) {
-									$this->endlinex = ($startx - $linew);
-								} else {
-									$this->endlinex = ($startx + $linew);
-								}
-								$w = $linew;
-								$tmpcellpadding = $this->cell_padding;
-								if ($maxh == 0) {
-									$this->setCellPadding(0);
-								}
-							}
-							if ($firstblock AND $this->isRTLTextDir()) {
-								$tmpstr = $this->stringRightTrim($tmpstr);
-							}
-							$this->Cell($w, $h, $tmpstr, 0, 1, $align, $fill, $link, $stretch);
-							unset($tmpstr);
-							if ($firstline) {
-								$this->cell_padding = $tmpcellpadding;
-								return (TCPDF_FONTS::UniArrSubString($uchars, $i));
-							}
-							$j = $i;
-							--$i;
-						} else {
-							// word wrapping
-							if ($shy) {
-								// add hypen (minus symbol) at the end of the line
-								$shy_width = $tmp_shy_replacement_width;
-								if ($this->rtl) {
-									$shy_char_left = $tmp_shy_replacement_char;
-									$shy_char_right = '';
-								} else {
-									$shy_char_left = '';
-									$shy_char_right = $tmp_shy_replacement_char;
-								}
-							} else {
-								$shy_width = 0;
-								$shy_char_left = '';
-								$shy_char_right = '';
-							}
-							$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, ($sep + $endspace));
-							if ($firstline) {
-								$startx = $this->x;
-								$tmparr = array_slice($chars, $j, (($sep + $endspace) - $j));
-								if ($rtlmode) {
-									$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
-								}
-								$linew = $this->GetArrStringWidth($tmparr);
-								unset($tmparr);
-								if ($this->rtl) {
-									$this->endlinex = $startx - $linew - $shy_width;
-								} else {
-									$this->endlinex = $startx + $linew + $shy_width;
-								}
-								$w = $linew;
-								$tmpcellpadding = $this->cell_padding;
-								if ($maxh == 0) {
-									$this->setCellPadding(0);
-								}
-							}
-							// print the line
-							if ($firstblock AND $this->isRTLTextDir()) {
-								$tmpstr = $this->stringRightTrim($tmpstr);
-							}
-							$this->Cell($w, $h, $shy_char_left.$tmpstr.$shy_char_right, 0, 1, $align, $fill, $link, $stretch);
-							unset($tmpstr);
-							if ($firstline) {
-								if ($chars[$sep] == 45) {
-									$endspace += 1;
-								}
-								// return the remaining text
-								$this->cell_padding = $tmpcellpadding;
-								return (TCPDF_FONTS::UniArrSubString($uchars, ($sep + $endspace)));
-							}
-							$i = $sep;
-							$sep = -1;
-							$shy = false;
-							$j = ($i + 1);
-						}
-					}
-					// account for margin changes
-					if ((($this->y + $this->lasth) > $this->PageBreakTrigger) AND ($this->inPageBody())) {
-						if ($this->AcceptPageBreak())
-						{
-							if ($this->rtl) {
-								$this->x -= $margin['R'];
-							} else {
-								$this->x += $margin['L'];
-							}
-							$this->lMargin += $margin['L'];
-							$this->rMargin += $margin['R'];
-						}
-					}
-					$w = $this->getRemainingWidth();
-					$wmax = $w - $this->cell_padding['L'] - $this->cell_padding['R'];
-					if ($linebreak) {
-						$linebreak = false;
-					} else {
-						++$nl;
-						$l = 0;
-					}
-				}
-			}
-			// save last character
-			$pc = $c;
-			++$i;
-		} // end while i < nb
-		// print last substring (if any)
-		if ($l > 0) {
-			switch ($align) {
-				case 'J':
-				case 'C': {
-					break;
-				}
-				case 'L': {
-					if (!$this->rtl) {
-						$w = $l;
-					}
-					break;
-				}
-				case 'R': {
-					if ($this->rtl) {
-						$w = $l;
-					}
-					break;
-				}
-				default: {
-					$w = $l;
-					break;
-				}
-			}
-			$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $nb);
-			if ($firstline) {
-				$startx = $this->x;
-				$tmparr = array_slice($chars, $j, ($nb - $j));
-				if ($rtlmode) {
-					$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
-				}
-				$linew = $this->GetArrStringWidth($tmparr);
-				unset($tmparr);
-				if ($this->rtl) {
-					$this->endlinex = $startx - $linew;
-				} else {
-					$this->endlinex = $startx + $linew;
-				}
-				$w = $linew;
-				$tmpcellpadding = $this->cell_padding;
-				if ($maxh == 0) {
-					$this->setCellPadding(0);
-				}
-			}
-			if ($firstblock AND $this->isRTLTextDir()) {
-				$tmpstr = $this->stringRightTrim($tmpstr);
-			}
+  // /**
+  //  * tambahan: menambah fungsi untuk generate separator style yang digunakan di crew.xsd 
+	//  * This method prints text from the current position.<br />
+	//  * @param float $h Line height
+	//  * @param string $txt String to print
+	//  * @param mixed $link URL or identifier returned by AddLink()
+	//  * @param boolean $fill Indicates if the cell background must be painted (true) or transparent (false).
+	//  * @param string $align Allows to center or align the text. Possible values are:<ul><li>L or empty string: left align (default value)</li><li>C: center</li><li>R: right align</li><li>J: justify</li></ul>
+	//  * @param boolean $ln if true set cursor at the bottom of the line, otherwise set cursor at the top of the line.
+	//  * @param int $stretch font stretch mode: <ul><li>0 = disabled</li><li>1 = horizontal scaling only if text is larger than cell width</li><li>2 = forced horizontal scaling to fit cell width</li><li>3 = character spacing only if text is larger than cell width</li><li>4 = forced character spacing to fit cell width</li></ul> General font stretching and scaling values will be preserved when possible.
+	//  * @param boolean $firstline if true prints only the first line and return the remaining string.
+	//  * @param boolean $firstblock if true the string is the starting of a line.
+	//  * @param float $maxh maximum height. It should be >= $h and less then remaining space to the bottom of the page, or 0 for disable this feature.
+	//  * @param float $wadj first line width will be reduced by this amount (used in HTML mode).
+	//  * @param array|null $margin margin array of the parent container
+	//  * @return mixed Return the number of cells or the remaining string if $firstline = true.
+	//  * @public
+	//  * @since 1.5
+	//  */
+	// public function Write($h, $txt, $link='', $fill=false, $align='', $ln=false, $stretch=0, $firstline=false, $firstblock=false, $maxh=0, $wadj=0, $margin=null) {
+  //   // if(isset($this->stop) AND (str_contains($txt, "%s%"))) {
+  //     // $txt = preg_replace("/%s%/",'',$txt);
+  //   // };
+	// 	// check page for no-write regions and adapt page margins if necessary
+	// 	list($this->x, $this->y) = $this->checkPageRegions($h, $this->x, $this->y);
+	// 	if (strlen($txt) == 0) {
+	// 		// fix empty text
+	// 		$txt = ' ';
+	// 	}
+	// 	if (!is_array($margin)) {
+	// 		// set default margins
+	// 		$margin = $this->cell_margin;
+	// 	}
+	// 	// remove carriage returns
+	// 	$s = str_replace("\r", '', $txt);
+	// 	// check if string contains arabic text
+	// 	if (preg_match(TCPDF_FONT_DATA::$uni_RE_PATTERN_ARABIC, $s)) {
+	// 		$arabic = true;
+	// 	} else {
+	// 		$arabic = false;
+	// 	}
+	// 	// check if string contains RTL text
+	// 	if ($arabic OR ($this->tmprtl == 'R') OR preg_match(TCPDF_FONT_DATA::$uni_RE_PATTERN_RTL, $s)) {
+	// 		$rtlmode = true;
+	// 	} else {
+	// 		$rtlmode = false;
+	// 	}
+	// 	// get a char width
+	// 	$chrwidth = $this->GetCharWidth(46); // dot character
+	// 	// get array of unicode values
+	// 	$chars = TCPDF_FONTS::UTF8StringToArray($s, $this->isunicode, $this->CurrentFont);
+	// 	// calculate maximum width for a single character on string
+	// 	$chrw = $this->GetArrStringWidth($chars, '', '', 0, true);
+	// 	array_walk($chrw, array($this, 'getRawCharWidth'));
+	// 	$maxchwidth = ((is_array($chrw) || $chrw instanceof Countable) && count($chrw) > 0) ? max($chrw) : 0;
+	// 	// get array of chars
+	// 	$uchars = TCPDF_FONTS::UTF8ArrayToUniArray($chars, $this->isunicode);
+	// 	// get the number of characters
+	// 	$nb = count($chars);
+	// 	// replacement for SHY character (minus symbol)
+	// 	$shy_replacement = 45;
+	// 	$shy_replacement_char = TCPDF_FONTS::unichr($shy_replacement, $this->isunicode);
+	// 	// widht for SHY replacement
+	// 	$shy_replacement_width = $this->GetCharWidth($shy_replacement);
+	// 	// page width
+	// 	$pw = $w = $this->w - $this->lMargin - $this->rMargin;
+	// 	// calculate remaining line width ($w)
+	// 	if ($this->rtl) {
+	// 		$w = $this->x - $this->lMargin;
+	// 	} else {
+	// 		$w = $this->w - $this->rMargin - $this->x;
+	// 	}
+	// 	// max column width
+	// 	$wmax = ($w - $wadj);
+	// 	if (!$firstline) {
+	// 		$wmax -= ($this->cell_padding['L'] + $this->cell_padding['R']);
+	// 	}
+	// 	if ((!$firstline) AND (($chrwidth > $wmax) OR ($maxchwidth > $wmax))) {
+	// 		// the maximum width character do not fit on column
+	// 		return '';
+	// 	}
+	// 	// minimum row height
+	// 	$row_height = max($h, $this->getCellHeight($this->FontSize));
+	// 	// max Y
+	// 	$maxy = $this->y + $maxh - max($row_height, $h);
+	// 	$start_page = $this->page;
+	// 	$i = 0; // character position
+	// 	$j = 0; // current starting position
+	// 	$sep = -1; // position of the last blank space
+	// 	$prevsep = $sep; // previous separator
+	// 	$shy = false; // true if the last blank is a soft hypen (SHY)
+	// 	$prevshy = $shy; // previous shy mode
+	// 	$l = 0; // current string length
+	// 	$nl = 0; //number of lines
+	// 	$linebreak = false;
+	// 	$pc = 0; // previous character
+	// 	// for each character
+  //   // $sx = $this->x;
+	// 	while ($i < $nb) {
+	// 		if (($maxh > 0) AND ($this->y > $maxy) ) {
+	// 			break;
+	// 		}
+	// 		//Get the current character
+	// 		$c = $chars[$i];
+	// 		if ($c == 10) { // 10 = "\n" = new line
+	// 			//Explicit line break
+	// 			if ($align == 'J') {
+	// 				if ($this->rtl) {
+	// 					$talign = 'R';
+	// 				} else {
+	// 					$talign = 'L';
+	// 				}
+	// 			} else {
+	// 				$talign = $align;
+	// 			}
+	// 			$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $i);
+	// 			if ($firstline) {
+	// 				$startx = $this->x;
+	// 				$tmparr = array_slice($chars, $j, ($i - $j));
+	// 				if ($rtlmode) {
+	// 					$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
+	// 				}
+	// 				$linew = $this->GetArrStringWidth($tmparr);
+	// 				unset($tmparr);
+	// 				if ($this->rtl) {
+	// 					$this->endlinex = $startx - $linew;
+	// 				} else {
+	// 					$this->endlinex = $startx + $linew;
+	// 				}
+	// 				$w = $linew;
+	// 				$tmpcellpadding = $this->cell_padding;
+	// 				if ($maxh == 0) {
+	// 					$this->setCellPadding(0);
+	// 				}
+	// 			}
+	// 			if ($firstblock AND $this->isRTLTextDir()) {
+	// 				$tmpstr = $this->stringRightTrim($tmpstr);
+	// 			}
+	// 			// Skip newlines at the beginning of a page or column
+	// 			if (!empty($tmpstr) OR ($this->y < ($this->PageBreakTrigger - $row_height))) {
+	// 				$this->Cell($w, $h, $tmpstr, 0, 1, $talign, $fill, $link, $stretch);
+	// 			}
+	// 			unset($tmpstr);
+	// 			if ($firstline) {
+	// 				$this->cell_padding = $tmpcellpadding;
+	// 				return (TCPDF_FONTS::UniArrSubString($uchars, $i));
+	// 			}
+	// 			++$nl;
+	// 			$j = $i + 1;
+	// 			$l = 0;
+	// 			$sep = -1;
+	// 			$prevsep = $sep;
+	// 			$shy = false;
+	// 			// account for margin changes
+	// 			if ((($this->y + $this->lasth) > $this->PageBreakTrigger) AND ($this->inPageBody())) {
+	// 				if ($this->AcceptPageBreak())
+	// 				{
+	// 					if ($this->rtl) {
+	// 						$this->x -= $margin['R'];
+	// 					} else {
+	// 						$this->x += $margin['L'];
+	// 					}
+	// 					$this->lMargin += $margin['L'];
+	// 					$this->rMargin += $margin['R'];
+	// 				}
+	// 			}
+	// 			$w = $this->getRemainingWidth();
+	// 			$wmax = ($w - $this->cell_padding['L'] - $this->cell_padding['R']);
+	// 		} else {
+	// 			// 160 is the non-breaking space.
+	// 			// 173 is SHY (Soft Hypen).
+	// 			// \p{Z} or \p{Separator}: any kind of Unicode whitespace or invisible separator.
+	// 			// \p{Lo} or \p{Other_Letter}: a Unicode letter or ideograph that does not have lowercase and uppercase variants.
+	// 			// \p{Lo} is needed because Chinese characters are packed next to each other without spaces in between.
+	// 			if (($c != 160)
+	// 				AND (($c == 173)
+	// 					OR preg_match($this->re_spaces, TCPDF_FONTS::unichr($c, $this->isunicode))
+	// 					OR (($c == 45)
+	// 						AND ($i < ($nb - 1))
+	// 						AND @preg_match('/[\p{L}]/'.$this->re_space['m'], TCPDF_FONTS::unichr($pc, $this->isunicode))
+	// 						AND @preg_match('/[\p{L}]/'.$this->re_space['m'], TCPDF_FONTS::unichr($chars[($i + 1)], $this->isunicode))
+	// 					)
+	// 				)
+	// 			) {
+	// 				// update last blank space position
+	// 				$prevsep = $sep;
+	// 				$sep = $i;
+	// 				// check if is a SHY
+	// 				if (($c == 173) OR ($c == 45)) {
+	// 					$prevshy = $shy;
+	// 					$shy = true;
+	// 					if ($pc == 45) {
+	// 						$tmp_shy_replacement_width = 0;
+	// 						$tmp_shy_replacement_char = '';
+	// 					} else {
+	// 						$tmp_shy_replacement_width = $shy_replacement_width;
+	// 						$tmp_shy_replacement_char = $shy_replacement_char;
+	// 					}
+	// 				} else {
+	// 					$shy = false;
+	// 				}
+	// 			}
+	// 			// update string length
+	// 			if ($this->isUnicodeFont() AND ($arabic)) {
+	// 				// with bidirectional algorithm some chars may be changed affecting the line length
+	// 				// *** very slow ***
+	// 				$l = $this->GetArrStringWidth(TCPDF_FONTS::utf8Bidi(array_slice($chars, $j, ($i - $j)), '', $this->tmprtl, $this->isunicode, $this->CurrentFont));
+	// 			} else {
+	// 				$l += $this->GetCharWidth($c, ($i+1 < $nb));
+	// 			}
+	// 			if (($l > $wmax) OR (($c == 173) AND (($l + $tmp_shy_replacement_width) >= $wmax))) {
+	// 				if (($c == 173) AND (($l + $tmp_shy_replacement_width) > $wmax)) {
+	// 					$sep = $prevsep;
+	// 					$shy = $prevshy;
+	// 				}
+	// 				// we have reached the end of column
+	// 				if ($sep == -1) {
+	// 					// check if the line was already started
+	// 					if (($this->rtl AND ($this->x <= ($this->w - $this->rMargin - $this->cell_padding['R'] - $margin['R'] - $chrwidth)))
+	// 						OR ((!$this->rtl) AND ($this->x >= ($this->lMargin + $this->cell_padding['L'] + $margin['L'] + $chrwidth)))) {
+	// 						// print a void cell and go to next line
+	// 						$this->Cell($w, $h, '', 0, 1);
+	// 						$linebreak = true;
+	// 						if ($firstline) {
+	// 							return (TCPDF_FONTS::UniArrSubString($uchars, $j));
+	// 						}
+	// 					} else {
+	// 						// truncate the word because do not fit on column
+	// 						$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $i);
+	// 						if ($firstline) {
+	// 							$startx = $this->x;
+	// 							$tmparr = array_slice($chars, $j, ($i - $j));
+	// 							if ($rtlmode) {
+	// 								$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
+	// 							}
+	// 							$linew = $this->GetArrStringWidth($tmparr);
+	// 							unset($tmparr);
+	// 							if ($this->rtl) {
+	// 								$this->endlinex = $startx - $linew;
+	// 							} else {
+	// 								$this->endlinex = $startx + $linew;
+	// 							}
+	// 							$w = $linew;
+	// 							$tmpcellpadding = $this->cell_padding;
+	// 							if ($maxh == 0) {
+	// 								$this->setCellPadding(0);
+	// 							}
+	// 						}
+	// 						if ($firstblock AND $this->isRTLTextDir()) {
+	// 							$tmpstr = $this->stringRightTrim($tmpstr);
+	// 						}
+	// 						$this->Cell($w, $h, $tmpstr, 0, 1, $align, $fill, $link, $stretch);
+	// 						unset($tmpstr);
+	// 						if ($firstline) {
+	// 							$this->cell_padding = $tmpcellpadding;
+	// 							return (TCPDF_FONTS::UniArrSubString($uchars, $i));
+	// 						}
+	// 						$j = $i;
+	// 						--$i;
+	// 					}
+	// 				 } else {
+	// 					// word wrapping
+	// 					if ($this->rtl AND (!$firstblock) AND ($sep < $i)) {
+	// 						$endspace = 1;
+	// 					} else {
+	// 						$endspace = 0;
+	// 					}
+	// 					// check the length of the next string
+	// 					$strrest = TCPDF_FONTS::UniArrSubString($uchars, ($sep + $endspace));
+	// 					$nextstr = TCPDF_STATIC::pregSplit('/'.$this->re_space['p'].'/', $this->re_space['m'], $this->stringTrim($strrest));
+	// 					if (isset($nextstr[0]) AND ($this->GetStringWidth($nextstr[0]) > $pw)) {
+	// 						// truncate the word because do not fit on a full page width
+	// 						$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $i);
+	// 						if ($firstline) {
+	// 							$startx = $this->x;
+	// 							$tmparr = array_slice($chars, $j, ($i - $j));
+	// 							if ($rtlmode) {
+	// 								$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
+	// 							}
+	// 							$linew = $this->GetArrStringWidth($tmparr);
+	// 							unset($tmparr);
+	// 							if ($this->rtl) {
+	// 								$this->endlinex = ($startx - $linew);
+	// 							} else {
+	// 								$this->endlinex = ($startx + $linew);
+	// 							}
+	// 							$w = $linew;
+	// 							$tmpcellpadding = $this->cell_padding;
+	// 							if ($maxh == 0) {
+	// 								$this->setCellPadding(0);
+	// 							}
+	// 						}
+	// 						if ($firstblock AND $this->isRTLTextDir()) {
+	// 							$tmpstr = $this->stringRightTrim($tmpstr);
+	// 						}
+	// 						$this->Cell($w, $h, $tmpstr, 0, 1, $align, $fill, $link, $stretch);
+	// 						unset($tmpstr);
+	// 						if ($firstline) {
+	// 							$this->cell_padding = $tmpcellpadding;
+	// 							return (TCPDF_FONTS::UniArrSubString($uchars, $i));
+	// 						}
+	// 						$j = $i;
+	// 						--$i;
+	// 					} else {
+	// 						// word wrapping
+	// 						if ($shy) {
+	// 							// add hypen (minus symbol) at the end of the line
+	// 							$shy_width = $tmp_shy_replacement_width;
+	// 							if ($this->rtl) {
+	// 								$shy_char_left = $tmp_shy_replacement_char;
+	// 								$shy_char_right = '';
+	// 							} else {
+	// 								$shy_char_left = '';
+	// 								$shy_char_right = $tmp_shy_replacement_char;
+	// 							}
+	// 						} else {
+	// 							$shy_width = 0;
+	// 							$shy_char_left = '';
+	// 							$shy_char_right = '';
+	// 						}
+	// 						$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, ($sep + $endspace));
+	// 						if ($firstline) {
+	// 							$startx = $this->x;
+	// 							$tmparr = array_slice($chars, $j, (($sep + $endspace) - $j));
+	// 							if ($rtlmode) {
+	// 								$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
+	// 							}
+	// 							$linew = $this->GetArrStringWidth($tmparr);
+	// 							unset($tmparr);
+	// 							if ($this->rtl) {
+	// 								$this->endlinex = $startx - $linew - $shy_width;
+	// 							} else {
+	// 								$this->endlinex = $startx + $linew + $shy_width;
+	// 							}
+	// 							$w = $linew;
+	// 							$tmpcellpadding = $this->cell_padding;
+	// 							if ($maxh == 0) {
+	// 								$this->setCellPadding(0);
+	// 							}
+	// 						}
+	// 						// print the line
+	// 						if ($firstblock AND $this->isRTLTextDir()) {
+	// 							$tmpstr = $this->stringRightTrim($tmpstr);
+	// 						}
+	// 						$this->Cell($w, $h, $shy_char_left.$tmpstr.$shy_char_right, 0, 1, $align, $fill, $link, $stretch);
+	// 						unset($tmpstr);
+	// 						if ($firstline) {
+	// 							if ($chars[$sep] == 45) {
+	// 								$endspace += 1;
+	// 							}
+	// 							// return the remaining text
+	// 							$this->cell_padding = $tmpcellpadding;
+	// 							return (TCPDF_FONTS::UniArrSubString($uchars, ($sep + $endspace)));
+	// 						}
+	// 						$i = $sep;
+	// 						$sep = -1;
+	// 						$shy = false;
+	// 						$j = ($i + 1);
+	// 					}
+	// 				}
+	// 				// account for margin changes
+	// 				if ((($this->y + $this->lasth) > $this->PageBreakTrigger) AND ($this->inPageBody())) {
+	// 					if ($this->AcceptPageBreak())
+	// 					{
+	// 						if ($this->rtl) {
+	// 							$this->x -= $margin['R'];
+	// 						} else {
+	// 							$this->x += $margin['L'];
+	// 						}
+	// 						$this->lMargin += $margin['L'];
+	// 						$this->rMargin += $margin['R'];
+	// 					}
+	// 				}
+	// 				$w = $this->getRemainingWidth();
+	// 				$wmax = $w - $this->cell_padding['L'] - $this->cell_padding['R'];
+	// 				if ($linebreak) {
+	// 					$linebreak = false;
+	// 				} else {
+	// 					++$nl;
+	// 					$l = 0;
+	// 				}
+	// 			}
+	// 		}
+	// 		// save last character
+	// 		$pc = $c;
+	// 		++$i;
+	// 	} // end while i < nb
+	// 	// print last substring (if any)
+	// 	if ($l > 0) {
+	// 		switch ($align) {
+	// 			case 'J':
+	// 			case 'C': {
+	// 				break;
+	// 			}
+	// 			case 'L': {
+	// 				if (!$this->rtl) {
+	// 					$w = $l;
+	// 				}
+	// 				break;
+	// 			}
+	// 			case 'R': {
+	// 				if ($this->rtl) {
+	// 					$w = $l;
+	// 				}
+	// 				break;
+	// 			}
+	// 			default: {
+	// 				$w = $l;
+	// 				break;
+	// 			}
+	// 		}
+	// 		$tmpstr = TCPDF_FONTS::UniArrSubString($uchars, $j, $nb);
+	// 		if ($firstline) {
+	// 			$startx = $this->x;
+	// 			$tmparr = array_slice($chars, $j, ($nb - $j));
+	// 			if ($rtlmode) {
+	// 				$tmparr = TCPDF_FONTS::utf8Bidi($tmparr, $tmpstr, $this->tmprtl, $this->isunicode, $this->CurrentFont);
+	// 			}
+	// 			$linew = $this->GetArrStringWidth($tmparr);
+	// 			unset($tmparr);
+	// 			if ($this->rtl) {
+	// 				$this->endlinex = $startx - $linew;
+	// 			} else {
+	// 				$this->endlinex = $startx + $linew;
+	// 			}
+	// 			$w = $linew;
+	// 			$tmpcellpadding = $this->cell_padding;
+	// 			if ($maxh == 0) {
+	// 				$this->setCellPadding(0);
+	// 			}
+	// 		}
+	// 		if ($firstblock AND $this->isRTLTextDir()) {
+	// 			$tmpstr = $this->stringRightTrim($tmpstr);
+	// 		}
       
-      // separatorstyle #3 append separator to text 
-      if(isset($this->cellw) AND isset($this->separator)){
-        // $endcell = $pw + ($this->sx <= $pw ? $this->sx : 0); // $numfills akan minus jika dilakukan ini
-        $endcell = $pw + $this->sx;
-        $wfiller = $this->GetStringWidth($this->separator);
-        $fw = $endcell - $this->x;
-        $numfills = floor($fw/$wfiller);
-        // dump($this->separator,$numfills);
-        $rowfill = str_repeat($this->separator, $numfills);
-        $tmpstr .= $rowfill;
-        // $this->Line($this->x,$this->y+2, $pw + $this->sx, $this->y+2);
-        // $this->Line($this->sx,0,$this->sx,200);
-        unset($this->separator);
-      }
-			$this->Cell($w, $h, $tmpstr, 0, $ln, $align, $fill, $link, $stretch);
-			unset($tmpstr);
-			if ($firstline) {
-				$this->cell_padding = $tmpcellpadding;
-				return (TCPDF_FONTS::UniArrSubString($uchars, $nb));
-			}
-			++$nl;
-		}
+  //     // separatorstyle #3 append separator to text 
+  //     // if(isset($this->cellw) AND isset($this->separator)){
+  //     //   // $endcell = $pw + ($this->sx <= $pw ? $this->sx : 0); // $numfills akan minus jika dilakukan ini
+  //     //   $endcell = $pw + $this->sx;
+  //     //   $wfiller = $this->GetStringWidth($this->separator);
+  //     //   $fw = $endcell - $this->x;
+  //     //   $numfills = floor($fw/$wfiller);
+  //     //   // dump($this->separator,$numfills);
+  //     //   $rowfill = str_repeat($this->separator, $numfills);
+  //     //   $tmpstr .= $rowfill;
+  //     //   // $this->Line($this->x,$this->y+2, $pw + $this->sx, $this->y+2);
+  //     //   // $this->Line($this->sx,0,$this->sx,200);
+  //     //   unset($this->separator);
+  //     // }
+	// 		$this->Cell($w, $h, $tmpstr, 0, $ln, $align, $fill, $link, $stretch);
+	// 		unset($tmpstr);
+	// 		if ($firstline) {
+	// 			$this->cell_padding = $tmpcellpadding;
+	// 			return (TCPDF_FONTS::UniArrSubString($uchars, $nb));
+	// 		}
+	// 		++$nl;
+	// 	}
     
     
-		if ($firstline) {
-			return '';
-		}
-		return $nl;
-	}
+	// 	if ($firstline) {
+	// 		return '';
+	// 	}
+	// 	return $nl;
+	// }
 
 	// /**
   //  * tambahannya: terkait footnote #4, aar border tidak di print melebihi footnote

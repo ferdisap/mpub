@@ -109,7 +109,35 @@
         <xsl:text>- </xsl:text>
       </xsl:if>
     </xsl:variable>
+    <!-- <table style="width:100%;"> -->
     <table style="width:100%;page-break-inside: avoid;">
+      <tr>
+        <td style="width:5%"><xsl:value-of select="$num"/></td>
+        <td style="width:95%;text-align:left">
+          <!-- <p crewDrill="true"> -->
+            <!-- <span crewDrill="true"> -->
+              <!-- <xsl:apply-templates select="challenge/descendant::para/text()"/> -->
+              <!-- <xsl:apply-templates select="challenge"/> -->
+              <!-- <xsl:text> %%</xsl:text> -->
+              <!-- <xsl:apply-templates select="response/descendant::para/text()"/> -->
+            <!-- </span> -->
+            <!-- <span>asas</span> -->
+            <span challenge="true" id="aaa">
+              <xsl:apply-templates select="challenge"/>
+            </span>
+            <span response="true">
+              <xsl:apply-templates select="response"/>
+            </span>
+            <xsl:text> | </xsl:text>
+            <span crewmember="true">
+              <text>&#160;</text>
+              <xsl:apply-templates select="descendant::crewMemberGroup"/>
+            </span>
+            <br/>
+        </td>
+      </tr>
+    </table>
+    <!-- <table style="width:100%;page-break-inside: avoid;">
       <tr>
         <td style="width:70%;">
           <xsl:apply-templates select="challenge">
@@ -120,13 +148,14 @@
         <td style="width:10%;"><xsl:apply-templates select="response"/></td>
         <td style="width:20%;text-align:center"><xsl:apply-templates select="descendant::crewMemberGroup"/></td>
       </tr>
-    </table>
+    </table> -->
   </xsl:template>
 
   <xsl:template match="challenge">
     <xsl:param name="num"/>
     <xsl:param name="separator"/>
-    <table style="width:100%;">
+    <xsl:apply-templates/>
+    <!-- <table style="width:100%;">
       <tr>
         <td style="width:10%"><xsl:value-of select="$num"/>&#160;</td>
         <td style="width:90%;text-align:left;">
@@ -135,11 +164,13 @@
           <br/>
         </td>
       </tr>
-    </table>
+    </table> -->
   </xsl:template>
 
   <xsl:template match="crewMemberGroup">
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getCrewMember', .)"/>
+    <span captionline="true" calign="T" style="font-size:7" fillcolor="255,255,255" textcolor="0,0,0">
+      <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getCrewMember', .)"/>
+    </span>
   </xsl:template>
 
 </xsl:stylesheet>
