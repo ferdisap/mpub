@@ -51,7 +51,7 @@
   </xsl:template>
 
   <xsl:template match="subCrewDrill">
-    <span style="border:1px solid red">
+    <span>
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>
@@ -61,7 +61,7 @@
   <xsl:template match="crewDrillStep">
     <xsl:param name="memorizeStepFlag">
       <xsl:choose>
-        <xsl:when test="@memorizeStepsFlag">
+        <xsl:when test="@memorizeStepsFlag = '1'">
           <xsl:text>font-weight:bold</xsl:text>
         </xsl:when>
       </xsl:choose>
@@ -86,85 +86,88 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
-    <span>
+    <xsl:param name="seqnum"/>
+    <xsl:variable name="num">
+      <xsl:choose>
+        <xsl:when test="not($seqnum)">
+          <xsl:if test="$orderedStepsFlag = '1'">
+            <xsl:variable name="qty" select="count(ancestor::*[@orderedStepsFlag = '1'])"/>
+            <xsl:variable name="format">
+              <xsl:if test="($qty mod 2)">
+                <xsl:text>1</xsl:text>
+              </xsl:if>
+              <xsl:if test="not($qty mod 2)">
+                <xsl:text>a</xsl:text>
+              </xsl:if>
+            </xsl:variable>
+            <xsl:choose>
+              <xsl:when test="parent::if">
+                <xsl:variable name="pos"><xsl:number/></xsl:variable>
+                <xsl:for-each select="parent::if">
+                  <xsl:number format="{$format}" value="count(preceding-sibling::crewDrillStep) + $pos"/>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:when test="parent::elseIf">
+                <xsl:variable name="pos"><xsl:number/></xsl:variable>
+                <xsl:for-each select="parent::elseIf">
+                  <xsl:number format="{$format}" value="count(preceding-sibling::crewDrillStep) + $pos"/>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:number format="{$format}"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if>
+          <xsl:if test="$orderedStepsFlag = '0'">
+            <xsl:text>-</xsl:text>
+          </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$seqnum"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <!-- <span>
+    </span> -->
+    <table style="width:100%;page-break-inside: avoid;">
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
-      <xsl:apply-templates>
-        <xsl:with-param name="memorizeStepFlag" select="$memorizeStepFlag"/>
-        <xsl:with-param name="separatorStyle" select="$separatorStyle"/>
-        <xsl:with-param name="orderedStepsFlag" select="$orderedStepsFlag"/>
-      </xsl:apply-templates>
-    </span>
-    <style>
-      td {
-        border:1px solid red;
-      }
-    </style>
+      <tr>
+        <td style="width:7%;text-align:right"><xsl:value-of select="$num"/></td>
+        <td style="width:93%;text-align:left;">
+          <xsl:apply-templates>
+            <xsl:with-param name="memorizeStepFlag" select="$memorizeStepFlag"/>
+            <xsl:with-param name="separatorStyle" select="$separatorStyle"/>
+          </xsl:apply-templates>
+          <!-- <xsl:if test='not(parent::elseIf or parent::if)'>
+          </xsl:if>
+          <xsl:if test='boolean(parent::elseIf or parent::if)'>
+            <xsl:text>&#160;</xsl:text>
+          </xsl:if> -->
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="if | elseIf">
+    <table style="width:100%;page-break-inside: avoid;">
+      <tr>
+        <td style="width:7%;text-align:right">&#160;</td>
+        <td style="width:93%;text-align:left;">
+          <xsl:apply-templates/>
+        </td>
+      </tr>
+    </table>
   </xsl:template>
 
   <xsl:template match="challengeAndResponse">
     <xsl:param name="memorizeStepFlag"/>
     <xsl:param name="separatorStyle"/>
-    <xsl:param name="orderedStepsFlag"/>
-    <xsl:variable name="num">
-      <xsl:for-each select="ancestor::crewDrillStep">
-        <xsl:if test="$orderedStepsFlag = '1'">
-          <xsl:variable name="qty" select="count(ancestor::*[@orderedStepsFlag = '1'])"/>
-          <xsl:if test="($qty mod 2)">
-            <xsl:number/>
-          </xsl:if>
-          <xsl:if test="not($qty mod 2)">
-            <xsl:number format="a"/>
-          </xsl:if>
-        </xsl:if>
-        <xsl:if test="$orderedStepsFlag = '0'">
-          <xsl:text>-</xsl:text>
-        </xsl:if>
-      </xsl:for-each>
-    </xsl:variable>
-    <!-- <xsl:param name="separatorStyle" select="../@separatorStyle"/> -->
-    <!-- <xsl:variable name="num">
-      <xsl:for-each select="ancestor::crewDrillStep">
-        <xsl:choose>
-            <xsl:when test="ancestor::*[@orderedStepsFlag]">
-              <xsl:variable name="ord" select="ancestor::*[@orderedStepsFlag][1]/@orderedStepsFlag"/>
-              <xsl:if test="$ord = '1'">
-                <xsl:variable name="qty" select="count(ancestor::*[@orderedStepsFlag = '1'])"/>
-                <xsl:if test="($qty mod 2)">
-                  <xsl:number/>
-                </xsl:if>
-                <xsl:if test="not($qty mod 2)">
-                  <xsl:number format="a"/>
-                </xsl:if>
-              </xsl:if>
-              <xsl:if test="$ord = '0'">
-                <xsl:text>-</xsl:text>
-              </xsl:if>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>-</xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
-      </xsl:for-each>
-    </xsl:variable> -->
-    
-    <!-- <xsl:variable name="separator">
-      <xsl:choose>
-        <xsl:when test="$separatorStyle = 'line'">
-          <xsl:text>- </xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>.</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable> -->
-    <!-- <table style="width:100%;"> -->
-    <!-- <table style="width:100%;page-break-inside: avoid;"> -->
     <table style="width:100%;page-break-inside: avoid;">
       <tr>
-        <td style="width:5%"><xsl:value-of select="$num"/></td>
-        <td style="width:95%;text-align:left">
-            <span challenge="true" separator="{$separatorStyle}">
+        <td style="text-align:left">
+            <span challenge="true" separator="{$separatorStyle}" style="{$memorizeStepFlag}">
               <xsl:apply-templates select="challenge"/>
             </span>
             <span response="true">
@@ -175,7 +178,7 @@
               <xsl:text>&#160;</xsl:text>
               <xsl:apply-templates select="descendant::crewMemberGroup"/>
             </span>
-            <br/>
+            <!-- <xsl:text>foobars</xsl:text> -->
         </td>
       </tr>
     </table>
@@ -187,9 +190,28 @@
   </xsl:template>
 
   <xsl:template match="crewMemberGroup">
-    <span captionline="true" calign="T" style="font-size:5" fillcolor="0,255,255" textcolor="0,0,0">
+    <span captionline="true" calign="T" style="font-size:5" fillcolor="255,255,255" textcolor="0,0,0">
       <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getCrewMember', .)"/>
     </span>
+  </xsl:template>
+
+  <xsl:template match="case">
+    <span>
+      <xsl:call-template name="id"/>
+      <xsl:call-template name="cgmark"/>
+      <xsl:apply-templates/>
+    </span>
+  </xsl:template>
+
+  <xsl:template match="caseCond">
+    <span>
+      <xsl:apply-templates/>
+    </span>
+    <br/>
+  </xsl:template>
+
+  <xsl:template match="crewProcedureName">
+    <span><xsl:apply-templates/></span>
   </xsl:template>
 
 </xsl:stylesheet>

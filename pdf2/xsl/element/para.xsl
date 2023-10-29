@@ -13,7 +13,7 @@
           <xsl:apply-templates/>
         </span>
       </xsl:when>
-      <xsl:when test="parent::footnote or parent::response">
+      <xsl:when test="parent::footnote or parent::response or parent::crewProcedureName">
         <span>
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>

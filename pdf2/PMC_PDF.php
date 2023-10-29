@@ -3009,6 +3009,9 @@ class PMC_PDF extends TCPDF
 
           // separator style #1 final
           if(isset($dom[$key]['attribute']['challenge'])){
+            $memorizeStepFlag = $dom[$key]['fontstyle'];
+            $challengefontsize = $dom[$key]['fontsize'];
+            // dd($challengefontsize);
             $this->separator = $dom[$key]['attribute']['separator'] ?? '.';
             $this->aw = $this->aw ?? round($this->rMargin * 3); // 36 saat tes dengan kertas A5
             $this->rMargin += $this->aw; 
@@ -3369,7 +3372,20 @@ class PMC_PDF extends TCPDF
               $this->crewDrill = true;
             }
 
+            // caption #0 (tes)
+            // if(isset($dom[$key]['attribute']['captionline'])){
+              // $incaption = true;
+            // }
             
+            // tambahan : supaya ketika ada ol/ul di awal line akan di turunkan posisi y nya dan jika didalam crewDrillStep tidak diturunkan y nya
+            // caption #3 untuk menyetel posisi Y setelah text sebaris dengan caption
+            if(isset($this->captionLineHeight) AND $this->captionLineHeight){
+              $lch = (isset($this->lastCaptionLineHeight) AND ($this->lastCaptionLineHeight > 0)) ? $this->lastCaptionLineHeight : 0; // editan / tambahan;
+              if($dom[$key]['block']){
+                $this->y += $lch;
+              }
+              $this->captionLineHeight = false;
+            }
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
@@ -3456,12 +3472,13 @@ class PMC_PDF extends TCPDF
 
           // separator style #2  final - print wfill 
           if(isset($dom[$key+1]['attribute']['response'])){
-            $cwa_forsep = ($this->w - $this->x - $this->rMargin - $this->cell_padding['R']);
-            $wfiller = $this->GetStringWidth($this->separator);
-            $fw = $cwa_forsep - 1; // 3 supaya ada space
+            $cwa_forsep = ($this->w - $this->x - $this->rMargin);
+            ($cwa_forsep > 3) ? ($cwa_forsep -= 3) : null; // untuk mengamankan jarak antar titik2 dan response
+            $wfiller = $this->GetStringWidth($this->separator,'', $memorizeStepFlag, $challengefontsize);
+            $fw = $cwa_forsep;
             $numfills = floor($fw/$wfiller);
             $rowfill = str_repeat($this->separator, $numfills);
-            // $this->Write('',$rowfill,'');
+            $this->Write('',$rowfill,'');
           }
           
 				}
@@ -3476,8 +3493,6 @@ class PMC_PDF extends TCPDF
         // $this->checkPageBreak($this->lasth*2); // footnote #3 supaya ada space sebelum pagebreak diatas footnote 
 
 
-        // dump($key);
-        // dump($dom[38]);
         // caption #2 untuk mencetak caption. Code ini berada di saat $key value = text
         if(
           ($dom[$dom[$key]['parent']]['value'] == 'span')
@@ -3532,6 +3547,11 @@ class PMC_PDF extends TCPDF
             $key++;
             $this->captionLineHeight = true;
 
+            // if ($calign == 'T' AND ($height - $this->stringHeight) > 0){
+            //   $this->lastCaptionLineHeight =  $height - $this->stringHeight;
+            // }
+            // $calign == 'T' AND ($height - $this->stringHeight > 0) ? ($this->lastCaptionLineHeight = $height - $this->stringHeight) : null;
+            // $calign == 'T' ? ($this->lastCaptionLineHeight = (($height - $this->stringHeight > 0) ? $height - $this->stringHeight : 0)) : null;
             $calign == 'T' ? ($this->lastCaptionLineHeight = $height - $this->stringHeight) : null;
 
             continue;
@@ -3572,11 +3592,13 @@ class PMC_PDF extends TCPDF
 					$dom[$key]['value'] = $rsp.$this->stringTrim($dom[$key]['value']).$lsp;
 				}
         
-				if ($newline) {  
+				if ($newline) {
+          
           // caption #3 untuk menyetel posisi Y setelah text sebaris dengan caption
           if(isset($this->captionLineHeight) AND $this->captionLineHeight){
-            $this->y += (isset($this->lastCaptionLineHeight) AND ($this->lastCaptionLineHeight > 0) )? $this->lastCaptionLineHeight : 0; // editan / tambahan
-            // $this->y += ($this->lastCaptionLineHeight ?? 0);
+            $lch = (isset($this->lastCaptionLineHeight) AND ($this->lastCaptionLineHeight > 0)) ? $this->lastCaptionLineHeight : 0; // editan / tambahan;
+            
+            $this->y += $lch;
             $this->captionLineHeight = false;
           }
           // end #3
@@ -3715,7 +3737,7 @@ class PMC_PDF extends TCPDF
               while((!$dom[$captionLineKey+$i]['tag'])){
                 $captionLineText .= $dom[$captionLineKey+$i]['value'];
                 // $dom[$captionLineKey+$i]['value'] = ''; // coba-coba
-                $dom[$captionLineKey+$i]['value'] = chr(160); // coba-coba
+                // $dom[$captionLineKey+$i]['value'] = chr(160); // coba-coba
                 // unset($dom[$key+1]['attribute']['captionline']); // coba-coba
                 if((!$dom[$captionLineKey+$i+1]['opening']) 
                     AND $dom[$captionLineKey+$i+1]['parent'] == $captionLineKey)
@@ -3737,7 +3759,8 @@ class PMC_PDF extends TCPDF
                   // $this->y += isset($dom[$key+1]['height']) ? ($this->getHTMLUnitToUnits($dom[$key+1]['height']) - $this->stringHeight) : $this->stringHeight; // tidak boleh ada "mm" di height nya
                   // tambahan, niatnya agar supaya jika ada dua caption dalam satu baris, $this->y tidak bertambah
                   if(isset($dom[$captionkey]['attribute']['height'])){
-                    $this->y += $this->getHTMLUnitToUnits($dom[$captionkey]['attribute']['height']) - $this->stringHeight;
+                    $caph = $this->getHTMLUnitToUnits($dom[$captionkey]['attribute']['height']);
+                    $this->y += $caph - $this->stringHeight;
                   }
                 }
               } 
@@ -3862,6 +3885,23 @@ class PMC_PDF extends TCPDF
             }
             
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
+            if($startliney != $this->y AND isset($caph)){
+              // $this->rollbackTransaction(true);
+              // continue;
+              // break;
+
+              // break;
+              // $this->captionLineHeight = true;
+              // $this->lastCaptionLineHeight = $caph - $this->stringHeight;
+              // $this->lastCaptionLineHeight = $caph;
+              // dd('bb');
+              // $cap
+              // $key = $kn;
+              // $this->rollbackTransaction(true);
+              // $undo = true;
+              // $this->y += $caph - $this->stringHeight;
+              // continue;
+            }
             
             // footnote #1 writing footnoteRefTxt
             if(isset($footnoteRefTxt)){

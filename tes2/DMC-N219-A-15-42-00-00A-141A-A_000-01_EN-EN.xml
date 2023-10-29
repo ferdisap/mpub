@@ -71,7 +71,8 @@
               <title>Indication</title>
               <para>
                 <sequentialList>
-                  <listItem><para>Illumination of the WARNING lights.</para></listItem>
+                  <listItem><para>Illumination of the 
+                    <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> WARNING lights.</para></listItem>
                   <listItem><para>Display of the 
                     <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
                     and/or 
@@ -110,7 +111,7 @@
                   <!-- <response><para>asa</para></response> -->
                 </challengeAndResponse>
               </crewDrillStep>
-              <crewDrillStep memorizeStepsFlag="1" separatorStyle="line">
+              <crewDrillStep memorizeStepsFlag="0" separatorStyle="line">
                 <challengeAndResponse>
                   <challenge><para>POWER levers (both engines) Lorem ipsum dolor sit amet</para></challenge>
                   <crewMemberGroup>
@@ -120,7 +121,7 @@
                   <response><para>IDLE SASA</para></response>
                 </challengeAndResponse>
               </crewDrillStep>
-              <crewDrillStep memorizeStepsFlag="1" separatorStyle="line">
+              <crewDrillStep memorizeStepsFlag="0" separatorStyle="line">
                 <challengeAndResponse>
                   <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commo</para></challenge>
                   <crewMemberGroup>
@@ -130,26 +131,116 @@
                   <response><para>IDLE</para></response>
                 </challengeAndResponse>
               </crewDrillStep>
-              <crewDrillStep memorizeStepsFlag="1" separatorStyle="line">
+              <if>
+                <caseCond>if Fuel was off,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+              </if>
+              <elseIf>
+                <caseCond>elseif Fuel still run,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+              </elseIf>
+              <crewDrillStep memorizeStepsFlag="0" separatorStyle="line">
                 <challengeAndResponse>
-                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commod</para></challenge>
+                  <challenge><para>Fuel Vent</para></challenge>
                   <crewMemberGroup>
                     <crewMember crewMemberType="cm02"/>
                     <crewMember crewMemberType="cm03"/>
                   </crewMemberGroup>
                   <response><para>IDLE</para></response>
                 </challengeAndResponse>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Fuel Pump</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>OFF</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Fuel Pump</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>OFF</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
               </crewDrillStep>
-              <crewDrillStep memorizeStepsFlag="1" separatorStyle="line">
-                <challengeAndResponse>
-                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, vero?</para></challenge>
+              <if>
+                <caseCond>if 2 Fuel was off,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
                   <crewMemberGroup>
                     <crewMember crewMemberType="cm02"/>
-                    <crewMember crewMemberType="cm03"/>
                   </crewMemberGroup>
-                  <response><para>IDLE</para></response>
+                  <response><para>Pull</para></response>
                 </challengeAndResponse>
-              </crewDrillStep>
+                </crewDrillStep>
+              </if>
+              <elseIf>
+                <caseCond>elseif 2 Fuel still run,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+              </elseIf>
+              <elseIf>
+                <caseCond>elseif 2 bla Fuel still run,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+                <if>
+                  <caseCond>if bla bla bla</caseCond>
+                  <crewDrillStep>
+                    <challengeAndResponse>
+                      <challenge><para>CB</para></challenge>
+                      <crewMemberGroup>
+                        <crewMember crewMemberType="cm02"/>
+                      </crewMemberGroup>
+                      <response><para>Pull</para></response>
+                    </challengeAndResponse>
+                  </crewDrillStep>
+                </if>
+              </elseIf>
+              <case>
+                <caseCond>Hydraulic system is going to off in 30 seconds.</caseCond>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+              </case>
             </subCrewDrill>
           </crewDrill>
         </levelledPara>

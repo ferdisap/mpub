@@ -171,8 +171,9 @@
   </xsl:template>
   
   <xsl:template match="caption">
-    <!-- &#160;<span captionline="true" style="font-weight:bold" calign="T"> -->
-    &#160;<span captionline="true" style="font-weight:bold" calign="B">
+    <!-- caption masih  belum bisa pakai calign=B jika ada 2 caption yang memiliki height dalam satu line. $this->y akan turun kebawah-->
+    &#160;<span captionline="true" style="font-weight:bold" calign="T">
+    <!-- &#160;<span captionline="true" style="font-weight:bold" calign="B"> -->
       <xsl:call-template name="cgmark"/>
 
       <xsl:if test="@captionWidth">
