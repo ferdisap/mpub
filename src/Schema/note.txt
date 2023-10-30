@@ -25,6 +25,7 @@ brex.xsd,
 brdoc.xsd,
 pm.xsd,
 crew.xsd,
+comrep.xsd,
 ###
 
 ###

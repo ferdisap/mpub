@@ -21,7 +21,8 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <div style="text-align:center;page-break-before:always;page-break-after:always;">
+    <!-- <div style="text-align:center;page-break-before:always;page-break-after:always;"> -->
+    <div style="text-align:center;page-break-after:always;">
     <!-- <div style="text-align:center;"> -->
       <!-- untuk elemen figure-->
       <xsl:call-template name="id"/>
@@ -57,7 +58,8 @@
           </tr>
           <tr>
             <td>
-              <span>
+              <span style="font-size:{$fontsize_figure_title}">
+              
                 <xsl:if test="parent::figure/title/@changeMark = '1'">
                   <xsl:call-template name="cgmark">
                     <xsl:with-param name="changeMark" select="parent::figure/title/@changeMark"/>

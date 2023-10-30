@@ -41,6 +41,8 @@
   <xsl:param name="fontsize_levelledPara_title_4"/>
   <xsl:param name="fontsize_levelledPara_title_5"/>
 
+  <xsl:param name="fontsize_figure_title"/>
+
   <xsl:param name="dmOwner"/>
   <xsl:param name="absolute_asset_path"/>
   

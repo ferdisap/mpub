@@ -19,31 +19,6 @@ class DMC
   protected string $schemaXsd;
   protected $applicability = '';
 
-  // public function importDocument_byIdent(\DOMElement $identExtension = null, \DOMElement $dmCode, \DOMElement $issueInfo = null, \DOMElement $languange = null)
-  // {
-  //   $dmCode = CSDB::resolve_dmCode($dmCode);
-  //   $issueInfo = ($if = CSDB::resolve_issueInfo($issueInfo)) ? "_". $if : '';
-  //   $languange = ($lg = CSDB::resolve_languange($languange)) ? "_". $lg : '';
-
-  //   $this->dmCode = $dmCode;
-  //   $this->issueInfo = $issueInfo;
-  //   $this->languange = $languange;
-  //   $this->pdf->curEntry = $this->dmCode.$this->issueInfo.$this->languange;
-
-  //   $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($dmCode.$issueInfo.$languange).".xml";
-
-  //   $this->DOMDocument = CSDB::importDocument($file_withLanguangeCode,'','dmodule');
-    
-  //   $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
-  //   $this->schemaXsd = $schemaXsd;
-  //   $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
-
-  //   $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
-  //   $techname = $dmTitle->firstElementChild->nodeValue;
-  //   $infoname = $dmTitle->firstElementChild->nextElementSibling ? $dmTitle->firstElementChild->nextElementSibling->nodeValue : null;
-    
-  //   $this->pdf->Bookmark($techname.($infoname ? '-'. $infoname : ''),$this->pdf->pmEntry_level += 1);
-  // }
 
   public function setDocument(\DOMElement $dmRef){
     $dmIdent =  $dmRef->getElementsByTagName('dmRefIdent')[0];
@@ -129,6 +104,9 @@ class DMC
       case 'crew.xsd':
         $this->render_crewXsd();
         break;
+      case 'comrep.xsd':
+        $this->render_comrepXsd();
+        break;
       default:
         # code...
         break;
@@ -182,33 +160,38 @@ class DMC
     $this->pdf->setPageOrientation($this->pdf->get_pmType_config()['page']['orientation']);
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
 
-    // dd($html);
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = false ,$tes = true);
   }
+  
+  public function render_comrepXsd()
+  {
+    $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
+    $CSDB_class_methods = array_map(function($name){
+      return CSDB::class."::$name";
+    },get_class_methods(CSDB::class));
 
-  /**
-   * $type bisa berupa DOMElement(crewMemberGroup), atau DOMattr (crewMemberType)
-   */
-  public function getCrewMember($type){
-    if(is_array($type)) $type = $type[0];
+    $xsl = CSDB::importDocument(__DIR__."./xsl/comrep.xsl", '',"xsl:stylesheet");
+    $xsltproc = new XSLTProcessor();
+    $xsltproc->importStylesheet($xsl);
+    $xsltproc->registerPHPFunctions($CSDB_class_methods);
+    $xsltproc->registerPHPFunctions(__CLASS__."::"."getApplicabilty");
+    $xsltproc->registerPHPFunctions();
+    $xsltproc->setParameter('','dmOwner',$this->dmIdent);
+    $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
 
-    if(($type instanceof \DOMElement) AND $type->nodeName == 'crewMemberGroup'){
-      $typearr = [];
-      foreach(CSDB::get_childrenElement($type) as $crewMember){
-        $typearr[] = $crewMember->getAttribute('crewMemberType');
-      }
-      foreach($typearr as $i => $cm){
-        if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$cm])){
-          $typearr[$i] = $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$cm];
-        }
-      }
-      return join(', ',$typearr);
-    }
-    
-    if($type instanceof \DOMAttr) $type = $type->nodeValue;
-    if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type])){
-      return $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type];
-    }
+    $fontsize_figure_title = $this->pdf->get_pmType_config()['fontsize']['figure']['title'];
+    // dump($fontsize_figure_title);
+    $xsltproc->setParameter('',"fontsize_figure_title", $fontsize_figure_title);
+
+    $html = $xsltproc->transformToXml($this->DOMDocument);
+    $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
+
+    $this->pdf->setPageOrientation($this->pdf->get_pmType_config()['page']['orientation']);
+    $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
+
+    $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = false ,$tes = true);
+
   }
 
   public function render_crewXsd()
@@ -272,6 +255,9 @@ class DMC
     $xsltproc->setParameter('',"fontsize_levelledPara_title_4", $fontsize_levelPara_title[3]);
     $xsltproc->setParameter('',"fontsize_levelledPara_title_5", $fontsize_levelPara_title[4]);
 
+    $fontsize_levelPara_title = $this->pdf->get_pmType_config()['fontsize']['levelledPara']['figure']['title'];
+    $xsltproc->setParameter('',"fontsize_figure_title", $fontsize_levelPara_title);
+
     $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
@@ -285,6 +271,32 @@ class DMC
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
   }
+
+   /**
+   * $type bisa berupa DOMElement(crewMemberGroup), atau DOMattr (crewMemberType)
+   */
+  public function getCrewMember($type){
+    if(is_array($type)) $type = $type[0];
+
+    if(($type instanceof \DOMElement) AND $type->nodeName == 'crewMemberGroup'){
+      $typearr = [];
+      foreach(CSDB::get_childrenElement($type) as $crewMember){
+        $typearr[] = $crewMember->getAttribute('crewMemberType');
+      }
+      foreach($typearr as $i => $cm){
+        if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$cm])){
+          $typearr[$i] = $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$cm];
+        }
+      }
+      return join(', ',$typearr);
+    }
+    
+    if($type instanceof \DOMAttr) $type = $type->nodeValue;
+    if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type])){
+      return $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type];
+    }
+  }
+
   public static function getSchemaName(\DOMElement $dmodule)
   {
     $xsiNoNamespaceSchemaLocation = $dmodule->getAttribute("xsi:noNamespaceSchemaLocation");

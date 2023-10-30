@@ -15,14 +15,13 @@ $pmType = [
       'unit' => 'mm',
       'format' => 'A5',
       'margins' => [ 'L' => 20, 'T' => 25, 'R' => 10, 'B' => 20 ],
-      // 'margins' => [ 'L' => 20, 'T' => 25, 'R' => 10, 'B' => 25 ],
       'headerMargin' => 5,
       'footerMargin' => 15,
     ],
     'fontsize' => [
       'levelledPara' => [
         'title' =>[12,11,10,9,8],
-        'para' => 9,
+        'para' => 9, // yang ini nantinya tidak dipakai. Semua dikeluarkan dari levelledPara
         'figure' => [ 
           'title' => 9, 
           'legend' => [
@@ -31,6 +30,7 @@ $pmType = [
           ]
         ],
       ],
+      'para' => 9,
     ],
     'content' => [
       'padding' => [
@@ -45,6 +45,37 @@ $pmType = [
         'cm03' => 'CM2',
         'cm04' => 'FN',
       ]
+    ],
+  ],
+  'pt52' => [
+    'interpretation' => 'COMMON INFORMATION',
+    'value' => 'pt52',
+    'useheader' => false,
+    'usefooter' => false,
+    'usetoc' => false,
+    'usebookmark' => false,
+    'page' => [
+      'orientation' => 'P',
+      'unit' => 'mm',
+      'format' => 'A4',
+      'margins' => [ 'L' => 20, 'T' => 25, 'R' => 10, 'B' => 20 ],
+      // 'margins' => [ 'L' => 20, 'T' => 25, 'R' => 10, 'B' => 25 ],
+      'headerMargin' => 5,
+      'footerMargin' => 15,
+    ],
+    'fontsize' => [
+      'figure' => [ 
+        'title' => 11, 
+        'legend' => [ // ini belum dipakai. yang pt51 juga belum applikasikan di xsl nya
+          'header' => 8,
+          'list' => 7
+        ]
+      ],
+      'para' => 11,
+    ],
+    'content' => [
+      'header' => 'pt51_header.php',
+      'footer' => 'pt51_footer.php'
     ],
   ],
 ];

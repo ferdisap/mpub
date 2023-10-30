@@ -150,7 +150,8 @@ class PMC_PDF extends TCPDF
     $bottomMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['B'] : $this->pmType_config['page']['margins']['B'];
     $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
-    $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
+    // $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
+    $fontsize = $this->pmType_config['fontsize']['para'];
 
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
@@ -270,7 +271,7 @@ class PMC_PDF extends TCPDF
       $bPadding = $pdf->getCellPaddings()['B'];
       // dd($pdf->getCellPaddings());
       // dd($pdf->getLastH());
-      $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin + $tPadding + $bPadding);
+      $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin + $tPadding + $bPadding) - $pdf->getStringHeight('','');
       $page_height -= $pdf->getVgutter();
       $pdf->setFontSize(7);
       $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
@@ -597,11 +598,13 @@ class PMC_PDF extends TCPDF
   public function Header()
   {
     if (($this->getPage() % 2) == 0) {
-      $header = (require "config/template/{$this->pmType_config['value']}_header.php")['even'];
+      $header = (require "config/template/{$this->get_pmType_config()['content']['header']}")['even'];
+      // $header = (require "config/template/{$this->get_pmType_config()[]")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
       $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
-      $header = (require "config/template/{$this->pmType_config['value']}_header.php")['odd'];
+      // dd($this->get_pmType_config()['content']['header']);
+      $header = (require "config/template/{$this->get_pmType_config()['content']['header']}")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
       $this->writeHTML($header, true, false, false,true,'J',false);
     };
@@ -610,11 +613,12 @@ class PMC_PDF extends TCPDF
   public function Footer()
   {
     if (($this->getPage() % 2) == 0) {
-      $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];
+      // $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];      
+      $footer = (require "config/template/{$this->get_pmType_config()['content']['footer']}")['even'];
       $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
-      $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['odd'];
+      $footer = (require "config/template/{$this->get_pmType_config()['content']['footer']}")['odd'];
       $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
