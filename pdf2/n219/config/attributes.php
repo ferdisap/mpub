@@ -36,8 +36,8 @@ $pmType = [
       'padding' => [
         'levelledPara' => [0,3,5,7,9]
       ],
-      'header' => '/template/pt51_header.php',
-      'footer' => '/template/pt51_footer.php'
+      'header' => 'pt51_header.php',
+      'footer' => 'pt51_footer.php'
     ],
     'attributes' =>[
       'crewMemberType' => [

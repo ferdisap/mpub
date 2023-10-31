@@ -62,7 +62,9 @@
             <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, amet tempore consectetur nisi eveniet laboriosam saepe excepturi maiores corrupti a, labore atque? Doloribus laudantium vero eligendi accusamus, ea quibusda asasasa -->
             <!-- <caption color="co66" captionHeight="10mm"><captionLine>R ENG FIRE</captionLine></caption>  -->
             <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
-            adipisicing elit. Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
+            adipisicing elit. 
+            <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
+            Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, esse?
           </para>
           <crewDrill orderedStepsFlag="1">
@@ -131,6 +133,39 @@
                   <response><para>IDLE</para></response>
                 </challengeAndResponse>
               </crewDrillStep>
+              <case>
+                <caseCond>if Hydraulic system is going to off in 30 seconds.</caseCond>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+              </case>
               <if>
                 <caseCond>if Fuel was off,</caseCond>
                 <crewDrillStep>
@@ -186,15 +221,15 @@
                 </crewDrillStep>
               </crewDrillStep>
               <if>
-                <caseCond>if 2 Fuel was off,</caseCond>
+                <caseCond>if 2 Fuxel was off,</caseCond>
                 <crewDrillStep>
                   <challengeAndResponse>
-                  <challenge><para>CB</para></challenge>
-                  <crewMemberGroup>
-                    <crewMember crewMemberType="cm02"/>
-                  </crewMemberGroup>
-                  <response><para>Pull</para></response>
-                </challengeAndResponse>
+                    <challenge><para>CBasa</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                    </crewMemberGroup>
+                    <response><para>Pull</para></response>
+                  </challengeAndResponse>
                 </crewDrillStep>
               </if>
               <elseIf>
@@ -233,14 +268,6 @@
                   </crewDrillStep>
                 </if>
               </elseIf>
-              <case>
-                <caseCond>Hydraulic system is going to off in 30 seconds.</caseCond>
-                <crewDrillStep>
-                <crewProcedureName>
-                  <para>Do nothing.</para>
-                </crewProcedureName>
-                </crewDrillStep>
-              </case>
             </subCrewDrill>
           </crewDrill>
         </levelledPara>

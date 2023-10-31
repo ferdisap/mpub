@@ -141,7 +141,8 @@ class DMC
       return CSDB::class."::$name";
     },get_class_methods(CSDB::class));
 
-    $xsl = CSDB::importDocument(__DIR__."./xsl/frontmatter.xsl", '',"xsl:stylesheet");
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/frontmatter.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
@@ -151,8 +152,8 @@ class DMC
     $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
     // harusnya logo_ptdi pakai absolute_asset_path
-    $xsltproc->setParameter('','logo_ptdi', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR."Logo-PTDI.jpg");
-    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
+    $xsltproc->setParameter('','logo_ptdi', __DIR__.DIRECTORY_SEPARATOR.$modelIdentCode.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR."Logo-PTDI.jpg");
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR.$modelIdentCode.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
     
     $html = $xsltproc->transformToXml($this->DOMDocument);
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
@@ -170,7 +171,8 @@ class DMC
       return CSDB::class."::$name";
     },get_class_methods(CSDB::class));
 
-    $xsl = CSDB::importDocument(__DIR__."./xsl/comrep.xsl", '',"xsl:stylesheet");
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/comrep.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
@@ -178,7 +180,7 @@ class DMC
     $xsltproc->registerPHPFunctions();
     $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
-    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR.$modelIdentCode.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
 
     $fontsize_figure_title = $this->pdf->get_pmType_config()['fontsize']['figure']['title'];
     // dump($fontsize_figure_title);
@@ -197,7 +199,8 @@ class DMC
   public function render_crewXsd()
   {
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
-    $xsl = CSDB::importDocument(__DIR__."./xsl/crew.xsl", '',"xsl:stylesheet");
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/crew.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     // dd(__CLASS__."::"."getApplicabilty", PMC_PDF::class."::".'getCrewMember');
@@ -221,7 +224,7 @@ class DMC
 
     $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
-    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR.$modelIdentCode.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
 
     $html = $xsltproc->transformToXml($this->DOMDocument);
     // dd($html);
@@ -236,7 +239,8 @@ class DMC
 
   public function render_descriptXsd()
   { 
-    $xsl = CSDB::importDocument(__DIR__."./xsl/descript.xsl", '',"xsl:stylesheet");
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/descript.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions();
@@ -260,7 +264,7 @@ class DMC
 
     $xsltproc->setParameter('','dmOwner',$this->dmIdent);
     $xsltproc->setParameter('','absolute_path_csdbInput', $this->pdf->getAssetPath().DIRECTORY_SEPARATOR);
-    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
+    $xsltproc->setParameter('','absolute_asset_path', __DIR__.DIRECTORY_SEPARATOR.$modelIdentCode.DIRECTORY_SEPARATOR."assets".DIRECTORY_SEPARATOR);
 
     $html = $xsltproc->transformToXml($this->DOMDocument);
     $html = preg_replace("/(?<=>)[\s]{2,}/",'',$html); // usntuk menghilangkan space/enter/multispace diawal setelah tag >
@@ -295,6 +299,14 @@ class DMC
     if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type])){
       return $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type];
     }
+  }
+
+  public function set_last_crewDrillStep(int $num, string $tagName){
+    // $this->lastCrewDrill
+    // $this->last_crewDrillStep = $num;
+  }
+  public function get_last_crewDrillStep(){
+    // return $this->last_crewDrillStep;
   }
 
   public static function getSchemaName(\DOMElement $dmodule)

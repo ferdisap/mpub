@@ -1,6 +1,7 @@
 <?php
 
-$headerLogo = $this->getAssetPath().DIRECTORY_SEPARATOR.$this->headerLogo;
+$modelIdentCode = strtolower(Ptdi\Mpub\CSDB::get_modelIdentCode($this->DOMDocument));
+$headerLogo = $this->getAssetPath()."/../pdf2/{$modelIdentCode}/assets/Logo-PTDI.jpg";
 $headerText = $this->headerText;
 $headerTitle = $this->headerTitle;
 

@@ -2,6 +2,7 @@
 
 namespace Ptdi\Mpub;
 
+use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use Exception;
@@ -220,7 +221,13 @@ class CSDB {
       ( ($childNodes instanceof \DOMElement) AND ($childNodes->nodeName != $excludeElement) ) ? array_push($arr, $childNodes) : null;
     }
     return $arr;
-  }  
+  }
+
+  public static function get_modelIdentCode(\DOMDocument $doc){
+    $dmCode = $doc->getElementsByTagName('dmCode')[0];
+    $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
+    return $modelIdentCode;
+  }
 
   public static function resolve_issueDate($issueDate, $format = "M-d-Y"){
     // untuk mengakomodir penggunaan fungsi di XSLT

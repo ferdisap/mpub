@@ -45,7 +45,7 @@ class PMC_PDF extends TCPDF
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
    */
-  public string $headerLogo = '../pdf2/assets/Logo-PTDI.jpg';
+  public string $headerLogo = "../pdf2/assets/Logo-PTDI.jpg";
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
@@ -76,22 +76,15 @@ class PMC_PDF extends TCPDF
       'id' => $id,
       'link' => $link,
     ];
-
-    // array_push($this->references, [
-    //   'ident' => $ident,
-    //   'id' => $id,
-    //   'link' => $link,
-    //   // 'p' => $page,
-    //   // 'y' => $y,
-    //   // 'f' => $fixed,
-    // ]);
   }
 
   public function __construct(string $absolute_path_csdbInput)
   {
     $this->absolute_path_csdbInput = $absolute_path_csdbInput;
+    // $this->modelIdentCode = strtolower($modelIdentCode);
     parent::__construct();
-  }  
+  }
+
   /**
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
@@ -100,11 +93,12 @@ class PMC_PDF extends TCPDF
   {
     // $this->pmc_path = $absolute_path;
     $this->DOMDocument = CSDB::importDocument($absolute_path, $xml_string, 'pm');
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
 
     # validate DOMDocument here
 
     $pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType');
-    $attributes = require "config/attributes.php";
+    $attributes = require $modelIdentCode."/config/attributes.php";
     $this->pmType_config = $attributes['pmType'][$pmType_value];
     
     $format = $this->pmType_config['page']['format'];
@@ -135,7 +129,8 @@ class PMC_PDF extends TCPDF
   }
   private function pmEntry(\DOMElement $pmEntry)
   {
-    $pmEntryType_config = require "config/attributes.php";
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $pmEntryType_config = require $modelIdentCode."/config/attributes.php";
     $pmEntryType_config = $pmEntryType_config['pmEntryType'];
     $pmEntryType = $pmEntry->getAttribute('pmEntryType');
     $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
@@ -217,13 +212,13 @@ class PMC_PDF extends TCPDF
     }
     // add TOC
     if($TOC){
-      $this->addTOCPage();
-      $this->SetFont($this->getFontFamily(), 'B', 14);
-      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      $this->Ln();    
-      $this->SetFont($this->getFontFamily(), '', 10);
-      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      $this->endTOCPage();
+      // $this->addTOCPage();
+      // $this->SetFont($this->getFontFamily(), 'B', 14);
+      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      // $this->Ln();    
+      // $this->SetFont($this->getFontFamily(), '', 10);
+      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      // $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -597,29 +592,31 @@ class PMC_PDF extends TCPDF
   //Page header
   public function Header()
   {
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     if (($this->getPage() % 2) == 0) {
-      $header = (require "config/template/{$this->get_pmType_config()['content']['header']}")['even'];
+      $header = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['header']}")['even'];
       // $header = (require "config/template/{$this->get_pmType_config()[]")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
       // dd($this->get_pmType_config()['content']['header']);
-      $header = (require "config/template/{$this->get_pmType_config()['content']['header']}")['odd'];
+      $header = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['header']}")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      $this->writeHTML($header, true, false, false,true,'J',false);
+      // $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
   public function Footer()
   {
+    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     if (($this->getPage() % 2) == 0) {
       // $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];      
-      $footer = (require "config/template/{$this->get_pmType_config()['content']['footer']}")['even'];
-      $this->writeHTML($footer, true, false, true, false, 'C');
+      $footer = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['footer']}")['even'];
+      // $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
-      $footer = (require "config/template/{$this->get_pmType_config()['content']['footer']}")['odd'];
-      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      $footer = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['footer']}")['odd'];
+      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -3255,7 +3252,7 @@ class PMC_PDF extends TCPDF
             // $this->cellw = $cellw; // tambahan
             // $this->sx = $this->x;
             // dump($this->sx, $cell_content);
-            
+            // dump($this->y."|".$this->page."|".$this->PageBreakTrigger."|".$cellh);
             $this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
             // $this->mc = $this->mc ?? 0;
             // $this->mc += 1;
@@ -3544,6 +3541,7 @@ class PMC_PDF extends TCPDF
             // $calign == 'B' ? ($this->y += $this->stringHeight) : null;
             $this->setColor('fill', $fillcolor[0],$fillcolor[1],$fillcolor[2], $fillcolor[3] ?? -1);
             $this->setColor('text', $textcolor[0],$textcolor[1],$textcolor[2], $fillcolor[3] ?? -1);
+            // dump($dom[$key-1]);
             $this->Cell($captionWidth,$height,$value,0,0,'C',true,'',0,false,$calign);
             $calign == 'B' ? ($this->y -= $this->stringHeight) : null;
 
@@ -3601,7 +3599,6 @@ class PMC_PDF extends TCPDF
           // caption #3 untuk menyetel posisi Y setelah text sebaris dengan caption
           if(isset($this->captionLineHeight) AND $this->captionLineHeight){
             $lch = (isset($this->lastCaptionLineHeight) AND ($this->lastCaptionLineHeight > 0)) ? $this->lastCaptionLineHeight : 0; // editan / tambahan;
-            
             $this->y += $lch;
             $this->captionLineHeight = false;
           }
@@ -3732,7 +3729,7 @@ class PMC_PDF extends TCPDF
               $fname = $dom[$key+1]['fontname'];
               $fstyle = $dom[$key+1]['fontstyle'];
               $fsize = $dom[$key+1]['fontsize'];
-              $calign = $dom[$key+1]['attribute']['calign'] ?? 'B';
+              $calign = $dom[$key+1]['attribute']['calign'] ?? 'T';
 
               $captionLineText = '';
               $captionLineKey = $key+1;
@@ -3771,9 +3768,7 @@ class PMC_PDF extends TCPDF
               else{
                 $dom[$key]['value'] .= chr(10); // supaya ketika ada caption diujung, text justify dan tidak terganggu captionnya
               }
-              // dump($this->captionLineText);
             }
-            // $this->stringHeight = $this->getCellHeight($this->FontSize, true); // dipindah ke atas
             // end #1
 
 
@@ -3889,6 +3884,7 @@ class PMC_PDF extends TCPDF
             }
             
             $strrest = $this->Write($this->lasth, $dom[$key]['value'], '', $wfill, '', false, 0, true, $firstblock, 0, $wadj);
+            // dump($this->y."|".$this->page."|".$dom[$key]['value']);
             if($startliney != $this->y AND isset($caph)){
               // $this->rollbackTransaction(true);
               // continue;
