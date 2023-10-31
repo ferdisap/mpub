@@ -3532,7 +3532,7 @@ class PMC_PDF extends TCPDF
 					$minstartliney = $this->y;
 					$maxbottomliney = ($startliney + $this->getCellHeight($this->FontSize)); // tes
 					if (is_numeric($pfontsize) AND ($pfontsize > 0)) {
-            // paddingleft #2
+            // paddingleft #2 dikarenakan jika numberred (bukan bullet) yang pakai fungsi Write()/Cell(), $this->x nya terpengaruh cell padding
             $pdl = $this->cell_padding['L'];
             $this->cell_padding['L'] = $basic_cell_padding_L;
             $this->putHtmlListBullet($this->listnum, $this->lispacer, $pfontsize);
