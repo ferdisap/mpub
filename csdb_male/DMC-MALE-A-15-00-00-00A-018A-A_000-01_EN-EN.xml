@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="31" />
+        <dmTitle>
+          <techName>Preface</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>PREFACE</title>
+        <levelledPara>
+          <title>CONTENTS</title>
+          <para>This document contains the information required to be furnished to end-user to obtain the flight safe and consist of 6 sections. Those sections provide approved information.</para>
+          <para>
+            The brief description of each section in this document are as follows:
+            <randomList>
+              <listItem>
+                <para>Section 0 Introduction #ln; Introduce the FM General Information.</para>
+              </listItem>
+              <listItem>
+                <para>Section 1 General #ln; Introduce the aircraft general information.</para>
+              </listItem>
+              <listItem>
+                <para>Section 2 Limitation #ln; Describes the procedures requiring immediate flight crew action and procedures associated with failure of the systems or component.</para>
+              </listItem>
+              <!-- <listItem>
+                <para>Section 3 Emergency and Abnormal Procedures #ln; Describes the procedures requiring emmediate flight crew action and procedures associated with failure of the systems or component.</para>
+              </listItem>
+              <listItem>
+                <para>Section 4 Normal Procedures #ln; Describes about the procedures associated with systems that are functioning in their usual manner.</para>
+              </listItem>
+              <listItem>
+                <para>Section 5 Performance #ln; Describes the aircraft performance information that required by the applicable regulation.</para>
+              </listItem>
+              <listItem>
+                <para>Section 5 Weight and Balance #ln; Describes the instruction applicable to weight and balance control of the aircraft.</para>
+              </listItem> -->
+            </randomList>
+          </para>
+          <para>tes
+            <sequentialList>
+              <listItem>
+                <para>foo#ln;bar</para>
+              </listItem>
+            </sequentialList>
+          </para>
+        </levelledPara>
+        <levelledPara>
+          <title>REVISIONS</title>
+          <para>Changes in this document shall be identified as follow:
+            <sequentialList>
+              <listItem>
+                <!-- <para><emphasis emphasisType="em01">Markings</emphasis></para> -->
+                <para>Addition or any changes in this content of document to existing data will be identified by vertical line, located outside margin of applicable page.</para>
+                <para>The vertical line will only indicate the current change on each page. Physical relocation of data or the correction of typographical errors, outside of the material revised, will not be identified by a revision bar.</para>
+              </listItem>
+            </sequentialList>
+          </para>
+        </levelledPara>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>

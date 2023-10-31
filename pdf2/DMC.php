@@ -39,6 +39,10 @@ class DMC
     $this->schemaXsd = $schemaXsd;
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
 
+    
+    $issueDate = $this->DOMDocument->getElementsByTagName('issueDate')[0];
+    $this->issueDate = empty($issueDate) ? '' : CSDB::resolve_issueDate($issueDate, "M d, Y") ;
+
     // jika ingin di bookmark setiap dmRef
     // $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
     // $techname = $dmTitle->firstElementChild->nodeValue;
@@ -87,7 +91,7 @@ class DMC
   }
 
   public function render()
-  {    
+  {
     // note the first page of DMC
     $first_page = $this->pdf->getPage();
 
@@ -135,7 +139,7 @@ class DMC
   }
 
   public function render_frontmatterXsd()
-  {    
+  { 
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
     $CSDB_class_methods = array_map(function($name){
       return CSDB::class."::$name";

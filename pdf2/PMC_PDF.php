@@ -100,6 +100,8 @@ class PMC_PDF extends TCPDF
     $pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType');
     $attributes = require $modelIdentCode."/config/attributes.php";
     $this->pmType_config = $attributes['pmType'][$pmType_value];
+
+    $this->pmCode = CSDB::resolve_pmCode($this->DOMDocument->getElementsByTagName('pmCode')[0]);
     
     $format = $this->pmType_config['page']['format'];
     $this->setPageFormat($format);  
@@ -129,6 +131,10 @@ class PMC_PDF extends TCPDF
   }
   private function pmEntry(\DOMElement $pmEntry)
   {
+    // tambahan
+    $this->pmTitle = $pmEntry->getElementsByTagName('pmEntryTitle')[0];
+    $this->pmTitle = $this->pmTitle->nodeValue;
+
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     $pmEntryType_config = require $modelIdentCode."/config/attributes.php";
     $pmEntryType_config = $pmEntryType_config['pmEntryType'];
@@ -147,6 +153,8 @@ class PMC_PDF extends TCPDF
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
     // $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
     $fontsize = $this->pmType_config['fontsize']['para'];
+    $this->SetFont($this->pmType_config['fontfamily']);
+    // $this->SetFont('tahoma_0','',null,);
 
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
@@ -246,6 +254,7 @@ class PMC_PDF extends TCPDF
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
     $dmc->setDocument($dmRef);
+    $this->dm_issueDate_rendering = $dmc->issueDate;
     $dmc->render();
   }
 
@@ -2113,13 +2122,7 @@ class PMC_PDF extends TCPDF
 			// reset row height
 			$this->resetLastH();
 		}
-    // is_array($html) ? $dom = $html : 
-    // $html = preg_replace("/:br:/", '\n', $html);
-    // dd($html);
     $dom = $this->getHtmlDomArray($html);
-
-    // dd($html);
-    // if($tes) dd($dom, $html);
 
 		$maxel = count($dom);
 		$key = 0;
@@ -2128,7 +2131,6 @@ class PMC_PDF extends TCPDF
     $basic_w = $w;
 
     // footnote #0 - save footnote html string
-    // if($tes) dump($html);
     $footnoteshtmlstrings = [];
     if($usefootnote){
       $domdoc = new DOMDocument();
@@ -2143,7 +2145,6 @@ class PMC_PDF extends TCPDF
     }
 
 		while ($key < $maxel) {
-      // if($who == 'thead') dump($this->page);
 
       /** EDITTED - tambahan supaya kalau ada title dibawah dekat footer, maka page break */
       if(in_array($dom[$key]['value'], ['h1','h2','h3','h4','h5','h6'])){
@@ -2154,16 +2155,24 @@ class PMC_PDF extends TCPDF
       // bookmark if such attribute exist
       if(!empty($dom[$key]['attribute']['bookmarklvl']) AND !empty($dom[$key]['attribute']['bookmarktxt'])){
         $txt = preg_replace("/&#xA0;/",' ', $dom[$key]['attribute']['bookmarktxt']);
-        // $this->Bookmark($txt, $dom[$key]['attribute']['bookmarklvl']);
-        // dump($this->pmEntry_level);
         $this->Bookmark($txt, $dom[$key]['attribute']['bookmarklvl'] + $this->pmEntry_level);
       }
 
-      // set padding if dom[$key] has attribute paddingleft
-      if(!$this->InFooter AND (isset($dom[$dom[$key]['parent']]['attribute']['paddingleft']))){
-        $this->cell_padding['L'] = $basic_cell_padding_L + ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);
-        $w = $basic_w - ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);
+      // paddingleft #1 set padding if dom[$key] has attribute paddingleft
+      if(!$this->InFooter AND isset($dom[$key]['attribute']['paddingleft'])){
+        $this->cell_padding['L'] = $basic_cell_padding_L + ($dom[$key]['attribute']['paddingleft']);
+        // dd($dom[$key]);
+        // $this->cell_padding['L'] += ($dom[$key]['attribute']['paddingleft']);
+        // $this->x += $this->cell_padding['L'];
+        // $w = $basic_w - ($dom[$key]['attribute']['paddingleft']);
       }
+      // if(!$this->InFooter AND (isset($dom[$dom[$key]['parent']]['attribute']['paddingleft']))){
+      //   $this->cell_padding['L'] = $basic_cell_padding_L + ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);
+      //   $w = $basic_w - ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);
+      // } else {
+      //   $w = $basic_w;
+      // }
+      // if($dom[$key]['value'] == 'li') dd($dom[$key]);
       
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND $dom[$key]['hide']) {
 				// store the node key
@@ -3335,19 +3344,8 @@ class PMC_PDF extends TCPDF
 						}
 
             if($revmark AND isset($dom[$key]['cgmarkid'])){
-              // dump($this->inxobj, $this->y, $dom[$key]);
-              // if($this->inxobj){
-              //   dd($dom[$key]['cgmarkid']);
-              // }
-              // dump($this->y, $pre_y, $startliney, $minstartliney);
               $this->start_cgmark = $this->start_cgmark ?? [];
-              // $this->start_cgmark[$key] = count($this->cgmark);
               $st_pos_y = $this->y;
-
-              // if($this->inFootnote){
-                // dd($this->PageBreakTrigger);
-                // $st_pos_y += $this->PageBreakTrigger;
-              // }
 
               $this->start_cgmark[$dom[$key]['cgmarkid']] = count($this->cgmark);
               $this->addCgMark(
@@ -3359,12 +3357,10 @@ class PMC_PDF extends TCPDF
                 $dom[$key]['value'],
                 $this->inFootnote
               ); // assign first position ('st_pos_y')
-              // dump('start_cgmark on tag', $this->inxobj, $this->start_cgmark);
             }
 
             if(isset($dom[$key]['attribute']['id']) AND !$this->inFootnote){
               $this->addInternalReference($this->curEntry, $dom[$key]['attribute']['id'], $this->page, $this->y);
-              // dump('addInternalReference'."|".$dom[$key]['attribute']['id']);
             }
 
             // separatorstyle #coba
@@ -3372,11 +3368,6 @@ class PMC_PDF extends TCPDF
               $this->rMargin += 30;
               $this->crewDrill = true;
             }
-
-            // caption #0 (tes)
-            // if(isset($dom[$key]['attribute']['captionline'])){
-              // $incaption = true;
-            // }
             
             // tambahan : supaya ketika ada ol/ul di awal line akan di turunkan posisi y nya dan jika didalam crewDrillStep tidak diturunkan y nya
             // caption #3 untuk menyetel posisi Y setelah text sebaris dengan caption
@@ -3387,6 +3378,11 @@ class PMC_PDF extends TCPDF
               }
               $this->captionLineHeight = false;
             }
+            if($dom[$key]['value'] == 'ol') {
+              // $this->x -= $this->cell_padding['L'];
+              // $this->x -= 3;
+              // dump($this->cell_padding['L']."|".$this->x);
+            };
 						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
@@ -3400,7 +3396,7 @@ class PMC_PDF extends TCPDF
            * kesimpulannya aneh sehingga ini tidak dipakai
           */
           // if(isset($dom[$key-1]) AND $dom[$key]['value'] == 'p' AND ($dom[$key-1]['value'] == 'ol' OR $dom[$key-1]['value'] == 'ul')){
-            // $maxbottomliney -= $this->getCellHeight($fontsize);
+          //   $maxbottomliney -= $this->getCellHeight($fontsize);
           // }
 					$prev_numpages = $this->numpages;
 					$old_bordermrk = $this->bordermrk[$this->page];
@@ -3408,36 +3404,11 @@ class PMC_PDF extends TCPDF
           $parent_cgmarkid = $dom[$dom[$key]['parent']]['cgmarkid'] ?? null;
           if($revmark AND isset($parent_cgmarkid)){
             if(isset($this->start_cgmark[$parent_cgmarkid])){
-              // dump($this->start_cgmark);
-              // dump($dom[$key], $dom[$dom[$key]['parent']]['cgmarkid'], $this->y);
-              // dump($this->start_cgmark[$parent_cgmarkid]);
-              // dump('end_cgmark on tag', $this->inxobj, $this->start_cgmark);
-              // dump('end_cgmark on tag', $this->inxobj, $this->start_cgmark[$parent_cgmarkid]);
-              // dump('end_cgmark on tag', $this->inxobj, $this->start_cgmark, $parent_cgmarkid);
               $this->addCgMark($this->start_cgmark[$parent_cgmarkid], null, ($this->y + $this->getLastH()), $this->getPage(), $dom[$dom[$key]['parent']]['attribute']['reasonforupdaterefids'], ''); // asign end position ('ed_pos_y')
             }
           }
-          if($dom[$key]['elkey'] == 570) {
-            // dump($dom[$key]);
-            // $key++;
-            // continue;
-            // break;
-          }
+
           $dom = $this->closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney, $elkey_tes = $dom[$key]['elkey']);
-          // if(isset($this->tdcellprintted) AND $this->tdcellprintted == 85){
-          //   dd($dom[$key], $dom[$key+1], $dom[$key+2], $dom[$key+3]);
-          //   break;
-          // }
-
-          
-          // ini berguna jika ingin mengubah margin, tapi setelah close tag ini, harus dikembalikan margin ke semula
-          // if(isset($dom[$key+1]['attribute']["marginleft"]) AND $dom[$key+1]['block']){
-          //   $this->lMargin = (float) $dom[$key+1]['attribute']["marginleft"];
-          // }
-          // if(isset($dom[$key+1]['attribute']["marginright"]) AND $dom[$key+1]['block']){
-          //   $this->rMargin = (float) $dom[$key+1]['attribute']["marginright"];
-          // }
-
 
 					if ($this->bordermrk[$this->page] > $old_bordermrk) {
 						$startlinepos += ($this->bordermrk[$this->page] - $old_bordermrk);
@@ -3549,11 +3520,6 @@ class PMC_PDF extends TCPDF
             $key++;
             $this->captionLineHeight = true;
 
-            // if ($calign == 'T' AND ($height - $this->stringHeight) > 0){
-            //   $this->lastCaptionLineHeight =  $height - $this->stringHeight;
-            // }
-            // $calign == 'T' AND ($height - $this->stringHeight > 0) ? ($this->lastCaptionLineHeight = $height - $this->stringHeight) : null;
-            // $calign == 'T' ? ($this->lastCaptionLineHeight = (($height - $this->stringHeight > 0) ? $height - $this->stringHeight : 0)) : null;
             $calign == 'T' ? ($this->lastCaptionLineHeight = $height - $this->stringHeight) : null;
 
             continue;
@@ -3566,7 +3532,11 @@ class PMC_PDF extends TCPDF
 					$minstartliney = $this->y;
 					$maxbottomliney = ($startliney + $this->getCellHeight($this->FontSize)); // tes
 					if (is_numeric($pfontsize) AND ($pfontsize > 0)) {
-						$this->putHtmlListBullet($this->listnum, $this->lispacer, $pfontsize);
+            // paddingleft #2
+            $pdl = $this->cell_padding['L'];
+            $this->cell_padding['L'] = $basic_cell_padding_L;
+            $this->putHtmlListBullet($this->listnum, $this->lispacer, $pfontsize);
+            $this->cell_padding['L'] = $pdl;
 					}
 					$this->setFont($curfontname, $curfontstyle, $curfontsize);
 					$this->resetLastH();

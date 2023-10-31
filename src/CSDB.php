@@ -314,8 +314,14 @@ class CSDB {
     return $name;
   }
 
-  public static function resolve_pmCode(\DOMElement $pmCode, string $prefix = 'PMC-')
+  public static function resolve_pmCode($pmCode, string $prefix = 'PMC-')
   {
+    if(!$pmCode) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if(is_array($pmCode)){
+      $pmCode = $pmCode[0];
+    }
+
     $modelIdentCode = $pmCode->getAttribute('modelIdentCode');
     $pmIssuer = $pmCode->getAttribute('pmIssuer');
     $pmNumber = $pmCode->getAttribute('pmNumber');
