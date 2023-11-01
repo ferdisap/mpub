@@ -3,7 +3,7 @@
   <identAndStatusSection>
     <pmAddress>
       <pmIdent>
-        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="00001" pmVolume="00" />
+        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0001" pmVolume="00" />
         <language languageIsoCode="en" countryIsoCode="EN"/>
         <issueInfo issueNumber="000" inWork="01" />
       </pmIdent>
@@ -51,6 +51,23 @@
     </pmStatus>
   </identAndStatusSection>
   <content>
+    <pmEntry>
+      <pmRef>
+        <pmRefIdent>
+          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0002" pmVolume="00"/>
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </pmRefIdent>
+      </pmRef>
+      <pmRef>
+        <pmRefIdent>
+          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0003" pmVolume="00"/>
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </pmRefIdent>
+      </pmRef>
+    </pmEntry>
+    
     <!-- <pmEntry pmEntryType="pmt01">
       <pmEntryTitle>FRONTMATTER</pmEntryTitle>
       <dmRef>
@@ -60,7 +77,7 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
-    </pmEntry> -->
+    </pmEntry>
     <pmEntry pmEntryType="pmt61">
       <pmEntryTitle>SECTION 0 - INTRODUCTION</pmEntryTitle>
       <dmRef>
@@ -70,6 +87,13 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
-    </pmEntry>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="005" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+    </pmEntry> -->
   </content>
 </pm>

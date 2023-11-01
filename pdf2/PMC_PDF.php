@@ -10,6 +10,7 @@ use TCPDF_COLORS;
 use TCPDF_FONT_DATA;
 use TCPDF_FONTS;
 use TCPDF_STATIC;
+use Ptdi\Mpub\Pdf2\male\PMC_MALE;
 
 class PMC_PDF extends TCPDF
 {
@@ -81,10 +82,15 @@ class PMC_PDF extends TCPDF
   public function __construct(string $absolute_path_csdbInput)
   {
     $this->absolute_path_csdbInput = $absolute_path_csdbInput;
-    // $this->modelIdentCode = strtolower($modelIdentCode);
     parent::__construct();
   }
 
+  public static function instance(string $absolute_path_csdbInput, string $modelIdentCode )
+  {
+    $modelIdentCode = strtolower($modelIdentCode);
+    return new ("Ptdi\Mpub\Pdf2\\{$modelIdentCode}\PMC_{$modelIdentCode}")($absolute_path_csdbInput);
+  }
+  
   /**
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
@@ -129,8 +135,10 @@ class PMC_PDF extends TCPDF
       $this->pmEntry($pmEntry);
     }
   }
-  private function pmEntry(\DOMElement $pmEntry)
+  protected function pmEntry(\DOMElement $pmEntry)
   {
+    // $this->dmc = new DMC();
+    // $this->dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     // tambahan
     $this->pmTitle = $pmEntry->getElementsByTagName('pmEntryTitle')[0];
     $this->pmTitle = $this->pmTitle->nodeValue;
@@ -220,13 +228,13 @@ class PMC_PDF extends TCPDF
     }
     // add TOC
     if($TOC){
-      // $this->addTOCPage();
-      // $this->SetFont($this->getFontFamily(), 'B', 14);
-      // $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
-      // $this->Ln();    
-      // $this->SetFont($this->getFontFamily(), '', 10);
-      // $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
-      // $this->endTOCPage();
+      $this->addTOCPage();
+      $this->SetFont($this->getFontFamily(), 'B', 14);
+      $this->MultiCell(0, 0, 'Table Of Content', 0, 'C', 0, 1, '', '', true, 0);
+      $this->Ln();    
+      $this->SetFont($this->getFontFamily(), '', 10);
+      $this->addTOC(!empty($this->endPageGroup) ? ($this->endPageGroup+1) : 1, $this->getFontFamily(), '.', $txt, 'B', array(128,0,0));
+      $this->endTOCPage();
     }
     $this->endPageGroup = $this->getPage();
     $this->updateLink();
@@ -250,11 +258,17 @@ class PMC_PDF extends TCPDF
     // $issueInfo_el = $dmCode_el->nextElementSibling;
     // $languange_el = $issueInfo_el ? $issueInfo_el->nextElementSibling : null;
 
+    // if(($this->page % 2) != 0){
+    //   self::addIntentionallyLeftBlankPage($this);
+    // }
+
     $dmc = new DMC();
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
     $dmc->setDocument($dmRef);
+
     $this->dm_issueDate_rendering = $dmc->issueDate;
+    
     $dmc->render();
   }
 
@@ -268,7 +282,7 @@ class PMC_PDF extends TCPDF
         // dump($pdf->y, $pdf->page, $pdf->getLastH());
       // }
       // dump($pdf->getPage());
-      $pdf->AddPage();
+      // $pdf->AddPage();
       $topMargin = $pdf->pmType_config['page']['margins']['T'];
       $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
       $tPadding = $pdf->getCellPaddings()['T'];
@@ -530,7 +544,7 @@ class PMC_PDF extends TCPDF
   /**
    * minimum value of level is 0 (zero)
    */
-  private function checkLevel(\DOMElement $element)
+  protected function checkLevel(\DOMElement $element)
   {
     $tagName = $element->tagName;
     $parent_tagName = $tagName;
@@ -604,14 +618,12 @@ class PMC_PDF extends TCPDF
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     if (($this->getPage() % 2) == 0) {
       $header = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['header']}")['even'];
-      // $header = (require "config/template/{$this->get_pmType_config()[]")['even'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     } else {
-      // dd($this->get_pmType_config()['content']['header']);
       $header = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['header']}")['odd'];
       $header = preg_replace("/(?<=>)[\s]{2,}/",'',$header);
-      // $this->writeHTML($header, true, false, false,true,'J',false);
+      $this->writeHTML($header, true, false, false,true,'J',false);
     };
   }
   // Page footer
@@ -621,11 +633,11 @@ class PMC_PDF extends TCPDF
     if (($this->getPage() % 2) == 0) {
       // $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];      
       $footer = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['footer']}")['even'];
-      // $this->writeHTML($footer, true, false, true, false, 'C');
+      $this->writeHTML($footer, true, false, true, false, 'C');
     } else {
       // Position at 15 mm from bottom
       $footer = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['footer']}")['odd'];
-      // $this->writeHTML($footer, true, false, true, false, 'C',false, null);
+      $this->writeHTML($footer, true, false, true, false, 'C',false, null);
     }
   }
   
@@ -852,7 +864,7 @@ class PMC_PDF extends TCPDF
     $fontfamily = $this->FontFamily;
     $fontstyle = $this->FontStyle;
     $w = $this->w - $this->lMargin - $this->rMargin;
-    $spacer = $this->GetStringWidth(chr(32)) * 4;
+    $spacer = $this->GetStringWidth(chr(32)) * 7;
     $lmargin = $this->lMargin;
     $rmargin = $this->rMargin;
     $x_start = $this->GetX();
@@ -944,7 +956,8 @@ class PMC_PDF extends TCPDF
       }
       // *** EDITED - make vertical space before Level 1, not level 0 because level is abandoned
       if ($outline['l'] == 1) {
-        $this->Ln(1.5);
+        $this->Ln(2);
+        $this->setFont('', 'B',null,''); // tambahan
       }
       $this->Write(0, $txt, $link, false, $aligntext, false, 0, false, false, 0, $numwidth, '');
       if ($this->rtl) {
@@ -2164,7 +2177,7 @@ class PMC_PDF extends TCPDF
         // dd($dom[$key]);
         // $this->cell_padding['L'] += ($dom[$key]['attribute']['paddingleft']);
         // $this->x += $this->cell_padding['L'];
-        // $w = $basic_w - ($dom[$key]['attribute']['paddingleft']);
+        $w = $basic_w - ($dom[$key]['attribute']['paddingleft']);
       }
       // if(!$this->InFooter AND (isset($dom[$dom[$key]['parent']]['attribute']['paddingleft']))){
       //   $this->cell_padding['L'] = $basic_cell_padding_L + ($dom[$dom[$key]['parent']]['attribute']['paddingleft']);

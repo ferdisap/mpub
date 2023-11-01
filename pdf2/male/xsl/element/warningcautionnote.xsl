@@ -21,7 +21,7 @@
         <td style="width:15%">&#160;</td>
       </tr>
     </table>
-    <br/><br/>
+    <!-- <br/><br/> -->
   </xsl:template>
   
   <xsl:template match="caution">
@@ -43,7 +43,7 @@
         <td style="width:15%">&#160;</td>
       </tr>
     </table>
-    <br/><br/>
+    <!-- <br/><br/> -->
   </xsl:template>
   
   <xsl:template match="note">
@@ -65,7 +65,7 @@
         <td style="width:15%">&#160;</td>
       </tr>
     </table>
-    <br/><br/>
+    <!-- <br/><br/> -->
   </xsl:template>
 
   <xsl:template match="warningAndCautionPara">

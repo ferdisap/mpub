@@ -9,24 +9,30 @@
 // Tidak boleh ada space atau enter antara <td> dan <div>
 
 // $pmTitle = explode('-',$this->pmTitle);
-$pmTitle = explode('-','FRONTMATTER');
-$pmTitle1 = trim($pmTitle[0]);
-if(!in_array(explode(" ", $pmTitle1), ['SECTION', 'section', 'Section'])){
-  $pmTitle2 = $pmTitle1;
-  $pmTitle1 = '';
-} else {
-  $pmTitle2 = trim($pmTitle[1]);
-}
+// $pmTitle = explode('-','FRONTMATTER');
+// $title1 = trim($pmTitle[0]);
+// if(!in_array(explode(" ", $title1), ['SECTION', 'section', 'Section'])){
+//   $title2 = $title1;
+//   $title1 = '';
+// } else {
+//   $title2 = trim($pmTitle[1]);
+// }
+
+$title1 = strtoupper($this->pmTitle);
+$title2 = $this->shortPmTitle ? strtoupper($this->shortPmTitle) : '';
 
 $header_even = <<<EOD
 <table style="width:100%;font-size:9pt;border-bottom:2px solid grey">
 <tr>
-  <td style="width:70%;text-align:left">PT. DIRGANTARA INDONESIA</td>
-  <td style="width:30%;text-align:right">{$pmTitle1}</td>
+  <td style="width:45%;text-align:left">PT. DIRGANTARA INDONESIA</td>
+  <td style="width:55%;text-align:right;font-weight:bold">{$title1}</td>
 </tr>
 <tr>
-  <td style="width:30%;text-align:left">PUNA MALE</td>
-  <td style="width:70%;font-weight:bold;text-align:right">{$pmTitle2}</td>
+  <td style="width:45%;text-align:left">PUNA MALE</td>
+  <td style="width:55%;font-weight:bold;text-align:right">{$title2}</td>
+</tr>
+<tr>
+  <td style="line-height:0.3"></td>
 </tr>
 </table>
 EOD;
@@ -35,12 +41,15 @@ EOD;
 $header_odd = <<<EOF
 <table style="width:100%;font-size:9pt;border-bottom:2px solid grey">
 <tr>
-  <td style="width:30%;text-align:left">{$pmTitle1}</td>
-  <td style="width:70%;text-align:right">PT. DIRGANTARA INDONESIA</td>
+  <td style="width:55%;text-align:left;font-weight:bold">{$title1}</td>
+  <td style="width:45%;text-align:right">PT. DIRGANTARA INDONESIA</td>
 </tr>
 <tr>
-  <td style="width:70%;font-weight:bold">{$pmTitle2}</td>
-  <td style="width:30%;text-align:right">PUNA MALE</td>
+  <td style="width:55%;font-weight:bold">{$title2}</td>
+  <td style="width:45%;text-align:right">PUNA MALE</td>
+</tr>
+<tr>
+  <td style="line-height:0.3"></td>
 </tr>
 </table>
 EOF;

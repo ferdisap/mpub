@@ -7,13 +7,13 @@
     <xsl:param name="usefootnote" select="'yes'"/>
     <xsl:choose>
       <!-- pakai entity #ln; jika ingin new line -->
-      <!-- <xsl:when test="ancestor::listItem">
+      <xsl:when test="ancestor::listItem">
         <span>
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
           <xsl:apply-templates/>
         </span>
-      </xsl:when> -->
+      </xsl:when>
       <xsl:when test="parent::footnote or parent::response or parent::crewProcedureName">
         <span>
           <xsl:call-template name="id"/>
@@ -28,9 +28,17 @@
           <xsl:apply-templates/>
         </span>      
       </xsl:when>
+      <xsl:when test="parent::controlAuthorityText">
+        <span>
+          <xsl:call-template name="id"/>
+          <xsl:call-template name="cgmark"/>
+          <xsl:apply-templates/>
+        </span>      
+      </xsl:when>
       <xsl:otherwise>
         <!-- <p style="page-break-inside: avoid;border:1px solid red"> -->
-        <p style="page-break-inside: avoid;">
+        <!-- <p style="page-break-inside: avoid;"> -->
+        <p>
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
           <xsl:apply-templates>

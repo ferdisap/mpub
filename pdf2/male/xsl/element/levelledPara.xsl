@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
 
   <!-- <xsl:include href="levelledParaAlts.xsl"/> -->
   <!-- <xsl:include href="tilte.xsl"/> -->
@@ -43,28 +43,6 @@
       </xsl:variable>
       
       <!-- set the padding left for different level levelledPara -->
-      <!-- <xsl:attribute name="style">
-        <xsl:choose>
-          <xsl:when test="$level = '1'">
-            <xsl:text>padding-left:30pt</xsl:text>
-          </xsl:when>
-          <xsl:when test="$level = '2'">
-            <xsl:text>padding-left:50pt</xsl:text>
-          </xsl:when>
-          <xsl:when test="$level = '3'">
-            <xsl:text>padding-left:70pt</xsl:text>
-          </xsl:when>
-          <xsl:when test="$level = '4'">
-            <xsl:value-of select="$padding_levelPara_4"/>
-          </xsl:when>
-          <xsl:when test="$level = '5'">
-            <xsl:value-of select="$padding_levelPara_5"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="'0'"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute> -->
       <xsl:attribute name="paddingleft">
         <xsl:choose>
           <xsl:when test="$level = '1'">
@@ -89,7 +67,9 @@
       </xsl:attribute>
 
       <xsl:if test="$level = '1'">
-        <xsl:attribute name="addIntentionallyLeftBlank">true</xsl:attribute>
+        <!-- <xsl:attribute name="addIntentionallyLeftBlank">true</xsl:attribute> -->
+        <!-- <xsl:variable name="pos"><xsl:number/></xsl:variable> -->
+        <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::set_lastnumberoflevelledpara1', 1)"/> -->
       </xsl:if>
 
       <xsl:apply-templates/>

@@ -14,9 +14,9 @@ $pmType = [
       'orientation' => 'P',
       'unit' => 'mm',
       'format' => 'A5',
-      'margins' => [ 'L' => 20, 'T' => 17, 'R' => 10, 'B' => 20 ],
+      'margins' => [ 'L' => 20, 'T' => 17, 'R' => 10, 'B' => 5 ],
       'headerMargin' => 5,
-      'footerMargin' => 15,
+      'footerMargin' => 10,
     ],
     'fontsize' => [
       'levelledPara' => [
@@ -46,36 +46,6 @@ $pmType = [
         'cm03' => 'CM2',
         'cm04' => 'FN',
       ]
-    ],
-  ],
-  'pt52' => [
-    'interpretation' => 'COMMON REPOSITORY INFORMATION',
-    'value' => 'pt52',
-    'useheader' => false,
-    'usefooter' => false,
-    'usetoc' => false,
-    'usebookmark' => false,
-    'page' => [
-      'orientation' => 'P',
-      'unit' => 'mm',
-      'format' => 'A4',
-      'margins' => [ 'L' => 20, 'T' => 10, 'R' => 10, 'B' => 20 ],
-      'headerMargin' => 5,
-      'footerMargin' => 15,
-    ],
-    'fontsize' => [
-      'figure' => [ 
-        'title' => 11, 
-        'legend' => [ // ini belum dipakai. yang pt51 juga belum applikasikan di xsl nya
-          'header' => 8,
-          'list' => 7
-        ]
-      ],
-      'para' => 11,
-    ],
-    'content' => [
-      'header' => 'pt51_header.php',
-      'footer' => 'pt51_footer.php'
     ],
   ],
 ];

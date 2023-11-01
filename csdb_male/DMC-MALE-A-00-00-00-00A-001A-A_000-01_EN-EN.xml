@@ -74,7 +74,7 @@
           FLIGHT MANUAL #ln; PUNA MALE
         </pmTitle>
         <shortPmTitle>POH-AFM</shortPmTitle>
-        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="00001" pmVolume="00" />
+        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0001" pmVolume="00" />
         <issueInfo issueNumber="000" inWork="01" />
         <issueDate year="2023" month="10" day="16" />
         <security securityClassification="05"/>
@@ -111,6 +111,10 @@
           <reducedPara>SECTION 4 NORMAL PROCEDURES</reducedPara>
           <reducedPara>SECTION 5 PERFORMANCE</reducedPara>
           <reducedPara>SECTION 6 WEIGHT AND BALANCE</reducedPara>
+          <reducedPara>SECTION 7 SYSTEM DESCRIPTION</reducedPara>
+          <reducedPara>SECTION 8 HANDLING SERVICING AND MAINTENANCE</reducedPara>
+          <reducedPara>SECTION 9 SUPPLEMENTS</reducedPara>
+          <reducedPara>SECTION 10 SAFETY AND OPERATIONAL TIPS</reducedPara>
         </frontMatterInfo>
       </frontMatterTitlePage>
     </frontMatter>

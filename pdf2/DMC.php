@@ -18,6 +18,7 @@ class DMC
   protected bool $validateBrex = true;
   protected string $schemaXsd;
   protected $applicability = '';
+  public $lastnumberoflevelledpara1 = 5;
 
 
   public function setDocument(\DOMElement $dmRef){
@@ -278,6 +279,12 @@ class DMC
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
+  }
+
+  function set_lastnumberoflevelledpara1($num){
+    // $this->lastnumberoflevelledpara1 = $num;
+    $this->lastnumberoflevelledpara1 += $num;
+    dump($this->lastnumberoflevelledpara1);
   }
 
    /**
