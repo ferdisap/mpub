@@ -2435,7 +2435,7 @@ class PMC_PDF extends TCPDF
 			case 'div': {
         // tidak ditambahin vertical space
 				// $this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
-				// $this->addHTMLVertSpace(1.25, 0, $cell, $firsttag);
+				$this->addHTMLVertSpace(0, 0, $cell, $firsttag);
 				break;
 			}
 			case 'p': {
