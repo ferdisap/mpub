@@ -3821,7 +3821,8 @@
     <xs:attribute name="colwidth" type="colwidthAttType"/>
     <xs:simpleType name="colwidthAttType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt))?"/>
+            <!-- <xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt))?"/> -->
+            <xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt|%)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt|%))?"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:attribute name="colsep" type="yesOrNoAttType"/>

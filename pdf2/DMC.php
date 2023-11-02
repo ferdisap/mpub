@@ -20,6 +20,11 @@ class DMC
   protected $applicability = '';
   public $lastnumberoflevelledpara1 = 5;
 
+  public static function instance(string $modelIdentCode )
+  {
+    $modelIdentCode = strtolower($modelIdentCode);
+    return new ("Ptdi\Mpub\Pdf2\\{$modelIdentCode}\DMC_{$modelIdentCode}")();
+  }
 
   public function setDocument(\DOMElement $dmRef){
     $dmIdent =  $dmRef->getElementsByTagName('dmRefIdent')[0];
@@ -43,6 +48,15 @@ class DMC
     
     $issueDate = $this->DOMDocument->getElementsByTagName('issueDate')[0];
     $this->issueDate = empty($issueDate) ? '' : CSDB::resolve_issueDate($issueDate, "M d, Y") ;
+    
+    // $assyCode = number_format($this->DOMDocument->getElementsByTagName('dmCode')[0]->getAttribute('assyCode'));
+    // $dmTitle = $this->DOMDocument->getElementsByTagName('dmTitle')[0];
+    // $dmTechname
+    // $this->pdf->writeHTML("<h1></h1>", true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
+
+    // $this->dmTitle_element = $this->DOMDocument->getElementsByTagName('dmTitle')[0];
+    // $this->dmCode_element = $this->DOMDocument->getElementsByTagName('dmCode')[0];
+    // $this->issueInfo_element = $this->DOMDocument->getElementsByTagName('issueInfo')[0];
 
     // jika ingin di bookmark setiap dmRef
     // $dmTitle = $this->DOMDocument->getElementsByTagName("dmTitle")[0];
@@ -247,6 +261,7 @@ class DMC
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/descript.xsl", '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
+
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions();
 
@@ -277,15 +292,25 @@ class DMC
   
     $this->pdf->setPageOrientation($this->pdf->get_pmType_config()['page']['orientation']);
     $this->pdf->setPageUnit($this->pdf->get_pmType_config()['page']['unit']);
+    
+    // $assyCode = number_format($this->DOMDocument->getElementsByTagName('dmCode')[0]->getAttribute('assyCode'));
+    // $dmTitle = CSDB::resolve_dmTitle($this->DOMDocument->getElementsByTagName('dmTitle')[0]);
+    // $tt = <<<EOD
+    // <h1>{$assyCode}.   {$dmTitle}</h1>
+    // EOD;
+    // $this->pdf->Bookmark($assyCode.".   ".$dmTitle, $this->pdf->pmEntry_level+1);
+    // $this->pdf->pmEntry_level += 1;
+    // $this->pdf->writeHTML($tt, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
+
     $this->pdf->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
     $this->pdf->applyCgMark($this->DOMDocument); // harus di apply di sini karena jika didalam levelledPara, bisa recursive padahal array $this->cgmark harus dikoleksi dulu semuanya
   }
 
-  function set_lastnumberoflevelledpara1($num){
+  // function set_lastnumberoflevelledpara1($num){
     // $this->lastnumberoflevelledpara1 = $num;
-    $this->lastnumberoflevelledpara1 += $num;
-    dump($this->lastnumberoflevelledpara1);
-  }
+    // $this->lastnumberoflevelledpara1 += $num;
+    // dump($this->lastnumberoflevelledpara1);
+  // }
 
    /**
    * $type bisa berupa DOMElement(crewMemberGroup), atau DOMattr (crewMemberType)

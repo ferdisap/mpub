@@ -266,13 +266,13 @@ class CSDB {
       $dmTitle = $dmTitle[0];
     }
 
-    $techname = $dmTitle->firstElementChild->nodeValue;
+    $techName = $dmTitle->firstElementChild->nodeValue;
     $infoname = (isset($dmTitle->firstElementChild->nextElementSibling) ? $dmTitle->firstElementChild->nextElementSibling->nodeValue : '');
     $infoNameVariant = (isset($dmTitle->firstElementChild->nextElementSibling->nextElementSibling) ? $dmTitle->firstElementChild->nextElementSibling->nextElementSibling : '');
 
     switch ($child) {
-      case 'techname':
-        return $techname;
+      case 'techName':
+        return $techName;
         break;
       case 'infoname':
         return $infoname;
@@ -281,7 +281,8 @@ class CSDB {
         return $infoNameVariant;
         break;
       default:
-        return $techname."-".$infoname."-".$infoNameVariant;
+        // return $techName."-".$infoname."-".$infoNameVariant;
+        return $techName.($infoname ? "-".$infoname : '').($infoNameVariant ? "-".$infoNameVariant : '');
         break;
     }
   }
@@ -368,7 +369,6 @@ class CSDB {
     }
 
     return strtoupper($dmCode.$issueInfo.$languange).".xml";
-
   }
 
   public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = ''){

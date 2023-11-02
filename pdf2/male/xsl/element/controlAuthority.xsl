@@ -4,6 +4,8 @@
 
 <xsl:include href="../attribute/cgmark.xsl" />
 <xsl:include href="../attribute/id.xsl" />
+<xsl:include href="../group/listElemGroup.xsl" />
+<xsl:include href="../group/textElemGroup.xsl" />
 <xsl:include href="para.xsl" />
 
 <!-- template ini akan digunakan untuk di footer -->

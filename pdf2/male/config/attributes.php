@@ -34,11 +34,17 @@ $pmType = [
     ],
     'fontfamily' => 'tahoma',
     'content' => [
-      'padding' => [
-        'levelledPara' => [0,3,5,7,9]
-      ],
+      'padding' => ['levelledPara' => [0,3,5,7,9]],
       'header' => 'pt51_header.php',
-      'footer' => 'pt51_footer.php'
+      'footer' => 'pt51_footer.php',
+      'tablestyle' => [
+        'loa' => [
+          'cellpadding' => '0mm',
+        ],
+        'terminologies_notice' => [
+          'cellpadding' => '1mm',
+        ],
+      ],
     ],
     'attributes' =>[
       'crewMemberType' => [

@@ -52,9 +52,11 @@
       <div style="text-align:center;">
         <b>Publication No.: <xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_pmCode',pmCode,'')"/></b>
       </div>
+      <br/>
+      <br/>
 
       <!-- Approval Block -->
-      <div style="text-align:center">
+      <div style="text-align:center;">
         <table style="width:100%" cellpadding="3mm">
           <tr>
             <td style="width:10%">&#160;</td>
@@ -71,30 +73,10 @@
           </tr>
         </table>        
       </div>
-
-      <!-- Serial and Registration No -->
-      <!-- <div>
-        <table cellpadding="10" style="width:100%">
-          <tr>
-            <td align="left" style="width:20%;">&#160;</td>
-            <td align="left" style="width:60%;border:1px solid black">
-              <div>
-                <span style="font-size:11;font-weight:bold">
-                  <xsl:text>Applicability: </xsl:text>
-                  <br/>
-                </span>
-                <span style="font-size:9"><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty','','first')"/></span>
-              </div>
-                
-            </td>
-          <td align="left" style="width:20%;">&#160;</td>
-          </tr>
-        </table>
-        <br/>
-        <br/>
-      </div> -->
       
       <!-- Address PTDI -->
+      <br/>
+      <br/>
       <div>
         <table style="width:100%">
           <tr>

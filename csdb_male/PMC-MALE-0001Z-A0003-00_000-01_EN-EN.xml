@@ -18,12 +18,13 @@
       <controlAuthorityGroup>
         <controlAuthority id="cat-001" controlAuthorityType="cat51" controlAuthoritySource="DGCA">
           <controlAuthorityText>
-            <para><emphasis>DGCA Approved</emphasis></para>
+            <para><emphasis emphasisType="em01">DGCA Approved</emphasis></para>
           </controlAuthorityText>
         </controlAuthority>
       </controlAuthorityGroup>
       <responsiblePartnerCompany enterpriseCode="0001Z">
         <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+        <!-- <enterpriseName>MyCompany.com</enterpriseName> -->
       </responsiblePartnerCompany>
       <originator enterpriseCode="0001Z">
         <enterpriseName>PT Dirgantara Indonesia</enterpriseName>

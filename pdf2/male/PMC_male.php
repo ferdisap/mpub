@@ -20,9 +20,11 @@ class PMC_male extends PMC_PDF
   protected $shortPmTitle = '';
   protected $pmTitle = '';
   protected $pmEntryTitle = '';
+  protected $responsiblePartnerCompany = '';
 
   protected function pmEntry(\DOMElement $pmEntry, bool $allowLocalFiles = true)
   {
+    
     $this->setAllowLocalFiles($allowLocalFiles);
 
     $this->pmEntryTitle = $pmEntry->getElementsByTagName('pmEntryTitle')[0];
@@ -33,7 +35,11 @@ class PMC_male extends PMC_PDF
     $this->pmTitle = $this->pmTitle->nodeValue;
     if($this->shortPmTitle) $this->shortPmTitle = $this->shortPmTitle->nodeValue;
 
-    $modelIdentCode = $this->modelIdentCode;
+    $this->responsiblePartnerCompany = $this->DOMDocument->getElementsByTagName('responsiblePartnerCompany')[0];
+    $this->responsiblePartnerCompany = $this->responsiblePartnerCompany ? ($this->responsiblePartnerCompany->firstElementChild ? $this->responsiblePartnerCompany->firstElementChild->nodeValue : 
+      $this->responsiblePartnerCompany->getAttribute('enterpriseCode')
+    ) : '';
+
     $pmEntryType_config = require "config/attributes.php";
     $pmEntryType_config = $pmEntryType_config['pmEntryType'];
     $pmEntryType_config = $pmEntryType_config[$pmEntry->getAttribute('pmEntryType')] ?? [];
@@ -47,7 +53,7 @@ class PMC_male extends PMC_PDF
     $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
     $fontsize = $this->pmType_config['fontsize']['para'];
-    $this->SetFont($this->pmType_config['fontfamily']);
+    $this->SetFont($this->pmType_config['fontfamily'],);
     
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
@@ -74,7 +80,7 @@ class PMC_male extends PMC_PDF
       $title = $this->pmTitle;
 
       $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($title);
-      $this->Bookmark($txt, $level);
+      $this->Bookmark(strtoupper($txt), $level);
     }
 
     $children = CSDB::get_childrenElement($pmEntry);
@@ -118,7 +124,8 @@ class PMC_male extends PMC_PDF
     if(($this->page > 1) AND ($this->page % 2 == 0)){
       $this->AddPage();
     }
-    $dmc = new DMC();
+    // $dmc = new DMC();
+    $dmc = DMC::instance('male');
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
     $dmc->setDocument($dmRef);

@@ -11,6 +11,7 @@ use TCPDF_FONT_DATA;
 use TCPDF_FONTS;
 use TCPDF_STATIC;
 use Ptdi\Mpub\Pdf2\male\PMC_MALE;
+use TCPDF_IMAGES;
 
 class PMC_PDF extends TCPDF
 {
@@ -46,18 +47,18 @@ class PMC_PDF extends TCPDF
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
    */
-  public string $headerLogo = "../pdf2/assets/Logo-PTDI.jpg";
+  // public string $headerLogo = "../pdf2/assets/Logo-PTDI.jpg";
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
    */
-  public string $headerText = 'Header &#10; Text';
+  // public string $headerText = 'Header &#10; Text';
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
    * This is located in the midle of the header
    */
-  public string $headerTitle = 'Publication Title';
+  // public string $headerTitle = 'Publication Title';
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
@@ -140,8 +141,8 @@ class PMC_PDF extends TCPDF
     // $this->dmc = new DMC();
     // $this->dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     // tambahan
-    $this->pmTitle = $pmEntry->getElementsByTagName('pmEntryTitle')[0];
-    $this->pmTitle = $this->pmTitle->nodeValue;
+    // $this->pmTitle = $pmEntry->getElementsByTagName('pmEntryTitle')[0];
+    // $this->pmTitle = $this->pmTitle->nodeValue;
 
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     $pmEntryType_config = require $modelIdentCode."/config/attributes.php";
@@ -194,8 +195,6 @@ class PMC_PDF extends TCPDF
       $pmEntryType_interpretation = $this->pmEntryType_config['interpretation'] ?? '';
       $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $level);
       $this->Bookmark($txt, $level);
-      // dump($level);
-      // dump($pmEntryType_config['usebookmark'], $txt, $level);
     }
     
     $children = CSDB::get_childrenElement($pmEntry);
@@ -203,8 +202,8 @@ class PMC_PDF extends TCPDF
       switch ($child->nodeName) {
         case 'dmRef':
           // dump($this->page."|".$pmEntryType);
-          if(isset($level)){
-          }
+          // if(isset($level)){
+          // }
           $this->pmEntry_level = $level;
           $this->dmRef($child);
           // dump($this->page."|".$pmEntryType);
@@ -615,6 +614,7 @@ class PMC_PDF extends TCPDF
   //Page header
   public function Header()
   {
+    $this->SetFont($this->pmType_config['fontfamily'],);
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     if (($this->getPage() % 2) == 0) {
       $header = (require $modelIdentCode."/config/template/{$this->get_pmType_config()['content']['header']}")['even'];
@@ -629,6 +629,7 @@ class PMC_PDF extends TCPDF
   // Page footer
   public function Footer()
   {
+    $this->SetFont($this->pmType_config['fontfamily'],);
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     if (($this->getPage() % 2) == 0) {
       // $footer = (require "config/template/{$this->pmType_config['value']}_footer.php")['even'];      
@@ -2023,6 +2024,1302 @@ class PMC_PDF extends TCPDF
     $this->normal_bMargin = $this->bMargin;
 	}
 
+  /**
+	 * Process opening tags.
+	 * @param array $dom html dom array
+	 * @param int $key current element id
+	 * @param boolean $cell if true add the default left (or right if RTL) padding to each new line (default false).
+	 * @return array $dom
+	 * @protected
+	 */
+	protected function openHTMLTagHandler($dom, $key, $cell) {
+		$tag = $dom[$key];
+		$parent = $dom[($dom[$key]['parent'])];
+		$firsttag = ($key == 1);
+		// check for text direction attribute
+		if (isset($tag['dir'])) {
+			$this->setTempRTL($tag['dir']);
+		} else {
+			$this->tmprtl = false;
+		}
+		if ($tag['block']) {
+			$hbz = 0; // distance from y to line bottom
+			$hb = 0; // vertical space between block tags
+			// calculate vertical space for block tags
+			if (isset($this->tagvspaces[$tag['value']][0]['h']) && !empty($this->tagvspaces[$tag['value']][0]['h']) && ($this->tagvspaces[$tag['value']][0]['h'] >= 0)) {
+				$cur_h = $this->tagvspaces[$tag['value']][0]['h'];
+			} elseif (isset($tag['fontsize'])) {
+				$cur_h = $this->getCellHeight($tag['fontsize'] / $this->k);
+			} else {
+				$cur_h = $this->getCellHeight($this->FontSize);
+			}
+			if (isset($this->tagvspaces[$tag['value']][0]['n'])) {
+				$on = $this->tagvspaces[$tag['value']][0]['n'];
+			} elseif (preg_match('/[h][0-9]/', $tag['value']) > 0) {
+				$on = 0.6;
+			} else {
+				$on = 1;
+			}
+			if ((!isset($this->tagvspaces[$tag['value']])) AND (in_array($tag['value'], array('div', 'dt', 'dd', 'li', 'br', 'hr')))) {
+				$hb = 0;
+			} else {
+				$hb = ($on * $cur_h);
+			}
+			if (($this->htmlvspace <= 0) AND ($on > 0)) {
+				if (isset($parent['fontsize'])) {
+					$hbz = (($parent['fontsize'] / $this->k) * $this->cell_height_ratio);
+				} else {
+					$hbz = $this->getCellHeight($this->FontSize);
+				}
+			}
+			if (isset($dom[($key - 1)]) AND ($dom[($key - 1)]['value'] == 'table')) {
+				// fix vertical space after table
+				$hbz = 0;
+			}
+			// closing vertical space
+			$hbc = 0;
+			if (isset($this->tagvspaces[$tag['value']][1]['h']) && !empty($this->tagvspaces[$tag['value']][1]['h']) && ($this->tagvspaces[$tag['value']][1]['h'] >= 0)) {
+				$pre_h = $this->tagvspaces[$tag['value']][1]['h'];
+			} elseif (isset($parent['fontsize'])) {
+				$pre_h = $this->getCellHeight($parent['fontsize'] / $this->k);
+			} else {
+				$pre_h = $this->getCellHeight($this->FontSize);
+			}
+			if (isset($this->tagvspaces[$tag['value']][1]['n'])) {
+				$cn = $this->tagvspaces[$tag['value']][1]['n'];
+			} elseif (preg_match('/[h][0-9]/', $tag['value']) > 0) {
+				$cn = 0.6;
+			} else {
+				$cn = 1;
+			}
+			if (isset($this->tagvspaces[$tag['value']][1])) {
+				$hbc = ($cn * $pre_h);
+			}
+		}
+		// Opening tag
+		switch($tag['value']) {
+			case 'table': {
+				$cp = 0;
+				$cs = 0;
+				$dom[$key]['rowspans'] = array();
+				if (!isset($dom[$key]['attribute']['nested']) OR ($dom[$key]['attribute']['nested'] != 'true')) {
+					$this->htmlvspace = 0;
+					// set table header
+					if (!TCPDF_STATIC::empty_string($dom[$key]['thead'])) {
+						// set table header
+						$this->thead = $dom[$key]['thead'];
+						if (!isset($this->theadMargins) OR (empty($this->theadMargins))) {
+							$this->theadMargins = array();
+							$this->theadMargins['cell_padding'] = $this->cell_padding;
+							$this->theadMargins['lmargin'] = $this->lMargin;
+							$this->theadMargins['rmargin'] = $this->rMargin;
+							$this->theadMargins['page'] = $this->page;
+							$this->theadMargins['cell'] = $cell;
+							$this->theadMargins['gvars'] = $this->getGraphicVars();
+						}
+					}
+				}
+				// store current margins and page
+				$dom[$key]['old_cell_padding'] = $this->cell_padding;
+				if (isset($tag['attribute']['cellpadding'])) {
+					$pad = $this->getHTMLUnitToUnits($tag['attribute']['cellpadding'], 1, 'px');
+					$this->setCellPadding($pad);
+				} elseif (isset($tag['padding'])) {
+					$this->cell_padding = $tag['padding'];
+				}
+				if (isset($tag['attribute']['cellspacing'])) {
+					$cs = $this->getHTMLUnitToUnits($tag['attribute']['cellspacing'], 1, 'px');
+				} elseif (isset($tag['border-spacing'])) {
+					$cs = $tag['border-spacing']['V'];
+				}
+				$prev_y = $this->y;
+				if ($this->checkPageBreak(((2 * $cp) + (2 * $cs) + $this->lasth), '', false) OR ($this->y < $prev_y)) {
+					$this->inthead = true;
+					// add a page (or trig AcceptPageBreak() for multicolumn mode)
+					$this->checkPageBreak($this->PageBreakTrigger + 1);
+				}
+				break;
+			}
+			case 'tr': {
+				// array of columns positions
+				$dom[$key]['cellpos'] = array();
+				break;
+			}
+			case 'hr': {
+				if ((isset($tag['height'])) AND ($tag['height'] != '')) {
+					$hrHeight = $this->getHTMLUnitToUnits($tag['height'], 1, 'px');
+				} else {
+					$hrHeight = $this->GetLineWidth();
+				}
+				$this->addHTMLVertSpace($hbz, max($hb, ($hrHeight / 2)), $cell, $firsttag);
+				$x = $this->GetX();
+				$y = $this->GetY();
+				$wtmp = $this->w - $this->lMargin - $this->rMargin;
+				if ($cell) {
+					$wtmp -= ($this->cell_padding['L'] + $this->cell_padding['R']);
+				}
+				if ((isset($tag['width'])) AND ($tag['width'] != '')) {
+					$hrWidth = $this->getHTMLUnitToUnits($tag['width'], $wtmp, 'px');
+				} else {
+					$hrWidth = $wtmp;
+				}
+				$prevlinewidth = $this->GetLineWidth();
+				$this->setLineWidth($hrHeight);
+
+				$lineStyle = array();
+                    		if (isset($tag['fgcolor'])) {
+		                        $lineStyle['color'] = $tag['fgcolor'];
+                    		}
+
+                    		if (isset($tag['fgcolor'])) {
+                        		$lineStyle['color'] = $tag['fgcolor'];
+                    		}
+
+                    		if (isset($tag['style']['cap'])) {
+                        		$lineStyle['cap'] = $tag['style']['cap'];
+                    		}
+
+                    		if (isset($tag['style']['join'])) {
+                        		$lineStyle['join'] = $tag['style']['join'];
+                    		}
+
+                    		if (isset($tag['style']['dash'])) {
+                        		$lineStyle['dash'] = $tag['style']['dash'];
+                    		}
+
+                    		if (isset($tag['style']['phase'])) {
+                        		$lineStyle['phase'] = $tag['style']['phase'];
+                    		}
+
+				$lineStyle = array_filter($lineStyle);
+
+				$this->Line($x, $y, $x + $hrWidth, $y, $lineStyle);
+				$this->setLineWidth($prevlinewidth);
+				$this->addHTMLVertSpace(max($hbc, ($hrHeight / 2)), 0, $cell, !isset($dom[($key + 1)]));
+				break;
+			}
+			case 'a': {
+				if (array_key_exists('href', $tag['attribute'])) {
+					$this->HREF['url'] = $tag['attribute']['href'];
+				}
+				break;
+			}
+			case 'img': {
+				if (empty($tag['attribute']['src'])) {
+					break;
+				}
+				$imgsrc = $tag['attribute']['src'];
+				if ($imgsrc[0] === '@') {
+					// data stream
+					$imgsrc = '@'.base64_decode(substr($imgsrc, 1));
+					$type = '';
+				} else if (preg_match('@^data:image/([^;]*);base64,(.*)@', $imgsrc, $reg)) {
+					$imgsrc = '@'.base64_decode($reg[2]);
+					$type = $reg[1];
+				} elseif ( $this->allowLocalFiles && substr($imgsrc, 0, 7) === 'file://') {
+                    // get image type from a local file path
+                    $imgsrc = substr($imgsrc, 7);
+                    $type = TCPDF_IMAGES::getImageFileType($imgsrc);
+                } else {
+					if (($imgsrc[0] === '/') AND !empty($_SERVER['DOCUMENT_ROOT']) AND ($_SERVER['DOCUMENT_ROOT'] != '/')) {
+						// fix image path
+						$findroot = strpos($imgsrc, $_SERVER['DOCUMENT_ROOT']);
+						if (($findroot === false) OR ($findroot > 1)) {
+							if (substr($_SERVER['DOCUMENT_ROOT'], -1) == '/') {
+								$imgsrc = substr($_SERVER['DOCUMENT_ROOT'], 0, -1).$imgsrc;
+							} else {
+								$imgsrc = $_SERVER['DOCUMENT_ROOT'].$imgsrc;
+							}
+						}
+						$imgsrc = urldecode($imgsrc);
+						$testscrtype = @parse_url($imgsrc);
+						if (empty($testscrtype['query'])) {
+							// convert URL to server path
+							$imgsrc = str_replace(K_PATH_URL, K_PATH_MAIN, $imgsrc);
+						} elseif (preg_match('|^https?://|', $imgsrc) !== 1) {
+							// convert URL to server path
+							$imgsrc = str_replace(K_PATH_MAIN, K_PATH_URL, $imgsrc);
+						}
+					}
+					// get image type
+					$type = TCPDF_IMAGES::getImageFileType($imgsrc);
+				}
+				if (!isset($tag['width'])) {
+					$tag['width'] = 0;
+				}
+				if (!isset($tag['height'])) {
+					$tag['height'] = 0;
+				}
+				//if (!isset($tag['attribute']['align'])) {
+					// the only alignment supported is "bottom"
+					// further development is required for other modes.
+					$tag['attribute']['align'] = 'bottom';
+				//}
+				switch($tag['attribute']['align']) {
+					case 'top': {
+						$align = 'T';
+						break;
+					}
+					case 'middle': {
+						$align = 'M';
+						break;
+					}
+					case 'bottom': {
+						$align = 'B';
+						break;
+					}
+					default: {
+						$align = 'B';
+						break;
+					}
+				}
+				$prevy = $this->y;
+				$xpos = $this->x;
+				$imglink = '';
+				if (isset($this->HREF['url']) AND !TCPDF_STATIC::empty_string($this->HREF['url'])) {
+					$imglink = $this->HREF['url'];
+					if ($imglink[0] == '#') {
+						// convert url to internal link
+						$lnkdata = explode(',', $imglink);
+						if (isset($lnkdata[0])) {
+							$page = intval(substr($lnkdata[0], 1));
+							if (empty($page) OR ($page <= 0)) {
+								$page = $this->page;
+							}
+							if (isset($lnkdata[1]) AND (strlen($lnkdata[1]) > 0)) {
+								$lnky = floatval($lnkdata[1]);
+							} else {
+								$lnky = 0;
+							}
+							$imglink = $this->AddLink();
+							$this->setLink($imglink, $lnky, $page);
+						}
+					}
+				}
+				$border = 0;
+				if (isset($tag['border']) AND !empty($tag['border'])) {
+					// currently only support 1 (frame) or a combination of 'LTRB'
+					$border = $tag['border'];
+				}
+				$iw = '';
+				if (isset($tag['width'])) {
+					$iw = $this->getHTMLUnitToUnits($tag['width'], ($tag['fontsize'] / $this->k), 'px', false);
+				}
+				$ih = '';
+				if (isset($tag['height'])) {
+					$ih = $this->getHTMLUnitToUnits($tag['height'], ($tag['fontsize'] / $this->k), 'px', false);
+				}
+				if (($type == 'eps') OR ($type == 'ai')) {
+					$this->ImageEps($imgsrc, $xpos, $this->y, $iw, $ih, $imglink, true, $align, '', $border, true);
+				} elseif ($type == 'svg') {
+					$this->ImageSVG($imgsrc, $xpos, $this->y, $iw, $ih, $imglink, $align, '', $border, true);
+				} else {
+					$this->Image($imgsrc, $xpos, $this->y, $iw, $ih, '', $imglink, $align, false, 300, '', false, false, $border, false, false, true);
+				}
+				switch($align) {
+					case 'T': {
+						$this->y = $prevy;
+						break;
+					}
+					case 'M': {
+						$this->y = (($this->img_rb_y + $prevy - ($this->getCellHeight($tag['fontsize'] / $this->k))) / 2);
+						break;
+					}
+					case 'B': {
+						$this->y = $this->img_rb_y - ($this->getCellHeight($tag['fontsize'] / $this->k) - ($this->getFontDescent($tag['fontname'], $tag['fontstyle'], $tag['fontsize']) * $this->cell_height_ratio));
+						break;
+					}
+				}
+				break;
+			}
+			case 'dl': {
+				++$this->listnum;
+				if ($this->listnum == 1) {
+					$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				} else {
+					$this->addHTMLVertSpace(0, 0, $cell, $firsttag);
+				}
+				break;
+			}
+			case 'dt': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				break;
+			}
+			case 'dd': {
+				if ($this->rtl) {
+					$this->rMargin += $this->listindent;
+				} else {
+					$this->lMargin += $this->listindent;
+				}
+				++$this->listindentlevel;
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				break;
+			}
+			case 'ul':
+			case 'ol': {
+				++$this->listnum;
+				if ($tag['value'] == 'ol') {
+					$this->listordered[$this->listnum] = true;
+				} else {
+					$this->listordered[$this->listnum] = false;
+				}
+				if (isset($tag['attribute']['start'])) {
+					$this->listcount[$this->listnum] = intval($tag['attribute']['start']) - 1;
+				} else {
+					$this->listcount[$this->listnum] = 0;
+				}
+				if ($this->rtl) {
+					$this->rMargin += $this->listindent;
+					$this->x -= $this->listindent;
+				} else {
+					$this->lMargin += $this->listindent;
+					$this->x += $this->listindent;
+				}
+				++$this->listindentlevel;
+				if ($this->listnum == 1) {
+					if ($key > 1) {
+						$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+					}
+				} else {
+					$this->addHTMLVertSpace(0, 0, $cell, $firsttag);
+				}
+				break;
+			}
+			case 'li': {
+				if ($key > 2) {
+					$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				}
+				if ($this->listordered[$this->listnum]) {
+					// ordered item
+					if (isset($parent['attribute']['type']) AND !TCPDF_STATIC::empty_string($parent['attribute']['type'])) {
+						$this->lispacer = $parent['attribute']['type'];
+					} elseif (isset($parent['listtype']) AND !TCPDF_STATIC::empty_string($parent['listtype'])) {
+						$this->lispacer = $parent['listtype'];
+					} elseif (isset($this->lisymbol) AND !TCPDF_STATIC::empty_string($this->lisymbol)) {
+						$this->lispacer = $this->lisymbol;
+					} else {
+						$this->lispacer = '#';
+					}
+					++$this->listcount[$this->listnum];
+					if (isset($tag['attribute']['value'])) {
+						$this->listcount[$this->listnum] = intval($tag['attribute']['value']);
+					}
+				} else {
+					// unordered item
+					if (isset($parent['attribute']['type']) AND !TCPDF_STATIC::empty_string($parent['attribute']['type'])) {
+						$this->lispacer = $parent['attribute']['type'];
+					} elseif (isset($parent['listtype']) AND !TCPDF_STATIC::empty_string($parent['listtype'])) {
+						$this->lispacer = $parent['listtype'];
+					} elseif (isset($this->lisymbol) AND !TCPDF_STATIC::empty_string($this->lisymbol)) {
+						$this->lispacer = $this->lisymbol;
+					} else {
+						$this->lispacer = '!';
+					}
+				}
+				break;
+			}
+			case 'blockquote': {
+				if ($this->rtl) {
+					$this->rMargin += $this->listindent;
+				} else {
+					$this->lMargin += $this->listindent;
+				}
+				++$this->listindentlevel;
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				break;
+			}
+			case 'br': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				break;
+			}
+			case 'div': {
+        // tidak ditambahin vertical space
+				// $this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				// $this->addHTMLVertSpace(1.25, 0, $cell, $firsttag);
+				break;
+			}
+			case 'p': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				break;
+			}
+			case 'pre': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				$this->premode = true;
+				break;
+			}
+			case 'sup': {
+				$this->setXY($this->GetX(), $this->GetY() - ((0.7 * $this->FontSizePt) / $this->k));
+				break;
+			}
+			case 'sub': {
+				$this->setXY($this->GetX(), $this->GetY() + ((0.3 * $this->FontSizePt) / $this->k));
+				break;
+			}
+			case 'h1':
+			case 'h2':
+			case 'h3':
+			case 'h4':
+			case 'h5':
+			case 'h6': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				break;
+			}
+			// Form fields (since 4.8.000 - 2009-09-07)
+			case 'form': {
+				if (isset($tag['attribute']['action'])) {
+					$this->form_action = $tag['attribute']['action'];
+				} else {
+					$this->Error('Please explicitly set action attribute path!');
+				}
+				if (isset($tag['attribute']['enctype'])) {
+					$this->form_enctype = $tag['attribute']['enctype'];
+				} else {
+					$this->form_enctype = 'application/x-www-form-urlencoded';
+				}
+				if (isset($tag['attribute']['method'])) {
+					$this->form_mode = $tag['attribute']['method'];
+				} else {
+					$this->form_mode = 'post';
+				}
+				break;
+			}
+			case 'input': {
+				if (isset($tag['attribute']['name']) AND !TCPDF_STATIC::empty_string($tag['attribute']['name'])) {
+					$name = $tag['attribute']['name'];
+				} else {
+					break;
+				}
+				$prop = array();
+				$opt = array();
+				if (isset($tag['attribute']['readonly']) AND !TCPDF_STATIC::empty_string($tag['attribute']['readonly'])) {
+					$prop['readonly'] = true;
+				}
+				if (isset($tag['attribute']['value']) AND !TCPDF_STATIC::empty_string($tag['attribute']['value'])) {
+					$value = $tag['attribute']['value'];
+				}
+				if (isset($tag['attribute']['maxlength']) AND !TCPDF_STATIC::empty_string($tag['attribute']['maxlength'])) {
+					$opt['maxlen'] = intval($tag['attribute']['maxlength']);
+				}
+				$h = $this->getCellHeight($this->FontSize);
+				if (isset($tag['attribute']['size']) AND !TCPDF_STATIC::empty_string($tag['attribute']['size'])) {
+					$w = intval($tag['attribute']['size']) * $this->GetStringWidth(chr(32)) * 2;
+				} else {
+					$w = $h;
+				}
+				if (isset($tag['attribute']['checked']) AND (($tag['attribute']['checked'] == 'checked') OR ($tag['attribute']['checked'] == 'true'))) {
+					$checked = true;
+				} else {
+					$checked = false;
+				}
+				if (isset($tag['align'])) {
+					switch ($tag['align']) {
+						case 'C': {
+							$opt['q'] = 1;
+							break;
+						}
+						case 'R': {
+							$opt['q'] = 2;
+							break;
+						}
+						case 'L':
+						default: {
+							break;
+						}
+					}
+				}
+				switch ($tag['attribute']['type']) {
+					case 'text': {
+						if (isset($value)) {
+							$opt['v'] = $value;
+						}
+						$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+						break;
+					}
+					case 'password': {
+						if (isset($value)) {
+							$opt['v'] = $value;
+						}
+						$prop['password'] = 'true';
+						$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+						break;
+					}
+					case 'checkbox': {
+						if (!isset($value)) {
+							break;
+						}
+						$this->CheckBox($name, $w, $checked, $prop, $opt, $value, '', '', false);
+						break;
+					}
+					case 'radio': {
+						if (!isset($value)) {
+							break;
+						}
+						$this->RadioButton($name, $w, $prop, $opt, $value, $checked, '', '', false);
+						break;
+					}
+					case 'submit': {
+						if (!isset($value)) {
+							$value = 'submit';
+						}
+						$w = $this->GetStringWidth($value) * 1.5;
+						$h *= 1.6;
+						$prop = array('lineWidth'=>1, 'borderStyle'=>'beveled', 'fillColor'=>array(196, 196, 196), 'strokeColor'=>array(255, 255, 255));
+						$action = array();
+						$action['S'] = 'SubmitForm';
+						$action['F'] = $this->form_action;
+						if ($this->form_enctype != 'FDF') {
+							$action['Flags'] = array('ExportFormat');
+						}
+						if ($this->form_mode == 'get') {
+							$action['Flags'] = array('GetMethod');
+						}
+						$this->Button($name, $w, $h, $value, $action, $prop, $opt, '', '', false);
+						break;
+					}
+					case 'reset': {
+						if (!isset($value)) {
+							$value = 'reset';
+						}
+						$w = $this->GetStringWidth($value) * 1.5;
+						$h *= 1.6;
+						$prop = array('lineWidth'=>1, 'borderStyle'=>'beveled', 'fillColor'=>array(196, 196, 196), 'strokeColor'=>array(255, 255, 255));
+						$this->Button($name, $w, $h, $value, array('S'=>'ResetForm'), $prop, $opt, '', '', false);
+						break;
+					}
+					case 'file': {
+						$prop['fileSelect'] = 'true';
+						$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+						if (!isset($value)) {
+							$value = '*';
+						}
+						$w = $this->GetStringWidth($value) * 2;
+						$h *= 1.2;
+						$prop = array('lineWidth'=>1, 'borderStyle'=>'beveled', 'fillColor'=>array(196, 196, 196), 'strokeColor'=>array(255, 255, 255));
+						$jsaction = 'var f=this.getField(\''.$name.'\'); f.browseForFileToSubmit();';
+						$this->Button('FB_'.$name, $w, $h, $value, $jsaction, $prop, $opt, '', '', false);
+						break;
+					}
+					case 'hidden': {
+						if (isset($value)) {
+							$opt['v'] = $value;
+						}
+						$opt['f'] = array('invisible', 'hidden');
+						$this->TextField($name, 0, 0, $prop, $opt, '', '', false);
+						break;
+					}
+					case 'image': {
+						// THIS TYPE MUST BE FIXED
+						if (isset($tag['attribute']['src']) AND !TCPDF_STATIC::empty_string($tag['attribute']['src'])) {
+							$img = $tag['attribute']['src'];
+						} else {
+							break;
+						}
+						$value = 'img';
+						//$opt['mk'] = array('i'=>$img, 'tp'=>1, 'if'=>array('sw'=>'A', 's'=>'A', 'fb'=>false));
+						if (isset($tag['attribute']['onclick']) AND !empty($tag['attribute']['onclick'])) {
+							$jsaction = $tag['attribute']['onclick'];
+						} else {
+							$jsaction = '';
+						}
+						$this->Button($name, $w, $h, $value, $jsaction, $prop, $opt, '', '', false);
+						break;
+					}
+					case 'button': {
+						if (!isset($value)) {
+							$value = ' ';
+						}
+						$w = $this->GetStringWidth($value) * 1.5;
+						$h *= 1.6;
+						$prop = array('lineWidth'=>1, 'borderStyle'=>'beveled', 'fillColor'=>array(196, 196, 196), 'strokeColor'=>array(255, 255, 255));
+						if (isset($tag['attribute']['onclick']) AND !empty($tag['attribute']['onclick'])) {
+							$jsaction = $tag['attribute']['onclick'];
+						} else {
+							$jsaction = '';
+						}
+						$this->Button($name, $w, $h, $value, $jsaction, $prop, $opt, '', '', false);
+						break;
+					}
+				}
+				break;
+			}
+			case 'textarea': {
+				$prop = array();
+				$opt = array();
+				if (isset($tag['attribute']['readonly']) AND !TCPDF_STATIC::empty_string($tag['attribute']['readonly'])) {
+					$prop['readonly'] = true;
+				}
+				if (isset($tag['attribute']['name']) AND !TCPDF_STATIC::empty_string($tag['attribute']['name'])) {
+					$name = $tag['attribute']['name'];
+				} else {
+					break;
+				}
+				if (isset($tag['attribute']['value']) AND !TCPDF_STATIC::empty_string($tag['attribute']['value'])) {
+					$opt['v'] = $tag['attribute']['value'];
+				}
+				if (isset($tag['attribute']['cols']) AND !TCPDF_STATIC::empty_string($tag['attribute']['cols'])) {
+					$w = intval($tag['attribute']['cols']) * $this->GetStringWidth(chr(32)) * 2;
+				} else {
+					$w = 40;
+				}
+				if (isset($tag['attribute']['rows']) AND !TCPDF_STATIC::empty_string($tag['attribute']['rows'])) {
+					$h = intval($tag['attribute']['rows']) * $this->getCellHeight($this->FontSize);
+				} else {
+					$h = 10;
+				}
+				$prop['multiline'] = 'true';
+				$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+				break;
+			}
+			case 'select': {
+				$h = $this->getCellHeight($this->FontSize);
+				if (isset($tag['attribute']['size']) AND !TCPDF_STATIC::empty_string($tag['attribute']['size'])) {
+					$h *= ($tag['attribute']['size'] + 1);
+				}
+				$prop = array();
+				$opt = array();
+				if (isset($tag['attribute']['name']) AND !TCPDF_STATIC::empty_string($tag['attribute']['name'])) {
+					$name = $tag['attribute']['name'];
+				} else {
+					break;
+				}
+				$w = 0;
+				if (isset($tag['attribute']['opt']) AND !TCPDF_STATIC::empty_string($tag['attribute']['opt'])) {
+					$options = explode('#!NwL!#', $tag['attribute']['opt']);
+					$values = array();
+					foreach ($options as $val) {
+						if (strpos($val, '#!TaB!#') !== false) {
+							$opts = explode('#!TaB!#', $val);
+							$values[] = $opts;
+							$w = max($w, $this->GetStringWidth($opts[1]));
+						} else {
+							$values[] = $val;
+							$w = max($w, $this->GetStringWidth($val));
+						}
+					}
+				} else {
+					break;
+				}
+				$w *= 2;
+				if (isset($tag['attribute']['multiple']) AND ($tag['attribute']['multiple']='multiple')) {
+					$prop['multipleSelection'] = 'true';
+					$this->ListBox($name, $w, $h, $values, $prop, $opt, '', '', false);
+				} else {
+					$this->ComboBox($name, $w, $h, $values, $prop, $opt, '', '', false);
+				}
+				break;
+			}
+			case 'tcpdf': {
+				if (defined('K_TCPDF_CALLS_IN_HTML') AND (K_TCPDF_CALLS_IN_HTML === true)) {
+					// Special tag used to call TCPDF methods
+					if (isset($tag['attribute']['method'])) {
+						$tcpdf_method = $tag['attribute']['method'];
+						if (method_exists($this, $tcpdf_method)) {
+							if (isset($tag['attribute']['params']) AND (!empty($tag['attribute']['params']))) {
+								$params = $this->unserializeTCPDFtagParameters($tag['attribute']['params']);
+								call_user_func_array(array($this, $tcpdf_method), $params);
+							} else {
+								$this->$tcpdf_method();
+							}
+							$this->newline = true;
+						}
+					}
+				}
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+		// define tags that support borders and background colors
+		$bordertags = array('blockquote','br','dd','dl','div','dt','h1','h2','h3','h4','h5','h6','hr','li','ol','p','pre','ul','tcpdf','table');
+		if (in_array($tag['value'], $bordertags)) {
+			// set border
+			$dom[$key]['borderposition'] = $this->getBorderStartPosition();
+		}
+		if ($dom[$key]['self'] AND isset($dom[$key]['attribute']['pagebreakafter'])) {
+			$pba = $dom[$key]['attribute']['pagebreakafter'];
+			// check for pagebreak
+			if (($pba == 'true') OR ($pba == 'left') OR ($pba == 'right')) {
+				// add a page (or trig AcceptPageBreak() for multicolumn mode)
+				$this->checkPageBreak($this->PageBreakTrigger + 1);
+			}
+			if ((($pba == 'left') AND (((!$this->rtl) AND (($this->page % 2) == 0)) OR (($this->rtl) AND (($this->page % 2) != 0))))
+				OR (($pba == 'right') AND (((!$this->rtl) AND (($this->page % 2) != 0)) OR (($this->rtl) AND (($this->page % 2) == 0))))) {
+				// add a page (or trig AcceptPageBreak() for multicolumn mode)
+				$this->checkPageBreak($this->PageBreakTrigger + 1);
+			}
+		}
+		return $dom;
+	}
+
+  /**
+   * tambahan: ganti add veticalHTMLspace 'div' menjadi $this->y += lasth
+	 * Process closing tags.
+	 * @param array $dom html dom array
+	 * @param int $key current element id
+	 * @param boolean $cell if true add the default left (or right if RTL) padding to each new line (default false).
+	 * @param int $maxbottomliney maximum y value of current line
+	 * @return array $dom
+	 * @protected
+	 */
+	protected function closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney=0) {
+		$tag = $dom[$key];
+		$parent = $dom[($dom[$key]['parent'])];
+		$lasttag = ((!isset($dom[($key + 1)])) OR ((!isset($dom[($key + 2)])) AND ($dom[($key + 1)]['value'] == 'marker')));
+		$in_table_head = false;
+		// maximum x position (used to draw borders)
+		if ($this->rtl) {
+			$xmax = $this->w;
+		} else {
+			$xmax = 0;
+		}
+		if ($tag['block']) {
+			$hbz = 0; // distance from y to line bottom
+			$hb = 0; // vertical space between block tags
+			// calculate vertical space for block tags
+			if (isset($this->tagvspaces[$tag['value']][1]['h']) && !empty($this->tagvspaces[$tag['value']][1]['h']) && ($this->tagvspaces[$tag['value']][1]['h'] >= 0)) {
+				$pre_h = $this->tagvspaces[$tag['value']][1]['h'];
+			} elseif (isset($parent['fontsize'])) {
+				$pre_h = $this->getCellHeight($parent['fontsize'] / $this->k);
+			} else {
+				$pre_h = $this->getCellHeight($this->FontSize);
+			}
+			if (isset($this->tagvspaces[$tag['value']][1]['n'])) {
+				$cn = $this->tagvspaces[$tag['value']][1]['n'];
+			} elseif (preg_match('/[h][0-9]/', $tag['value']) > 0) {
+				$cn = 0.6;
+			} else {
+				$cn = 1;
+			}
+			if ((!isset($this->tagvspaces[$tag['value']])) AND ($tag['value'] == 'div')) {
+				$hb = 0;
+			} else {
+				$hb = ($cn * $pre_h);
+			}
+			if ($maxbottomliney > $this->PageBreakTrigger) {
+				$hbz = $this->getCellHeight($this->FontSize);
+			} elseif ($this->y < $maxbottomliney) {
+				$hbz = ($maxbottomliney - $this->y);
+			}
+		}
+		// Closing tag
+		switch($tag['value']) {
+			case 'tr': {
+				$table_el = $dom[($dom[$key]['parent'])]['parent'];
+				if (!isset($parent['endy'])) {
+					$dom[($dom[$key]['parent'])]['endy'] = $this->y;
+					$parent['endy'] = $this->y;
+				}
+				if (!isset($parent['endpage'])) {
+					$dom[($dom[$key]['parent'])]['endpage'] = $this->page;
+					$parent['endpage'] = $this->page;
+				}
+				if (!isset($parent['endcolumn'])) {
+					$dom[($dom[$key]['parent'])]['endcolumn'] = $this->current_column;
+					$parent['endcolumn'] = $this->current_column;
+				}
+				// update row-spanned cells
+				if (isset($dom[$table_el]['rowspans'])) {
+					foreach ($dom[$table_el]['rowspans'] as $k => $trwsp) {
+						$dom[$table_el]['rowspans'][$k]['rowspan'] -= 1;
+						if ($dom[$table_el]['rowspans'][$k]['rowspan'] == 0) {
+							if (($dom[$table_el]['rowspans'][$k]['endpage'] == $parent['endpage']) AND ($dom[$table_el]['rowspans'][$k]['endcolumn'] == $parent['endcolumn'])) {
+								$dom[($dom[$key]['parent'])]['endy'] = max($dom[$table_el]['rowspans'][$k]['endy'], $parent['endy']);
+							} elseif (($dom[$table_el]['rowspans'][$k]['endpage'] > $parent['endpage']) OR ($dom[$table_el]['rowspans'][$k]['endcolumn'] > $parent['endcolumn'])) {
+								$dom[($dom[$key]['parent'])]['endy'] = $dom[$table_el]['rowspans'][$k]['endy'];
+								$dom[($dom[$key]['parent'])]['endpage'] = $dom[$table_el]['rowspans'][$k]['endpage'];
+								$dom[($dom[$key]['parent'])]['endcolumn'] = $dom[$table_el]['rowspans'][$k]['endcolumn'];
+							}
+						}
+					}
+					// report new endy and endpage to the rowspanned cells
+					foreach ($dom[$table_el]['rowspans'] as $k => $trwsp) {
+						if ($dom[$table_el]['rowspans'][$k]['rowspan'] == 0) {
+							$dom[$table_el]['rowspans'][$k]['endpage'] = max($dom[$table_el]['rowspans'][$k]['endpage'], $dom[($dom[$key]['parent'])]['endpage']);
+							$dom[($dom[$key]['parent'])]['endpage'] = $dom[$table_el]['rowspans'][$k]['endpage'];
+							$dom[$table_el]['rowspans'][$k]['endcolumn'] = max($dom[$table_el]['rowspans'][$k]['endcolumn'], $dom[($dom[$key]['parent'])]['endcolumn']);
+							$dom[($dom[$key]['parent'])]['endcolumn'] = $dom[$table_el]['rowspans'][$k]['endcolumn'];
+							$dom[$table_el]['rowspans'][$k]['endy'] = max($dom[$table_el]['rowspans'][$k]['endy'], $dom[($dom[$key]['parent'])]['endy']);
+							$dom[($dom[$key]['parent'])]['endy'] = $dom[$table_el]['rowspans'][$k]['endy'];
+						}
+					}
+					// update remaining rowspanned cells
+					foreach ($dom[$table_el]['rowspans'] as $k => $trwsp) {
+						if ($dom[$table_el]['rowspans'][$k]['rowspan'] == 0) {
+							$dom[$table_el]['rowspans'][$k]['endpage'] = $dom[($dom[$key]['parent'])]['endpage'];
+							$dom[$table_el]['rowspans'][$k]['endcolumn'] = $dom[($dom[$key]['parent'])]['endcolumn'];
+							$dom[$table_el]['rowspans'][$k]['endy'] = $dom[($dom[$key]['parent'])]['endy'];
+						}
+					}
+				}
+				$prev_page = $this->page;
+				$this->setPage($dom[($dom[$key]['parent'])]['endpage']);
+				if ($this->num_columns > 1) {
+					if (($prev_page < $this->page)
+						AND ((($this->current_column == 0) AND ($dom[($dom[$key]['parent'])]['endcolumn'] == ($this->num_columns - 1)))
+							OR ($this->current_column == $dom[($dom[$key]['parent'])]['endcolumn']))) {
+						// page jump
+						$this->selectColumn(0);
+						$dom[($dom[$key]['parent'])]['endcolumn'] = 0;
+						$dom[($dom[$key]['parent'])]['endy'] = $this->y;
+					} else {
+						$this->selectColumn($dom[($dom[$key]['parent'])]['endcolumn']);
+						$this->y = $dom[($dom[$key]['parent'])]['endy'];
+					}
+				} else {
+					$this->y = $dom[($dom[$key]['parent'])]['endy'];
+				}
+				if (isset($dom[$table_el]['attribute']['cellspacing'])) {
+					$this->y += $this->getHTMLUnitToUnits($dom[$table_el]['attribute']['cellspacing'], 1, 'px');
+				} elseif (isset($dom[$table_el]['border-spacing'])) {
+					$this->y += $dom[$table_el]['border-spacing']['V'];
+				}
+				$this->Ln(0, $cell);
+				if ($this->current_column == $parent['startcolumn']) {
+					$this->x = $parent['startx'];
+				}
+				// account for booklet mode
+				if ($this->page > $parent['startpage']) {
+					if (($this->rtl) AND ($this->pagedim[$this->page]['orm'] != $this->pagedim[$parent['startpage']]['orm'])) {
+						$this->x -= ($this->pagedim[$this->page]['orm'] - $this->pagedim[$parent['startpage']]['orm']);
+					} elseif ((!$this->rtl) AND ($this->pagedim[$this->page]['olm'] != $this->pagedim[$parent['startpage']]['olm'])) {
+						$this->x += ($this->pagedim[$this->page]['olm'] - $this->pagedim[$parent['startpage']]['olm']);
+					}
+				}
+				break;
+			}
+			case 'tablehead':
+				// closing tag used for the thead part
+				$in_table_head = true;
+				$this->inthead = false;
+			case 'table': {
+				$table_el = $parent;
+				// set default border
+				if (isset($table_el['attribute']['border']) AND ($table_el['attribute']['border'] > 0)) {
+					// set default border
+					$border = array('LTRB' => array('width' => $this->getCSSBorderWidth($table_el['attribute']['border']), 'cap'=>'square', 'join'=>'miter', 'dash'=> 0, 'color'=>array(0,0,0)));
+				} else {
+					$border = 0;
+				}
+        // if($key == 569) dump($border);
+				$default_border = $border;
+				// fix bottom line alignment of last line before page break
+				foreach ($dom[($dom[$key]['parent'])]['trids'] as $j => $trkey) {
+					// update row-spanned cells
+					if (isset($dom[($dom[$key]['parent'])]['rowspans'])) {
+						foreach ($dom[($dom[$key]['parent'])]['rowspans'] as $k => $trwsp) {
+							if (isset($prevtrkey) AND ($trwsp['trid'] == $prevtrkey) AND ($trwsp['mrowspan'] > 0)) {
+								$dom[($dom[$key]['parent'])]['rowspans'][$k]['trid'] = $trkey;
+							}
+							if ($dom[($dom[$key]['parent'])]['rowspans'][$k]['trid'] == $trkey) {
+								$dom[($dom[$key]['parent'])]['rowspans'][$k]['mrowspan'] -= 1;
+							}
+						}
+					}
+					if (isset($prevtrkey) AND ($dom[$trkey]['startpage'] > $dom[$prevtrkey]['endpage'])) {
+						$pgendy = $this->pagedim[$dom[$prevtrkey]['endpage']]['hk'] - $this->pagedim[$dom[$prevtrkey]['endpage']]['bm'];
+						$dom[$prevtrkey]['endy'] = $pgendy;
+						// update row-spanned cells
+						if (isset($dom[($dom[$key]['parent'])]['rowspans'])) {
+							foreach ($dom[($dom[$key]['parent'])]['rowspans'] as $k => $trwsp) {
+								if (($trwsp['trid'] == $prevtrkey) AND ($trwsp['mrowspan'] >= 0) AND ($trwsp['endpage'] == $dom[$prevtrkey]['endpage'])) {
+									$dom[($dom[$key]['parent'])]['rowspans'][$k]['endy'] = $pgendy;
+									$dom[($dom[$key]['parent'])]['rowspans'][$k]['mrowspan'] = -1;
+								}
+							}
+						}
+					}
+					$prevtrkey = $trkey;
+					$table_el = $dom[($dom[$key]['parent'])];
+				}
+				// for each row
+				if (!empty($table_el['trids'])) {
+					unset($xmax);
+				}
+				foreach ($table_el['trids'] as $j => $trkey) {
+					$parent = $dom[$trkey];
+					if (!isset($xmax)) {
+						$xmax = $parent['cellpos'][(count($parent['cellpos']) - 1)]['endx'];
+					}
+					// for each cell on the row
+					foreach ($parent['cellpos'] as $k => $cellpos) {
+						if (isset($cellpos['rowspanid']) AND ($cellpos['rowspanid'] >= 0)) {
+							$cellpos['startx'] = $table_el['rowspans'][($cellpos['rowspanid'])]['startx'];
+							$cellpos['endx'] = $table_el['rowspans'][($cellpos['rowspanid'])]['endx'];
+							$endy = $table_el['rowspans'][($cellpos['rowspanid'])]['endy'];
+							$startpage = $table_el['rowspans'][($cellpos['rowspanid'])]['startpage'];
+							$endpage = $table_el['rowspans'][($cellpos['rowspanid'])]['endpage'];
+							$startcolumn = $table_el['rowspans'][($cellpos['rowspanid'])]['startcolumn'];
+							$endcolumn = $table_el['rowspans'][($cellpos['rowspanid'])]['endcolumn'];
+						} else {
+							$endy = $parent['endy'];
+							$startpage = $parent['startpage'];
+							$endpage = $parent['endpage'];
+							$startcolumn = $parent['startcolumn'];
+							$endcolumn = $parent['endcolumn'];
+						}
+						if ($this->num_columns == 0) {
+							$this->num_columns = 1;
+						}
+						if (isset($cellpos['border'])) {
+							$border = $cellpos['border'];
+						}
+						if (isset($cellpos['bgcolor']) AND ($cellpos['bgcolor']) !== false) {
+							$this->setFillColorArray($cellpos['bgcolor']);
+							$fill = true;
+						} else {
+							$fill = false;
+						}
+						$x = $cellpos['startx'];
+						$y = $parent['starty'];
+						$starty = $y;
+						$w = abs($cellpos['endx'] - $cellpos['startx']);
+						// get border modes
+						$border_start = TCPDF_STATIC::getBorderMode($border, $position='start', $this->opencell);
+						$border_end = TCPDF_STATIC::getBorderMode($border, $position='end', $this->opencell);
+						$border_middle = TCPDF_STATIC::getBorderMode($border, $position='middle', $this->opencell);
+						// design borders around HTML cells.
+						for ($page = $startpage; $page <= $endpage; ++$page) { // for each page
+              //  footnote #4 agar border table tidak di print melewati footnote. Sengaja tidak pakai PageBreakTrigger karena $h nya nilanya sama dengan PageBreakTrigger
+              if(isset($this->footnotes['staging']['startypos'][$page])){
+                $reducer_h = $this->footnotes['staging']['height'][$page][0] +  2.645833;  // 2.645833 adalah string height untuk footnote dengan fontsize 6 pt
+              }
+							$ccode = '';
+							$this->setPage($page);
+							if ($this->num_columns < 2) {
+								// single-column mode
+								$this->x = $x;
+								$this->y = $this->tMargin;
+							}
+							// account for margin changes
+							if ($page > $startpage) {
+								if (($this->rtl) AND ($this->pagedim[$page]['orm'] != $this->pagedim[$startpage]['orm'])) {
+									$this->x -= ($this->pagedim[$page]['orm'] - $this->pagedim[$startpage]['orm']);
+								} elseif ((!$this->rtl) AND ($this->pagedim[$page]['olm'] != $this->pagedim[$startpage]['olm'])) {
+									$this->x += ($this->pagedim[$page]['olm'] - $this->pagedim[$startpage]['olm']);
+								}
+							}
+							if ($startpage == $endpage) { // single page
+								$deltacol = 0;
+								$deltath = 0;
+								for ($column = $startcolumn; $column <= $endcolumn; ++$column) { // for each column
+									$this->selectColumn($column);
+									if ($startcolumn == $endcolumn) { // single column
+										$cborder = $border;
+										$h = $endy - $parent['starty'];
+										$this->y = $y;
+										$this->x = $x;
+									} elseif ($column == $startcolumn) { // first column
+										$cborder = $border_start;
+										$this->y = $starty;
+										$this->x = $x;
+										$h = $this->h - $this->y - $this->bMargin;
+										if ($this->rtl) {
+											$deltacol = $this->x + $this->rMargin - $this->w;
+										} else {
+											$deltacol = $this->x - $this->lMargin;
+										}
+									} elseif ($column == $endcolumn) { // end column
+										$cborder = $border_end;
+										if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+											$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+										}
+										$this->x += $deltacol;
+										$h = $endy - $this->y;
+									} else { // middle column
+										$cborder = $border_middle;
+										if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+											$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+										}
+										$this->x += $deltacol;
+										$h = $this->h - $this->y - $this->bMargin;
+									}
+                  // if($key == 569) dump($cborder);
+                  // $cborder = 0; // tes disable border (harusnya ini ga ada)
+									// isset($reducer_h) ? $h -= $reducer_h : null; // pengurangan jika ada footnote
+                  $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+								} // end for each column
+							} elseif ($page == $startpage) { // first page
+								$deltacol = 0;
+								$deltath = 0;
+								for ($column = $startcolumn; $column < $this->num_columns; ++$column) { // for each column
+									$this->selectColumn($column);
+									if ($column == $startcolumn) { // first column
+										$cborder = $border_start;
+										$this->y = $starty;
+										$this->x = $x;
+										$h = $this->h - $this->y - $this->bMargin;
+										if ($this->rtl) {
+											$deltacol = $this->x + $this->rMargin - $this->w;
+										} else {
+											$deltacol = $this->x - $this->lMargin;
+										}
+									} else { // middle column
+										$cborder = $border_middle;
+										if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+											$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+										}
+										$this->x += $deltacol;
+										$h = $this->h - $this->y - $this->bMargin;
+									}
+                  
+                  // $cborder = 0; // tes disable border (harusnya ini ga ada)
+									// isset($reducer_h) ? $h -= $reducer_h : null; // pengurangan jika ada footnote
+                  $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+								} // end for each column
+							} elseif ($page == $endpage) { // last page
+								$deltacol = 0;
+								$deltath = 0;
+								for ($column = 0; $column <= $endcolumn; ++$column) { // for each column
+									$this->selectColumn($column);
+									if ($column == $endcolumn) { // end column
+										$cborder = $border_end;
+										if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+											$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+										}
+										$this->x += $deltacol;
+										$h = $endy - $this->y;
+									} else { // middle column
+										$cborder = $border_middle;
+										if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+											$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+										}
+										$this->x += $deltacol;
+										$h = $this->h - $this->y - $this->bMargin;
+									}
+                  // $cborder = 0; // tes disable border (harusnya ini ga ada)
+									// isset($reducer_h) ? $h -= $reducer_h : null; // pengurangan jika ada footnote
+                  $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+								} // end for each column
+							} else { // middle page
+								$deltacol = 0;
+								$deltath = 0;
+								for ($column = 0; $column < $this->num_columns; ++$column) { // for each column
+									$this->selectColumn($column);
+									$cborder = $border_middle;
+									if (isset($this->columns[$column]['th']['\''.$page.'\''])) {
+										$this->y = $this->columns[$column]['th']['\''.$page.'\''];
+									}
+									$this->x += $deltacol;
+									$h = $this->h - $this->y - $this->bMargin;
+                  // $cborder = 0; // tes disable border (harusnya ini ga ada)
+									// isset($reducer_h) ? $h -= $reducer_h : null; // pengurangan jika ada footnote
+                  $ccode .= $this->getCellCode($w, $h, '', $cborder, 1, '', $fill, '', 0, true)."\n";
+								} // end for each column
+							}
+							if (!empty($cborder) OR !empty($fill)) {
+								$offsetlen = strlen($ccode);
+								// draw border and fill
+								if ($this->inxobj) {
+									// we are inside an XObject template
+									if (end($this->xobjects[$this->xobjid]['transfmrk']) !== false) {
+										$pagemarkkey = key($this->xobjects[$this->xobjid]['transfmrk']);
+										$pagemark = $this->xobjects[$this->xobjid]['transfmrk'][$pagemarkkey];
+										$this->xobjects[$this->xobjid]['transfmrk'][$pagemarkkey] += $offsetlen;
+									} else {
+										$pagemark = $this->xobjects[$this->xobjid]['intmrk'];
+										$this->xobjects[$this->xobjid]['intmrk'] += $offsetlen;
+									}
+									$pagebuff = $this->xobjects[$this->xobjid]['outdata'];
+									$pstart = substr($pagebuff, 0, $pagemark);
+									$pend = substr($pagebuff, $pagemark);
+									$this->xobjects[$this->xobjid]['outdata'] = $pstart.$ccode.$pend;
+								} else {
+									// draw border and fill
+									if (end($this->transfmrk[$this->page]) !== false) {
+										$pagemarkkey = key($this->transfmrk[$this->page]);
+										$pagemark = $this->transfmrk[$this->page][$pagemarkkey];
+									} elseif ($this->InFooter) {
+										$pagemark = $this->footerpos[$this->page];
+									} else {
+										$pagemark = $this->intmrk[$this->page];
+									}
+									$pagebuff = $this->getPageBuffer($this->page);
+									$pstart = substr($pagebuff, 0, $pagemark);
+									$pend = substr($pagebuff, $pagemark);
+									$this->setPageBuffer($this->page, $pstart.$ccode.$pend);
+								}
+							}
+						} // end for each page
+						// restore default border
+						$border = $default_border;
+					} // end for each cell on the row
+					if (isset($table_el['attribute']['cellspacing'])) {
+						$this->y += $this->getHTMLUnitToUnits($table_el['attribute']['cellspacing'], 1, 'px');
+					} elseif (isset($table_el['border-spacing'])) {
+						$this->y += $table_el['border-spacing']['V'];
+					}
+					$this->Ln(0, $cell);
+					$this->x = $parent['startx'];
+					if ($endpage > $startpage) {
+						if (($this->rtl) AND ($this->pagedim[$endpage]['orm'] != $this->pagedim[$startpage]['orm'])) {
+							$this->x += ($this->pagedim[$endpage]['orm'] - $this->pagedim[$startpage]['orm']);
+						} elseif ((!$this->rtl) AND ($this->pagedim[$endpage]['olm'] != $this->pagedim[$startpage]['olm'])) {
+							$this->x += ($this->pagedim[$endpage]['olm'] - $this->pagedim[$startpage]['olm']);
+						}
+					}
+				}
+				if (!$in_table_head) { // we are not inside a thead section
+					$this->cell_padding = isset($table_el['old_cell_padding']) ? $table_el['old_cell_padding'] : null;
+					// reset row height
+					$this->resetLastH();
+					if (($this->page == ($this->numpages - 1)) AND ($this->pageopen[$this->numpages])) {
+						$plendiff = ($this->pagelen[$this->numpages] - $this->emptypagemrk[$this->numpages]);
+						if (($plendiff > 0) AND ($plendiff < 60)) {
+							$pagediff = substr($this->getPageBuffer($this->numpages), $this->emptypagemrk[$this->numpages], $plendiff);
+							if (substr($pagediff, 0, 5) == 'BT /F') {
+								// the difference is only a font setting
+								$plendiff = 0;
+							}
+						}
+						if ($plendiff == 0) {
+							// remove last blank page
+							$this->deletePage($this->numpages);
+						}
+					}
+					if (isset($this->theadMargins['top'])) {
+						// restore top margin
+						$this->tMargin = $this->theadMargins['top'];
+					}
+					if (!isset($table_el['attribute']['nested']) OR ($table_el['attribute']['nested'] != 'true')) {
+						// reset main table header
+						$this->thead = '';
+						$this->theadMargins = array();
+						$this->pagedim[$this->page]['tm'] = $this->tMargin;
+					}
+				}
+				$parent = $table_el;
+				break;
+			}
+			case 'a': {
+				$this->HREF = array();
+				break;
+			}
+			case 'sup': {
+				$this->setXY($this->GetX(), $this->GetY() + ((0.7 * $parent['fontsize']) / $this->k));
+				break;
+			}
+			case 'sub': {
+				$this->setXY($this->GetX(), $this->GetY() - ((0.3 * $parent['fontsize']) / $this->k));
+				break;
+			}
+			case 'div': {
+				// $this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+        $this->y += $this->lasth;
+				break;
+			}
+			case 'blockquote': {
+				if ($this->rtl) {
+					$this->rMargin -= $this->listindent;
+				} else {
+					$this->lMargin -= $this->listindent;
+				}
+				--$this->listindentlevel;
+				$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+				break;
+			}
+			case 'p': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+				break;
+			}
+			case 'pre': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+				$this->premode = false;
+				break;
+			}
+			case 'dl': {
+				--$this->listnum;
+				if ($this->listnum <= 0) {
+					$this->listnum = 0;
+					// $this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+          // $this->y += $this->lasth; // tidak ditambah agar tidak ada space break after, coba cek pake border di dl, dt, dd
+				} else {
+					$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				}
+				$this->resetLastH();
+				break;
+			}
+			case 'dt': {
+				$this->lispacer = '';
+				// $this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				$this->addHTMLVertSpace(0, $this->lasth, $cell, false, $lasttag);
+				break;
+			}
+			case 'dd': {
+				$this->lispacer = '';
+				if ($this->rtl) {
+					$this->rMargin -= $this->listindent;
+				} else {
+					$this->lMargin -= $this->listindent;
+				}
+				--$this->listindentlevel;
+				// $this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				$this->addHTMLVertSpace(0, $this->lasth, $cell, false, $lasttag);
+				break;
+			}
+			case 'ul':
+			case 'ol': {
+				--$this->listnum;
+				$this->lispacer = '';
+				if ($this->rtl) {
+					$this->rMargin -= $this->listindent;
+				} else {
+					$this->lMargin -= $this->listindent;
+				}
+				--$this->listindentlevel;
+				if ($this->listnum <= 0) {
+					$this->listnum = 0;
+					$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+				} else {
+					$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				}
+				$this->resetLastH();
+				break;
+			}
+			case 'li': {
+				$this->lispacer = '';
+				$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				break;
+			}
+			case 'h1':
+			case 'h2':
+			case 'h3':
+			case 'h4':
+			case 'h5':
+			case 'h6': {
+				$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+				break;
+			}
+			// Form fields (since 4.8.000 - 2009-09-07)
+			case 'form': {
+				$this->form_action = '';
+				$this->form_enctype = 'application/x-www-form-urlencoded';
+				break;
+			}
+			default : {
+				break;
+			}
+		}
+		// draw border and background (if any)
+    // if($key == 569) dump($parent); // elkey = 39
+		$this->drawHTMLTagBorder($parent, $xmax);
+		if (isset($dom[($dom[$key]['parent'])]['attribute']['pagebreakafter'])) {
+			$pba = $dom[($dom[$key]['parent'])]['attribute']['pagebreakafter'];
+			// check for pagebreak
+			if (($pba == 'true') OR ($pba == 'left') OR ($pba == 'right')) {
+				// add a page (or trig AcceptPageBreak() for multicolumn mode)
+				$this->checkPageBreak($this->PageBreakTrigger + 1);
+			}
+			if ((($pba == 'left') AND (((!$this->rtl) AND (($this->page % 2) == 0)) OR (($this->rtl) AND (($this->page % 2) != 0))))
+				OR (($pba == 'right') AND (((!$this->rtl) AND (($this->page % 2) != 0)) OR (($this->rtl) AND (($this->page % 2) == 0))))) {
+				// add a page (or trig AcceptPageBreak() for multicolumn mode)
+				$this->checkPageBreak($this->PageBreakTrigger + 1);
+			}
+		}
+		$this->tmprtl = false;
+		return $dom;
+	}
+
 
   /**
    * editannya: banyak (lupa nulis)
@@ -3396,7 +4693,11 @@ class PMC_PDF extends TCPDF
               // $this->x -= 3;
               // dump($this->cell_padding['L']."|".$this->x);
             };
-						$dom = $this->openHTMLTagHandler($dom, $key, $cell);
+            
+            
+            // if(!in_array($dom[$key]['value'],['div','h1','h2','h3','h4','h5','h6'])){
+            // }
+            $dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
         else { // closing tag
@@ -3420,9 +4721,13 @@ class PMC_PDF extends TCPDF
               $this->addCgMark($this->start_cgmark[$parent_cgmarkid], null, ($this->y + $this->getLastH()), $this->getPage(), $dom[$dom[$key]['parent']]['attribute']['reasonforupdaterefids'], ''); // asign end position ('ed_pos_y')
             }
           }
-
+          
+          
           $dom = $this->closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney, $elkey_tes = $dom[$key]['elkey']);
-
+          // if($dom[$key]['value'] == 'table') {
+          //   $this->Line(0,$this->y, 100, $this->y);
+          // }
+          
 					if ($this->bordermrk[$this->page] > $old_bordermrk) {
 						$startlinepos += ($this->bordermrk[$this->page] - $old_bordermrk);
 					}
@@ -3465,7 +4770,6 @@ class PMC_PDF extends TCPDF
             $rowfill = str_repeat($this->separator, $numfills);
             $this->Write('',$rowfill,'');
           }
-          
 				}
 			}
       elseif (strlen($dom[$key]['value']) > 0) {
@@ -3548,6 +4852,8 @@ class PMC_PDF extends TCPDF
             // paddingleft #2 dikarenakan jika numberred (bukan bullet) yang pakai fungsi Write()/Cell(), $this->x nya terpengaruh cell padding
             $pdl = $this->cell_padding['L'];
             $this->cell_padding['L'] = $basic_cell_padding_L;
+            // dump($this->lispacer);
+            // dd($dom[$dom[$dom[$key]['parent']]['parent']]);
             $this->putHtmlListBullet($this->listnum, $this->lispacer, $pfontsize);
             $this->cell_padding['L'] = $pdl;
 					}

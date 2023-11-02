@@ -90,7 +90,7 @@
       </xsl:if>
     </xsl:param>
     <xsl:variable name="width">
-      <xsl:variable name="units" select="'mm'"/>
+      <xsl:variable name="units" select="php:function('preg_replace', '/[0-9]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>
       <!-- jika di entry ada @spanname, dan di ancestor ada @colname, dan di ancestor ada @colwidth  -->
       <xsl:if test="$spanname and ancestor::captionGroup/colspec[@colname = $colname] and ancestor::captionGroup/colspec[@colname = $colname]/@colwidth">
         <xsl:variable name="spanspec" select="ancestor::captionGroup/spanspec[@spanname = $spanname]"/>
@@ -123,7 +123,7 @@
     <!-- jika di ancestor ada @colname dan @colwidth -->
     <xsl:if test="ancestor::captionGroup/colspec[@colname = $colname] and ancestor::captionGroup/colspec[@colname = $colname]/@colwidth">
       <xsl:variable name="colspec" select="ancestor::captionGroup/colspec[@colname = $colname]"/>
-      <xsl:variable name="value" select="$tmp_width + php:function('preg_replace', '/[^0-9]+/', '', string($colspec/@colwidth))"/>
+      <xsl:variable name="value" select="number($tmp_width) + php:function('preg_replace', '/[^0-9]+/', '', string($colspec/@colwidth))"/>
       <xsl:if test="not($colspec/@colname[. = $nameend])">
         <xsl:call-template name="getWidthByColspec">
           <xsl:with-param name="tmp_width" select="$value"/>

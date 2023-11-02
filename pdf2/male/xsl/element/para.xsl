@@ -7,7 +7,7 @@
     <xsl:param name="usefootnote" select="'yes'"/>
     <xsl:choose>
       <!-- pakai entity #ln; jika ingin new line -->
-      <xsl:when test="ancestor::listItem">
+      <xsl:when test="parent::listItem or parent::listItemTerm or parent::listItemDefinition ">
         <span>
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
@@ -47,6 +47,22 @@
         </p>        
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="symbol">
+    <xsl:variable name="infoEntityIdent">
+      <xsl:value-of select="$absolute_path_csdbInput"/>
+      <xsl:value-of select="@infoEntityIdent"/>
+    </xsl:variable>
+    <img src="{$infoEntityIdent}">
+      <xsl:call-template name="cgmark"/>
+      <xsl:if test="@reproductionWidth">
+        <xsl:attribute name="width"><xsl:value-of select="@reproductionWidth"/></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@reproductionHeight">
+        <xsl:attribute name="height"><xsl:value-of select="@reproductionHeight"/></xsl:attribute>
+      </xsl:if>
+    </img>
   </xsl:template>
   
 </xsl:stylesheet>

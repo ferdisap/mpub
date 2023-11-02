@@ -18,11 +18,22 @@
       <xsl:value-of select="count(parent::table/tgroup)"/>
     </xsl:variable>
 
-    <div style="text-align:center">
+    <div>
       <xsl:for-each select="parent::table">
-        <xsl:call-template name="cgmark"/>
+        <xsl:call-template name="cgmark" select="."/>
       </xsl:for-each>
-      <table style="text-align:left;border:1px solid black;" cellpadding="1mm" >
+      <table style="text-align:left;">
+        <xsl:attribute name="cellpadding">
+          <xsl:choose>
+            <xsl:when test="@tgstyle">
+              <xsl:variable name="tgstyle"><xsl:value-of select="@tgstyle"/></xsl:variable>
+              <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::getTableStyle', $tgstyle, 'cellpadding')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>1mm</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
         <thead>
           <xsl:apply-templates select="thead/row"/>
         </thead>
@@ -48,18 +59,20 @@
           </xsl:for-each>                
         </tfoot>
       </table>
-      <br/>
-      <div>
-        <span>
-          <xsl:for-each select="ancestor::table/title">
-            <xsl:call-template name="cgmark"/>
-          </xsl:for-each>
-        <xsl:value-of select="$title"/>
-        <xsl:if test="$qtyTgroup > 1">
-          <xsl:text>&#160;(sheet&#160;</xsl:text><xsl:number/>&#160;of&#160;<xsl:value-of select="$qtyTgroup"/><xsl:text>)</xsl:text>
-        </xsl:if>
-        </span>
-      </div>
+      <xsl:if test="$title">
+        <br/>
+        <div>
+          <span>
+            <xsl:for-each select="ancestor::table/title">
+              <xsl:call-template name="cgmark"/>
+            </xsl:for-each>
+          <xsl:value-of select="$title"/>
+          <xsl:if test="$qtyTgroup > 1">
+            <xsl:text>&#160;(sheet&#160;</xsl:text><xsl:number/>&#160;of&#160;<xsl:value-of select="$qtyTgroup"/><xsl:text>)</xsl:text>
+          </xsl:if>
+          </span>
+        </div>
+      </xsl:if>
     </div>
   </xsl:template>
 
@@ -79,7 +92,6 @@
     <xsl:param name="userowsep" select="'yes'"/>
     <xsl:param name="usemaxcolspan" select="'yes'"/>
     <td>
-      <!-- <xsl:text>foo</xsl:text> -->
       <xsl:call-template name="tb_tdstyle">
         <xsl:with-param name="userowsep" select="$userowsep"/>
       </xsl:call-template>
@@ -102,21 +114,34 @@
 
   <xsl:template name="tb_tdstyle">
     <xsl:param name="userowsep" select="'yes'"/>
-    <xsl:attribute name="style">
-      <xsl:if test="not($userowsep = 'no')">
-        <xsl:call-template name="tb_rowsep"/>
-      </xsl:if>
-      <xsl:call-template name="tb_colsep"/>
-      <xsl:call-template name="tb_colwidth"/>
-      <xsl:call-template name="tb_alignCaptionEntry"/>
-
-      <xsl:if test="ancestor::thead">
-        <xsl:text>border-bottom:2px solid black;</xsl:text>
-      </xsl:if>
-      <xsl:if test="ancestor::tfoot">
-        <xsl:text>border-top:2px solid black;font-size:6;text-align:left</xsl:text>
-      </xsl:if>
-    </xsl:attribute>
+    <xsl:choose>
+      <xsl:when test="ancestor::*[@tgstyle]">
+        <xsl:call-template name="tdtgstyle">
+          <xsl:with-param name="tgstyle" select="ancestor::*[@tgstyle]/@tgstyle"/>
+          <xsl:with-param name="userowsep" select="$userowsep"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="style">
+          <xsl:if test="not($userowsep = 'no')">
+            <xsl:call-template name="tb_rowsep"/>
+          </xsl:if>
+          <xsl:call-template name="tb_colsep"/>
+          <xsl:call-template name="tb_colwidth"/>
+          <xsl:call-template name="tb_alignCaptionEntry"/>
+    
+          <xsl:if test="ancestor::thead">
+            <xsl:text>border-bottom:2px solid black;</xsl:text>
+          </xsl:if>
+          <xsl:if test="ancestor::tfoot">
+            <xsl:text>border-top:2px solid black;font-size:6;text-align:left</xsl:text>
+          </xsl:if>
+          <xsl:if test="ancestor::tbody">
+            <xsl:text>text-align:justify</xsl:text>
+          </xsl:if>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="tb_rowsep">
@@ -179,18 +204,26 @@
       </xsl:if>
     </xsl:param>
     <xsl:variable name="width">
-      <xsl:variable name="units" select="'mm'"/>
+      <!-- units mengambil dari colspec/@colwidth pertama -->
+      <xsl:variable name="units" select="php:function('preg_replace', '/[0-9]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>
+      <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::dump',$units)"/> -->
+
+
       <!-- jika di entry ada @spanname, dan di ancestor ada @colname, dan di ancestor ada @colwidth  -->
       <xsl:if test="$spanname and ancestor::tgroup/colspec[@colname = $colname] and ancestor::tgroup/colspec[@colname = $colname]/@colwidth">
         <xsl:variable name="spanspec" select="ancestor::tgroup/spanspec[@spanname = $spanname]"/>
         <xsl:variable name="int_namest" select="number(substring($spanspec/@namest/.,4))"/>
 
         <xsl:text>width:</xsl:text>
-        <xsl:call-template name="tb_getWidthByColspec">
-          <xsl:with-param name="int_namest" select="$int_namest"/>
-          <xsl:with-param name="nameend" select="$spanspec/@nameend"/>
-        </xsl:call-template><xsl:value-of select="$units"/>
-        <xsl:text>;</xsl:text>
+        <xsl:variable name="tes">
+          <xsl:call-template name="tb_getWidthByColspec">
+            <xsl:with-param name="int_namest" select="$int_namest"/>
+            <xsl:with-param name="nameend" select="$spanspec/@nameend"/>
+          </xsl:call-template><xsl:value-of select="$units"/>
+          <xsl:text>;</xsl:text>
+        </xsl:variable>
+        <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::dump',$tes)"/> -->
+        <xsl:value-of select="$tes"/>
       </xsl:if>
       
       <!-- jika di entry TIDAK ada @spanname, dan di ancestor ADA @colname @colwidth -->
@@ -210,10 +243,11 @@
     <xsl:variable name="colname" select="concat('col', $int_namest)"/>
     <!-- jika di ancestor ada @colname dan @colwidth -->
     <xsl:if test="ancestor::tgroup/colspec[@colname = $colname] and ancestor::tgroup/colspec[@colname = $colname]/@colwidth">
-      <xsl:variable name="colspec" select="ancestor::tgroup/colspec[@colname = $colname]"/>
-      <xsl:variable name="value" select="$tmp_width + php:function('preg_replace', '/[^0-9]+/', '', string($colspec/@colwidth))"/>
-      <xsl:if test="not($colspec/@colname[. = $nameend])">
-        <xsl:call-template name="getWidthByColspec">
+    <xsl:variable name="colspec" select="ancestor::tgroup/colspec[string(@colname) = $colname]"/>
+      <xsl:variable name="value" select="number($tmp_width) + php:function('preg_replace', '/[^0-9]+/', '', string($colspec/@colwidth))"/>
+      <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::dump',$colspec)"/> -->
+      <xsl:if test="not($colspec/@colname[. = $nameend])"> <!-- jika tidak sama dengan nameend, akan recursive sambil menambah width nya -->
+        <xsl:call-template name="tb_getWidthByColspec">
           <xsl:with-param name="tmp_width" select="$value"/>
           <xsl:with-param name="int_namest" select="$int_namest + 1"/>
           <xsl:with-param name="nameend" select="$nameend"/>
@@ -244,15 +278,58 @@
       <xsl:value-of select="title"/>
     </xsl:variable>
     <xsl:variable name="index">
-      <xsl:for-each select="//table">
+      <xsl:for-each select="//table[./title]">
         <xsl:if test=". = $current">
           <xsl:value-of select="position()"/>
         </xsl:if>
       </xsl:for-each>
     </xsl:variable>
 
-    <xsl:text>Table.&#160;</xsl:text>
-    <xsl:value-of select="$index"/>&#160;<xsl:value-of select="$title"/>
+    <xsl:if test="$index != ''">
+      <xsl:text>Table.&#160;</xsl:text>
+      <xsl:value-of select="$index"/>&#160;<xsl:value-of select="$title"/>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- ini nanti bisa dipisah, ini dipanggil di td -->
+  <xsl:template name="tdtgstyle">
+    <xsl:param name="userowsep" select="'yes'"/>
+    <xsl:param name="tgstyle"/>
+    <xsl:if test="$tgstyle = 'loa'">
+      <xsl:attribute name="style">
+        <xsl:if test="not($userowsep = 'no')">
+          <xsl:call-template name="tb_rowsep"/>
+        </xsl:if>
+        <xsl:call-template name="tb_colsep"/>
+        <xsl:call-template name="tb_colwidth"/>
+        <xsl:call-template name="tb_alignCaptionEntry"/>
+        
+        <xsl:text>text-align:left</xsl:text>
+        
+      </xsl:attribute>
+    </xsl:if>
+    <xsl:if test="$tgstyle = 'terminologies_notice'">
+      <xsl:attribute name="style">
+        <xsl:if test="not($userowsep = 'no')">
+          <xsl:call-template name="tb_rowsep"/>
+        </xsl:if>
+        <xsl:call-template name="tb_colsep"/>
+        <xsl:call-template name="tb_colwidth"/>
+        <xsl:call-template name="tb_alignCaptionEntry"/>
+  
+        <xsl:variable name="pos"><xsl:number/></xsl:variable>
+
+        <xsl:choose>
+          <xsl:when test="number($pos) = 1">
+            <xsl:text>text-align:left</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>text-align:justify</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+
+      </xsl:attribute>
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>
