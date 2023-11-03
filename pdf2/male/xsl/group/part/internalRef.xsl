@@ -91,12 +91,21 @@
       <xsl:when test="@internalRefTargetType = 'irtt07'">
         <xsl:variable name="refId" select="@internalRefId"/>
         <xsl:value-of select="'para. '"/>
+        
+        <!-- prefix -->
+        <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
+        <xsl:text>.</xsl:text>
+        
         <xsl:call-template name="getPosition">
           <xsl:with-param name="xpath" select="//levelledPara"/>
           <xsl:with-param name="idCompared" select="$refId"/>
           <xsl:with-param name="includedParent" select="'yes'"/>
           <xsl:with-param name="parentName" select="'levelledPara'"/>
-        </xsl:call-template><xsl:copy>(<xsl:apply-templates/>)</xsl:copy>
+        </xsl:call-template>
+
+        <xsl:if test="child::*">
+          <xsl:copy>(<xsl:apply-templates/>)</xsl:copy>
+        </xsl:if>
       </xsl:when>
       <!-- irtt08: step -->
       <xsl:when test="@internalRefTargetType = 'irtt08'">

@@ -66,6 +66,20 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </pmRefIdent>
       </pmRef>
+      <pmRef>
+        <pmRefIdent>
+          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0004" pmVolume="00"/>
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </pmRefIdent>
+      </pmRef>
+      <pmRef>
+        <pmRefIdent>
+          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0005" pmVolume="00"/>
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </pmRefIdent>
+      </pmRef>
     </pmEntry>
     
     <!-- <pmEntry pmEntryType="pmt01">

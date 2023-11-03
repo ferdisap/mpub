@@ -134,10 +134,10 @@
           <tgroup cols="2" tgstyle="terminologies_notice">
             <colspec colname="col1" colwidth="15%" colnum="1"/>
             <colspec colname="col2" colwidth="85%" colnum="2"/>
-            <spanspec namest="col1" nameend="col2" spanname="col12" />
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
             <tbody>
               <row>
-                <entry spanname="col12"><para>The notice may be found in this manual which means:</para></entry>
+                <entry spanname="col1-col2"><para>The notice may be found in this manual which means:</para></entry>
               </row>
               <row>
                 <entry><para><symbol infoEntityIdent="ICN-0001Z-00008-001-01.jpg" reproductionHeight="10mm"/></para></entry>
@@ -167,10 +167,10 @@
           <tgroup cols="2" tgstyle="terminologies_notice">
             <colspec colname="col1" colwidth="15%" colnum="1"/>
             <colspec colname="col2" colwidth="85%" colnum="2"/>
-            <spanspec namest="col1" nameend="col2" spanname="col12" />
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
             <tbody>
               <row>
-                <entry spanname="col12"><para><emphasis emphasisType="em06">Airpseed terminologies</emphasis></para></entry>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em06">Airpseed terminologies</emphasis></para></entry>
               </row>
               <row>
                 <entry><para><emphasis emphasisType="em01">GS</emphasis></para></entry>
@@ -266,10 +266,10 @@
           <tgroup cols="2" tgstyle="terminologies_notice">
             <colspec colname="col1" colwidth="15%" colnum="1"/>
             <colspec colname="col2" colwidth="85%" colnum="2"/>
-            <spanspec namest="col1" nameend="col2" spanname="col12" />
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
             <tbody>
               <row>
-                <entry spanname="col12"><para><emphasis emphasisType="em06">Performance terminologies</emphasis></para></entry>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em06">Performance terminologies</emphasis></para></entry>
               </row>
               <row>
                 <entry><para><emphasis emphasisType="em01">MCP</emphasis></para></entry>
@@ -289,10 +289,10 @@
             <colspec colname="col2" colwidth="85%" colnum="2"/>
             <colspec colname="customcol1" colwidth="30%"/>
             <colspec colname="customcol2" colwidth="70%"/>
-            <spanspec namest="col1" nameend="col2" spanname="col12" />
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
             <tbody>
               <row>
-                <entry spanname="col12"><para><emphasis emphasisType="em06">Weight and balance terminologies</emphasis></para></entry>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em06">Weight and balance terminologies</emphasis></para></entry>
               </row>
               <row>
                 <entry><para><emphasis emphasisType="em01">MAC</emphasis></para></entry>

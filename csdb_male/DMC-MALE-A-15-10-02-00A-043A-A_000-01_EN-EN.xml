@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="1" subSubSystemCode="0" assyCode="02" disassyCode="00" disassyCodeVariant="A" infoCode="034" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="31" />
+        <dmTitle>
+          <techName>Limitations</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>Airspeed</title>
+        <table>
+          <title>Airspeed Limitation</title>
+          <tgroup cols="4">
+            <colspec colname="col1" colnum="1" colwidth="50%"/>
+            <colspec colname="col2" colnum="2" colwidth="15%"/>
+            <colspec colname="col3" colnum="3" colwidth="15%"/>
+            <colspec colname="col4" colnum="4" colwidth="20%"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+            <spanspec namest="col2" nameend="col4" spanname="col2-col4" />
+            <thead>
+              <row>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em01">Speed</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Value</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Remarks</emphasis></para></entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><para>Maximum Operating Speed</para></entry>
+                <entry><para>V<subScript>MO</subScript></para></entry>
+                <entry><para>85 KEAS</para></entry>
+                <entry><para>&#160;</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Flaps Extended Speed</para></entry>
+                <entry><para>V<subScript>FE</subScript></para></entry>
+                <entry><para>85 KEAS</para></entry>
+                <entry><para>Flap10</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Maneuvering Speed</para></entry>
+                <entry><para>V<subScript>A</subScript></para></entry>
+                <entry><para>85 KIAS</para></entry>
+                <entry><para>&#160;</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Gust Intensity Speed</para></entry>
+                <entry><para>V<subScript>B</subScript></para></entry>
+                <entry><para>TBD</para></entry>
+                <entry><para>&#160;</para></entry>
+              </row>
+              <row>
+                <entry><para>Rate of Descents</para></entry>
+                <entry spanname="col2-col4"><para>TBD</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara>
+        <title>Takeoff and Landing</title>
+        <table>
+          <title>Takeoff and Landing Limitation</title>
+          <tgroup cols="2">
+            <thead>
+              <row>
+                <entry><para>Item</para></entry>
+                <entry><para>Limitation</para></entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><para>Weight</para></entry>
+                <entry><para>See Weight Limitation
+                  <internalRef internalRefId="lvp-008" internalRefTargetType="irtt07"/>
+                  </para>
+                </entry>
+              </row>
+              <row>
+                <entry><para>Maximum Tailwind Component</para></entry>
+                <entry><para>5 knots</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Cross Wind Limit</para></entry>
+                <entry><para>10 knots</para></entry>
+              </row>
+              <row>
+                <entry><para>Runway Slope</para></entry>
+                <entry><para>TBD</para></entry>
+              </row>
+              <row>
+                <entry><para>Runway Surface Type</para></entry>
+                <entry><para>Smooth, Hard, Dry Surface</para></entry>
+              </row>
+              <row>
+                <entry><para>Take-off Distance (sea level)</para></entry>
+                <entry><para>977 m</para></entry>
+              </row>
+              <row>
+                <entry><para>Landing Distance (sea level)</para></entry>
+                <entry><para>1,196 m</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara id="lvp-008">
+        <title>Weight</title>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>

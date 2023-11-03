@@ -282,7 +282,7 @@ class CSDB {
         break;
       default:
         // return $techName."-".$infoname."-".$infoNameVariant;
-        return $techName.($infoname ? "-".$infoname : '').($infoNameVariant ? "-".$infoNameVariant : '');
+        return $techName.($infoname ? " - ".$infoname : '').($infoNameVariant ? " - ".$infoNameVariant : '');
         break;
     }
   }
@@ -337,38 +337,47 @@ class CSDB {
     return $name;
   }
 
-  public static function resolve_issueInfo(\DOMElement $issueInfo = null)
+  public static function resolve_issueInfo($issueInfo = null)
   {
-    if(!$issueInfo){
-      return '';
+    if(!$issueInfo) return '';
+    
+    if(is_array($issueInfo)){
+      $issueInfo = $issueInfo[0];
     }
+
     $issueNumber = $issueInfo->getAttribute('issueNumber');
     $inWork = $issueInfo->getAttribute('inWork');
     return $issueNumber."-".$inWork;
   }
 
-  public static function resolve_languange(\DOMElement $languange = null)
+  public static function resolve_languange($languange = null)
   {
-    if(!$languange) {
-      return '';
+    if(!$languange) return '';
+
+    if(is_array($languange)){
+      $languange = $languange[0];
     }
     $languangeIsoCode = $languange->getAttribute('languageIsoCode');
     $countryIsoCode = $languange->getAttribute('countryIsoCode');
     return $languangeIsoCode."-".$countryIsoCode;
   }
 
-  public static function resolve_dmIdent(\DOMElement $dmIdent = null, array $idents = []){
+  public static function resolve_dmIdent($dmIdent = null, array $idents = [], $prefix = 'DMC-', $format = '.xml'){
+
     if(empty($idents)){
-      $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0]);
+      if(is_array($dmIdent)){
+        $dmIdent = $dmIdent[0];
+      }
+      $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0], $prefix);
       $issueInfo = ($if = self::resolve_issueInfo($dmIdent->getElementsByTagName('issueInfo')[0])) ? "_".$if : '';
       $languange = ($lg = self::resolve_languange($dmIdent->getElementsByTagName('language')[0])) ? "_".$lg : '';
-    } else {
+    } else {      
       $dmCode = $idents[0];
       $issueInfo = isset($idents[1]) ? "_".$idents[1] : '';
       $languange = isset($idents[2]) ? "_".$idents[2] : '';
     }
 
-    return strtoupper($dmCode.$issueInfo.$languange).".xml";
+    return strtoupper($dmCode.$issueInfo.$languange).$format;
   }
 
   public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = ''){

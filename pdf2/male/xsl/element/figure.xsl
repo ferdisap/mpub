@@ -21,9 +21,9 @@
       </xsl:for-each>
     </xsl:variable>
 
-    <!-- <div style="text-align:center;page-break-before:always;page-break-after:always;"> -->
-    <div style="text-align:center;page-break-after:always;">
-    <!-- <div style="text-align:center;"> -->
+    <!-- <div style="text-align:center;page-break-before:always;page-break-after:always;border:1px solid blue"> -->
+    <!-- <div style="text-align:center;page-break-after:always;border:1px solid red"> -->
+    <div style="text-align:center;page-break-inside: avoid;">
       <!-- untuk elemen figure-->
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>

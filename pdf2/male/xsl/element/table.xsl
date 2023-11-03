@@ -18,6 +18,7 @@
       <xsl:value-of select="count(parent::table/tgroup)"/>
     </xsl:variable>
 
+    <!-- <div style="page-break-inside: avoid"> -->
     <div>
       <xsl:for-each select="parent::table">
         <xsl:call-template name="cgmark" select="."/>
@@ -59,9 +60,10 @@
           </xsl:for-each>                
         </tfoot>
       </table>
-      <xsl:if test="$title">
+      <xsl:if test="$title != ''">
         <br/>
-        <div>
+        <br/>
+        <div style="text-align:center">
           <span>
             <xsl:for-each select="ancestor::table/title">
               <xsl:call-template name="cgmark"/>
@@ -74,6 +76,7 @@
         </div>
       </xsl:if>
     </div>
+    <br/>
   </xsl:template>
 
   <xsl:template match="row">
@@ -178,7 +181,7 @@
     <xsl:param name="spanname" select="@spanname"/>
     <xsl:if test="ancestor::tgroup/spanspec[@spanname = $spanname]">
       <xsl:variable name="spanspec" select="ancestor::tgroup/spanspec[@spanname = $spanname]"/>
-      <xsl:variable name="int_namest" select="number(substring($spanspec/@namest/.,4))"/>
+      <xsl:variable name="int_namest" select="number(substring($spanspec/@namest/.,4))"/> 
       <xsl:variable name="int_nameend" select="number(substring($spanspec/@nameend/.,4))"/>
 
       <xsl:attribute name="colspan">
@@ -304,7 +307,7 @@
         <xsl:call-template name="tb_colwidth"/>
         <xsl:call-template name="tb_alignCaptionEntry"/>
         
-        <xsl:text>text-align:left</xsl:text>
+        <xsl:text>text-align:left;</xsl:text>
         
       </xsl:attribute>
     </xsl:if>

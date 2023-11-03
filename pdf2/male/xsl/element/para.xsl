@@ -28,6 +28,14 @@
           <xsl:apply-templates/>
         </span>      
       </xsl:when>
+      <xsl:when test="parent::entry">
+        <!-- karena div kan tidak ada vertical space -->
+        <div>
+          <xsl:call-template name="id"/>
+          <xsl:call-template name="cgmark"/>
+          <xsl:apply-templates/>
+        </div>      
+      </xsl:when>
       <xsl:when test="parent::controlAuthorityText">
         <span>
           <xsl:call-template name="id"/>

@@ -271,42 +271,33 @@ class PMC_PDF extends TCPDF
     $dmc->render();
   }
 
-  public static function addIntentionallyLeftBlankPage(TCPDF $pdf, $tes = '')
+  public static function addIntentionallyLeftBlankPage(PMC_PDF $pdf, $tes = '')
   {
     
     if (($pdf->getNumPages() % 2) == 0) {
       return false;
     } else {
-      // if(!empty($pdf->tes) AND $pdf->tes){
-        // dump($pdf->y, $pdf->page, $pdf->getLastH());
-      // }
-      // dump($pdf->getPage());
       // $pdf->AddPage();
-      $topMargin = $pdf->pmType_config['page']['margins']['T'];
-      $bottomMargin = $pdf->pmType_config['page']['margins']['B'];    
+      $topMargin = $pdf->get_pmType_config()['page']['margins']['T'];
+      $bottomMargin = $pdf->get_pmType_config()['page']['margins']['B'];    
       $tPadding = $pdf->getCellPaddings()['T'];
       $bPadding = $pdf->getCellPaddings()['B'];
-      // dd($pdf->getCellPaddings());
-      // dd($pdf->getLastH());
       $page_height = $pdf->getPageHeight() - ($topMargin + $bottomMargin + $tPadding + $bPadding) - $pdf->getStringHeight('','');
-      $page_height -= $pdf->getVgutter();
+
+      $fontsize = $pdf->get_pmType_config()['fontsize']['para'];
       $pdf->setFontSize(7);
+
+      $lMargin = $pdf->get_pmType_config()['page']['margins']['L'];
+      $rMargin = $pdf->get_pmType_config()['page']['margins']['R'];
+
+      $pdf->setMargins($rMargin, $topMargin, $lMargin);
+
+      $page_height -= $pdf->getVgutter();
       $pdf->Cell(0, $page_height, 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
-      // $pdf->Cell(0, $page_height, $tes ? $tes : 'INTENTIONALLY LEFT BLANK', 0, 1, 'C');
       $pdf->lastpageIntentionallyLeftBlank = $pdf->getPage();
-      // die;
       return $pdf->getPage();
     }
   }
-
-  // private function childrenElement(\DOMElement $element)
-  // {
-  //   $arr = [];
-  //   foreach ($element->childNodes as $childNodes) {
-  //     $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
-  //   }
-  //   return $arr;
-  // }  
 
   public function updateLink(){
     $page_last = $this->getPage();
@@ -4567,29 +4558,21 @@ class PMC_PDF extends TCPDF
             //  end tambahan
             $this->tdcellprintted = $this->tdcellprintted ?? 0; 
             
-            // separatorstyle #1 initiate event
-            // $this->cellw = $cellw; // tambahan
-            // $this->sx = $this->x;
-            // dump($this->sx, $cell_content);
-            // dump($this->y."|".$this->page."|".$this->PageBreakTrigger."|".$cellh);
-            $this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
-            // $this->mc = $this->mc ?? 0;
-            // $this->mc += 1;
-            // dump($this->mc);
-            // if($this->mc == 31){
-              // dump($cell_content);
-              // break;
+            // if($this->inPageBody()){
+              // if($this->page == 19 OR $this->page == 20){
+                // dump($this->page."|".$this->y."|".$this->PageBreakTrigger);
+              // }
             // }
+            $this->MultiCell($cellw, $cellh, $cell_content, false, $lalign, false, 2, '', '', true, 0, true, true, 0, 'T', false);
             
             $this->tdcellprintted += 1;
-            // if($this->tdcellprintted >= 85) {
-            //   break;
-            // }
+            
 						// restore some values
 						$this->colxshift = array('x' => 0, 's' => array('H' => 0, 'V' => 0), 'p' => array('L' => 0, 'T' => 0, 'R' => 0, 'B' => 0));
 						$this->lasth = $prevLastH;
 						$this->cell_padding = $old_cell_padding;
 						$dom[$trid]['cellpos'][($cellid - 1)]['endx'] = $this->x;
+
 						// update the end of row position
 						if ($rowspan <= 1) {
 							if (isset($dom[$trid]['endy'])) {
@@ -4637,6 +4620,9 @@ class PMC_PDF extends TCPDF
 							}
 						}
 						$this->x += ($cellspacingx / 2);
+
+            // if($this->page == 24) break;
+            // $this->Line(0, $this->y,200, $this->y);
 					} else {
 						// opening tag (or self-closing tag)
 						if (!isset($opentagpos)) {
@@ -4688,15 +4674,15 @@ class PMC_PDF extends TCPDF
               }
               $this->captionLineHeight = false;
             }
-            if($dom[$key]['value'] == 'ol') {
-              // $this->x -= $this->cell_padding['L'];
-              // $this->x -= 3;
-              // dump($this->cell_padding['L']."|".$this->x);
-            };
-            
-            
-            // if(!in_array($dom[$key]['value'],['div','h1','h2','h3','h4','h5','h6'])){
-            // }
+            if($dom[$key]['value'] == 'tr' AND $this->inPageBody()){
+              // $this->Line(0, $this->y,200, $this->y);
+              // dump($this->page."|".$this->y. "|". $cellh."|" .$this->lasth."|". $this->PageBreakTrigger);
+              // dump($this->y + (2 * $this->lasth) >= $this->PageBreakTrigger);
+              // if($this->y + (2 * $this->lasth) >= $this->PageBreakTrigger){
+              //   dump($this->page);
+              // }
+            }
+            // if($this->page > 20) break;
             $dom = $this->openHTMLTagHandler($dom, $key, $cell);
 					}
 				} 
@@ -4722,11 +4708,8 @@ class PMC_PDF extends TCPDF
             }
           }
           
-          
           $dom = $this->closeHTMLTagHandler($dom, $key, $cell, $maxbottomliney, $elkey_tes = $dom[$key]['elkey']);
-          // if($dom[$key]['value'] == 'table') {
-          //   $this->Line(0,$this->y, 100, $this->y);
-          // }
+          
           
 					if ($this->bordermrk[$this->page] > $old_bordermrk) {
 						$startlinepos += ($this->bordermrk[$this->page] - $old_bordermrk);
