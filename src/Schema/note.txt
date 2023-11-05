@@ -24,6 +24,8 @@ dml.xsd,
 brex.xsd,
 brdoc.xsd,
 pm.xsd,
+crew.xsd,
+comrep.xsd,
 ###
 
 ###
@@ -74,5 +76,22 @@ condcrossreftable.xsd
 dml.xsd,
 brex.xsd,
 brdoc.xsd,
+pm.xsd,
+crew.xsd
+###
+
+###
+2_november_2023 >>> add '%' into colwidth attribute pattern.
+
+Before: 
+<xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt))?"/>
+
+after:
+<xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt|%)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt|%))?"/>
+
+schema_changed:
+descript.xsd,
+crew.xsd,
+comrep.xsd,
 pm.xsd,
 ###

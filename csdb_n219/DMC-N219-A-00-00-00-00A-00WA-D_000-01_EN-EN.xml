@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <dmodule  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Schema/appliccrossreftable.xsd"> -->
+<dmodule  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../mpub/src/Schema/appliccrossreftable.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N219" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+        <language languageIsoCode="en" countryIsoCode="US" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate day="01" month="01" year="2016" />
+        <dmTitle>
+          <techName>N219</techName>
+          <infoName>Applicability Cross Reference Table</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus issueType="new">
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </originator>
+     <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />                -->
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <displayText>
+          <simplePara>N219 All</simplePara>
+        </displayText>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+						<issueInfo issueNumber="001" inWork="00"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <firstVerification verificationType="tabtop" />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <applicCrossRefTable>
+      <productAttributeList>
+        <!-- lebih baik dikasi value pattern-->
+        <!-- <productAttribute id="aircraft" valuePattern="/(N219)/"> -->
+        <!-- <productAttribute id="aircraft" valuePattern="/(Amphibi)/"> -->
+        <productAttribute id="aircraft">
+        <!-- <productAttribute id="aircraft"> -->
+          <name>N219</name>
+          <displayName></displayName>
+          <descr>The name of the Aircraft</descr>
+          <!-- <enumeration applicPropertyValues="N219" /> -->
+          <enumeration applicPropertyValues="N219|Amphibi" />
+          <!-- <enumeration applicPropertyValues="Amphibi" /> -->
+          <!-- <enumeration applicPropertyValues="3~5|10~15" /> -->
+        </productAttribute>
+        <productAttribute id="serialnumber" valueDataType="string" valuePattern="/N([0-9]{3})/">
+          <name>Serial Number</name>
+          <displayName>SN: </displayName>
+          <descr>Serial Number of Aircraft</descr>
+          <!-- <enumeration applicPropertyValues="N001" /> -->
+          <enumeration applicPropertyValues="N001~N010|N012~N015" />
+        </productAttribute>
+        <!-- <productAttribute id="model" valueDataType="string" valuePattern="/(N219)/"> -->
+        <!-- <productAttribute id="model" valueDataType="string" valuePattern="/N219/"> -->
+        <productAttribute id="model" valueDataType="string">
+          <name>Model Aircraft</name>
+          <displayName>Model: </displayName>
+          <descr>Model of Aircraft</descr>
+          <!-- Harus punya minimal valuePattern untuk value, else is null -->
+          <!-- <enumeration applicPropertyValues="N2189" /> -->
+        </productAttribute>
+      </productAttributeList>
+      <condCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </condCrossRefTableRef>
+      <productCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00Q" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </productCrossRefTableRef>
+    </applicCrossRefTable>
+  </content>
+
+</dmodule>

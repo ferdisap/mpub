@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pm pmType="pt51" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/pm.xsd">
+  <identAndStatusSection>
+    <pmAddress>
+      <pmIdent>
+        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0004" pmVolume="00" />
+        <language languageIsoCode="en" countryIsoCode="EN"/>
+        <issueInfo issueNumber="000" inWork="01" />
+      </pmIdent>
+      <pmAddressItems>
+        <issueDate year="2023" month="10" day="16" />
+        <pmTitle>Section 1</pmTitle>
+        <shortPmTitle>General</shortPmTitle>
+      </pmAddressItems>
+    </pmAddress>
+    <pmStatus>
+      <security securityClassification="05"/>
+      <controlAuthorityGroup>
+        <controlAuthority id="cat-001" controlAuthorityType="cat51" controlAuthoritySource="DGCA">
+          <controlAuthorityText>
+            <para><emphasis emphasisType="em01">DGCA Approved</emphasis></para>
+          </controlAuthorityText>
+        </controlAuthority>
+      </controlAuthorityGroup>
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+             <dmCode modelIdentCode="MALE" systemDiffCode="A"
+                systemCode="00" subSystemCode="0" subSubSystemCode="0"
+                assyCode="00" disassyCode="00" disassyCodeVariant="A"
+                infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </pmStatus>
+  </identAndStatusSection>
+  <content>
+    <pmEntry pmEntryType="pmt61">
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="040" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+    </pmEntry>
+  </content>
+</pm>

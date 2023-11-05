@@ -56,7 +56,6 @@ class Applic extends Element {
     foreach($result as $applicPropertyIdent => $testedValues){ //$values is array
       switch($this->andOr){
         case 'and':
-          // dump('and', $this->applicability);
           if($this->applicability[$applicPropertyIdent]){
             foreach($testedValues as $value){
               array_push($this->applicability[$applicPropertyIdent], $value);
