@@ -53,7 +53,8 @@ class PMC_male extends PMC_PDF
     $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
     $fontsize = $this->pmType_config['fontsize']['para'];
-    $this->SetFont($this->pmType_config['fontfamily'],);
+    // $this->SetFont($this->pmType_config['fontfamily']);
+    $this->SetFont($this->pmType_config['fontfamily'],'',null,'',true);
     
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
