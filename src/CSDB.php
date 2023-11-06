@@ -13,6 +13,9 @@ class CSDB {
   
   protected string $modelIdentCode;
   protected string $CSDB_path;
+  public static bool $CSDB_use_internal_error = true;
+  protected static array $errors = array();
+  public static string $processid = '';
   
   /**
    * Load CSDB object
@@ -49,10 +52,6 @@ class CSDB {
     $doc->load($filename, LIBXML_PARSEHUGE);
    
     return $doc;
-    // try {
-    // } catch (\Throwable $th) {
-    //   return false;
-    // }
   }
 
   public function setCsdbPath(string $app_path ,string $modelIdentCode = null)
@@ -68,28 +67,62 @@ class CSDB {
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
-  public static function importDocument(mixed $absolute_path = '', string $xml_string = '', string $rootname = '')
+  public static function importDocument(mixed $absolute_path = null, string $xml_string = null, string $rootname = '')
   {
+    libxml_use_internal_errors(true);
     $DOMDocument = null;
-    if($absolute_path != ''){
+    if(!empty($absolute_path)){
       $dom = CSDB::load($absolute_path);
       $DOMDocument = $dom;
-      if($DOMDocument){
-        if ($DOMDocument->firstElementChild->tagName != "{$rootname}") {
-          throw new \Exception("The root element must be <{$rootname}>", 1);
-        }
-      }
-    } else {
+    } 
+    elseif(!empty($xml_string)) {
       $dom = new \DOMDocument();
       $dom->loadXML($xml_string);
       $DOMDocument = $dom;
-      if($DOMDocument){
-        if ($DOMDocument->firstElementChild->tagName != "{$rootname}") {
+    } else {
+      return false;
+    }
+
+    // jika tidak ada firstElementChild, return false
+    if (!isset($DOMDocument->firstElementChild)) {
+
+      // jika rootname ada DAN firstElementChild tidak sama dengan rootname, return false atau error
+      if(!empty($rootname) AND ($DOMDocument->firstElementChild->tagName != "{$rootname}")){
+        if(!self::$CSDB_use_internal_error){
           throw new \Exception("The root element must be <{$rootname}>", 1);
+        } else {
+          if(self::$processid){
+            self::$errors[self::$processid][] = "The root element must be <{$rootname}>";
+          } else {
+            self::$errors[] = "The root element must be <{$rootname}>";
+          }
+          return false;
         }
       }
+      return false;
     }
+
     return $DOMDocument;
+  }
+
+  public static function get_errors(bool $deleteErrors = true, string $processid = ''){
+    if(!$deleteErrors){
+      if($processid AND isset(self::$errors[$processid])){
+        return self::$errors[$processid];
+      } else {
+        return self::$errors;
+      }
+    } 
+    elseif($processid AND isset(self::$errors[$processid])){
+      $errors = self::$errors[$processid];
+      self::$errors[$processid] = array();
+      return $errors;
+    } 
+    else {
+      $errors = self::$errors;
+      self::$errors = array();
+      return $errors;
+    }
   }
 
   /**
@@ -378,6 +411,23 @@ class CSDB {
     }
 
     return strtoupper($dmCode.$issueInfo.$languange).$format;
+  }
+
+  public static function resolve_pmIdent($pmIdent = null, array $idents = [], $prefix = 'PMC-', $format = '.xml'){
+    if(empty($idents)){
+      if(is_array($pmIdent)){
+        $pmIdent = $pmIdent[0];
+      }
+      $pmCode = self::resolve_pmCode($pmIdent->getElementsByTagName('pmCode')[0], $prefix);
+      $issueInfo = ($if = self::resolve_issueInfo($pmIdent->getElementsByTagName('issueInfo')[0])) ? "_".$if : '';
+      $languange = ($lg = self::resolve_languange($pmIdent->getElementsByTagName('language')[0])) ? "_".$lg : '';
+    } else {      
+      $pmCode = $idents[0];
+      $issueInfo = isset($idents[1]) ? "_".$idents[1] : '';
+      $languange = isset($idents[2]) ? "_".$idents[2] : '';
+    }
+
+    return strtoupper($pmCode.$issueInfo.$languange).$format;
   }
 
   public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = ''){
