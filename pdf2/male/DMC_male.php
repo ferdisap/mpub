@@ -22,6 +22,7 @@ class DMC_male extends DMC
 
   public function dump()
   {
+    // dd(count(explode(".",'10')));
     dump(func_get_args());
     // dd(func_get_args()[0] == func_get_args()[1]);
     // dd($any);

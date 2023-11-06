@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
   <xsl:template match="title">
     <!-- <xsl:param name="prefix"/> -->
     <xsl:param name="parentName" select="name(parent::*)"/>
@@ -14,7 +14,11 @@
         </xsl:variable>
 
         <xsl:variable name="strLength">
-          <xsl:value-of select="string-length(translate($numberedPar, '.', ''))"/>
+          <!-- diganti karena yang ini tidak bisa kalau posisi levelledpara >= 10 (2 digit akan di hitung 2, padahal harusnya terhitung 1) -->
+          <!-- <xsl:value-of select="string-length(translate($numberedPar, '.', ''))"/> -->
+          <xsl:variable name="l" select="php:function('preg_replace', '/\w+/', '?', $numberedPar)"/>
+          <xsl:variable name="s" select="php:function('preg_replace', '/\./', '', $l)"/>
+          <xsl:value-of select="string-length($s)"/>
         </xsl:variable>
 
         <xsl:variable name="h">

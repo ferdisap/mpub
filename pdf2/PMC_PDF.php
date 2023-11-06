@@ -47,18 +47,18 @@ class PMC_PDF extends TCPDF
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
    */
-  // public string $headerLogo = "../pdf2/assets/Logo-PTDI.jpg";
+  public string $headerLogo = "../pdf2/assets/Logo-PTDI.jpg";
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
    */
-  // public string $headerText = 'Header &#10; Text';
+  public string $headerText = 'Header &#10; Text';
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
    * This is located in the midle of the header
    */
-  // public string $headerTitle = 'Publication Title';
+  public string $headerTitle = 'Publication Title';
 
   /**
    * a text allow HTML entities or Number entities such &nbsp; or &#160;
@@ -162,7 +162,7 @@ class PMC_PDF extends TCPDF
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
     // $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
     $fontsize = $this->pmType_config['fontsize']['para'];
-    $this->SetFont($this->pmType_config['fontfamily']);
+    $this->SetFont($this->pmType_config['fontfamily'],'',null,'',false);
     // $this->SetFont('tahoma_0','',null,);
 
     $this->setHeaderMargin($headerMargin);
@@ -950,6 +950,12 @@ class PMC_PDF extends TCPDF
       if ($outline['l'] == 1) {
         $this->Ln(2);
         $this->setFont('', 'B',null,''); // tambahan
+      }
+      elseif ($outline['l'] == 2) {
+        $this->Ln(1.5);
+      }
+      elseif ($outline['l'] == 3) {
+        $this->Ln(1.0);
       }
       $this->Write(0, $txt, $link, false, $aligntext, false, 0, false, false, 0, $numwidth, '');
       if ($this->rtl) {

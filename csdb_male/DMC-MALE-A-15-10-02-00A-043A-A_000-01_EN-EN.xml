@@ -57,7 +57,6 @@
       <levelledPara>
         <title>Airspeed</title>
         <table>
-          <title>Airspeed Limitation</title>
           <tgroup cols="4">
             <colspec colname="col1" colnum="1" colwidth="50%"/>
             <colspec colname="col2" colnum="2" colwidth="15%"/>
@@ -98,7 +97,7 @@
                 <entry><para>&#160;</para></entry>
               </row>
               <row>
-                <entry><para>Rate of Descents</para></entry>
+                <entry colname="col1"><para>Rate of Descents</para></entry>
                 <entry spanname="col2-col4"><para>TBD</para></entry>
               </row>
             </tbody>
@@ -108,19 +107,19 @@
       <levelledPara>
         <title>Takeoff and Landing</title>
         <table>
-          <title>Takeoff and Landing Limitation</title>
           <tgroup cols="2">
+            <colspec colname="col1" colnum="1" colwidth="50%"/>
+            <colspec colname="col2" colnum="2" colwidth="50%"/>
             <thead>
               <row>
-                <entry><para>Item</para></entry>
-                <entry><para>Limitation</para></entry>
+                <entry><para><emphasis emphasisType="em01">Item</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Limitation</emphasis></para></entry>
               </row>
             </thead>
             <tbody>
               <row>
                 <entry><para>Weight</para></entry>
-                <entry><para>See Weight Limitation
-                  <internalRef internalRefId="lvp-008" internalRefTargetType="irtt07"/>
+                <entry><para>See Weight Limitation <internalRef internalRefId="lvp-008" internalRefTargetType="irtt07"/>
                   </para>
                 </entry>
               </row>
@@ -152,8 +151,331 @@
           </tgroup>
         </table>
       </levelledPara>
+      <levelledPara>
+        <title>Altitude, Attitude, and Range</title>
+        <table>
+          <tgroup cols="2">
+            <colspec colname="col1" colnum="1" colwidth="50%"/>
+            <colspec colname="col2" colnum="2" colwidth="30%"/>
+            <thead>
+              <row>
+                <entry><para><emphasis emphasisType="em01">Item</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Limitation</emphasis></para></entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><para>Max. Operating Altitude</para></entry>
+                <entry><para>1,500 ft</para></entry>
+              </row>
+              <row>
+                <entry><para>Cloud Ceilings</para></entry>
+                <entry><para>2,000 ft</para></entry>
+              </row>
+              <row>
+                <entry><para>Max. Operating Range</para></entry>
+                <entry><para>1.5 km or Visual LOS</para></entry>
+              </row>
+              <row>
+                <entry><para>Max. Pitch Angle</para></entry>
+                <entry><para>8&#176;</para></entry>
+              </row>
+              <row>
+                <entry><para>Max. Bank Angle</para></entry>
+                <entry><para>40&#176;</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara>
+        <title>Powerplant</title>
+        <levelledPara>
+          <title>Engine</title>
+          <table>
+            <tgroup cols="4">
+              <colspec colname="col1" colwidth="65%" colnum="1" />
+              <colspec colname="col2" colwidth="15%" colnum="2" />
+              <colspec colname="col3" colwidth="12%" colnum="3" />
+              <colspec colname="col4" colwidth="8%" colnum="4" />
+              <thead>
+                <row>
+                  <entry><para><emphasis emphasisType="em01">Parameter</emphasis></para></entry>
+                  <entry><para><emphasis emphasisType="em01">Min</emphasis></para></entry>
+                  <entry><para><emphasis emphasisType="em01">Max</emphasis></para></entry>
+                  <entry><para><emphasis emphasisType="em01">Unit</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Engine speed at idel</para></entry>
+                  <entry><para>1800</para></entry>
+                  <entry><para>-</para></entry>
+                  <entry><para>rpm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Engine speed</para></entry>
+                  <entry><para>-</para></entry>
+                  <entry><para>5800<footnote id="fnt-001"><para>Max. 5 minutes</para></footnote></para></entry>
+                  <entry><para>rpm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Take-off Performance(engine speed: 5800 rpm)</para></entry>
+                  <entry><para>-</para></entry>
+                  <entry><para>104</para></entry>
+                  <entry><para>kw</para></entry>
+                </row>
+                <row>
+                  <entry><para>Continuous performance (engine speed: 5500 rpm)</para></entry>
+                  <entry><para>-</para></entry>
+                  <entry><para>99<footnote id="fnt-002"><para>Without governor</para></footnote></para></entry>
+                  <entry><para>kW</para></entry>
+                </row>
+                <row>
+                  <entry><para>Manifold Temperature</para></entry>
+                  <entry><para>-</para></entry>
+                  <entry><para>50</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Maifold Pressure</para></entry>
+                  <entry><para>60</para></entry>
+                  <entry><para>1730</para></entry>
+                  <entry><para>hPa</para></entry>
+                </row>
+                <row>
+                  <entry><para>Boost Pressure</para></entry>
+                  <entry><para>Ambient pressure</para></entry>
+                  <entry><para>1730</para></entry>
+                  <entry><para>hPa</para></entry>
+                </row>
+                <row>
+                  <entry><para>Oil pressure at engine speed &lt;3500 rpm</para></entry>
+                  <entry><para>11.6</para></entry>
+                  <entry><para>72.5<footnote id="fnt-003"><para>Max. 5 seconds</para></footnote></para></entry>
+                  <entry><para>psi</para></entry>
+                </row>
+                <row>
+                  <entry><para>Oil pressure at engine speed &gt;3500 rpm</para></entry>
+                  <entry><para>29</para></entry>
+                  <entry><para>72.5<footnoteRef internalRefId="fnt-003"/></para></entry>
+                  <entry><para>psi</para></entry>
+                </row>
+                <row>
+                  <entry><para>Oil temperature at ground idle, start procedure and warm up<footnote id="fnt-004">
+                    <para>Operating the engine below (90 to 110 &#176;C / 194 to 230 &#176;F) may lead to 
+                      formation of condensation water in the lubrication system. To evaporate 
+                      possibly accumulated condensation water, at least once a day 100 °C (212 °F) 
+                      oil temperature must be reached </para></footnote></para>
+                  </entry>
+                  <entry><para>-20</para></entry>
+                  <entry><para>-100</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Oil temperature at normal operation<footnoteRef internalRefId="fnt-004"/></para></entry>
+                  <entry><para>50</para></entry>
+                  <entry><para>130</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Coolant temperature at ground idle, start procedure and warm up</para></entry>
+                  <entry><para>-20</para></entry>
+                  <entry><para>90</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Coolant temperature at normal operation.</para></entry>
+                  <entry><para>40</para></entry>
+                  <entry><para>120</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Ambient temperature at ground idle, start procedure and warm up.</para></entry>
+                  <entry><para>-20</para></entry>
+                  <entry><para>50</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Ambient temperature at normal operation.</para></entry>
+                  <entry><para>-40</para></entry>
+                  <entry><para>50</para></entry>
+                  <entry><para>&#176;C</para></entry>
+                </row>
+                <row>
+                  <entry><para>Fuel pressure at fuel rail.</para></entry>
+                  <entry><para>42</para></entry>
+                  <entry><para>45</para></entry>
+                  <entry><para>psi</para></entry>
+                </row>
+                <row>
+                  <entry><para>Acceptable Fuel pressure exceedance (max. 3 sec.)<footnote id="fnt-005"><para>Fuel pressure exceedance only allowed after power setting change</para></footnote></para></entry>
+                  <entry><para>36</para></entry>
+                  <entry><para>51</para></entry>
+                  <entry><para>psi</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </levelledPara>
+      </levelledPara>
+      <levelledPara>
+        <title>Fuel</title>
+        <para>Fuel Specification: Gasoline or AVGAS</para>
+        <para>Total Usable Fuel: TBD</para>
+      </levelledPara>
+      <levelledPara>
+        <title>Oil Specification</title>
+        <para>TBD</para>
+      </levelledPara>
+      <levelledPara>
+        <title>Propeller</title>
+        <table>
+          <tgroup cols="2" tgstyle="loa">
+            <colspec colnum="1" colname="col1" colwidth="30%"/>
+            <tbody>
+              <row>
+                <entry><para>Manufacturer:</para></entry>
+                <entry><para>Aerobat</para></entry>
+              </row>
+              <row>
+                <entry><para>Model number:</para></entry>
+                <entry><para>7966/7970</para></entry>
+              </row>
+              <row>
+                <entry><para>Type:</para></entry>
+                <entry><para>Fixed Pitch, 2 Blades</para></entry>
+              </row>
+              <row>
+                <entry><para>Diameter:</para></entry>
+                <entry><para>1,780 mm</para></entry>
+              </row>
+              <row>
+                <entry><para>Ground clearance:</para></entry>
+                <entry><para>507 mm</para></entry>
+              </row>
+              <row>
+                <entry><para>Blade angle:</para></entry>
+                <entry><para>TBD</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara>
+        <title>Powerplant Instrument Markings</title>
+        <para>TBD</para>
+        <para>((Pressure VS Temperature VS RPM) in minimum, normal, caution, max. Limit)</para>
+      </levelledPara>
+      <levelledPara>
+        <title>Miscellaneous Instrument Markings</title>
+        <para>TBD</para>
+        <para>(Ampere, voltage, air temp)</para>
+      </levelledPara>
       <levelledPara id="lvp-008">
         <title>Weight</title>
+        <table>
+          <tgroup cols="3">
+            <colspec colname="col1" colwidth="50%" colnum="1"/>
+            <colspec colname="col2" colwidth="20%" colnum="2"/>
+            <colspec colname="col3" colwidth="10%" colnum="3"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2"/>
+            <thead>
+              <row>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em01">Kind of Weight</emphasis></para></entry>
+                <entry colname="col3"><para><emphasis emphasisType="em01">kg</emphasis></para></entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><para>Maximum Takeoff Weight</para></entry>
+                <entry><para>MTOW</para></entry>
+                <entry><para>1050</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Landing Weight</para></entry>
+                <entry><para>MLW</para></entry>
+                <entry><para>1050</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Fule Weight</para></entry>
+                <entry><para>-</para></entry>
+                <entry><para>TBD</para></entry>
+              </row>
+              <row>
+                <entry><para>Maximum Zero Fuel Weight</para></entry>
+                <entry><para>MZFW</para></entry>
+                <entry><para>TBD</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara>
+        <title>Center of Gravity</title>
+        <para>Max. Forward: 30% MAC (demo flight only)</para>
+        <para>Max. Aft: 31% MAC (demo flight only)</para>
+        <figure>
+          <title>CG Limits</title>
+          <graphic infoEntityIdent="ICN-0001Z-00015-001-05.jpg"></graphic>
+        </figure>
+      </levelledPara>
+      <levelledPara>
+        <title>Maneuvering Load</title>
+        <table>
+          <tgroup cols="2">
+            <colspec colnum="1" colname="col1" colwidth="50%"/>
+            <colspec colnum="2" colname="col2" colwidth="20%"/>
+            <thead>
+              <row>
+                <entry><para><emphasis emphasisType="em01">Flap configuration</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Load Factor(g)</emphasis></para></entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><para>Extended</para></entry>
+                <entry><para>0.00 to +1.60</para></entry>
+              </row>
+              <row>
+                <entry><para>Retracted (not applicable)</para></entry>
+                <entry><para>-0.50 to +2.00</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara>
+        <title>Minimum Crew</title>
+        <para>Below the following list of crew:
+          <randomList>
+            <listItem>
+              <para>1 person of Pilot</para>
+            </listItem>
+            <listItem>
+              <para>1 person of Spotter</para>
+            </listItem>
+            <listItem>
+              <para>1 person of FTE</para>
+            </listItem>
+            <listItem>
+              <para>1 person of Mission Commander</para>
+            </listItem>
+            <listItem>
+              <para>3 persons of GCS operators</para>
+            </listItem>
+          </randomList>
+        </para>
+        <para>Additional crew may be prohibited depending of mission requirement or will be described in each section.</para>
+        <para>Its one container is a house of others component. To enter into the container,
+          people need to access the primary door by using finger print, or by accessing its
+          emergency door. Two power generator is needed for supplying the energy as
+          electrical source for others component, one of them is for redundant. Two
+          antennas are HF and V/UHF which can up position while being in operated and
+          down position while being in inoperated. To set the antenna position in higher
+          or lower, people need to operate the hydraulic actuator on LHS compartment
+          and pneumatic actuator on RHS compartment. Four console bays are computers
+          of operator crew in work. </para>
       </levelledPara>
     </description>
   </content>

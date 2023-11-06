@@ -39,7 +39,11 @@
         <xsl:number/>
       </xsl:variable>
       <xsl:variable name="level">
-        <xsl:value-of select="string-length(translate($numberedPar, '.', ''))"/>
+        <!-- diganti karena yang ini tidak bisa kalau posisi levelledpara >= 10 (2 digit akan di hitung 2, padahal harusnya terhitung 1) -->
+        <!-- <xsl:value-of select="string-length(translate($numberedPar, '.', ''))"/> -->
+          <xsl:variable name="l" select="php:function('preg_replace', '/\w+/', '?', $numberedPar)"/>
+          <xsl:variable name="s" select="php:function('preg_replace', '/\./', '', $l)"/>
+          <xsl:value-of select="string-length($s)"/>
       </xsl:variable>
       
       <!-- set the padding left for different level levelledPara -->

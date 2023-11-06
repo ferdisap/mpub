@@ -80,7 +80,7 @@
       <div>
         <table style="width:100%">
           <tr>
-            <td style="width:30%"><img src="{$logo_ptdi}" style="width:20mm"/></td>
+            <td style="width:20%"><img src="{$logo_ptdi}" style="width:20mm"/></td>
             <td style="width:70%;font-size:7">
               <br/>
               <br/>

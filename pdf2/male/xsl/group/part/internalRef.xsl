@@ -90,6 +90,7 @@
       <!-- irtt07: para -->
       <xsl:when test="@internalRefTargetType = 'irtt07'">
         <xsl:variable name="refId" select="@internalRefId"/>
+        <xsl:text>&#160;</xsl:text>
         <xsl:value-of select="'para. '"/>
         
         <!-- prefix -->

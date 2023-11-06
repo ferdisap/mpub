@@ -44,6 +44,9 @@ $pmType = [
         'terminologies_notice' => [
           'cellpadding' => '1mm',
         ],
+        'alltdcenter' => [
+          'cellpadding' => '1mm',
+        ],
       ],
     ],
     'attributes' =>[
