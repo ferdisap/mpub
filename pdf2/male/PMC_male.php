@@ -90,8 +90,14 @@ class PMC_male extends PMC_PDF
         case 'dmRef':
           $this->setFontSize($fontsize);
           $this->pmEntry_level = $level;
-          $this->dmRef($child);
           $this->resetFootnotes();
+
+          if(($this->page > 1) AND ($this->page % 2 == 0)){
+            $this->AddPage();
+            $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true,$leftMargin, $rightMargin);
+          }
+
+          $this->dmRef($child);
           $this->addIntentionallyLeftBlankPage($this);
           break;
         case 'pmRef':
@@ -123,10 +129,10 @@ class PMC_male extends PMC_PDF
   }
 
   private function dmRef(\DOMElement $dmRef){
-    if(($this->page > 1) AND ($this->page % 2 == 0)){
+    // if(($this->page > 1) AND ($this->page % 2 == 0)){
       // $this->AddPage();
       // $this->setBooklet($this->lMargin,$this->rMargin);
-    }
+    // }
 
     // $dmc = new DMC();
     $dmc = DMC::instance('male');

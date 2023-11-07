@@ -37,18 +37,23 @@
 
   <xsl:template match="descrCrew">
     <!-- kalau ada halaman yang bermasalah, coba hapus div ini -->
-    <!-- <div> -->
+    <div>
       <xsl:apply-templates/>
-    <!-- </div> -->
+    </div>
   </xsl:template>
 
   <xsl:template match="crewDrill">
+    <br/>
     <div>
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>
-      <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::set_last_crewDrillStep',0)"/> -->
     </div>
+    <br/>
+  </xsl:template>
+
+  <xsl:template match="title[parent::crewDrill]">
+    <h4><xsl:apply-templates/></h4>
   </xsl:template>
 
   <xsl:template match="subCrewDrill">
@@ -165,8 +170,11 @@
     <!-- jangan diatur font-size karena akan membuat menambah y dan pagebreak setelahnya sehinggal ada sisa halaman kosong panjang, walaupun size lebih kecil -->
     <!-- <span captionline="true" calign="T" style="font-size:7" fillcolor="255,255,255" textcolor="0,0,0"> -->
     <span captionline="true" calign="T" fillcolor="255,255,255" textcolor="0,0,0">
+      <xsl:text>[</xsl:text>
       <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getCrewMember', .)"/>
+      <xsl:text>]</xsl:text>
     </span>
+    <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getCrewMember', .)"/> -->
   </xsl:template>
 
   <xsl:template match="case">
@@ -178,6 +186,7 @@
   </xsl:template>
 
   <xsl:template match="caseCond">
+    <br/>
     <span>
       <xsl:apply-templates/>
     </span>

@@ -3,7 +3,7 @@
   <identAndStatusSection>
     <dmAddress>
       <dmIdent>
-        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="040" infoCodeVariant="A" itemLocationCode="A" />
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="1" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="040" infoCodeVariant="A" itemLocationCode="A" />
         <language languageIsoCode="en" countryIsoCode="EN" />
         <issueInfo issueNumber="000" inWork="01" />
       </dmIdent>
@@ -80,40 +80,40 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Span</para></entry>
-                  <entry><para>: 16,000 mm</para></entry>
+                  <entry><para>Span:</para></entry>
+                  <entry><para>16,000 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Overall length</para></entry>
-                  <entry><para>: 8,647 mm</para></entry>
+                  <entry><para>Overall length:</para></entry>
+                  <entry><para>8,647 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Overall height</para></entry>
-                  <entry><para>: 2,736 mm</para></entry>
+                  <entry><para>Overall height:</para></entry>
+                  <entry><para>2,736 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Fuselage length</para></entry>
-                  <entry><para>: 8,288 mm</para></entry>
+                  <entry><para>Fuselage length:</para></entry>
+                  <entry><para>8,288 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Wing area</para></entry>
-                  <entry><para>: 12.8 m<superScript>2</superScript></para></entry>
+                  <entry><para>Wing area:</para></entry>
+                  <entry><para>12.8 m<superScript>2</superScript></para></entry>
                 </row>
                 <row>
-                  <entry><para>Wing MAC</para></entry>
-                  <entry><para>: 25%</para></entry>
+                  <entry><para>Wing MAC:</para></entry>
+                  <entry><para>25%</para></entry>
                 </row>
                 <row>
-                  <entry><para>Wing span</para></entry>
-                  <entry><para>: 16,000 mm</para></entry>
+                  <entry><para>Wing span:</para></entry>
+                  <entry><para>16,000 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Wing aspect ration</para></entry>
-                  <entry><para>: 20</para></entry>
+                  <entry><para>Wing aspect ration:</para></entry>
+                  <entry><para>20</para></entry>
                 </row>
                 <row>
-                  <entry><para>V-tail span</para></entry>
-                  <entry><para>: 2,345 mm</para></entry>
+                  <entry><para>V-tail span:</para></entry>
+                  <entry><para>2,345 mm</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -129,12 +129,12 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Wheel base length</para></entry>
-                  <entry><para>: 3,170 mm</para></entry>
+                  <entry><para>Wheel base length:</para></entry>
+                  <entry><para>3,170 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Max. LG track width</para></entry>
-                  <entry><para>: 2,300 mm</para></entry>
+                  <entry><para>Max. LG track width:</para></entry>
+                  <entry><para>2,300 mm</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -150,20 +150,20 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Number of engine</para></entry>
-                  <entry><para>: 1</para></entry>
+                  <entry><para>Number of engine:</para></entry>
+                  <entry><para>1</para></entry>
                 </row>
                 <row>
-                  <entry><para>Manufacturer</para></entry>
-                  <entry><para>: Rotax</para></entry>
+                  <entry><para>Manufacturer:</para></entry>
+                  <entry><para>Rotax</para></entry>
                 </row>
                 <row>
-                  <entry><para>Model Number</para></entry>
-                  <entry><para>: 915 iS</para></entry>
+                  <entry><para>Model Number:</para></entry>
+                  <entry><para>915 iS</para></entry>
                 </row>
                 <row>
-                  <entry><para>Type</para></entry>
-                  <entry><para>: Reciprocating, 4 cylinders, #ln; Compression Ratio 8.2 : 1</para></entry>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>Reciprocating, 4 cylinders, #ln; Compression Ratio 8.2 : 1</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -179,24 +179,24 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Manufacturing</para></entry>
-                  <entry><para>: Aerobat</para></entry>
+                  <entry><para>Manufacturing:</para></entry>
+                  <entry><para>Aerobat</para></entry>
                 </row>
                 <row>
-                  <entry><para>Model Number</para></entry>
-                  <entry><para>: 7966/7970</para></entry>
+                  <entry><para>Model Number:</para></entry>
+                  <entry><para>7966/7970</para></entry>
                 </row>
                 <row>
-                  <entry><para>Type</para></entry>
-                  <entry><para>: Fixed Pitch, 2 Blades</para></entry>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>Fixed Pitch, 2 Blades</para></entry>
                 </row>
                 <row>
-                  <entry><para>Diameter</para></entry>
-                  <entry><para>: 1,780 mm</para></entry>
+                  <entry><para>Diameter:</para></entry>
+                  <entry><para>1,780 mm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Ground clearance</para></entry>
-                  <entry><para>: 507 mm</para></entry>
+                  <entry><para>Ground clearance:</para></entry>
+                  <entry><para>507 mm</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -212,16 +212,16 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Fuel grade</para></entry>
-                  <entry><para>: Gasoline or AVGAS</para></entry>
+                  <entry><para>Fuel grade:</para></entry>
+                  <entry><para>Gasoline or AVGAS</para></entry>
                 </row>
                 <row>
-                  <entry><para>Total fuel capacity</para></entry>
-                  <entry><para>: 29 kg</para></entry>
+                  <entry><para>Total fuel capacity:</para></entry>
+                  <entry><para>29 kg</para></entry>
                 </row>
                 <row>
-                  <entry><para>Usable fuel</para></entry>
-                  <entry><para>: TBD</para></entry>
+                  <entry><para>Usable fuel:</para></entry>
+                  <entry><para>TBD</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -237,24 +237,24 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Oil grade</para></entry>
-                  <entry><para>: TBD</para></entry>
+                  <entry><para>Oil grade:</para></entry>
+                  <entry><para>TBD</para></entry>
                 </row>
                 <row>
-                  <entry><para>Viscosity Recommended</para></entry>
-                  <entry><para>: TBD</para></entry>
+                  <entry><para>Viscosity Recommended:</para></entry>
+                  <entry><para>TBD</para></entry>
                 </row>
                 <row>
-                  <entry><para>Total oil capcacity</para></entry>
-                  <entry><para>: TBD</para></entry>
+                  <entry><para>Total oil capcacity:</para></entry>
+                  <entry><para>TBD</para></entry>
                 </row>
                 <row>
-                  <entry><para>Total Drain and refill qty.</para></entry>
-                  <entry><para>: TBD</para></entry>
+                  <entry><para>Total Drain and refill qty.:</para></entry>
+                  <entry><para>TBD</para></entry>
                 </row>
                 <row>
-                  <entry><para>Oil qty. operating range</para></entry>
-                  <entry><para>: TBD</para></entry>
+                  <entry><para>Oil qty. operating range:</para></entry>
+                  <entry><para>TBD</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -270,20 +270,20 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>MRW</para></entry>
-                  <entry><para>: 1,050 kg</para></entry>
+                  <entry><para>MRW:</para></entry>
+                  <entry><para>1,050 kg</para></entry>
                 </row>
                 <row>
-                  <entry><para>MTOW</para></entry>
-                  <entry><para>: 1,050</para></entry>
+                  <entry><para>MTOW:</para></entry>
+                  <entry><para>1,050</para></entry>
                 </row>
                 <row>
-                  <entry><para>MLW</para></entry>
-                  <entry><para>: 1,050</para></entry>
+                  <entry><para>MLW:</para></entry>
+                  <entry><para>1,050</para></entry>
                 </row>
                 <row>
-                  <entry><para>MZFW</para></entry>
-                  <entry><para>: 957 kg</para></entry>
+                  <entry><para>MZFW:</para></entry>
+                  <entry><para>957 kg</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -320,16 +320,16 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Length</para></entry>
-                  <entry><para>: 5.999 m (19.685 ft)</para></entry>
+                  <entry><para>Length:</para></entry>
+                  <entry><para>5.999 m (19.685 ft)</para></entry>
                 </row>
                 <row>
-                  <entry><para>Width</para></entry>
-                  <entry><para>: 2.339 m (7.677 ft)</para></entry>
+                  <entry><para>Width:</para></entry>
+                  <entry><para>2.339 m (7.677 ft)</para></entry>
                 </row>
                 <row>
-                  <entry><para>Heihgt</para></entry>
-                  <entry><para>: 2.27 m (7.48 ft)</para></entry>
+                  <entry><para>Heihgt:</para></entry>
+                  <entry><para>2.27 m (7.48 ft)</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -345,16 +345,16 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Type</para></entry>
-                  <entry><para>: Two cyclnder, 4-stroke, Air cooled, OHV</para></entry>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>Two cyclnder, 4-stroke, Air cooled, OHV</para></entry>
                 </row>
                 <row>
-                  <entry><para>Fuel</para></entry>
-                  <entry><para>: Gasoline</para></entry>
+                  <entry><para>Fuel:</para></entry>
+                  <entry><para>Gasoline</para></entry>
                 </row>
                 <row>
-                  <entry><para>Capacity</para></entry>
-                  <entry><para>: 12 kWatt</para></entry>
+                  <entry><para>Capacity:</para></entry>
+                  <entry><para>12 kWatt</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -370,36 +370,36 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>Type</para></entry>
-                  <entry><para>: V/UHF 2x2 MIMO Sector Panel Antenna #ln; Omni Antenna Half Wave Dipole</para></entry>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>V/UHF 2x2 MIMO Sector Panel Antenna #ln; Omni Antenna Half Wave Dipole</para></entry>
                 </row>
                 <row>
-                  <entry><para>Collar Type</para></entry>
-                  <entry><para>: Non-Locking</para></entry>
+                  <entry><para>Collar Type:</para></entry>
+                  <entry><para>Non-Locking</para></entry>
                 </row>
                 <row>
-                  <entry><para>Class</para></entry>
-                  <entry><para>: Standard Duty</para></entry>
+                  <entry><para>Class:</para></entry>
+                  <entry><para>Standard Duty</para></entry>
                 </row>
                 <row>
-                  <entry><para>Max. Payload</para></entry>
-                  <entry><para>: 32 kg</para></entry>
+                  <entry><para>Max. Payload:</para></entry>
+                  <entry><para>32 kg</para></entry>
                 </row>
                 <row>
-                  <entry><para>Nested Height</para></entry>
-                  <entry><para>: 1.6 m</para></entry>
+                  <entry><para>Nested Height:</para></entry>
+                  <entry><para>1.6 m</para></entry>
                 </row>
                 <row>
-                  <entry><para>Extended Height</para></entry>
-                  <entry><para>: 6.1 m</para></entry>
+                  <entry><para>Extended Height:</para></entry>
+                  <entry><para>6.1 m</para></entry>
                 </row>
                 <row>
-                  <entry><para>Base Tube Diameter</para></entry>
-                  <entry><para>: 12.7 cm</para></entry>
+                  <entry><para>Base Tube Diameter:</para></entry>
+                  <entry><para>12.7 cm</para></entry>
                 </row>
                 <row>
-                  <entry><para>Top Tube Diameter</para></entry>
-                  <entry><para>: 6.4 cm</para></entry>
+                  <entry><para>Top Tube Diameter:</para></entry>
+                  <entry><para>6.4 cm</para></entry>
                 </row>
               </tbody>
             </tgroup>
@@ -415,28 +415,28 @@
               </thead>
               <tbody>
                 <row>
-                  <entry><para>UPS capacity</para></entry>
-                  <entry><para>: 3000 VA</para></entry>
+                  <entry><para>UPS capacity:</para></entry>
+                  <entry><para>3000 VA</para></entry>
                 </row>
                 <row>
-                  <entry><para>Crew radio</para></entry>
-                  <entry><para>: Handheld Airband Radio iCom IC-F1100DT</para></entry>
+                  <entry><para>Crew radio:</para></entry>
+                  <entry><para>Handheld Airband Radio iCom IC-F1100DT</para></entry>
                 </row>
                 <row>
-                  <entry><para>Keyboard</para></entry>
-                  <entry><para>: STORM 2230 Series Vandal Resistant</para></entry>
+                  <entry><para>Keyboard:</para></entry>
+                  <entry><para>STORM 2230 Series Vandal Resistant</para></entry>
                 </row>
                 <row>
-                  <entry><para>Joystick</para></entry>
-                  <entry><para>: Thrustmaster 2960720</para></entry>
+                  <entry><para>Joystick:</para></entry>
+                  <entry><para>Thrustmaster 2960720</para></entry>
                 </row>
                 <row>
-                  <entry><para>TV Monitor</para></entry>
-                  <entry><para>: Samsung C43J89</para></entry>
+                  <entry><para>TV Monitor:</para></entry>
+                  <entry><para>Samsung C43J89</para></entry>
                 </row>
                 <row>
-                  <entry><para>CPU</para></entry>
-                  <entry><para>: Intel Xeon W 4.00 GHz - 4.50 GHz, 8.25 MB SmartCache, 4C/8T</para></entry>
+                  <entry><para>CPU:</para></entry>
+                  <entry><para>Intel Xeon W 4.00 GHz - 4.50 GHz, 8.25 MB SmartCache, 4C/8T</para></entry>
                 </row>
               </tbody>
             </tgroup>

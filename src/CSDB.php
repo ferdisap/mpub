@@ -432,17 +432,17 @@ class CSDB {
 
   public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = ''){
     $CSDB = new self();
-
+    
     $domxpath = new DOMXPath($doc);
-    $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/dmStatus/applicCrossRefTableRef/descendant::dmRefIdent")[0];
+    $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/descendant::applicCrossRefTableRef/descendant::dmRefIdent")[0];
     $ACTdoc = self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent),'', 'dmodule');
     $CSDB->ACTdoc = $ACTdoc;
-
+    
     $actdomxpath = new DOMXPath($ACTdoc);
     $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/condCrossRefTableRef/descendant::dmRefIdent")[0];
     $CCTdoc =  self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent),'', 'dmodule');
     $CSDB->CCTdoc = $CCTdoc;
-
+    
     $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/productCrossRefTableRef/descendant::dmRefIdent")[0];
     $PCTdoc =  self::importDocument($absolute_path_csdbInput. DIRECTORY_SEPARATOR. self::resolve_dmIdent($dmRefIdent),'', 'dmodule');
     $CSDB->PCTdoc = $PCTdoc;

@@ -40,7 +40,8 @@
           <simplePara>MALE All</simplePara>
         </displayText> -->
         <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/> -->
-        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N007~N009"/>
+        <!-- <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N007~N009"/> -->
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
       </applic>
       <brexDmRef>
         <dmRef>

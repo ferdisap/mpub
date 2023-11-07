@@ -64,7 +64,7 @@
             </td>
             <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_issueDate', //identAndStatusSection/dmAddress/dmAddressItems/issueDate)"/></td>
             <!-- <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\CSDB::get_applic_display_text', //identAndStatusSection/dmStatus/applic)"/></td> -->
-            <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty', '', 'first')"/></td>
+            <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicability', '', 'first')"/></td>
           </tr>
         </xsl:for-each>
         </tbody>

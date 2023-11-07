@@ -20,6 +20,8 @@ class DMC
   protected $applicability = '';
   public $lastnumberoflevelledpara1 = 5;
 
+  use Applicability;
+
   public static function instance(string $modelIdentCode )
   {
     $modelIdentCode = strtolower($modelIdentCode);
@@ -48,6 +50,8 @@ class DMC
     
     $issueDate = $this->DOMDocument->getElementsByTagName('issueDate')[0];
     $this->issueDate = empty($issueDate) ? '' : CSDB::resolve_issueDate($issueDate, "M d, Y") ;
+
+    $this->pdf->applicability = $this->getApplicability('','first','false');
     
     // $assyCode = number_format($this->DOMDocument->getElementsByTagName('dmCode')[0]->getAttribute('assyCode'));
     // $dmTitle = $this->DOMDocument->getElementsByTagName('dmTitle')[0];
@@ -65,45 +69,45 @@ class DMC
     // $this->pdf->Bookmark($techname.($infoname ? '-'. $infoname : ''),$this->pdf->pmEntry_level += 1);
   }
 
-  public function getApplicabilty($id = '', $options = '', $useDisplayName = true){
-    $appl = CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
-    // dd($appl);
-    $this->applicability = $appl['applicability'];
-    $CSDB = $appl['CSDB'];
+  // public function getApplicability($id = '', $options = '', $useDisplayName = true){
+  //   $appl = CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
+  //   // dd($appl);
+  //   $this->applicability = $appl['applicability'];
+  //   $CSDB = $appl['CSDB'];
     
-    if($id){
-      if(!isset($this->applicability[$id])) {
-        throw new Exception("No such $id inside $this->dmIdent", 1);
-      };      
-      $str = '';
-      foreach($this->applicability[$id] as $applicPropertyIdent => $stringApplic){
-        if($applicPropertyIdent[0] == '%') continue;
-        $str .= $stringApplic;
-      }
-      return $str;
-    }
-    switch ($options) {
-      case 'first':
-        $str = '';
-        foreach($this->applicability[array_key_first($this->applicability)] as $applicPropertyIdent => $stringApplic){
-          if($applicPropertyIdent[0] == '%') continue;
-          $str .= $stringApplic;
-        }
-        if(!$useDisplayName) return $str;
-        $applicPropertyIdent = array_key_first($this->applicability[array_key_first($this->applicability)]);
-        $applicPropertyType = $this->applicability[array_key_first($this->applicability)]['%APPLICPROPERTYTYPE'];
-        // dd($CSDB);
-        $ct = ($applicPropertyType == 'prodattr') ? $CSDB->ACTdoc : $CSDB->CCTdoc;
-        $ctxpath = new DOMXPath($ct);
-        $dt = $ctxpath->evaluate("//productAttribute[@id = '{$applicPropertyIdent}']")[0];
-        $displayName = $dt->getElementsByTagName('displayName')[0];
-        if($displayName){
-          $str = $displayName->nodeValue . $str;
-        }
-        return $str;
-    }
-    return $this->applicability; // array
-  }
+  //   if($id){
+  //     if(!isset($this->applicability[$id])) {
+  //       throw new Exception("No such $id inside $this->dmIdent", 1);
+  //     };      
+  //     $str = '';
+  //     foreach($this->applicability[$id] as $applicPropertyIdent => $stringApplic){
+  //       if($applicPropertyIdent[0] == '%') continue;
+  //       $str .= $stringApplic;
+  //     }
+  //     return $str;
+  //   }
+  //   switch ($options) {
+  //     case 'first':
+  //       $str = '';
+  //       foreach($this->applicability[array_key_first($this->applicability)] as $applicPropertyIdent => $stringApplic){
+  //         if($applicPropertyIdent[0] == '%') continue;
+  //         $str .= $stringApplic;
+  //       }
+  //       if(!$useDisplayName) return $str;
+  //       $applicPropertyIdent = array_key_first($this->applicability[array_key_first($this->applicability)]);
+  //       $applicPropertyType = $this->applicability[array_key_first($this->applicability)]['%APPLICPROPERTYTYPE'];
+  //       // dd($CSDB);
+  //       $ct = ($applicPropertyType == 'prodattr') ? $CSDB->ACTdoc : $CSDB->CCTdoc;
+  //       $ctxpath = new DOMXPath($ct);
+  //       $dt = $ctxpath->evaluate("//productAttribute[@id = '{$applicPropertyIdent}']")[0];
+  //       $displayName = $dt->getElementsByTagName('displayName')[0];
+  //       if($displayName){
+  //         $str = $displayName->nodeValue . $str;
+  //       }
+  //       return $str;
+  //   }
+  //   return $this->applicability; // array
+  // }
 
   public function render()
   {
@@ -140,7 +144,8 @@ class DMC
       $tmpl = $this->pdf->startTemplate($w,$h);
       $this->pdf->StartTransform();
       $this->pdf->setFontSize(6);
-      $this->pdf->Rotate(90,18,18);
+      // $this->pdf->Rotate(90,18,18);
+      $this->pdf->Rotate(90,30,30);
       $this->pdf->Text('','',$this->pdf->page_ident);
       $this->pdf->StopTransform();
       $this->pdf->endTemplate();

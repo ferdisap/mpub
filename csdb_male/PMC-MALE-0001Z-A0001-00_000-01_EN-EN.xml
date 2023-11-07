@@ -28,6 +28,8 @@
                 systemCode="00" subSystemCode="0" subSubSystemCode="0"
                 assyCode="00" disassyCode="00" disassyCodeVariant="A"
                 infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
         </dmRef>
       </applicCrossRefTableRef>
@@ -76,6 +78,13 @@
       <pmRef>
         <pmRefIdent>
           <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0005" pmVolume="00"/>
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </pmRefIdent>
+      </pmRef>
+      <pmRef>
+        <pmRefIdent>
+          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0006" pmVolume="00"/>
           <issueInfo issueNumber="000" inWork="01" />
           <language languageIsoCode="en" countryIsoCode="EN" />
         </pmRefIdent>

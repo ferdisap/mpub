@@ -21,6 +21,10 @@
   <!-- <xsl:include href="custom_getPosition.xsl"/> -->
   <!-- BERHASIL, cek di demo5 04. -->
   
+  
+  <xsl:param name="absolute_asset_path"/>
+  <xsl:param name="absolute_path_csdbInput"/>
+
   <xsl:include href="attribute/id.xsl" />
   <xsl:include href="attribute/cgmark.xsl" />
   <xsl:include href="helper/position.xsl"/>
@@ -44,7 +48,6 @@
   <xsl:param name="fontsize_figure_title"/>
 
   <xsl:param name="dmOwner"/>
-  <xsl:param name="absolute_asset_path"/>
   
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 

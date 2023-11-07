@@ -36,9 +36,7 @@
         </dmRef>
       </applicCrossRefTableRef>
       <applic>
-        <displayText>
-          <simplePara>MALE All</simplePara>
-        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
       </applic>
       <brexDmRef>
         <dmRef>

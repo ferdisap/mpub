@@ -67,8 +67,12 @@
                 <xsl:value-of select="$strLength"/>
               </xsl:attribute>        
               <xsl:attribute name="bookmarktxt">
-                <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
-                <xsl:text>.</xsl:text>
+                <!-- <xsl:text>SECTION </xsl:text>
+                <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@subSystemCode)"/>
+                <xsl:text> - </xsl:text> -->
+                <!-- <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/> -->
+                <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@subSystemCode)"/>
+                <xsl:text> - </xsl:text>
                 <xsl:value-of select="$numberedPar"/>
                 <xsl:text>&#160;&#160;</xsl:text>
                 <xsl:value-of select="text()"/>
@@ -76,8 +80,8 @@
 
               <!-- applying text -->
               <!-- $numberedPar= 3.1.2 artinya level 3, di posisi 2. Top Ancestor adalah level 1, posisi 3  -->
-              <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
-              <xsl:text>.</xsl:text>
+              <!-- <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
+              <xsl:text>.</xsl:text> -->
               <xsl:value-of select="$numberedPar"/>
               <xsl:text>&#160;&#160;&#160;</xsl:text>
               <xsl:apply-templates/>

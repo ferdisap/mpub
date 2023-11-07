@@ -15,6 +15,8 @@ use TCPDF_IMAGES;
 
 class PMC_PDF extends TCPDF
 {
+  use Applicability;
+
   protected int $vgutter = 0;
 
   protected string $absolute_path_csdbOutput;
@@ -113,6 +115,8 @@ class PMC_PDF extends TCPDF
     $format = $this->pmType_config['page']['format'];
     $this->setPageFormat($format);  
     $this->setPageOrientation($this->get_pmType_config()['page']['orientation']);  
+    
+    $this->applicability = $this->getApplicability('','first','false');
   }
   /**
    * @param string $aa_name
@@ -2458,7 +2462,8 @@ class PMC_PDF extends TCPDF
 			case 'h4':
 			case 'h5':
 			case 'h6': {
-				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				// $this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				$this->addHTMLVertSpace(0, 0, $cell, $firsttag);
 				break;
 			}
 			// Form fields (since 4.8.000 - 2009-09-07)

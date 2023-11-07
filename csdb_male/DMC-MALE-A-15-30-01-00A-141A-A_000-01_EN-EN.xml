@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/crew.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="07" />
+        <dmTitle>
+          <techName>Engine Fire and Smoke</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <crew>
+      <descrCrew>
+        <levelledPara>
+          <crewDrill orderedStepsFlag="1">
+            <title>On Ground</title>
+            <para>Indication: TBD</para>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Throttle</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para>IDLE</para></response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Brake</para></challenge>
+                <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response>
+                  <para>APPLIED</para>
+                </response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Engine</para></challenge>
+                <crewMemberGroup>
+                    <crewMember crewMemberType="cm03"/>
+                </crewMemberGroup>
+                <response>
+                  <para>SHUTDOWN</para>
+                </response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Fire extinguisher</para></challenge>
+                <crewMemberGroup>
+                    <crewMember crewMemberType="cm07"/>
+                </crewMemberGroup>
+                <response>
+                  <para>APPLIED</para>
+                </response>
+              </challengeAndResponse>
+            </crewDrillStep>
+          </crewDrill>
+        </levelledPara>
+        
+        <levelledPara>
+          <crewDrill>
+            <title>In Flight</title>
+            <crewDrillStep>
+              <crewProcedureName>
+                <para>Emergency landing procedure.</para>
+              </crewProcedureName>
+            </crewDrillStep>
+          </crewDrill>
+        </levelledPara>
+      </descrCrew>
+    </crew>
+  </content>
+</dmodule>

@@ -14,7 +14,7 @@ $pmType = [
       'orientation' => 'P',
       'unit' => 'mm',
       'format' => 'A5',
-      'margins' => [ 'L' => 20, 'T' => 17, 'R' => 10, 'B' => 5 ],
+      'margins' => [ 'L' => 20, 'T' => 17, 'R' => 10, 'B' => 12 ],
       'headerMargin' => 5,
       'footerMargin' => 10,
     ],
@@ -47,13 +47,25 @@ $pmType = [
         'alltdcenter' => [
           'cellpadding' => '1mm',
         ],
+        'engine_limitation' => [
+          'cellpadding' => '1mm',
+        ],
+        // 'gcs_limitation' => [
+        //   'cellpadding' => '1mm',
+        // ]
+        
       ],
     ],
     'attributes' =>[
       'crewMemberType' => [
-        'cm02' => 'CM1',
-        'cm03' => 'CM2',
-        'cm04' => 'FN',
+        'cm02' => 'PIL',
+        'cm03' => 'GCSOP',
+        'cm04' => 'GCSOP#1',
+        'cm05' => 'GCSOP#2',
+        'cm06' => 'GCSOP#3',
+        'cm07' => 'Tech',
+        'cm08' => 'ALL',
+        'cm09' => 'SPOT',
       ]
     ],
   ],

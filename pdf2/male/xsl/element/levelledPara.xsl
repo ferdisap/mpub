@@ -29,8 +29,8 @@
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 
   <xsl:template match="levelledPara">
-    <!-- <div> -->
     <div>
+    <!-- <div style="border:1px solid red"> -->
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
 
@@ -70,11 +70,11 @@
         </xsl:choose>
       </xsl:attribute>
 
-      <xsl:if test="$level = '1'">
+      <!-- <xsl:if test="$level = '1'"> -->
         <!-- <xsl:attribute name="addIntentionallyLeftBlank">true</xsl:attribute> -->
         <!-- <xsl:variable name="pos"><xsl:number/></xsl:variable> -->
         <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::set_lastnumberoflevelledpara1', 1)"/> -->
-      </xsl:if>
+      <!-- </xsl:if> -->
 
       <xsl:apply-templates/>
     </div>

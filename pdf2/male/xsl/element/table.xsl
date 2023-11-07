@@ -27,8 +27,8 @@
       <xsl:value-of select="count(parent::table/tgroup)"/>
     </xsl:variable>
 
-    <!-- <div style="page-break-inside: avoid"> -->
-    <div style="page-break-inside:avoid;">
+    <div>
+    <!-- <div style="page-break-inside:avoid;"> -->
       <xsl:for-each select="parent::table">
         <xsl:call-template name="cgmark" select="."/>
       </xsl:for-each>
@@ -55,7 +55,7 @@
             <xsl:with-param name="userowsep" select="'no'"/>
             <xsl:with-param name="usemaxcolspan" select="'yes'"/>
           </xsl:apply-templates>
-          <xsl:if test="$footnote">
+          <!-- <xsl:if test="$footnote">
             <tr>
               <td colspan="{number(ancestor-or-self::tgroup/@cols)}" style="line-height:0.1;border-top:1px solid black">&#160;</td>
             </tr>
@@ -71,9 +71,33 @@
                 </td>
               </tr>
             </xsl:for-each>
-          </xsl:if>
+          </xsl:if> -->
         </tfoot>
       </table>
+      <xsl:if test="$footnote">
+        <table style="border-top:1px solid black">
+          <tbody>
+            <tr><td style="line-height:0.5">&#160;</td></tr>
+            <xsl:for-each select="$footnote">
+              <xsl:variable name="fnt" select="."/>
+              <xsl:for-each select="ancestor::table/descendant::footnote">
+                <xsl:if test="child::* = $fnt/child::*">
+                  <tr>
+                    <td style="font-size:6;">
+                      <table style="width:100%">
+                        <tr>
+                          <td style="width:5%">[<xsl:value-of select="position()"/>]&#160;</td>
+                          <td style="width:95%"><xsl:apply-templates select="$fnt"/>&#160;</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </xsl:if>
+              </xsl:for-each>
+            </xsl:for-each>
+          </tbody>
+        </table>
+      </xsl:if>
       <xsl:if test="$title != ''">
         <br/>
         <br/>
@@ -148,7 +172,7 @@
           <xsl:call-template name="tb_alignCaptionEntry"/>
     
           <xsl:if test="ancestor::thead">
-            <xsl:text>border-bottom:2px solid black;</xsl:text>
+            <xsl:text>border-bottom:2px solid black;text-align:left</xsl:text>
           </xsl:if>
           <xsl:if test="ancestor::tfoot">
             <xsl:text>border-top:2px solid black;font-size:6;text-align:left</xsl:text>
@@ -309,6 +333,35 @@
     </xsl:if>
   </xsl:template>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <!-- ini nanti bisa dipisah, ini dipanggil di td -->
   <xsl:template name="tdtgstyle">
     <xsl:param name="userowsep" select="'yes'"/>
@@ -374,6 +427,68 @@
 
       </xsl:attribute>
     </xsl:if>
+
+    <!-- engine_limitation -->
+    <xsl:if test="$tgstyle = 'engine_limitation'">
+      <xsl:attribute name="style">
+        <xsl:if test="not($userowsep = 'no')">
+          <xsl:call-template name="tb_rowsep"/>
+        </xsl:if>
+        <xsl:call-template name="tb_colsep"/>
+        <xsl:call-template name="tb_colwidth"/>
+        <xsl:call-template name="tb_alignCaptionEntry"/>
+  
+        <xsl:variable name="pos"><xsl:number/></xsl:variable>
+
+        <xsl:if test="ancestor::thead">
+          <xsl:text>border-bottom:2px solid black;</xsl:text>
+        </xsl:if>
+        <xsl:if test="ancestor::tfoot">
+          <xsl:text>border-top:2px solid black;font-size:6;text-align:left</xsl:text>
+        </xsl:if>
+        <xsl:if test="ancestor::tbody">
+          <xsl:choose>
+            <xsl:when test="$pos = 1">
+              <xsl:text>text-align:left;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>text-align:center;</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+      </xsl:attribute>
+    </xsl:if>
+
+    <!-- gcs_limitation -->
+    <!-- <xsl:if test="$tgstyle = 'engine_limitation'">
+      <xsl:attribute name="style">
+        <xsl:if test="not($userowsep = 'no')">
+          <xsl:call-template name="tb_rowsep"/>
+        </xsl:if>
+        <xsl:call-template name="tb_colsep"/>
+        <xsl:call-template name="tb_colwidth"/>
+        <xsl:call-template name="tb_alignCaptionEntry"/>
+  
+        <xsl:variable name="pos"><xsl:number/></xsl:variable>
+
+        <xsl:if test="ancestor::thead">
+          <xsl:text>border-bottom:2px solid black;</xsl:text>
+        </xsl:if>
+        <xsl:if test="ancestor::tfoot">
+          <xsl:text>border-top:2px solid black;font-size:6;text-align:left</xsl:text>
+        </xsl:if>
+        <xsl:if test="ancestor::tbody">
+          <xsl:choose>
+            <xsl:when test="$pos = 1">
+              <xsl:text>text-align:left;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>text-align:center;</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:if>
+      </xsl:attribute>
+    </xsl:if> -->
   </xsl:template>
 
 </xsl:stylesheet>

@@ -132,7 +132,7 @@
                   </tr>
                   <tr>
                     <td>Applicability:</td>
-                    <td><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty','','first')"/></td>
+                    <td><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicability','','first')"/></td>
                   </tr>
                   <tr>
                     <td>Designed by:</td>

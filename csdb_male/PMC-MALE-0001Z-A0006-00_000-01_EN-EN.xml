@@ -9,8 +9,8 @@
       </pmIdent>
       <pmAddressItems>
         <issueDate year="2023" month="10" day="16" />
-        <pmTitle>Section 1</pmTitle>
-        <shortPmTitle>General</shortPmTitle>
+        <pmTitle>Section 3</pmTitle>
+        <shortPmTitle>Emergency and Abnormal Procedures</shortPmTitle>
       </pmAddressItems>
     </pmAddress>
     <pmStatus>
@@ -35,7 +35,6 @@
                 systemCode="00" subSystemCode="0" subSubSystemCode="0"
                 assyCode="00" disassyCode="00" disassyCodeVariant="A"
                 infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
-                
               <issueInfo issueNumber="000" inWork="01" />
               <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
@@ -50,7 +49,7 @@
             <dmCode modelIdentCode="MALE" systemDiffCode="A"
               systemCode="00" subSystemCode="0" subSubSystemCode="0"
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
-              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />  
             <issueInfo issueNumber="000" inWork="01" />
             <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
@@ -65,7 +64,21 @@
     <pmEntry pmEntryType="pmt61">
       <dmRef>
         <dmRefIdent>
-          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="1" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="040" infoCodeVariant="A" itemLocationCode="A" />
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="028" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="02" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
           <issueInfo issueNumber="000" inWork="01" />
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
