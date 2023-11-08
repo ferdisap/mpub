@@ -3,46 +3,51 @@
 
   <xsl:output method="xml" omit-xml-declaration="yes"/>
 
-  <xsl:include href="attribute/id.xsl" />
+  <!-- <xsl:include href="attribute/id.xsl" />
   <xsl:include href="attribute/cgmark.xsl" />
   <xsl:include href="helper/position.xsl"/>
   <xsl:include href="./group/textElemGroup.xsl" />
   <xsl:include href="./group/listElemGroup.xsl" />
   <xsl:include href="./element/levelledPara.xsl"/>
-  <xsl:include href="./element/warningcautionnote.xsl"/>
+  <xsl:include href="./element/warningcautionnote.xsl"/> -->
   <!-- <xsl:include href="./element/descrCrew.xsl"/> -->
   
-  <xsl:param name="padding_levelPara_1"/>
+  <!-- <xsl:param name="padding_levelPara_1"/>
   <xsl:param name="padding_levelPara_2"/>
   <xsl:param name="padding_levelPara_3"/>
   <xsl:param name="padding_levelPara_4"/>
-  <xsl:param name="padding_levelPara_5"/>
+  <xsl:param name="padding_levelPara_5"/> -->
 
-  <xsl:param name="fontsize_levelledPara_title_1"/>
+  <!-- <xsl:param name="fontsize_levelledPara_title_1"/>
   <xsl:param name="fontsize_levelledPara_title_2"/>
   <xsl:param name="fontsize_levelledPara_title_3"/>
   <xsl:param name="fontsize_levelledPara_title_4"/>
   <xsl:param name="fontsize_levelledPara_title_5"/>
 
   <xsl:param name="dmOwner"/>
-  <xsl:param name="absolute_asset_path"/>
+  <xsl:param name="absolute_asset_path"/> -->
 
-  <xsl:template match="dmodule">
+  <xsl:template match="dmodules">
     <xsl:apply-templates select="//content/crew"/>
   </xsl:template>
   
+  <xsl:template match="dmodule">
+    <div>aaa</div>
+  </xsl:template>
+
   <xsl:template match="crew">
     <xsl:apply-templates select="descrCrew"/>
   </xsl:template>
 
   <xsl:template match="descrCrew">
+    <!-- kalau ada halaman yang bermasalah, coba hapus div ini -->
     <div>
       <xsl:apply-templates/>
+      <!-- aa -->
     </div>
   </xsl:template>
 
   <xsl:template match="crewDrill">
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::setLastPositionCrewDrillStep', 0)"/>
     <br/>
     <div>
       <xsl:call-template name="id"/>
@@ -56,21 +61,15 @@
     <h4><xsl:apply-templates/></h4>
   </xsl:template>
 
-  <!-- saat ini sama dengan <case> -->
   <xsl:template match="subCrewDrill">
-  <xsl:variable name="lastCrewDrillStepNumber">
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::getLastPositionCrewDrillStep')"/>
-    </xsl:variable>
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::setLastPositionCrewDrillStep', 0)"/>
-    <div>
+    <span>
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>
-    </div>
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::setLastPositionCrewDrillStep', $lastCrewDrillStepNumber)"/>
+      <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::set_last_crewDrillStep',0)"/> -->
+    </span>
   </xsl:template>
 
-  <!-- jika ada if dan else, step selanjutnya akan dinomori sesuai jumlah step terakhir di if atau else -->
   <xsl:template match="crewDrillStep">
     <xsl:param name="memorizeStepFlag">
       <xsl:choose>
@@ -112,33 +111,25 @@
             <xsl:text>a</xsl:text>
           </xsl:if>
         </xsl:variable>
-
-        <xsl:variable name="position">
-          <xsl:choose>
-            <xsl:when test="parent::if">
-              <xsl:variable name="ifpos" select="count(parent::if/preceding-sibling::crewDrillStep)"/>
-              <xsl:variable name="steppos"><xsl:number/></xsl:variable>
-              <xsl:number format="{$format}" value="number($ifpos) + number($steppos)"/>
-            </xsl:when>
-            <xsl:when test="parent::elseIf">
-              <xsl:variable name="elseifpos" select="count(parent::elseIf/preceding-sibling::crewDrillStep)"/>
-              <xsl:variable name="steppos"><xsl:number/></xsl:variable>
-              <xsl:number format="{$format}" value="number($elseifpos) + number($steppos)"/>
-            </xsl:when>
-            <xsl:when test="name(preceding-sibling::*[1]) = 'elseIf' or name(preceding-sibling::*[1]) = 'if'">
-              <xsl:variable name="qtyPrev" select="count(preceding-sibling::*[1]/crewDrillStep)"/>
-              <xsl:variable name="pos"><xsl:number/></xsl:variable>
-              <xsl:number format="{$format}" value="$qtyPrev + $pos"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:number format="{$format}" value="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::getLastPositionCrewDrillStep') + 1"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        </xsl:variable>
-        <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::setLastPositionCrewDrillStep', $position)"/>
-
-        <!-- return -->
-        <xsl:value-of select="$position"/>
+        <xsl:choose>
+          <xsl:when test="parent::if">
+            <xsl:variable name="ifpos" select="parent::if/count(preceding-sibling:crewDrillStep)"/>
+            <xsl:variable name="steppos"><xsl:number/></xsl:variable>
+            <!-- <xsl:number format="{$format}" value="count(parent::case/preceding-sibling::crewDrillStep | preceding-sibling::case/crewDrillStep) + $pos"/> -->
+            <xsl:number/>
+          </xsl:when>
+          <xsl:otherwise>
+            <!-- <xsl:number format="{$format}" value="count(preceding-sibling::crewDrillStep | preceding-sibling::case/crewDrillStep) + 1"/> -->
+            <xsl:number/>
+          </xsl:otherwise>
+          <!-- <xsl:when test="parent::case">
+            <xsl:variable name="pos"><xsl:number/></xsl:variable>
+            <xsl:number format="{$format}" value="count(parent::case/preceding-sibling::crewDrillStep | preceding-sibling::case/crewDrillStep) + $pos"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:number format="{$format}" value="count(preceding-sibling::crewDrillStep | preceding-sibling::case/crewDrillStep) + 1"/>
+          </xsl:otherwise> -->
+        </xsl:choose>
       </xsl:if>
 
       <xsl:if test="$orderedStepsFlag = '0'">
@@ -146,7 +137,6 @@
       </xsl:if>
     </xsl:variable>
 
-    <br/>
     <table style="width:100%;page-break-inside: avoid;">
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
@@ -163,9 +153,7 @@
   </xsl:template>
 
   <xsl:template match="if | elseIf">
-    <div>
-      <xsl:apply-templates/>
-    </div>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="challengeAndResponse">
@@ -207,16 +195,11 @@
   </xsl:template>
 
   <xsl:template match="case">
-    <xsl:variable name="lastCrewDrillStepNumber">
-      <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::getLastPositionCrewDrillStep')"/>
-    </xsl:variable>
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::setLastPositionCrewDrillStep', 0)"/>
-    <div>
+    <span>
       <xsl:call-template name="id"/>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates/>
-    </div>
-    <xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\male\DMC_male::setLastPositionCrewDrillStep', $lastCrewDrillStepNumber)"/>
+    </span>
   </xsl:template>
 
   <xsl:template match="caseCond">
@@ -224,6 +207,7 @@
     <span>
       <xsl:apply-templates/>
     </span>
+    <br/>
   </xsl:template>
 
   <xsl:template match="crewProcedureName">

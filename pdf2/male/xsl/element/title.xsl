@@ -46,19 +46,19 @@
                   </xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h2'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_2"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_2"/></xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h3'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_3"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_3"/></xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h4'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_4"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_4"/></xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h5'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_5"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_5"/></xsl:attribute>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="'10'"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="'10'"/></xsl:attribute>
                 </xsl:otherwise>
               </xsl:choose>
               
@@ -74,6 +74,7 @@
                 <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@subSystemCode)"/>
                 <xsl:text> - </xsl:text>
                 <xsl:value-of select="$numberedPar"/>
+                <xsl:text>.</xsl:text>
                 <xsl:text>&#160;&#160;</xsl:text>
                 <xsl:value-of select="text()"/>
               </xsl:attribute>
@@ -83,6 +84,7 @@
               <!-- <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
               <xsl:text>.</xsl:text> -->
               <xsl:value-of select="$numberedPar"/>
+              <xsl:text>.</xsl:text>
               <xsl:text>&#160;&#160;&#160;</xsl:text>
               <xsl:apply-templates/>
               <!-- <xsl:value-of select="$prefix"/> -->

@@ -83,6 +83,41 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="03" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="04" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="05" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="06" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="07" disassyCode="00" disassyCodeVariant="A" infoCode="028" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
     </pmEntry>
   </content>
 </pm>

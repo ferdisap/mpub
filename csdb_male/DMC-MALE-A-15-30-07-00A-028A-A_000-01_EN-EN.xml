@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="07" disassyCode="00" disassyCodeVariant="A" infoCode="028" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="07" />
+        <dmTitle>
+          <techName>Amplified Emergency Procedures</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>General</title>
+        <para>
+          The following amplified emergency procedure elaborate upon information 
+          contained in the Emergency Procedures checklist portion of this section.
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Engine Failure</title>
+        <para>If engine failure occur during take-off roll, the most important to do is stop 
+          the airplane on the remaining runway. If engine failure during flight, 
+          perform air start. If air start failed, landing as soon as possible. Landing 
+          should be planned straight ahead with only small changes in direction to 
+          avoid obstruction.
+        </para>
+        <para>
+          Engine failures during flight, there are 3 condition:
+          <sequentialList>
+            <listItem>
+              <para>
+                Aircraft is able to reach runway and pilot have aircraft control:
+                Pilot must maintain wing level, set throttle and land the aircraft 
+                immediately.
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                Aircraft is not able to reach runway but pilot have aircraft control:
+                Pilot must guide direct the aircraft heading at unpopulated area and 
+                land the aircraft at hard surface.
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                Aircraft is not able to reach runway and pilot is not able to take control:
+              </para>
+              <para>The aircraft will terminate flight because there is no power to continue 
+                flight. The only action that can be done is monitor aircraft location from 
+                GCS monitor and shut down engine.</para>
+            </listItem>
+          </sequentialList>
+        </para>
+        <para>
+          Condition 1 and 2 can be performed if pilot have a good visibility to the aircraft. 
+        </para>
+        <para>
+          If Conditon 3 occurs, GCS operator shall perform the emergency task in coordination with pilot and mission commander
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Electrical Power Supply System Malfunction</title>
+        <para>Electrical power malfunction can be detected and monitored at GCS by voltage indicator. </para>
+        <para>
+          By monitoring voltage indicator during operation, electric power malfunction 
+          can be detected earlier. Landing the aircraft as soon as possible if indicator 
+          at GCS detected malfunction of electrical power and check battery voltage 
+          before flight
+        </para>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>

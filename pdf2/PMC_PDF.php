@@ -2377,13 +2377,14 @@ class PMC_PDF extends TCPDF
 					$this->x += $this->listindent;
 				}
 				++$this->listindentlevel;
-				if ($this->listnum == 1) {
-					if ($key > 1) {
-						$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
-					}
-				} else {
-					$this->addHTMLVertSpace(0, 0, $cell, $firsttag);
-				}
+        $this->addHTMLVertSpace(0,0, $cell, $firsttag);
+				// if ($this->listnum == 1) {
+				// 	if ($key > 1) {
+				// 		$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				// 	}
+				// } else {
+				// 	$this->addHTMLVertSpace(0, 0, $cell, $firsttag);
+				// }
 				break;
 			}
 			case 'li': {
@@ -3269,12 +3270,13 @@ class PMC_PDF extends TCPDF
 					$this->lMargin -= $this->listindent;
 				}
 				--$this->listindentlevel;
-				if ($this->listnum <= 0) {
-					$this->listnum = 0;
-					$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
-				} else {
-					$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
-				}
+        $this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				// if ($this->listnum <= 0) {
+				// 	$this->listnum = 0;
+				// 	$this->addHTMLVertSpace($hbz, $hb, $cell, false, $lasttag);
+				// } else {
+				// 	$this->addHTMLVertSpace(0, 0, $cell, false, $lasttag);
+				// }
 				$this->resetLastH();
 				break;
 			}

@@ -28,6 +28,15 @@ class DMC_male extends DMC
     // dd($any);
     // dd(preg_replace("/[^0-9]+/",'',$any));
   }
+
+  public function setLastPositionCrewDrillStep($num)
+  {
+    $this->lastPositionCrewDrillStep = $num;
+  }
+  public function getLastPositionCrewDrillStep()
+  {
+    return $this->lastPositionCrewDrillStep ?? 0;
+  }
   
   public function render_descriptXsd()
   { 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
 
   <xsl:output method="xml"/>
   
@@ -7,6 +7,7 @@
   <!-- <xsl:include href="listItem.xsl"/>  -->
 
   <xsl:template match="sequentialList">
+    <br/>
     <xsl:if test="title">
       <span><br style="line-height:1.25"/><b><xsl:value-of select="title"/></b></span>
     </xsl:if>
@@ -19,6 +20,7 @@
   </xsl:template> 
 
   <xsl:template match="randomList">
+    <br/>
     <xsl:if test="title">
       <span><br style="line-height:1.25"/><b><xsl:value-of select="title"/></b></span>
     </xsl:if>
@@ -47,6 +49,7 @@
   </xsl:template>
 
   <xsl:template match="definitionList">
+    <br/>
     <dl>
       <xsl:call-template name="cgmark"/>
       <xsl:apply-templates select="definitionListItem"/>
