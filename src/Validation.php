@@ -94,10 +94,6 @@ trait Validation
     $domXpath = new DOMXPath($doc);
     $results = $domXpath->evaluate($objectPath->nodeValue);
 
-    if($id == 'sbr-033'){
-      // dd($results);
-    }
-
     // jika result boolean
     // jika result bernilai benar dan diperbolehkan, maka aman
     if(is_bool($results) AND $results == true AND $allowedObjectFlag == 1){
@@ -118,7 +114,8 @@ trait Validation
       return;
     } 
     // jika tidak ada yang ditemukan, berarti aman (tidak perlu di validasi)
-    elseif (is_bool($results) AND count($results) == 0){
+    elseif (count($results) == 0){
+    // elseif (is_bool($results) AND count($results) == 0){
       return;
     }
 
