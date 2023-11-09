@@ -101,7 +101,6 @@
     </xsl:param>
     <xsl:param name="seqnum"/>
     <xsl:variable name="num">
-
       <xsl:if test="$orderedStepsFlag = '1'">
         <xsl:variable name="qty" select="count(ancestor::*[@orderedStepsFlag = '1'])"/>
         <xsl:variable name="format">

@@ -46,6 +46,10 @@ class PMC_PDF extends TCPDF
     'collection' => [],
   ];
 
+  public function getDOMDocument(){
+    return $this->DOMDocument;
+  }
+
   /**
    * filename. It must be set the $absolute_path_csdbInput at first
    */
@@ -98,10 +102,10 @@ class PMC_PDF extends TCPDF
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
-  public function importDocument(string $absolute_path = '', string $xml_string = '')
+  public function importDocument(string $absolute_path = '', string $filename = '' ,string $xml_string = '')
   {
     // $this->pmc_path = $absolute_path;
-    $this->DOMDocument = CSDB::importDocument($absolute_path, $xml_string, 'pm');
+    $this->DOMDocument = CSDB::importDocument($absolute_path, $filename, $xml_string, 'pm');
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
 
     # validate DOMDocument here
@@ -4346,7 +4350,7 @@ class PMC_PDF extends TCPDF
             $this->rMargin -= $awr; 
           }
           if(isset($dom[$key]['attribute']['crewmember'])){
-            $aw = 1/3 * ($this->aw);
+            $aw = 3/3 * ($this->aw);
             $this->rMargin -= $aw; // -10 saat tes dengan kertas A5
           }
           
@@ -4673,10 +4677,10 @@ class PMC_PDF extends TCPDF
             }
 
             // separatorstyle #coba
-            if(isset($dom[$key]['attribute']['crewdrill'])){
-              $this->rMargin += 30;
-              $this->crewDrill = true;
-            }
+            // if(isset($dom[$key]['attribute']['crewdrill'])){
+            //   $this->rMargin += 30;
+            //   $this->crewDrill = true;
+            // }
             
             // tambahan : supaya ketika ada ol/ul di awal line akan di turunkan posisi y nya dan jika didalam crewDrillStep tidak diturunkan y nya
             // caption #3 untuk menyetel posisi Y setelah text sebaris dengan caption

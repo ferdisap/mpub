@@ -166,7 +166,7 @@ class DMC
     },get_class_methods(CSDB::class));
 
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
-    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/frontmatter.xsl", '',"xsl:stylesheet");
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/frontmatter.xsl", '' ,'',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
@@ -196,7 +196,7 @@ class DMC
     },get_class_methods(CSDB::class));
 
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
-    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/comrep.xsl", '',"xsl:stylesheet");
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/comrep.xsl", '', '',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
@@ -224,7 +224,7 @@ class DMC
   {
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
-    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/crew.xsl", '',"xsl:stylesheet");
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/crew.xsl", '' ,'',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     // dd(__CLASS__."::"."getApplicabilty", PMC_PDF::class."::".'getCrewMember');
@@ -264,7 +264,7 @@ class DMC
   public function render_descriptXsd()
   { 
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
-    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/descript.xsl", '',"xsl:stylesheet");
+    $xsl = CSDB::importDocument(__DIR__."./{$modelIdentCode}/xsl/descript.xsl", '' ,'',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
 
     $xsltproc->importStylesheet($xsl);
