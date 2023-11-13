@@ -28,8 +28,11 @@
                 systemCode="00" subSystemCode="0" subSubSystemCode="0"
                 assyCode="00" disassyCode="00" disassyCodeVariant="A"
                 infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+<<<<<<< HEAD
                 <issueInfo issueNumber="000" inWork="01" />
                 <language languageIsoCode="en" countryIsoCode="EN" />
+=======
+>>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
           </dmRefIdent>
         </dmRef>
       </applicCrossRefTableRef>
@@ -44,7 +47,10 @@
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
               infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
             <issueInfo issueNumber="000" inWork="01" />
+<<<<<<< HEAD
             <language languageIsoCode="en" countryIsoCode="EN" />
+=======
+>>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
           </dmRefIdent>
         </dmRef>
       </brexDmRef>
@@ -83,6 +89,7 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </pmRefIdent>
       </pmRef>
+<<<<<<< HEAD
       <pmRef>
         <pmRefIdent>
           <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0006" pmVolume="00"/>
@@ -90,6 +97,8 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </pmRefIdent>
       </pmRef>
+=======
+>>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
     </pmEntry>
     
     <!-- <pmEntry pmEntryType="pmt01">

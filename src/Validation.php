@@ -114,8 +114,13 @@ trait Validation
       return;
     } 
     // jika tidak ada yang ditemukan, berarti aman (tidak perlu di validasi)
+<<<<<<< HEAD
     // elseif (count($results) == 0){
     elseif (is_array($results) AND count($results) == 0){
+=======
+    elseif (count($results) == 0){
+    // elseif (is_bool($results) AND count($results) == 0){
+>>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
       return;
     }
 
