@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/crew.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="05" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="07" />
+        <dmTitle>
+          <techName>Emergency Landing Procedures</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <crew>
+      <descrCrew>
+        <levelledPara>
+          <title>Able to be controlled and reachable runway</title>
+          <crewDrill>
+            <para>Perfrom normal landing procedure.</para>
+            <para>Set the aircraft to auto landing.</para>
+          </crewDrill>
+        </levelledPara>
+        <levelledPara>
+          <title>Able to be controlled, but unable to reach runway</title>
+          <crewDrill orderedStepsFlag="1">
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Guide the aircraft to unpopulated area.</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para></para></response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Landing as soon as possible.</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para></para></response>
+              </challengeAndResponse>
+              <note>
+                <notePara>Following are performance information pertaining glide:
+                  <attentionRandomList>
+                    <attentionRandomListItem>
+                      <attentionListItemPara>Recommended airspeed for glide: 49 knots</attentionListItemPara>
+                      <attentionListItemPara>Recommended airspeed for glide: 49 knots</attentionListItemPara>
+                    </attentionRandomListItem>
+                    <attentionRandomListItem>
+                      <attentionListItemPara>Rate of descent = TBD ft/min</attentionListItemPara>
+                    </attentionRandomListItem>
+                    <attentionRandomListItem>
+                      <attentionListItemPara>Glide gradient = 6 km for reach 1000 ft of altitude loss</attentionListItemPara>
+                    </attentionRandomListItem>
+                  </attentionRandomList>
+                </notePara>
+              </note>
+              <note noteType="caution">
+                <symbol infoEntityIdent="ICN-0001Z-00009-001-01.jpg"/>
+                <notePara>Landing on grass or unpaved runway may damage the aircraft.</notePara>
+              </note>
+            </crewDrillStep>
+          </crewDrill>
+        </levelledPara>
+        <levelledPara>
+          <title>Unable both to be controlled and to reach runway</title>
+          <crewDrill orderedStepsFlag="1">
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Aircraft</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para>MONITOR</para></response>
+              </challengeAndResponse>
+              <note>
+                <notePara>Monitor and report aircraft location and condition (altitude, airspeed, and direction).</notePara>
+              </note>
+            </crewDrillStep>
+          </crewDrill>
+        </levelledPara>
+      </descrCrew>
+    </crew>
+  </content>
+</dmodule>

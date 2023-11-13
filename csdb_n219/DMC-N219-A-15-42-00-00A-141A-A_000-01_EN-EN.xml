@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/crew.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="2" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="16" />
+        <dmTitle>
+          <techName>Engine Fire On Ground Emergencies</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="05" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <displayText>
+          <simplePara>N219</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified/>
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <crew>
+      <descrCrew>
+        <levelledPara>
+          <title>Engine Fire On Ground</title>
+          <para>
+            Lorem <caption color="co03"><captionLine>L ENG FIRE</captionLine></caption> ipsum, <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption>  dolor sit amet consectetur 
+            <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, amet tempore consectetur nisi eveniet laboriosam saepe excepturi maiores corrupti a, labore atque? Doloribus laudantium vero eligendi accusamus, ea quibusda asasasa -->
+            <!-- <caption color="co66" captionHeight="10mm"><captionLine>R ENG FIRE</captionLine></caption>  -->
+            <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
+            adipisicing elit. 
+            <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
+            Esse vel totam at aliquam, reprehenderit laudantium nam velit sequi veniam quidem nisi, consectetur deserunt officia nulla debitis cum repellendus deleniti fuga.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, esse?
+          </para>
+          <crewDrill orderedStepsFlag="1">
+          <!-- <crewDrill> -->
+            <subCrewDrill orderedStepsFlag="1">
+              <title>Indication</title>
+              <para>
+                <sequentialList>
+                  <listItem><para>Illumination of the 
+                    <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> WARNING lights.</para></listItem>
+                  <listItem><para>Display of the 
+                    <caption color="co66" captionHeight="10mm"><captionLine>L ENG FIRE</captionLine></caption> 
+                    and/or 
+                    <!-- <caption color="co66"><captionLine>R ENG FIRE</captionLine></caption>  -->
+                    in CAS Window.</para></listItem>
+                </sequentialList>
+                <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur cupiditate animi minus aperiam officiis voluptas nobis temporibus dolores ex repudiandae facere velit, quibusdam nihil voluptate molestias vitae itaque odio rem? -->
+              </para>
+            </subCrewDrill>
+            <subCrewDrill orderedStepsFlag="1">
+              <title>Probable Cause</title>
+              <para>Fire is detected within nacelle of the affected engine(s).</para>
+            </subCrewDrill>
+            
+            <subCrewDrill>
+              <title>Action</title>
+              <!-- <warning>
+                <warningAndCautionPara>Aircraft characteristic in one engine inoperative during takeoff roll, generate sudden yaw to inoperative engine.</warningAndCautionPara>
+                <warningAndCautionPara>Abort takeoff using step wise power idle (from MAX POWER, reduce to mid range, then smoothly to IDLE) is recommended. There will be a lot of directional changes, control the aircraft direction using rudder cautiously.</warningAndCautionPara>
+              </warning>
+              <caution>
+                <warningAndCautionPara>Use of POWER REVERSE generates negative thrust which may cause yaw to the operative engine.
+                  </warningAndCautionPara>
+              </caution>
+              <note>
+                <notePara>Stop the aircraft in runway or continue taxiing and stop the aircraft outside the runway is pilots descretion</notePara>
+              </note> -->
+              <!-- saat ini, <response> tidak bisa pakai style selain text biasa -->
+              <crewDrillStep separatorStyle="line">
+                <challengeAndResponse>
+                  <challenge><para>PARKING brake Lorem <caption><captionLine>ipsum</captionLine></caption> dolor sit amet <caption><captionLine>tesasasa</captionLine></caption> consectetur, adipisicing</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para><caption><captionLine>Set</captionLine></caption></para></response>
+                  <!-- <response><para>asa</para></response> -->
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="0" separatorStyle="line">
+                <challengeAndResponse>
+                  <challenge><para>POWER levers (both engines) Lorem ipsum dolor sit amet</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE SASA</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep memorizeStepsFlag="0" separatorStyle="line">
+                <challengeAndResponse>
+                  <challenge><para>HYDRAULIC off Lorem ipsum dolor sit amet consectetur adipisicing elit. Commo</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <case>
+                <caseCond>if Hydraulic system is going to off in 30 seconds.</caseCond>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+                <crewDrillStep>
+                <crewProcedureName>
+                  <para>Do nothing.</para>
+                </crewProcedureName>
+                </crewDrillStep>
+              </case>
+              <if>
+                <caseCond>if Fuel was off,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+              </if>
+              <elseIf>
+                <caseCond>elseif Fuel still run,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+              </elseIf>
+              <crewDrillStep memorizeStepsFlag="0" separatorStyle="line">
+                <challengeAndResponse>
+                  <challenge><para>Fuel Vent</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Fuel Pump</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>OFF</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Fuel Pump</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>OFF</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+              </crewDrillStep>
+              <if>
+                <caseCond>if 2 Fuxel was off,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>CBasa</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                    </crewMemberGroup>
+                    <response><para>Pull</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+              </if>
+              <elseIf>
+                <caseCond>elseif 2 Fuel still run,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+              </elseIf>
+              <elseIf>
+                <caseCond>elseif 2 bla Fuel still run,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                  <challenge><para>CB</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>Pull</para></response>
+                </challengeAndResponse>
+                </crewDrillStep>
+                <if>
+                  <caseCond>if bla bla bla</caseCond>
+                  <crewDrillStep>
+                    <challengeAndResponse>
+                      <challenge><para>CB</para></challenge>
+                      <crewMemberGroup>
+                        <crewMember crewMemberType="cm02"/>
+                      </crewMemberGroup>
+                      <response><para>Pull</para></response>
+                    </challengeAndResponse>
+                  </crewDrillStep>
+                </if>
+              </elseIf>
+            </subCrewDrill>
+          </crewDrill>
+        </levelledPara>
+      </descrCrew>
+    </crew>
+  </content>
+  
+</dmodule>

@@ -1,0 +1,1904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../schema/flat/brex.xsd"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://www.purl.org/dc/elements/1.1/">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="N219" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+        <language languageIsoCode="en" countryIsoCode="US" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate day="01" month="01" year="2016" />
+        <dmTitle>
+          <techName>N219</techName>
+          <infoName>Business rules exchange index</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus issueType="new">
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </originator>
+      <applic>
+        <displayText>
+          <simplePara>N219 All</simplePara>
+        </displayText>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+						<issueInfo issueNumber="001" inWork="00"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <firstVerification verificationType="tabtop" />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <brex>
+      <commonInfo>
+        <para>This BREX data module gives the rules (chapterized) that applied to the N219.</para>
+      </commonInfo>
+      <snsRules>
+        <snsDescr>
+          <snsSystem>
+            <snsCode>00</snsCode>
+            <snsTitle>General</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>Product Description</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Product, General Maintenance</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Product, Safety</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Safety and Protective Device</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Technical Publication</snsTitle>
+              <snsSubSubSystem>
+                <snsCode>1</snsCode>
+                <snsTitle>Publication</snsTitle>
+              </snsSubSubSystem>
+              <snsSubSubSystem>
+                <snsCode>2</snsCode>
+                <snsTitle>Information Sets</snsTitle>
+              </snsSubSubSystem>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Material Data</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>9</snsCode>
+              <snsTitle>Battle Damage Repair</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>04</snsCode>
+            <snsTitle>Worthiness</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle> 
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Fatigue Index Calculations</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Operating Spectrum</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>05</snsCode>
+            <snsTitle>Scheduled/unscheduled Maintenance</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Time Limits</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Scheduled maintenance check lists</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Scheduled maintenance checks</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Unscheduled maintenance checks</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Acceptance and functional check usage</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>8</snsCode>
+              <snsTitle>Maintenance Allocation</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>06</snsCode>
+            <snsTitle>Dimension and areas</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Principal dimensions</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Reference lines</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Zones and areas</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Access provision</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Master shapes</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>07</snsCode>
+            <snsTitle>Lifting, shoring, recovering and transporting</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Jacking</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Shoring</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Slinging</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Recovering</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Transporting</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>08</snsCode>
+            <snsTitle>Leveling and weighing</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Mass and balance</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Leveling</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Weighing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Mass and C.G. data</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Static stability</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>09</snsCode>
+            <snsTitle>Handling and maneuvering</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Handling</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Maneuvering</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>10</snsCode>
+            <snsTitle>Parking, mooring, storing, and return to service</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Parking</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Mooring</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Storing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Return to service</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>11</snsCode>
+            <snsTitle>Placards and markings</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Exterior color schemes and markings</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Exterior placards and markings</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Interior placards and markings</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>12</snsCode>
+            <snsTitle>Servicing</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Replenishing and depleting</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Scheduled servicing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Unscheduled servicing</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>14</snsCode>
+            <snsTitle>Product loading and offloading</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Support equipment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Cargo</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Internal and external stores</snsTitle>
+              <snsSubSubSystem>
+                <snsCode>1</snsCode>
+                <snsTitle>Basic information</snsTitle>
+              </snsSubSubSystem>
+              <snsSubSubSystem>
+                <snsCode>2</snsCode>
+                <snsTitle>Supplementary information</snsTitle>
+              </snsSubSubSystem>
+              <snsSubSubSystem>
+                <snsCode>3</snsCode>
+                <snsTitle>Loading procedures</snsTitle>
+              </snsSubSubSystem>
+              <snsSubSubSystem>
+                <snsCode>4</snsCode>
+                <snsTitle>Offloading procedures</snsTitle>
+              </snsSubSubSystem>
+              <snsSubSubSystem>
+                <snsCode>5</snsCode>
+                <snsTitle>Loading and offloading procedures checklist</snsTitle>
+              </snsSubSubSystem>
+            </snsSubSystem>
+            
+          </snsSystem>
+          <snsSystem>
+            <snsCode>15</snsCode>
+            <snsTitle>Crew information</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Aircraft release/operating limitations</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Operational characteristics</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Normal procedures</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Emergency procedures</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Special conditions</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Performance Data</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>8</snsCode>
+              <snsTitle>Configuration</snsTitle>
+            </snsSubSystem>
+            
+          </snsSystem>
+          <snsSystem>
+            <snsCode>20</snsCode>
+            <snsTitle>Standard practices - Airframe systems</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>21</snsCode>
+            <snsTitle>Environmental control</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Compression</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Distribution</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Pressurization control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Heating</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Cooling</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Temperature control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>9</snsCode>
+              <snsTitle>Integrated ECS</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>22</snsCode>
+            <snsTitle>Auto flight</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Autopilot</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Speed-attitude correction</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>System monitor</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>23</snsCode>
+            <snsTitle>Communications</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Speech communication</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Data transmission and automatic calling</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Passenger address and entertainment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Interphone</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Audio integrating and voice command systems</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Static discharging</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>7</snsCode>
+              <snsTitle>Audio and video monitoring</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>8</snsCode>
+              <snsTitle>Integrated automatic tunning</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>24</snsCode>
+            <snsTitle>Electrical power</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Generator drive</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>AC generation</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>DC generation</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>External power</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>AC electrical load distribution</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>DC electrical load distribution</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>7</snsCode>
+              <snsTitle>Electrical monitoring and protection</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>25</snsCode>
+            <snsTitle>Equipment furnishing</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Flight compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Passenger/operating crew compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Additional compartments</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Emergency</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>8</snsCode>
+              <snsTitle>Insulation and linning</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>26</snsCode>
+            <snsTitle>Fire protection</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Detection</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Extinguishing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Explosion suppression</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>27</snsCode>
+            <snsTitle>Flight controls</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Roll control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Yaw control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Pitch control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Horizontal stabilizer</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Flaps</snsTitle>
+            </snsSubSystem>
+            
+          </snsSystem>
+          <snsSystem>
+            <snsCode>28</snsCode>
+            <snsTitle>Fuel</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Storage</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Distribution</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Dump</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Indicating</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>29</snsCode>
+            <snsTitle>Hydraulic power</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Main</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Indicating</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>30</snsCode>
+            <snsTitle>Ice and rain protection</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Air intakes</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Pitot and static</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Propellers/rotors</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>8</snsCode>
+              <snsTitle>Detection</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>31</snsCode>
+            <snsTitle>Indicating/recording systems</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Independent instruments</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Recordes</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>General computers</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>32</snsCode>
+            <snsTitle>Landing gear</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Main gear</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Nose gear</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Wheel and brakes</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Steering and maneuvering</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Position and warning</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>7</snsCode>
+              <snsTitle>Supplementary gear</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>33</snsCode>
+            <snsTitle>Lights</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Flight compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Passenger compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Cargo and service compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Exterior lights</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>34</snsCode>
+            <snsTitle>Navigation</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Flight environment data</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Attitude and direction</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Landing and taxiing aids</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Independent position determining</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Dependent position determining</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Flight management computing</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>35</snsCode>
+            <snsTitle>Oxygen</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Crew</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Portable</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>44</snsCode>
+            <snsTitle>Cabin systems</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Cabin core system</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>50</snsCode>
+            <snsTitle>Cargo and accessory compartment</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Cargo compartments</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Cargo loading systems</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>51</snsCode>
+            <snsTitle>Standard practices - Structure</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Investigation, cleanup and aerodynamic smoothness</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Processes</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Materials</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Fasteners</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Support of airplane for repair and alignment check procedures</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Control surface balancing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>7</snsCode>
+              <snsTitle>Repairs</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>8</snsCode>
+              <snsTitle>Electrical bonding</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>52</snsCode>
+            <snsTitle>Doors</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Passenger/crew</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Emergency exit</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Cargo</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Service and miscellaneous</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>7</snsCode>
+              <snsTitle>Door warning</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>53</snsCode>
+            <snsTitle>Fuselage</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Nose Fuselage</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Center Fuselage</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Tail</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>54</snsCode>
+            <snsTitle>Nacelle/pylons</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Nacelle</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Pylons</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Air management</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>55</snsCode>
+            <snsTitle>Stabilizers</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Horizontal stabilizer</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Elevator</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Vertical stabilizer</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Rudder</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>56</snsCode>
+            <snsTitle>Windows and canopies</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Flight compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Fuselage compartment</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Door</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Inspection and observation</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>57</snsCode>
+            <snsTitle>Wings</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Center wing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Outer wing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Wing tip</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Leading edge and leading edge devices</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Trailing edge and trailing edge devices</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>6</snsCode>
+              <snsTitle>Ailerons, elevons, and flaperons</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>60</snsCode>
+            <snsTitle>Standard practices - Propeler/rotor</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>61</snsCode>
+            <snsTitle>Propellers/propulsors</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Propeller assembly</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Controlling</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Braking</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Indicating</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Propulsor duct</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>70</snsCode>
+            <snsTitle>Standard Practice - Engine</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>71</snsCode>
+            <snsTitle>Power plant</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>72</snsCode>
+            <snsTitle>Engine</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>73</snsCode>
+            <snsTitle>Engine fuel and control</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Distribution</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Controlling</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>74</snsCode>
+            <snsTitle>Ignition</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Electrical power supply</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Distribution</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>75</snsCode>
+            <snsTitle>Air</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Engine anti-icing</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Cooling</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Compressor control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>4</snsCode>
+              <snsTitle>Indicating</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>5</snsCode>
+              <snsTitle>Air intake foreign object removal</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>76</snsCode>
+            <snsTitle>Engine Controls</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Power control</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Emergency shutdown</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>78</snsCode>
+            <snsTitle>Exhaust</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+          </snsSystem>
+          <snsSystem>
+            <snsCode>79</snsCode>
+            <snsTitle>Oil</snsTitle>
+            <snsSubSystem>
+              <snsCode>0</snsCode>
+              <snsTitle>General</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>1</snsCode>
+              <snsTitle>Storage</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>2</snsCode>
+              <snsTitle>Distribution</snsTitle>
+            </snsSubSystem>
+            <snsSubSystem>
+              <snsCode>3</snsCode>
+              <snsTitle>Indicating</snsTitle>
+            </snsSubSystem>            
+          </snsSystem>
+
+          
+        </snsDescr>
+      </snsRules>
+      <!-- Rules applicable to all Schemas -->
+      <contextRules>
+        <structureObjectRuleGroup>
+          <structureObjectRule id="sbr-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00001"/>
+            <objectPath allowedObjectFlag="0">//@systemDiffCode | //@disassyCodeVariant | //@infoCodeVariant | //@inwork </objectPath>
+            <objectUse>Those of attribute are not allowed to have letter I and O inside the value.</objectUse>
+            <objectValue valueForm="pattern" valueAllowed="/[iIoO]/">the matched pattern is not allowed</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-002">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00002"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00070"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00071"/>
+            <objectPath allowedObjectFlag="1">//originator/@enterpriseCode='0001B'</objectPath>
+            <objectUse>The XPath result shall be true.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-003">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00014"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00054"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00558"/>
+            <objectPath allowedObjectFlag="1">not(//@caveat) and not(//commercialClassification) and not(//derivativeClassification)</objectPath>
+            <objectUse>The XPath result should be true. The attribute caveats must not be used in data module.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-004">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00020"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection/descendant::language/@countryIsoCode = 'EN' and //identAndStatusSection/descendant::language/@languageIsoCode = 'en'</objectPath>
+            <!-- <objectPath allowedObjectFlag="1">//identAndStatusSection/descendant::language/@countryIsoCode | //identAndStatusSection/descendant::language/@languageIsoCode</objectPath> -->
+            <objectUse>The XPath result shall be true.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-005">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00095"/>
+            <objectPath allowedObjectFlag="1">not(//title/internalRef) and not(//title/dmRef) and not(//title/pmRef) </objectPath>
+            <objectUse>The XPath result shall be true. Element &#60;internalRef&#62; and &#60;dmRef&#62; and &#60;pmRef&#62; are not allowed.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-006">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00032"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00033"/>
+            <!-- <objectPath allowedObjectFlag="1">not(//warning/@vitalWarningFlag) | not(//warning/@warningType)</objectPath> -->
+            <objectPath allowedObjectFlag="0">//warning/@vitalWarningFlag | //warning/@warningType</objectPath>
+            <objectUse>The XPath result shall be true. attribute vitalWarningFlag and  warningType is not allowed.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-007">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00034"/>            
+            <objectPath allowedObjectFlag="1">not(//caution/@cautionType)</objectPath>
+            <objectUse>The XPath result shall be true. attribute cautionType is not allowed.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-008">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00035"/>            
+            <objectPath allowedObjectFlag="1">not(//note/@noteType)</objectPath>
+            <objectUse>The XPath result shall be true. attribute noteType is not allowed.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-009">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00090"/>            
+            <objectPath allowedObjectFlag="0">//issueInfo[@inWork != '00']/ancestor::dmodule//reasonForUpdate</objectPath>
+            <objectUse>The XPath result shall be 'not match'. Element &#60;reasonForUpdate&#62; is not allowed during production proccess (@inwork != 00).</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-010">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00118"/>            
+            <objectPath allowedObjectFlag="0">//title/parent::randomList | //title/parent::sequentialList | //title/parent::attentionSequentialList</objectPath>
+            <objectUse>The XPath result shall be 'not match'. Element &#60;title&#62; is not allowed.</objectUse>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-011">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00026"/>            
+            <objectPath allowedObjectFlag="2">//emphasis/@emphasisType</objectPath>
+            <objectUse>If the XPath result is 'match', the value shall be in accordance with valueAllowed.</objectUse>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="em01">bold</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="em02">italic</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="em03">underline</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="em05">strikethrough</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-012">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00101"/>            
+            <objectPath allowedObjectFlag="1">//dmStatus/@securityClassification</objectPath>
+            <objectUse>The XPath result shall be 'match'. Attribute &#60;securityClassification&#62; shall be followed the valueAllowed.</objectUse>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="01">unclassified</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="02">restricted</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="03">confidential</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="04">secret</objectValue>
+            <objectValue valueTailoring="closed" valueForm="single" valueAllowed="05">top secrret</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-013">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00101"/>            
+            <objectPath allowedObjectFlag="1">//internalRef/@internalRefId</objectPath>
+            <objectUse>The XPath result shall be as match as the valueAllowed pattern.</objectUse>
+            <objectValue valueTailoring="closed" valueForm="pattern" valueAllowed="/fig|tab|mma|seq|par|stp|gra|mmo|hot|pme|zon|mat|msl|acp|ftn/">unclassified</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-014">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00135"/>            
+            <objectPath allowedObjectFlag="0">//workAreaLocationGroup/zoneRef</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-015">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00135"/>            
+            <objectPath allowedObjectFlag="0">//workAreaLocationGroup/accessPointRef</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-016">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00140"/>            
+            <objectPath allowedObjectFlag="2">//productItem/@productItemName</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-017">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00141"/>            
+            <objectPath allowedObjectFlag="2">//productItem/@productItemType</objectPath>
+            <objectValue valueForm="single" valueAllowed="pi01">Frame</objectValue>
+            <objectValue valueForm="single" valueAllowed="pi02">Rib</objectValue>
+            <objectValue valueForm="single" valueAllowed="pi02">Stringer</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-018">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00142"/>
+            <objectPath allowedObjectFlag="0">//taskDuration</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-019">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00143"/>
+            <objectPath allowedObjectFlag="0">//reqCondCircuitBreaker</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-020">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00144"/>
+            <objectPath allowedObjectFlag="0">//reqPersons</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-021">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00145"/>
+            <objectPath allowedObjectFlag="0">//@personCategoryCode</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-022">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00146"/>
+            <objectPath allowedObjectFlag="0">//trade</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-023">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00147"/>
+            <objectPath allowedObjectFlag="0">//reqTechInfoGroup</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-024">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="0">//supportEquipDescr | //supplyDescr | //spareDescr</objectPath>
+          </structureObjectRule>
+          <!-- <structureObjectRule id="sbr-024">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//supportEquipDescr/@materialUsage</objectPath>
+            <objectValue valueForm="single" valueAllowed="mu05">Material set</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-025">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//supplyDescr/@materialUsage</objectPath>
+            <objectValue valueForm="single" valueAllowed="mu05">Material set</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-026">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="0">//supplyDescr/@materialUsage</objectPath>
+            <objectValue valueForm="single" valueAllowed="mu01">Discarded</objectValue>
+            <objectValue valueForm="single" valueAllowed="mu03">Material set</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-027">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//supplyDescr[//@xsi:noNamespaceSchemaLocation/contains(., 'sb.xsd')]/@materialUsage</objectPath>
+            <objectValue valueForm="single" valueAllowed="mu02">Retained</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-028">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//spareDescr/@materialUsage</objectPath>
+            <objectValue valueForm="single" valueAllowed="mu05">Material set</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-029">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//spareDescr//supplyDescr[//@xsi:noNamespaceSchemaLocation/contains(., 'sb.xsd')]/@materialUsage@materialUsage</objectPath>
+            <objectValue valueForm="single" valueAllowed="mu01">Discarded</objectValue>
+            <objectValue valueForm="single" valueAllowed="mu02">Retained</objectValue>
+          </structureObjectRule> -->
+          <structureObjectRule id="sbr-025">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00158"/>
+            <objectPath allowedObjectFlag="2">//circuitBreakerRef/@circuitBreakerRef</objectPath>
+            <objectValue valueForm="single" valueAllowed="open"/>
+            <objectValue valueForm="single" valueAllowed="close"/>
+            <objectValue valueForm="single" valueAllowed="verify-open"/>
+            <objectValue valueForm="single" valueAllowed="verify-close"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-026">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00159"/>
+            <objectPath allowedObjectFlag="0">//circuitBreakerRef/@checksum</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-027">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00160"/>
+            <objectPath allowedObjectFlag="2">//inlineSignificantData</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-028">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00169"/>
+            <objectPath allowedObjectFlag="0">//indexFlag</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-029">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00171"/>
+            <objectPath allowedObjectFlag="2">//symbol</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-030">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00172"/>
+            <objectPath allowedObjectFlag="0">//footnote/ancestor::footnote</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-031">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00173"/>
+            <objectPath allowedObjectFlag="2">//footnote/@footnoteMark</objectPath>
+            <objectValue valueForm="single" valueAllowed="num">number</objectValue>
+            <objectValue valueForm="single" valueAllowed="sym">asterisk</objectValue>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-032">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00173"/>
+            <objectPath allowedObjectFlag="0">//commonInfo</objectPath>
+          </structureObjectRule>          
+          <structureObjectRule id="sbr-033">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00316"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00317"/>
+            <objectPath allowedObjectFlag="1">local-name(//applic/child::*)</objectPath>
+            <objectValue valueForm="single" valueAllowed="assert"/>
+            <objectValue valueForm="single" valueAllowed="evaluate"/>
+            <objectValue valueForm="single" valueAllowed="expression"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-034">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00318"/>
+            <objectPath allowedObjectFlag="0">//assert/@applicDisplayClass | //evaluate/@applicDisplayClass</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-035">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00330"/>
+            <objectPath allowedObjectFlag="2">//@quantityUnitOfMeasure</objectPath>
+            <objectValue valueForm="single" valueAllowed="%"/>
+            <objectValue valueForm="single" valueAllowed="1/bar"/>
+            <objectValue valueForm="single" valueAllowed="1/cm"/>
+            <objectValue valueForm="single" valueAllowed="1/d"/>
+            <objectValue valueForm="single" valueAllowed="1/degC"/>
+            <objectValue valueForm="single" valueAllowed="1/ft"/>
+            <objectValue valueForm="single" valueAllowed="1/ft2"/>
+            <objectValue valueForm="single" valueAllowed="1/ft3"/>
+            <objectValue valueForm="single" valueAllowed="1/g"/>
+            <objectValue valueForm="single" valueAllowed="1/galUS"/>
+            <objectValue valueForm="single" valueAllowed="1/galUK"/>
+            <objectValue valueForm="single" valueAllowed="1/h"/>
+            <objectValue valueForm="single" valueAllowed="1/in"/>
+            <objectValue valueForm="single" valueAllowed="1/kg"/>
+            <objectValue valueForm="single" valueAllowed="1/km2"/>
+            <objectValue valueForm="single" valueAllowed="1/kPa"/>
+            <objectValue valueForm="single" valueAllowed="1/L"/>
+            <objectValue valueForm="single" valueAllowed="1/lbf"/>
+            <objectValue valueForm="single" valueAllowed="1/lbm"/>
+            <objectValue valueForm="single" valueAllowed="1/m"/>
+            <objectValue valueForm="single" valueAllowed="1/m2"/>
+            <objectValue valueForm="single" valueAllowed="1/m3"/>
+            <objectValue valueForm="single" valueAllowed="1/mm"/>
+            <objectValue valueForm="single" valueAllowed="1/pa"/>
+            <objectValue valueForm="single" valueAllowed="1/psi"/>
+            <objectValue valueForm="single" valueAllowed="1/s"/>
+            <objectValue valueForm="single" valueAllowed="1/V"/>
+            <objectValue valueForm="single" valueAllowed="A"/>
+            <objectValue valueForm="single" valueAllowed="A.h"/>
+            <objectValue valueForm="single" valueAllowed="A.m"/>
+            <objectValue valueForm="single" valueAllowed="A.m2"/>
+            <objectValue valueForm="single" valueAllowed="A.cm2"/>
+            <objectValue valueForm="single" valueAllowed="A.ft2"/>
+            <objectValue valueForm="single" valueAllowed="A.mm"/>
+            <objectValue valueForm="single" valueAllowed="A.mm2"/>
+            <objectValue valueForm="single" valueAllowed="atm"/>
+            <objectValue valueForm="single" valueAllowed="atm/ft"/>
+            <objectValue valueForm="single" valueAllowed="atm/h"/>
+            <objectValue valueForm="single" valueAllowed="atm/m"/>
+            <objectValue valueForm="single" valueAllowed="bar"/>
+            <objectValue valueForm="single" valueAllowed="bar/ft"/>
+            <objectValue valueForm="single" valueAllowed="bar/h"/>
+            <objectValue valueForm="single" valueAllowed="bar/m"/>
+            <objectValue valueForm="single" valueAllowed="cm"/>
+            <objectValue valueForm="single" valueAllowed="cm/a"/>
+            <objectValue valueForm="single" valueAllowed="cm/s"/>
+            <objectValue valueForm="single" valueAllowed="cm/s2"/>
+            <objectValue valueForm="single" valueAllowed="cm2"/>
+            <objectValue valueForm="single" valueAllowed="cm2/g" />
+            <objectValue valueForm="single" valueAllowed="cm2/s" />
+            <objectValue valueForm="single" valueAllowed="cm3" />
+            <objectValue valueForm="single" valueAllowed="cm3/g" />
+            <objectValue valueForm="single" valueAllowed="cm3/s" />
+            <objectValue valueForm="single" valueAllowed="cm3/min" />
+            <objectValue valueForm="single" valueAllowed="cu ft" />
+            <objectValue valueForm="single" valueAllowed="cu in" />
+            <objectValue valueForm="single" valueAllowed="dB" />
+            <objectValue valueForm="single" valueAllowed="degC" />
+            <objectValue valueForm="single" valueAllowed="degF" />
+            <objectValue valueForm="single" valueAllowed="ft" />
+            <objectValue valueForm="single" valueAllowed="ft.lbf" />
+            <objectValue valueForm="single" valueAllowed="ft.lbf/galUS" />
+            <objectValue valueForm="single" valueAllowed="ft.lbf/lbm" />
+            <objectValue valueForm="single" valueAllowed="ft.lbf/min" />
+            <objectValue valueForm="single" valueAllowed="ft.lbf/s" />
+            <objectValue valueForm="single" valueAllowed="ft.lbm" />
+            <objectValue valueForm="single" valueAllowed="ft/h" />
+            <objectValue valueForm="single" valueAllowed="ft/in" />
+            <objectValue valueForm="single" valueAllowed="ft/m" />
+            <objectValue valueForm="single" valueAllowed="ft/mi" />
+            <objectValue valueForm="single" valueAllowed="ft/min" />
+            <objectValue valueForm="single" valueAllowed="ft/ms" />
+            <objectValue valueForm="single" valueAllowed="ft/s" />
+            <objectValue valueForm="single" valueAllowed="ft2" />
+            <objectValue valueForm="single" valueAllowed="ft3" />
+            <objectValue valueForm="single" valueAllowed="g" />
+            <objectValue valueForm="single" valueAllowed="g.ft/cm3.s" />
+            <objectValue valueForm="single" valueAllowed="g/cm3" />
+            <objectValue valueForm="single" valueAllowed="g/galUK" />
+            <objectValue valueForm="single" valueAllowed="g/L" />
+            <objectValue valueForm="single" valueAllowed="g/m3" />
+            <objectValue valueForm="single" valueAllowed="g/s" />
+            <objectValue valueForm="single" valueAllowed="galUK" />
+            <objectValue valueForm="single" valueAllowed="galUK/ft3" />
+            <objectValue valueForm="single" valueAllowed="galUK/hr" />
+            <objectValue valueForm="single" valueAllowed="galUK/mi" />
+            <objectValue valueForm="single" valueAllowed="galUK/mil" />
+            <objectValue valueForm="single" valueAllowed="galUS" />
+            <objectValue valueForm="single" valueAllowed="galUS/ft3" />
+            <objectValue valueForm="single" valueAllowed="galUS/hr" />
+            <objectValue valueForm="single" valueAllowed="galUS/mi" />
+            <objectValue valueForm="single" valueAllowed="galUS/mil" />
+            <objectValue valueForm="single" valueAllowed="GHz" />
+            <objectValue valueForm="single" valueAllowed="gn" />
+            <objectValue valueForm="single" valueAllowed="GPa" />
+            <objectValue valueForm="single" valueAllowed="Gpa/cm" />
+            <objectValue valueForm="single" valueAllowed="h" />
+            <objectValue valueForm="single" valueAllowed="h/km" />
+            <objectValue valueForm="single" valueAllowed="hp" />
+            <objectValue valueForm="single" valueAllowed="hp" />
+            <objectValue valueForm="single" valueAllowed="Hz" />
+            <objectValue valueForm="single" valueAllowed="in" />
+            <objectValue valueForm="single" valueAllowed="in/min" />
+            <objectValue valueForm="single" valueAllowed="in/s" />
+            <objectValue valueForm="single" valueAllowed="kA" />
+            <objectValue valueForm="single" valueAllowed="kbyte" />
+            <objectValue valueForm="single" valueAllowed="kg" />
+            <objectValue valueForm="single" valueAllowed="kg.m" />
+            <objectValue valueForm="single" valueAllowed="kg.m/cm2" />
+            <objectValue valueForm="single" valueAllowed="kg.m/s" />
+            <objectValue valueForm="single" valueAllowed="kg.m2" />
+            <objectValue valueForm="single" valueAllowed="kg/h" />
+            <objectValue valueForm="single" valueAllowed="kg/L" />
+            <objectValue valueForm="single" valueAllowed="kg/m" />
+            <objectValue valueForm="single" valueAllowed="kg/m.s" />
+            <objectValue valueForm="single" valueAllowed="kg/m2" />
+            <objectValue valueForm="single" valueAllowed="kg/m2.s" />
+            <objectValue valueForm="single" valueAllowed="kg/m3" />
+            <objectValue valueForm="single" valueAllowed="kg/min" />
+            <objectValue valueForm="single" valueAllowed="kg/s" />
+            <objectValue valueForm="single" valueAllowed="kgf" />
+            <objectValue valueForm="single" valueAllowed="kgf.m" />
+            <objectValue valueForm="single" valueAllowed="kgf.m/cm2" />
+            <objectValue valueForm="single" valueAllowed="kgf.m/m" />
+            <objectValue valueForm="single" valueAllowed="kgf.m2" />
+            <objectValue valueForm="single" valueAllowed="kgf.s/m2" />
+            <objectValue valueForm="single" valueAllowed="kgf/cm" />
+            <objectValue valueForm="single" valueAllowed="kgf/cm2" />
+            <objectValue valueForm="single" valueAllowed="kgf/mm2" />
+            <objectValue valueForm="single" valueAllowed="kHz" />
+            <objectValue valueForm="single" valueAllowed="km" />
+            <objectValue valueForm="single" valueAllowed="km/cm" />
+            <objectValue valueForm="single" valueAllowed="km/h" />
+            <objectValue valueForm="single" valueAllowed="km/L" />
+            <objectValue valueForm="single" valueAllowed="km/s" />
+            <objectValue valueForm="single" valueAllowed="km2" />
+            <objectValue valueForm="single" valueAllowed="kN" />
+            <objectValue valueForm="single" valueAllowed="kN.m" />
+            <objectValue valueForm="single" valueAllowed="kN.m2" />
+            <objectValue valueForm="single" valueAllowed="kN/m" />
+            <objectValue valueForm="single" valueAllowed="kN/m2" />
+            <objectValue valueForm="single" valueAllowed="knot" />
+            <objectValue valueForm="single" valueAllowed="kohm" />
+            <objectValue valueForm="single" valueAllowed="kPa" />
+            <objectValue valueForm="single" valueAllowed="kPa.s/m" />
+            <objectValue valueForm="single" valueAllowed="kPa/h" />
+            <objectValue valueForm="single" valueAllowed="kPa/s" />
+            <objectValue valueForm="single" valueAllowed="kPa/m" />
+            <objectValue valueForm="single" valueAllowed="kPa/min" />
+            <objectValue valueForm="single" valueAllowed="kpsi" />
+            <objectValue valueForm="single" valueAllowed="kV" />
+            <objectValue valueForm="single" valueAllowed="kW" />
+            <objectValue valueForm="single" valueAllowed="kW.h" />
+            <objectValue valueForm="single" valueAllowed="L" />
+            <objectValue valueForm="single" valueAllowed="L/h" />
+            <objectValue valueForm="single" valueAllowed="L/kg" />
+            <objectValue valueForm="single" valueAllowed="L/m" />
+            <objectValue valueForm="single" valueAllowed="L/m3" />
+            <objectValue valueForm="single" valueAllowed="L/min" />
+            <objectValue valueForm="single" valueAllowed="L/s" />
+            <objectValue valueForm="single" valueAllowed="lbf" />
+            <objectValue valueForm="single" valueAllowed="lbf.ft" />
+            <objectValue valueForm="single" valueAllowed="lbf.ft/in" />
+            <objectValue valueForm="single" valueAllowed="lbf.ft/in2" />
+            <objectValue valueForm="single" valueAllowed="lbf.ft/lbm" />
+            <objectValue valueForm="single" valueAllowed="lbf.in" />
+            <objectValue valueForm="single" valueAllowed="lbf.in2" />
+            <objectValue valueForm="single" valueAllowed="lbf.s/ft2" />
+            <objectValue valueForm="single" valueAllowed="lbf.s/in2" />
+            <objectValue valueForm="single" valueAllowed="lbf/ft" />
+            <objectValue valueForm="single" valueAllowed="lbf/ft2" />
+            <objectValue valueForm="single" valueAllowed="lbf/ft3" />
+            <objectValue valueForm="single" valueAllowed="lbf/galUS" />
+            <objectValue valueForm="single" valueAllowed="lbf/in" />
+            <objectValue valueForm="single" valueAllowed="lbf/in2" />
+            <objectValue valueForm="single" valueAllowed="lbm" />
+            <objectValue valueForm="single" valueAllowed="lbm/ft" />
+            <objectValue valueForm="single" valueAllowed="lbm/ft.h" />
+            <objectValue valueForm="single" valueAllowed="lbm/ft.s" />
+            <objectValue valueForm="single" valueAllowed="lbm/ft2" />
+            <objectValue valueForm="single" valueAllowed="lbm/ft3" />
+            <objectValue valueForm="single" valueAllowed="lbm/galUK" />
+            <objectValue valueForm="single" valueAllowed="lbm/galUS" />
+            <objectValue valueForm="single" valueAllowed="lbm/h" />
+            <objectValue valueForm="single" valueAllowed="lbm/h.ft" />
+            <objectValue valueForm="single" valueAllowed="m" />
+            <objectValue valueForm="single" valueAllowed="m/d" />
+            <objectValue valueForm="single" valueAllowed="m/h" />
+            <objectValue valueForm="single" valueAllowed="m/min" />
+            <objectValue valueForm="single" valueAllowed="m2" />
+            <objectValue valueForm="single" valueAllowed="m2/cm3" />
+            <objectValue valueForm="single" valueAllowed="m2/g" />
+            <objectValue valueForm="single" valueAllowed="m2/h" />
+            <objectValue valueForm="single" valueAllowed="m3" />
+            <objectValue valueForm="single" valueAllowed="m3/g" />
+            <objectValue valueForm="single" valueAllowed="m3/h" />
+            <objectValue valueForm="single" valueAllowed="m3/kg" />
+            <objectValue valueForm="single" valueAllowed="m3/km" />
+            <objectValue valueForm="single" valueAllowed="m3/s" />
+            <objectValue valueForm="single" valueAllowed="mbar" />
+            <objectValue valueForm="single" valueAllowed="Mbyte" />
+            <objectValue valueForm="single" valueAllowed="mg" />
+            <objectValue valueForm="single" valueAllowed="MHz" />
+            <objectValue valueForm="single" valueAllowed="mil" />
+            <objectValue valueForm="single" valueAllowed="min" />
+            <objectValue valueForm="single" valueAllowed="min/ft" />
+            <objectValue valueForm="single" valueAllowed="min/m" />
+            <objectValue valueForm="single" valueAllowed="mL" />
+            <objectValue valueForm="single" valueAllowed="mm" />
+            <objectValue valueForm="single" valueAllowed="mm2" />
+            <objectValue valueForm="single" valueAllowed="mm3" />
+            <objectValue valueForm="single" valueAllowed="MPa" />
+            <objectValue valueForm="single" valueAllowed="ms" />
+            <objectValue valueForm="single" valueAllowed="MW" />
+            <objectValue valueForm="single" valueAllowed="N" />
+            <objectValue valueForm="single" valueAllowed="N.m" />
+            <objectValue valueForm="single" valueAllowed="N.m2" />
+            <objectValue valueForm="single" valueAllowed="N/m" />
+            <objectValue valueForm="single" valueAllowed="N/m2" />
+            <objectValue valueForm="single" valueAllowed="N/m3" />
+            <objectValue valueForm="single" valueAllowed="nm" />
+            <objectValue valueForm="single" valueAllowed="ns" />
+            <objectValue valueForm="single" valueAllowed="ohm" />
+            <objectValue valueForm="single" valueAllowed="Pa" />
+            <objectValue valueForm="single" valueAllowed="Pa/m" />
+            <objectValue valueForm="single" valueAllowed="Pa/m3" />
+            <objectValue valueForm="single" valueAllowed="Pa/s" />
+            <objectValue valueForm="single" valueAllowed="psi" />
+            <objectValue valueForm="single" valueAllowed="rpm" />
+            <objectValue valueForm="single" valueAllowed="s" />
+            <objectValue valueForm="single" valueAllowed="s/cm" />
+            <objectValue valueForm="single" valueAllowed="s/ft" />
+            <objectValue valueForm="single" valueAllowed="s/ft3" />
+            <objectValue valueForm="single" valueAllowed="s/in" />
+            <objectValue valueForm="single" valueAllowed="s/L" />
+            <objectValue valueForm="single" valueAllowed="s/m" />
+            <objectValue valueForm="single" valueAllowed="s/m3" />
+            <objectValue valueForm="single" valueAllowed="s/qtUS" />
+            <objectValue valueForm="single" valueAllowed="V" />
+            <objectValue valueForm="single" valueAllowed="W" />
+            <objectValue valueForm="single" valueAllowed="KIas" />
+            <objectValue valueForm="single" valueAllowed="KTas" />
+            <objectValue valueForm="single" valueAllowed="KCas" />
+
+          </structureObjectRule>
+          <structureObjectRule id="sbr-036">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00332"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00333"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@modelIdentCode</objectPath>
+            <objectValue valueForm="single" valueAllowed="N219"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-037">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00334"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00335"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@systemDiffCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[A-Z]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-038">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00336"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@systemCode</objectPath>
+            <objectValue valueForm="single" valueAllowed="00"/>
+            <objectValue valueForm="single" valueAllowed="04"/>
+            <objectValue valueForm="single" valueAllowed="05"/>
+            <objectValue valueForm="single" valueAllowed="06"/>
+            <objectValue valueForm="single" valueAllowed="07"/>
+            <objectValue valueForm="single" valueAllowed="08"/>
+            <objectValue valueForm="single" valueAllowed="09"/>
+            <objectValue valueForm="single" valueAllowed="10"/>
+            <objectValue valueForm="single" valueAllowed="11"/>
+            <objectValue valueForm="single" valueAllowed="12"/>
+            <objectValue valueForm="single" valueAllowed="14"/>
+            <objectValue valueForm="single" valueAllowed="15"/>
+            <objectValue valueForm="single" valueAllowed="20"/>
+            <objectValue valueForm="single" valueAllowed="21"/>
+            <objectValue valueForm="single" valueAllowed="22"/>
+            <objectValue valueForm="single" valueAllowed="23"/>
+            <objectValue valueForm="single" valueAllowed="24"/>
+            <objectValue valueForm="single" valueAllowed="25"/>
+            <objectValue valueForm="single" valueAllowed="26"/>
+            <objectValue valueForm="single" valueAllowed="27"/>
+            <objectValue valueForm="single" valueAllowed="28"/>
+            <objectValue valueForm="single" valueAllowed="29"/>
+            <objectValue valueForm="single" valueAllowed="30"/>
+            <objectValue valueForm="single" valueAllowed="31"/>
+            <objectValue valueForm="single" valueAllowed="32"/>
+            <objectValue valueForm="single" valueAllowed="33"/>
+            <objectValue valueForm="single" valueAllowed="34"/>
+            <objectValue valueForm="single" valueAllowed="35"/>
+            <objectValue valueForm="single" valueAllowed="44"/>
+            <objectValue valueForm="single" valueAllowed="50"/>
+            <objectValue valueForm="single" valueAllowed="51"/>
+            <objectValue valueForm="single" valueAllowed="52"/>
+            <objectValue valueForm="single" valueAllowed="53"/>
+            <objectValue valueForm="single" valueAllowed="54"/>
+            <objectValue valueForm="single" valueAllowed="55"/>
+            <objectValue valueForm="single" valueAllowed="56"/>
+            <objectValue valueForm="single" valueAllowed="57"/>
+            <objectValue valueForm="single" valueAllowed="60"/>
+            <objectValue valueForm="single" valueAllowed="61"/>
+            <objectValue valueForm="single" valueAllowed="70"/>
+            <objectValue valueForm="single" valueAllowed="71"/>
+            <objectValue valueForm="single" valueAllowed="72"/>
+            <objectValue valueForm="single" valueAllowed="73"/>
+            <objectValue valueForm="single" valueAllowed="74"/>
+            <objectValue valueForm="single" valueAllowed="75"/>
+            <objectValue valueForm="single" valueAllowed="76"/>
+            <objectValue valueForm="single" valueAllowed="78"/>
+            <objectValue valueForm="single" valueAllowed="79"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-039">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00336"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@subSystemCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[0-9]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-040">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00336"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@subSubSystemCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[0-9]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-041">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00336"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@assyCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[0-9][0-9]?|99/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-042">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@disassyCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[0-9][0-9]?|99/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-043">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00342"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@disassyCodeVariant</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[A-Z]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-044">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@infoCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[0-9][0-9][0-9A-Z]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-045">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@infoCodeVariant</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[A-Z]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-046">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
+            <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@itemLocationCode</objectPath>
+            <objectValue valueForm="pattern" valueAllowed="/[A-D]/"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-047">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00541"/>
+            <objectPath allowedObjectFlag="0">//@pubCodingScheme</objectPath>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- crewXsd -->
+      <contextRules rulesContext="crew.xsd">
+        <structureObjectRuleGroup>          
+          <structureObjectRule id="sbr-crewXsd-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00503"/>
+            <objectPath allowedObjectFlag="1">//levelledPara/title</objectPath>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-crewXsd-002">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00503"/>
+            <objectPath allowedObjectFlag="0">//crewDrillStep/title</objectPath>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- descriptXsd -->
+      <contextRules rulesContext="crew.xsd">
+        <structureObjectRuleGroup>          
+          <structureObjectRule id="sbr-descriptXsd-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00503"/>
+            <objectPath allowedObjectFlag="1">//levelledPara/title</objectPath>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- processXsd -->
+      <contextRules rulesContext="process.xsd">
+        <structureObjectRuleGroup>          
+          <structureObjectRule id="sbr-processXsd-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//process/closeRqmts</objectPath>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- faultXsd -->
+      <contextRules rulesContext="fault.xsd">
+        <structureObjectRuleGroup>          
+          <structureObjectRule id="sbr-faultXsd-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00151"/>
+            <objectPath allowedObjectFlag="1">//isolationProcedure/closeRqmts</objectPath>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- schedulXsd -->
+      <contextRules rulesContext="schedul.xsd">
+        <structureObjectRuleGroup>          
+          <structureObjectRule id="sbr-schedulXsd-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00197"/>
+            <objectPath allowedObjectFlag="2">//limit/@inspectionTypeCategory</objectPath>
+            <objectValue valueForm="single" valueAllowed="preflight"/>
+            <objectValue valueForm="single" valueAllowed="end of runway"/>
+            <objectValue valueForm="single" valueAllowed="thru-flight"/>
+            <objectValue valueForm="single" valueAllowed="postflight"/>
+            <objectValue valueForm="single" valueAllowed="periodic"/>
+            <objectValue valueForm="single" valueAllowed="special inspection and maintenance"/>
+            <objectValue valueForm="single" valueAllowed="special special inspection after a specific occurence"/>
+            <objectValue valueForm="single" valueAllowed="depot"/>
+            <objectValue valueForm="single" valueAllowed="acceptance and functional check"/>
+          </structureObjectRule>
+          <structureObjectRule id="sbr-schedulXsd-002">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00202"/>
+            <objectPath allowedObjectFlag="2">//rqmtSource/@sourceOfRqmt</objectPath>
+            <objectValue valueForm="single" valueAllowed="mrb">Maintenance Review Board</objectValue>
+            <objectValue valueForm="single" valueAllowed="ad">Airworthines Directive</objectValue>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- sbXsd -->
+      <contextRules rulesContext="sb.xsd">
+        <structureObjectRuleGroup>          
+          <structureObjectRule id="sbr-sbXsd-001">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00197"/>
+            <objectPath allowedObjectFlag="2">//limit/@inspectionTypeCategory</objectPath>
+            <objectValue valueForm="single" valueAllowed="preflight"/>
+            <objectValue valueForm="single" valueAllowed="end of runway"/>
+            <objectValue valueForm="single" valueAllowed="thru-flight"/>
+            <objectValue valueForm="single" valueAllowed="postflight"/>
+            <objectValue valueForm="single" valueAllowed="periodic"/>
+            <objectValue valueForm="single" valueAllowed="special inspection and maintenance"/>
+            <objectValue valueForm="single" valueAllowed="special special inspection after a specific occurence"/>
+            <objectValue valueForm="single" valueAllowed="depot"/>
+            <objectValue valueForm="single" valueAllowed="acceptance and functional check"/>
+          </structureObjectRule>       
+          <structureObjectRule id="sbr-sbXsd-002">
+            <brDecisionRef brDecisionIdentNumber="0001Z-S1-00503"/>
+            <objectPath allowedObjectFlag="1">//levelledPara/title</objectPath>
+          </structureObjectRule>
+        </structureObjectRuleGroup>
+      </contextRules>
+
+      <!-- NON Context Rule -->
+      <nonContextRules>
+        <nonContextRule id="sbr-511">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00003"/>
+          <simplePara>Each of data module shall use S1000D issue 5.0. Check that every single schema used comes from http://www.s1000d.org/S1000D_5-0/xml_schema_flat/</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-513">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00022"/>
+          <simplePara>Each of data module shall use OxFord Dictionary.</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-514">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00107"/>
+          <simplePara>The prefix words is attached in stylesheet (XSLT) file.</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-515">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00149"/>
+          <simplePara>The information of the items that are identified as general/special/support tools or equipment shall be included in element &#160;reqSupportEquips&#162; and its child elements..</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-516">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00166"/>
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00167"/>
+          <simplePara>Make sure each "internal references" is same with "preliminary requirements". </simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-517">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00560"/>
+          <simplePara>The OEM renamed part numbers can be used instead of part numbers allocated by the part design authority.</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-518">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00455"/>
+          <simplePara>Aircrew Information shall use multi-data module for any kind of procedure such like: engine shutdown, engine fire, etc.</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-519">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00456"/>
+          <simplePara>The subsection of checklist are: Emergency procedures, Abnormal procedures, Normal procedures.</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-520">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00457"/>
+          <simplePara>The conditional procedures (order drills type) shall be supplemented in supplement section</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-521">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00015"/>
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00553"/>
+          <simplePara>Technical manual content security level review shall be done periodically. Whether to change or retain the security level shall be deciced at the review.</simplePara>
+        </nonContextRule>
+        <nonContextRule id="sbr-522">
+          <brDecisionRef brDecisionIdentNumber="0001Z-S1-00361"/>
+          <simplePara>Photographics could be used as secondary method of illustration graphics.</simplePara>
+        </nonContextRule>
+        <!-- <nonContextRule>
+          <simplePara>CSDB synchronization between partner companies must occur last Sunday of each month.</simplePara>
+        </nonContextRule> -->
+      </nonContextRules>
+    </brex>
+  </content>
+</dmodule>

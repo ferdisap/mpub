@@ -1,0 +1,97 @@
+###
+25_August_2023>>>all schema which has @infoEntityIdent must be changed.
+
+before: 
+<xs:attribute name="infoEntityIdent" type="xs:ENTITY"/>
+after: 
+<xs:attribute name="infoEntityIdent" type="infoEntityAttType"/>
+  <xs:simpleType name="infoEntityAttType">
+    <xs:restriction base="xs:anyURI">
+      <xs:pattern value="ICN\-[A-Z0-9]{5}\-[A-Z0-9]{5,10}\-[0-9]{3}\-[0-9]{2}.[a-z]+"/>
+  </xs:restriction>
+</xs:simpleType>
+
+These rule has not been included in BRDP/BREX because project/organization is forbidden to ovverride S1000D rules.
+But this is important because our system still or have not been capable to handle the external entity (such as figure, video) in XML.
+So, we change the schema data-type of @infoEntityIdent into "entity" (figure, video) file name and resolve it into URL in xslt.
+
+schema_changed:
+descript.xsd, 
+appliccrossreftable.xsd,
+condcrossreftable.xsd,
+prdcrossreftable.xsd,
+dml.xsd,
+brex.xsd,
+brdoc.xsd,
+pm.xsd,
+crew.xsd,
+comrep.xsd,
+###
+
+###
+02_September_2023>>>element/attribute(s) which refer to prefix rdf: and xlink: are deleted or commented.
+
+Because probleam appear such:
+1. The attribute schemaLocation on <xs:import> cannot resolved during php DOMDocument::schemaValidateSource(). 
+xs:import means that the xxx.xsd is extended to other schema which load by <xs:import schemaLocation="">.
+
+2. If we resolve the attribute schemaLocation by changing the URI by absolute path, the problem resolve, but other problems are still exists.
+In attribute ref="rdf:Description" or ref="xlink:...", the element "Description" does not resolve to an element declaration.
+It such that the xs:import is useless, they did'nt import the external extended schema into xml tree.
+
+By the two problems, we decided to delete/commented and the each schema doesnt have the rdf/dc/xlink ability.
+
+before:
+<xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="xlink.xsd"/>
+<xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="rdf.xsd"/>
+<xs:element minOccurs="0" ref="rdf:Description"/>
+<xs:attributeGroup ref="xlink:XLINKATT"/>
+<xs:attributeGroup ref="xlink:XLINKATT"/>
+<xs:attributeGroup ref="xlink:XLINKATT"/>
+<xs:attributeGroup ref="xlink:XLINKATT4"/>
+<xs:attributeGroup ref="xlink:XLINKATT3"/>
+<xs:attributeGroup ref="xlink:XLINKATT1"/>
+<xs:attributeGroup ref="xlink:XLINKATT0"/>
+<xs:attributeGroup ref="xlink:XLINKATT2"/>
+<xs:attributeGroup ref="xlink:XLINKATT0"/>
+
+after:
+<!-- <xs:import namespace="http://www.w3.org/1999/xlink" schemaLocation="xlink.xsd"/> -->
+<!-- <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="rdf.xsd"/> -->
+<!-- <xs:element minOccurs="0" ref="rdf:Description"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT4"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT3"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT1"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT0"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT2"/> -->
+<!-- <xs:attributeGroup ref="xlink:XLINKATT0"/> -->
+
+schema_changed:
+descript.xsd, 
+appliccrossreftable.xsd,
+condcrossreftable.xsd
+dml.xsd,
+brex.xsd,
+brdoc.xsd,
+pm.xsd,
+crew.xsd
+###
+
+###
+2_november_2023 >>> add '%' into colwidth attribute pattern.
+
+Before: 
+<xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt))?"/>
+
+after:
+<xs:pattern value="\d+(\.\d+)?\s*(\*|cm|in|mm|pc|pt|%)(\+\d+(\.\d+)?\s*(cm|in|mm|pc|pt|%))?"/>
+
+schema_changed:
+descript.xsd,
+crew.xsd,
+comrep.xsd,
+pm.xsd,
+###

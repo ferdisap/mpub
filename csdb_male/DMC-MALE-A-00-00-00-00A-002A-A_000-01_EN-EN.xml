@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/frontmatter.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="002" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="16" />
+        <dmTitle>
+          <techName>LEODM POH-AFM</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="05" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />                -->
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>      
+      <applic>
+        <displayText>
+          <simplePara>MALE</simplePara>
+          <simplePara>Amphibi</simplePara>
+        </displayText>
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/> -->
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+        <!-- <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N012~N013"/> -->
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <frontMatter>
+      <frontMatterList frontMatterType="fm02">
+        <issueInfo issueNumber="001" inWork="00" />
+        <issueDate year="2023" month="12" day="30" />
+        <frontMatterSubList>
+          <title>List of Effective Data Modules</title>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="001" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry issueType="new">
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="002" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <!-- TES panjang -->
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <frontMatterDmEntry>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="4" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A"/>
+                <issueInfo issueNumber="001" inWork="00" />
+                <language languageIsoCode="en" countryIsoCode="EN" />
+              </dmRefIdent>
+            </dmRef>
+          </frontMatterDmEntry>
+          <!-- end TES panjang -->
+          
+        </frontMatterSubList>
+      </frontMatterList>
+    </frontMatter>
+  </content>
+  
+</dmodule>

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="02" disassyCode="00" disassyCodeVariant="A" infoCode="005" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="01" />
+        <dmTitle>
+          <techName>Abbreviation and Terminologies</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>Abbreviations</title>
+        <table>
+          <tgroup cols="2" tgstyle="loa">
+            <colspec colname="col1" colwidth="15%" colnum="1"/>
+            <colspec colname="col2" colwidth="85%" colnum="2"/>
+            <tbody>
+              <row>
+                <entry><para>AOA</para></entry>
+                <entry><para>Angle of Attach</para></entry>
+              </row>
+              <row>
+                <entry><para>CASR</para></entry>
+                <entry><para>Civil Aviation Safety Regulation</para></entry>
+              </row>
+              <row>
+                <entry><para>FM</para></entry>
+                <entry><para>Flight Manual</para></entry>
+              </row>
+              <row>
+                <entry><para>GCS</para></entry>
+                <entry><para>GroundControl System</para></entry>
+              </row>
+              <row>
+                <entry><para>ISTAR</para></entry>
+                <entry><para>Intelligence, Surveilance, Target Acquisition and Reconnaissance</para></entry>
+              </row>
+              <row>
+                <entry><para>MALE</para></entry>
+                <entry><para>Medium Altitude Long Endurance</para></entry>
+              </row>
+              <row>
+                <entry><para>Max.</para></entry>
+                <entry><para>Maximum</para></entry>
+              </row>
+              <row>
+                <entry><para>Min.</para></entry>
+                <entry><para>Minimum</para></entry>
+              </row>
+              <row>
+                <entry><para>MGCS</para></entry>
+                <entry><para>Mobile Ground Control System</para></entry>
+              </row>
+              <row>
+                <entry><para>PTTA</para></entry>
+                <entry><para>Pesawat Terbang Tanpa Awak</para></entry>
+              </row>
+              <row>
+                <entry><para>Qty.</para></entry>
+                <entry><para>Quantity</para></entry>
+              </row>
+              <row>
+                <entry><para>RPM</para></entry>
+                <entry><para>Revolution per Minute</para></entry>
+              </row>
+              <row>
+                <entry><para>SHP</para></entry>
+                <entry><para>Shaft Horse Power</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+      <levelledPara>
+        <title>Terminologies</title>
+        <para>
+          These words may be found in this manual which mean:
+          <randomList>
+            <listItem><para>"<emphasis emphasisType="em01">Shall</emphasis>" is used only when application of a procedure is mandatory.</para></listItem>
+            <listItem><para>"<emphasis emphasisType="em01">Should</emphasis>" is used only when application of a procedure is recommended.</para></listItem>
+            <listItem><para>"<emphasis emphasisType="em01">May</emphasis>" or "<emphasis emphasisType="em01">Need Not</emphasis>" used only when application of a procedure is optional.</para></listItem>
+            <listItem><para>"<emphasis emphasisType="em01">Will</emphasis>" is used only to indicate future event or action, never to indicate a mandatory procedure.</para></listItem>
+            <listItem><para>"<emphasis emphasisType="em01">Landing as soon as possible</emphasis>" means landing should be accomplished at the nearest suitable airfield considering the severity of emergency, weather condition, field facilities, ambient lightning, aircraft gross weight, and command guidance.</para></listItem>
+            <listItem><para>"<emphasis emphasisType="em01">Landing as soon as practical</emphasis>" means the condition are less urgent, although the mission is to be terminated, the nearest adequate airfield may not be necessary.</para></listItem>
+          </randomList>
+        </para>
+        <table>
+          <tgroup cols="2" tgstyle="terminologies_notice">
+            <colspec colname="col1" colwidth="15%" colnum="1"/>
+            <colspec colname="col2" colwidth="85%" colnum="2"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+            <tbody>
+              <row>
+                <entry spanname="col1-col2"><para>The notice may be found in this manual which means:</para></entry>
+              </row>
+              <row>
+                <entry><para><symbol infoEntityIdent="ICN-0001Z-00008-001-01.jpg" reproductionHeight="10mm"/></para></entry>
+                <entry><para>An operating procedure or technique that may result in personal injury, loss or life, and/or loss of the aircraft if not followed.</para></entry>
+              </row>
+              <row>
+                <entry><para><symbol infoEntityIdent="ICN-0001Z-00009-001-01.jpg" reproductionHeight="10mm"/></para></entry>
+                <entry><para>An operating procedure or technique that may result in damage to equipment if not followed.</para></entry>
+              </row>
+              <row>
+                <entry><para><symbol infoEntityIdent="ICN-0001Z-00010-001-01.jpg" reproductionHeight="10mm"/></para></entry>
+                <entry><para>An operating procedure or technique needing special emphasis.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">AV</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Air Vehicle</emphasis>, includes the installed equipment (hardware and software) for airframe, propulsion, on-board vehicle and applications software, communications/identification, navigation/guidance, central computer, fire control, data display and controls, survivability, reconnaissance, automatic flight control, central integrated checkout, anti-submarine warfare, armament, weapons delivery, auxiliary equipment, and all other installed equipment.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">GCS</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Ground Control System</emphasis> A facility or device, consisting of hardware and software, from which one or more unmanned aircraft are controlled and/or monitored for any phase of flight operations. The control station may be stationary, mobile, or naval vessel, or carried by ground personnel.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        
+        <table>
+          <tgroup cols="2" tgstyle="terminologies_notice">
+            <colspec colname="col1" colwidth="15%" colnum="1"/>
+            <colspec colname="col2" colwidth="85%" colnum="2"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+            <tbody>
+              <row>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em06">Airpseed terminologies</emphasis></para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">GS</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Ground Speed</emphasis>. The speed of airplane relative to ground</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">KCAS</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Knots Calibrated Airspeed</emphasis>. The indication airspeed of an airplane, corrected for position error. Calibrated airspeed is equal to true airspeed in standard atmosphere at sea level.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">KEAS</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Knots Equivalent Airspeed</emphasis>.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">KIAS</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Knots Indicated Airspeed</emphasis>.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">KTAS</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Knots True Airspeed</emphasis>. The airspeed, relative to undisturbed air which is KCAS corrected for non-standard temperature and altitude</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">V<subScript>1</subScript></emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Decision Speed</emphasis>. The speed beyond which the take-off should no longer be aborted.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">V<subScript>MO</subScript></emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Maximum Operating Speed</emphasis>. The speed that may not be deliberately exceeded in normal flight operations.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">V<subScript>S</subScript></emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Stalling Speed</emphasis>. The minimum steady flight speed at which the airplane is controllable.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">V<subScript>FE</subScript></emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Maximum Flaps Extended Speed</emphasis>. The highest speed permissible with the wing flaps placed in a prescribed extended position.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <para>
+          <emphasis emphasisType="em06">Meteorological terminologies</emphasis>
+          <definitionList>
+            <title>Meteorological terminologies</title>
+            <definitionListItem>
+              <listItemTerm>Ambient Temperature</listItemTerm>
+              <listItemDefinition>
+                <para>The true temperature of the free air near to, but uninfluenced by, the airplane and obtained either from ground meteorological sources or from in-flight temperature indication, corrected for instrument calibration error and compression heat rise.</para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Indicated Outside Air Temperature</listItemTerm>
+              <listItemDefinition>
+                <para>The reading on the air temperature indicator installed on the airplane</para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>ISA</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  <emphasis emphasisType="em01">International Standard Atmosphere</emphasis>. Atmospheric condition in which:
+                  <sequentialList>
+                    <listItem>
+                      <para>The air is a dry, prefect gas.</para>
+                    </listItem>
+                    <listItem>
+                      <para>Temperature at sea level is 15&#176;C (59&#176;F).</para>
+                    </listItem>
+                    <listItem>
+                      <para>The temperature gradient from sea level to the altitude at which the temperature is -56.5&#176;C (-69&#176;F), is -0.00198&#176;C(-0.003564&#176;F), per foot and zero above the altitude. This translates to -1.98&#176;C (-3.56&#176;F) per thousand feet in altitude.</para>
+                    </listItem>
+                  </sequentialList>
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>OAT</listItemTerm>
+              <listItemDefinition>
+                <para><emphasis emphasisType="em01">Outside Air Temperature</emphasis>. The free air static temperature, obtained either from in-flight temperatures or ground meteorological source, adjusted from instrument error and compressability effects.</para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Pressure Altitude</listItemTerm>
+              <listItemDefinition>
+                <para>The expression of the atmospheric pressure in terms of altitude above mean sea level according to the interrelation of these factors in the ISA. It may be obtained by setting sub scale of a pressure-type baro altitude at 10.13.2 mb (29.92 in./760 mm of mercury/1013.2 Hpa).</para>
+              </listItemDefinition>
+            </definitionListItem>
+          </definitionList>
+        </para>
+
+        <table>
+          <tgroup cols="2" tgstyle="terminologies_notice">
+            <colspec colname="col1" colwidth="15%" colnum="1"/>
+            <colspec colname="col2" colwidth="85%" colnum="2"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+            <tbody>
+              <row>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em06">Performance terminologies</emphasis></para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">MCP</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Max. Cruise Power</emphasis>. The recommended max. power for cruise.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">g</emphasis></para></entry>
+                <entry><para>Acceleration force. It is the unit of measure used to express load factor.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        
+        <table>
+          <tgroup cols="2" tgstyle="terminologies_notice">
+            <colspec colname="col1" colwidth="15%" colnum="1"/>
+            <colspec colname="col2" colwidth="85%" colnum="2"/>
+            <colspec colname="customcol1" colwidth="30%"/>
+            <colspec colname="customcol2" colwidth="70%"/>
+            <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+            <tbody>
+              <row>
+                <entry spanname="col1-col2"><para><emphasis emphasisType="em06">Weight and balance terminologies</emphasis></para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">MAC</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Mean Aerodynamic Chord</emphasis>. The chord of section of an imaginary airfoil which would have a force vector throughout the flight range identical to that of the actual wing.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">MTOW</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Maximum Takeoff Weight</emphasis>. Maximum weight to start take-off as limited by aircraft strength and airworthiness requirement.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">MZFW</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Maximum Zero Fuel Weight</emphasis>. The maximum zero fuel weight is the maximum weight allowed before the useable fuel and other specified usable agents must be loaded in defined sections of the aircraft as limited.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">OEW</emphasis></para></entry>
+                <entry><para><emphasis emphasisType="em01">Opoerational Empty Weight</emphasis>. Operational empty weight (or the fleet weight) is the manufacturing empty weight plus standard and operational items.</para></entry>
+              </row>
+              <row>
+                <entry><para><emphasis emphasisType="em01">Payload</emphasis></para></entry>
+                <entry><para>means additional equipment.</para></entry>
+              </row>
+              <row>
+                <entry colname="customcol1"><para><emphasis emphasisType="em01">STANDARD &amp; Operational Items.</emphasis></para></entry>
+                <entry colname="customcol2"><para>Standard &amp; Operation items are equipment and fluids not integral part of a particular aircraft and not a variant for the type of aircraft. These items may include, but are not limited to the trapped fuel, engine oil.</para></entry>
+              </row>
+              <row>
+                <entry colname="customcol1"><para><emphasis emphasisType="em01">Unusable Fuel</emphasis></para></entry>
+                <entry colname="customcol2"><para>The quantity of fuel that is not available for use in flight.</para></entry>
+              </row>
+              <row>
+                <entry colname="customcol1"><para><emphasis emphasisType="em01">Usable Fuel</emphasis></para></entry>
+                <entry colname="customcol2"><para>The quantity of fuel that is available for use in flight.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </levelledPara>
+
+      <levelledPara>
+        <title>Conversions</title>
+        <para>
+          <definitionList>
+            <definitionListItem>
+              <listItemTerm>Volume</listItemTerm>
+              <listItemDefinition>
+                <para>US Gallons (US gal) = Litres X 0.264 #ln;
+                Imperial Gallons (IMP gal) = Litres X 0.220 #ln;
+                Litres = US Gallons (US gal) X 3.785 #ln;
+                Litres = Imperial Gallons (IMP gal) x 4.546 </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Distance</listItemTerm>
+              <listItemDefinition>
+                <para>Feet (ft) = Meters (m) x 3.281 
+                  #ln; Meters (m) = Feet (ft) x 0.305
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Temperature</listItemTerm>
+              <listItemDefinition>
+                <para>Fahrenheit (&#176;F) = (&#176;C x 1.8) + 32 
+                  #ln; Celcius (&#176;C) = (&#176;F - 32) x 0.556
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Weight</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  Pounds (lb) = Kilograms (kg) x 2.205 #ln;
+                  Kilograms (kg) = Pounds (lb) x 0.454
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+          </definitionList>
+        </para>
+        <!-- <table>
+          <tgroup cols="2" tgstyle="loa">
+            <colspec colname="customcol11" colwidth="65%" colnum="1"/>
+            <colspec colname="customcol21" colwidth="35%" colnum="2"/>
+            <colspec colname="customcol12" colwidth="50%"/>
+            <colspec colname="customcol22" colwidth="50%"/>
+
+            <thead>
+              <row>
+                <entry colname="customcol11"><para><emphasis emphasisType="em01">Volume</emphasis></para></entry>
+                <entry colname="customcol21"><para><emphasis emphasisType="em01">Distance</emphasis></para></entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry colname="customcol11">
+                  <para>US Gallons (US gal) = Litres X 0.264</para>
+                  <para>Imperial Gallons (IMP gal) = Litres X 0.220</para>
+                  <para>Litres = US Gallons (US gal) X 3.785</para>
+                  <para>Litres = Imperial Gallons (IMP gal) x 4.546</para>
+                </entry>
+                <entry colname="customcol21">
+                  <para>Feet(ft) = Meters (m) x 3.281</para>
+                  <para>Meters(m) = Feet (ft) x 0.305</para>
+                </entry>
+              </row>
+            </tbody>
+            
+          </tgroup>
+        </table> -->
+      </levelledPara>
+    </description>
+  </content>
+  
+</dmodule>

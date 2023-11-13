@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/condcrossreftable.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
+        <language languageIsoCode="en" countryIsoCode="US" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate day="01" month="01" year="2016" />
+        <dmTitle>
+          <techName>MALE</techName>
+          <infoName>Applicability Cross Reference Table</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus issueType="new">
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="SI">
+        <enterpriseName>0001Z</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />                -->
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+						<issueInfo issueNumber="001" inWork="00"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <firstVerification verificationType="tabtop" />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <condCrossRefTable>
+      <condTypeList>
+        <condType id="SB">
+          <name>Service Bulettin</name>
+          <descr>Changes information for in-service aircraft</descr>
+          <enumeration applicPropertyValues="pre|post" />
+        </condType>
+        <condType id="is_military" valueDataType="boolean">
+          <name>Aircraft Military Certified</name>
+          <descr>This aircraft is certified by using the military regulatory</descr>
+          <enumeration applicPropertyValues="true|false" />
+        </condType>
+      </condTypeList>
+      <condList>
+        <cond id="SB-001" condTypeRefId="SB">
+          <name>Service Bulettin 001</name>
+          <descr>Change Door</descr>
+        </cond>
+        <cond id="military" condTypeRefId="is_military">
+          <name>Aircraft Military Certified</name>
+          <descr>Wheter the aircraft is Military Certified or not.</descr>
+        </cond>
+      </condList>
+    </condCrossRefTable>
+  </content>
+
+</dmodule>

@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="1" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="040" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="31" />
+        <dmTitle>
+          <techName>Description</techName>
+          <infoName>Aircraft</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>General</title>
+        <para>
+          This aircraft is type of UAV. To flight the aircraft, we divided aircraft into two major entity: the air vehicle which is and GCS.
+          The air vehicle generally consist of single reciprocating engine and is attached propeller with two blades, left and right wing, two rudder with V-tail construction, one stabilizer under fuselage, retractable tricycle landing gear, and some of composite materials.
+          The GCS are to control room of the air vehicle. It contains the self power generator, antennas, and console bay that all is included in one mobile container. Whenever the air vehicle needs to mobile ground, there is a container called by Transporter that can be use to move/mobile the air vehicle.
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Aircraft Dimension and Furnishing Structure</title>
+        <levelledPara>
+          <title>Air Vehicle</title>
+
+          <table>
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Main Dimension</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Span:</para></entry>
+                  <entry><para>16,000 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Overall length:</para></entry>
+                  <entry><para>8,647 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Overall height:</para></entry>
+                  <entry><para>2,736 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Fuselage length:</para></entry>
+                  <entry><para>8,288 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Wing area:</para></entry>
+                  <entry><para>12.8 m<superScript>2</superScript></para></entry>
+                </row>
+                <row>
+                  <entry><para>Wing MAC:</para></entry>
+                  <entry><para>25%</para></entry>
+                </row>
+                <row>
+                  <entry><para>Wing span:</para></entry>
+                  <entry><para>16,000 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Wing aspect ration:</para></entry>
+                  <entry><para>20</para></entry>
+                </row>
+                <row>
+                  <entry><para>V-tail span:</para></entry>
+                  <entry><para>2,345 mm</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Landing Gear</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Wheel base length:</para></entry>
+                  <entry><para>3,170 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Max. LG track width:</para></entry>
+                  <entry><para>2,300 mm</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Engine</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Number of engine:</para></entry>
+                  <entry><para>1</para></entry>
+                </row>
+                <row>
+                  <entry><para>Manufacturer:</para></entry>
+                  <entry><para>Rotax</para></entry>
+                </row>
+                <row>
+                  <entry><para>Model Number:</para></entry>
+                  <entry><para>915 iS</para></entry>
+                </row>
+                <row>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>Reciprocating, 4 cylinders, #ln; Compression Ratio 8.2 : 1</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Propeller</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Manufacturing:</para></entry>
+                  <entry><para>Aerobat</para></entry>
+                </row>
+                <row>
+                  <entry><para>Model Number:</para></entry>
+                  <entry><para>7966/7970</para></entry>
+                </row>
+                <row>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>Fixed Pitch, 2 Blades</para></entry>
+                </row>
+                <row>
+                  <entry><para>Diameter:</para></entry>
+                  <entry><para>1,780 mm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Ground clearance:</para></entry>
+                  <entry><para>507 mm</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Fuel</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Fuel grade:</para></entry>
+                  <entry><para>Gasoline or AVGAS</para></entry>
+                </row>
+                <row>
+                  <entry><para>Total fuel capacity:</para></entry>
+                  <entry><para>29 kg</para></entry>
+                </row>
+                <row>
+                  <entry><para>Usable fuel:</para></entry>
+                  <entry><para>TBD</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Oil</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Oil grade:</para></entry>
+                  <entry><para>TBD</para></entry>
+                </row>
+                <row>
+                  <entry><para>Viscosity Recommended:</para></entry>
+                  <entry><para>TBD</para></entry>
+                </row>
+                <row>
+                  <entry><para>Total oil capcacity:</para></entry>
+                  <entry><para>TBD</para></entry>
+                </row>
+                <row>
+                  <entry><para>Total Drain and refill qty.:</para></entry>
+                  <entry><para>TBD</para></entry>
+                </row>
+                <row>
+                  <entry><para>Oil qty. operating range:</para></entry>
+                  <entry><para>TBD</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Weight</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>MRW:</para></entry>
+                  <entry><para>1,050 kg</para></entry>
+                </row>
+                <row>
+                  <entry><para>MTOW:</para></entry>
+                  <entry><para>1,050</para></entry>
+                </row>
+                <row>
+                  <entry><para>MLW:</para></entry>
+                  <entry><para>1,050</para></entry>
+                </row>
+                <row>
+                  <entry><para>MZFW:</para></entry>
+                  <entry><para>957 kg</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <figure>
+            <title>Three View Drawing</title>
+            <graphic infoEntityIdent="ICN-0001Z-00011-001-01.jpg" reproductionWidth="160mm"></graphic>
+          </figure>
+        </levelledPara>
+
+        <levelledPara>
+          <title>Ground Control Station</title>
+          <para>The Ground Control Station (GCS) consists main component which are one container, two antennas, two power generators, and four console bays.</para>
+          <para>Its one container is a house of others component. To enter into the container, 
+            people need to access the primary door by using finger print, or by accessing its 
+            emergency door. Two power generator is needed for supplying the energy as 
+            electrical source for others component, one of them is for redundant. Two 
+            antennas are HF and V/UHF which can up position while being in operated and 
+            down position while being in inoperated. To set the antenna position in higher 
+            or lower, people need to operate the hydraulic actuator on LHS compartment 
+            and pneumatic actuator on RHS compartment. Four console bays are computers 
+            of operator crew in work.
+          </para>
+          <table>
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Main Dimension</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Length:</para></entry>
+                  <entry><para>5.999 m (19.685 ft)</para></entry>
+                </row>
+                <row>
+                  <entry><para>Width:</para></entry>
+                  <entry><para>2.339 m (7.677 ft)</para></entry>
+                </row>
+                <row>
+                  <entry><para>Heihgt:</para></entry>
+                  <entry><para>2.27 m (7.48 ft)</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Generator</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>Two cyclnder, 4-stroke, Air cooled, OHV</para></entry>
+                </row>
+                <row>
+                  <entry><para>Fuel:</para></entry>
+                  <entry><para>Gasoline</para></entry>
+                </row>
+                <row>
+                  <entry><para>Capacity:</para></entry>
+                  <entry><para>12 kWatt</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Antennas</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>Type:</para></entry>
+                  <entry><para>V/UHF 2x2 MIMO Sector Panel Antenna #ln; Omni Antenna Half Wave Dipole</para></entry>
+                </row>
+                <row>
+                  <entry><para>Collar Type:</para></entry>
+                  <entry><para>Non-Locking</para></entry>
+                </row>
+                <row>
+                  <entry><para>Class:</para></entry>
+                  <entry><para>Standard Duty</para></entry>
+                </row>
+                <row>
+                  <entry><para>Max. Payload:</para></entry>
+                  <entry><para>32 kg</para></entry>
+                </row>
+                <row>
+                  <entry><para>Nested Height:</para></entry>
+                  <entry><para>1.6 m</para></entry>
+                </row>
+                <row>
+                  <entry><para>Extended Height:</para></entry>
+                  <entry><para>6.1 m</para></entry>
+                </row>
+                <row>
+                  <entry><para>Base Tube Diameter:</para></entry>
+                  <entry><para>12.7 cm</para></entry>
+                </row>
+                <row>
+                  <entry><para>Top Tube Diameter:</para></entry>
+                  <entry><para>6.4 cm</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+
+            <tgroup cols="2" tgstyle="loa">
+              <colspec colname="col1" colnum="1" colwidth="40%"/>
+              <colspec colname="col2" colnum="2" colwidth="60%"/>
+              <spanspec namest="col1" nameend="col2" spanname="col1-col2" />
+              <thead>
+                <row>
+                  <entry spanname="col1-col2"><para><emphasis emphasisType="em03">Console Bay</emphasis></para></entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry><para>UPS capacity:</para></entry>
+                  <entry><para>3000 VA</para></entry>
+                </row>
+                <row>
+                  <entry><para>Crew radio:</para></entry>
+                  <entry><para>Handheld Airband Radio iCom IC-F1100DT</para></entry>
+                </row>
+                <row>
+                  <entry><para>Keyboard:</para></entry>
+                  <entry><para>STORM 2230 Series Vandal Resistant</para></entry>
+                </row>
+                <row>
+                  <entry><para>Joystick:</para></entry>
+                  <entry><para>Thrustmaster 2960720</para></entry>
+                </row>
+                <row>
+                  <entry><para>TV Monitor:</para></entry>
+                  <entry><para>Samsung C43J89</para></entry>
+                </row>
+                <row>
+                  <entry><para>CPU:</para></entry>
+                  <entry><para>Intel Xeon W 4.00 GHz - 4.50 GHz, 8.25 MB SmartCache, 4C/8T</para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <figure>
+            <title>Ground Control Station</title>
+            <graphic infoEntityIdent="ICN-0001Z-00012-001-01.jpg" reproductionHeight="140mm"/>
+          </figure>
+
+          <figure>
+            <title>Console Bay</title>
+            <graphic infoEntityIdent="ICN-0001Z-00013-001-01.jpg" reproductionHeight="140mm"/>
+          </figure>
+        </levelledPara>
+
+        <levelledPara>
+          <title>Transporter</title>
+          <para>
+            The transporter is used as store for air vehicle disassembly components which 
+            are LH/RH wing and ruddervator, placed on its own jig and fixture to make 
+            them rigid during transportation, and as store for staging wing as GSE 
+            component.
+          </para>
+          <figure>
+            <title>Transporter</title>
+            <graphic infoEntityIdent="ICN-0001Z-00014-001-01.jpg" reproductionHeight="140mm"/>
+          </figure>
+        </levelledPara>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>
