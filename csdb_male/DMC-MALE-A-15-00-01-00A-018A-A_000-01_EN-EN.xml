@@ -107,7 +107,7 @@
             </listItem>
             <listItem>
               <para>Revision procedure#ln;</para>
-              <para>To keep this book current, revision will be issued to the lates registered owner of airplane. Revisions to this book consist of:#ln;
+              <para>To keep this book current, revision will be issued to the lates registered owner of airplane. Revisions to this book consist of:
                 <randomList>
                   <listItem>
                     <para>List of Effective Data Modules (LEODM)</para>
@@ -144,7 +144,8 @@
         <levelledPara>
           <title>New or Revised Data Modules</title>
           <para>In accordance with the instruction of the LOEDM, new or revised DMs must be incorporated into the POH and superseded DMs destroyed.</para>
-          <note>
+          <note noteType="note">
+            <symbol infoEntityIdent="ICN-0001Z-00010-001-01.jpg" />
             <notePara>It is the owner or operator to maintain this book in a current status and incorporate successive revisions.</notePara>
           </note>
         </levelledPara>

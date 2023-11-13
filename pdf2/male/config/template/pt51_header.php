@@ -21,7 +21,7 @@
 $title1 = strtoupper($this->pmTitle);
 $title2 = $this->shortPmTitle ? strtoupper($this->shortPmTitle) : '';
 $responsiblePartnerCompany = strtoupper($this->responsiblePartnerCompany);
-$aircraft = "MALE";
+$applicability = $this->applicability;
 $header_even = <<<EOD
 <table style="width:100%;font-size:9pt;border-bottom:2px solid grey">
 <tr>
@@ -29,8 +29,8 @@ $header_even = <<<EOD
   <td style="width:55%;text-align:right;font-weight:bold">{$title1}</td>
 </tr>
 <tr>
-  <td style="width:45%;text-align:left">{$aircraft}</td>
-  <td style="width:55%;font-weight:bold;text-align:right">{$title2}</td>
+  <td style="width:35%;text-align:left">{$applicability}</td>
+  <td style="width:65%;font-weight:bold;text-align:right">{$title2}</td>
 </tr>
 <tr>
   <td style="line-height:0.3"></td>
@@ -46,8 +46,8 @@ $header_odd = <<<EOF
   <td style="width:45%;text-align:right">{$responsiblePartnerCompany}</td>
 </tr>
 <tr>
-  <td style="width:55%;font-weight:bold">{$title2}</td>
-  <td style="width:45%;text-align:right">{$aircraft}</td>
+  <td style="width:65%;text-align:left;font-weight:bold">{$title2}</td>
+  <td style="width:35%;text-align:right">{$applicability}</td>
 </tr>
 <tr>
   <td style="line-height:0.3"></td>

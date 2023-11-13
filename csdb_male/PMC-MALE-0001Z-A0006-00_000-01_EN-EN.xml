@@ -3,18 +3,25 @@
   <identAndStatusSection>
     <pmAddress>
       <pmIdent>
-        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0001" pmVolume="00" />
+        <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0004" pmVolume="00" />
         <language languageIsoCode="en" countryIsoCode="EN"/>
         <issueInfo issueNumber="000" inWork="01" />
       </pmIdent>
       <pmAddressItems>
         <issueDate year="2023" month="10" day="16" />
-        <pmTitle>PILOT OPERATING HANDBOOK AND DGCA APPROVED AIRPLANE FLIGHT MANUAL</pmTitle>
-        <shortPmTitle>POH-AFM</shortPmTitle>
+        <pmTitle>Section 3</pmTitle>
+        <shortPmTitle>Emergency and Abnormal Procedures</shortPmTitle>
       </pmAddressItems>
     </pmAddress>
     <pmStatus>
       <security securityClassification="05"/>
+      <controlAuthorityGroup>
+        <controlAuthority id="cat-001" controlAuthorityType="cat51" controlAuthoritySource="DGCA">
+          <controlAuthorityText>
+            <para><emphasis emphasisType="em01">DGCA Approved</emphasis></para>
+          </controlAuthorityText>
+        </controlAuthority>
+      </controlAuthorityGroup>
       <responsiblePartnerCompany enterpriseCode="0001Z">
         <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
       </responsiblePartnerCompany>
@@ -28,11 +35,8 @@
                 systemCode="00" subSystemCode="0" subSubSystemCode="0"
                 assyCode="00" disassyCode="00" disassyCodeVariant="A"
                 infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
-<<<<<<< HEAD
-                <issueInfo issueNumber="000" inWork="01" />
-                <language languageIsoCode="en" countryIsoCode="EN" />
-=======
->>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
+              <issueInfo issueNumber="000" inWork="01" />
+              <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
         </dmRef>
       </applicCrossRefTableRef>
@@ -45,12 +49,9 @@
             <dmCode modelIdentCode="MALE" systemDiffCode="A"
               systemCode="00" subSystemCode="0" subSubSystemCode="0"
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
-              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />  
             <issueInfo issueNumber="000" inWork="01" />
-<<<<<<< HEAD
             <language languageIsoCode="en" countryIsoCode="EN" />
-=======
->>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
           </dmRefIdent>
         </dmRef>
       </brexDmRef>
@@ -60,73 +61,63 @@
     </pmStatus>
   </identAndStatusSection>
   <content>
-    <pmEntry>
-      <pmRef>
-        <pmRefIdent>
-          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0002" pmVolume="00"/>
-          <issueInfo issueNumber="000" inWork="01" />
-          <language languageIsoCode="en" countryIsoCode="EN" />
-        </pmRefIdent>
-      </pmRef>
-      <pmRef>
-        <pmRefIdent>
-          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0003" pmVolume="00"/>
-          <issueInfo issueNumber="000" inWork="01" />
-          <language languageIsoCode="en" countryIsoCode="EN" />
-        </pmRefIdent>
-      </pmRef>
-      <pmRef>
-        <pmRefIdent>
-          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0004" pmVolume="00"/>
-          <issueInfo issueNumber="000" inWork="01" />
-          <language languageIsoCode="en" countryIsoCode="EN" />
-        </pmRefIdent>
-      </pmRef>
-      <pmRef>
-        <pmRefIdent>
-          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0005" pmVolume="00"/>
-          <issueInfo issueNumber="000" inWork="01" />
-          <language languageIsoCode="en" countryIsoCode="EN" />
-        </pmRefIdent>
-      </pmRef>
-<<<<<<< HEAD
-      <pmRef>
-        <pmRefIdent>
-          <pmCode modelIdentCode="MALE" pmIssuer="0001Z" pmNumber="A0006" pmVolume="00"/>
-          <issueInfo issueNumber="000" inWork="01" />
-          <language languageIsoCode="en" countryIsoCode="EN" />
-        </pmRefIdent>
-      </pmRef>
-=======
->>>>>>> d72ae2c0f9e2a0288e084bd5e5a6761bc5b43261
-    </pmEntry>
-    
-    <!-- <pmEntry pmEntryType="pmt01">
-      <pmEntryTitle>FRONTMATTER</pmEntryTitle>
-      <dmRef>
-        <dmRefIdent>
-          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="001" infoCodeVariant="A" itemLocationCode="A" />
-          <issueInfo issueNumber="000" inWork="01" />
-          <language languageIsoCode="en" countryIsoCode="EN" />
-        </dmRefIdent>
-      </dmRef>
-    </pmEntry>
     <pmEntry pmEntryType="pmt61">
-      <pmEntryTitle>SECTION 0 - INTRODUCTION</pmEntryTitle>
       <dmRef>
         <dmRefIdent>
-          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="018" infoCodeVariant="A" itemLocationCode="A" />
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="028" infoCodeVariant="A" itemLocationCode="A" />
           <issueInfo issueNumber="000" inWork="01" />
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
       <dmRef>
         <dmRefIdent>
-          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="005" infoCodeVariant="A" itemLocationCode="A" />
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
           <issueInfo issueNumber="000" inWork="01" />
           <language languageIsoCode="en" countryIsoCode="EN" />
         </dmRefIdent>
       </dmRef>
-    </pmEntry> -->
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="02" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="03" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="04" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="05" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="06" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="07" disassyCode="00" disassyCodeVariant="A" infoCode="028" infoCodeVariant="A" itemLocationCode="A" />
+          <issueInfo issueNumber="000" inWork="01" />
+          <language languageIsoCode="en" countryIsoCode="EN" />
+        </dmRefIdent>
+      </dmRef>
+    </pmEntry>
   </content>
 </pm>

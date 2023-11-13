@@ -15,10 +15,13 @@
           <xsl:variable name="fnt" select="."/>
           <xsl:for-each select="ancestor::table/descendant::footnote">
             <xsl:if test="child::* = $fnt/child::*">
-            <sup>
-            <xsl:call-template name="cgmark"/>
-            <xsl:text>[</xsl:text><xsl:value-of select="position()"/><xsl:text>]&#160;</xsl:text>
-            </sup>
+            <a style="text-decoration:none">
+              <xsl:attribute name="href"><xsl:value-of select="$dmOwner"/>,<xsl:value-of select="@id"/></xsl:attribute>
+              <sup>
+                <xsl:call-template name="cgmark"/>
+                <xsl:text>[</xsl:text><xsl:value-of select="position()"/><xsl:text>]&#160;</xsl:text>
+              </sup>
+            </a>
             </xsl:if>
           </xsl:for-each>
         </xsl:when>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/crew.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="03" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="07" />
+        <dmTitle>
+          <techName>DataLink (Downlink) Lost Communication</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <crew>
+      <descrCrew>
+        <levelledPara>
+          <title>On ground</title>
+          <para>Indication: TBD</para>
+          <crewDrill orderedStepsFlag="1">
+            <case>
+              <caseCond><emphasis emphasisType="em01">If Lost Comm. is less than 20sec/ timeout elapsed</emphasis></caseCond>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Brakes</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>APPLIED</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Engine</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>IDLE</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>RSSI level</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>MONITOR</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <if>
+                <caseCond>If the RSSI level is getting normal,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>MISSION</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm08"/>
+                    </crewMemberGroup>
+                    <response><para>CONTINUED</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+              </if>
+              <elseIf>
+                <caseCond>If the RSSI level is getting worse,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>MISSION</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm08"/>
+                    </crewMemberGroup>
+                    <response><para>ABORTED</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+              </elseIf>
+            </case>
+            <case>
+              <caseCond><emphasis emphasisType="em01">If Lost Comm. is less than 20sec/ timeout elapsed</emphasis></caseCond>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Air vehicle</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>MONITOR</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Fire extinguisher</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>PREPARED</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+            </case>
+          </crewDrill>
+        </levelledPara>
+        <levelledPara>
+          <title>In flight </title>
+          <para>Indication: TBD</para>
+          <crewDrill orderedStepsFlag="1">
+            <case>
+              <caseCond><emphasis emphasisType="em01">Lost comm. is less than 20 sec/timeout elapsed.</emphasis></caseCond>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Air vehicle</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>MONITOR</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>RSSI level</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>MONITOR</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Mission</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm08"/>
+                  </crewMemberGroup>
+                  <response><para>CONTINUED</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+              <if>
+                <caseCond>If RSSI level is getting worse,</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Mission</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm08"/>
+                    </crewMemberGroup>
+                    <response><para>ABORTED</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>RTH waypoint</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm08"/>
+                    </crewMemberGroup>
+                    <response><para>SEND</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+              </if>
+            </case>
+            <case>
+              <caseCond><emphasis emphasisType="em01">Lost comm. is more than 20 sec/timeout elapsed.</emphasis></caseCond>
+              <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Air vehicle</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>MONITOR</para></response>
+                  </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>RSSI level</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>MONITOR</para></response>
+                  </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Time</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>RECORD</para></response>
+                  </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Fuel level</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>RECORD</para></response>
+                  </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Air vehicle last position</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>REPORT to MC</para></response>
+                  </challengeAndResponse>
+              </crewDrillStep>
+              <crewDrillStep>
+                <crewProcedureName><para>Complete the emergency landing procedure.</para></crewProcedureName>
+              </crewDrillStep>
+            </case>
+          </crewDrill>
+        </levelledPara>
+      </descrCrew>
+    </crew>
+  </content>
+</dmodule>

@@ -32,6 +32,7 @@ $pmType = [
       ],
       'para' => 9,
     ],
+    'fontfamily' => 'tahoma',
     'content' => [
       'padding' => [
         'levelledPara' => [0,3,5,7,9]

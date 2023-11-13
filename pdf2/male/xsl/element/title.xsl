@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
   <xsl:template match="title">
     <!-- <xsl:param name="prefix"/> -->
     <xsl:param name="parentName" select="name(parent::*)"/>
@@ -14,7 +14,11 @@
         </xsl:variable>
 
         <xsl:variable name="strLength">
-          <xsl:value-of select="string-length(translate($numberedPar, '.', ''))"/>
+          <!-- diganti karena yang ini tidak bisa kalau posisi levelledpara >= 10 (2 digit akan di hitung 2, padahal harusnya terhitung 1) -->
+          <!-- <xsl:value-of select="string-length(translate($numberedPar, '.', ''))"/> -->
+          <xsl:variable name="l" select="php:function('preg_replace', '/\w+/', '?', $numberedPar)"/>
+          <xsl:variable name="s" select="php:function('preg_replace', '/\./', '', $l)"/>
+          <xsl:value-of select="string-length($s)"/>
         </xsl:variable>
 
         <xsl:variable name="h">
@@ -42,19 +46,19 @@
                   </xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h2'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_2"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_2"/></xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h3'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_3"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_3"/></xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h4'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_4"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_4"/></xsl:attribute>
                 </xsl:when>
                 <xsl:when test="$h = 'h5'">
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_5"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="$fontsize_levelledPara_title_5"/></xsl:attribute>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:attribute name="style"><xsl:text>font-size:</xsl:text><xsl:value-of select="'10'"/></xsl:attribute>
+                  <xsl:attribute name="style"><xsl:text>text-align:left;font-size:</xsl:text><xsl:value-of select="'10'"/></xsl:attribute>
                 </xsl:otherwise>
               </xsl:choose>
               
@@ -63,18 +67,24 @@
                 <xsl:value-of select="$strLength"/>
               </xsl:attribute>        
               <xsl:attribute name="bookmarktxt">
-                <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
-                <xsl:text>.</xsl:text>
+                <!-- <xsl:text>SECTION </xsl:text>
+                <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@subSystemCode)"/>
+                <xsl:text> - </xsl:text> -->
+                <!-- <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/> -->
+                <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@subSystemCode)"/>
+                <xsl:text> - </xsl:text>
                 <xsl:value-of select="$numberedPar"/>
+                <xsl:text>.</xsl:text>
                 <xsl:text>&#160;&#160;</xsl:text>
                 <xsl:value-of select="text()"/>
               </xsl:attribute>
 
               <!-- applying text -->
               <!-- $numberedPar= 3.1.2 artinya level 3, di posisi 2. Top Ancestor adalah level 1, posisi 3  -->
-              <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
-              <xsl:text>.</xsl:text>
+              <!-- <xsl:value-of select="number(//identAndStatusSection/descendant::dmCode[1]/@assyCode)"/>
+              <xsl:text>.</xsl:text> -->
               <xsl:value-of select="$numberedPar"/>
+              <xsl:text>.</xsl:text>
               <xsl:text>&#160;&#160;&#160;</xsl:text>
               <xsl:apply-templates/>
               <!-- <xsl:value-of select="$prefix"/> -->

@@ -3,7 +3,7 @@
 
   <xsl:output method="xml" omit-xml-declaration="yes" />
 
-  <xsl:param name="absolute_path_csdbInput"></xsl:param>
+  <!-- <xsl:param name="absolute_path_csdbInput"></xsl:param> -->
 
   <xsl:template match="figure">
     <xsl:variable name="current" select="."/>
@@ -85,5 +85,6 @@
       </xsl:for-each>
 
     </div>
+    <br/>
   </xsl:template>
 </xsl:stylesheet>

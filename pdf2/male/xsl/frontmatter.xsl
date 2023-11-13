@@ -80,7 +80,7 @@
       <div>
         <table style="width:100%">
           <tr>
-            <td style="width:30%"><img src="{$logo_ptdi}" style="width:20mm"/></td>
+            <td style="width:20%"><img src="{$logo_ptdi}" style="width:20mm"/></td>
             <td style="width:70%;font-size:7">
               <br/>
               <br/>
@@ -132,7 +132,7 @@
                   </tr>
                   <tr>
                     <td>Applicability:</td>
-                    <td><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicabilty','','first')"/></td>
+                    <td><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicability','','first')"/></td>
                   </tr>
                   <tr>
                     <td>Designed by:</td>

@@ -33,7 +33,9 @@
         <div>
           <xsl:call-template name="id"/>
           <xsl:call-template name="cgmark"/>
-          <xsl:apply-templates/>
+          <xsl:apply-templates>
+            <xsl:with-param name="usefootnote" select="$usefootnote"/>
+          </xsl:apply-templates>
         </div>      
       </xsl:when>
       <xsl:when test="parent::controlAuthorityText">

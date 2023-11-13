@@ -21,6 +21,9 @@
   <!-- <xsl:include href="custom_getPosition.xsl"/> -->
   <!-- BERHASIL, cek di demo5 04. -->
   
+  
+  <xsl:output method="xml" omit-xml-declaration="yes"/>
+
   <xsl:include href="attribute/id.xsl" />
   <xsl:include href="attribute/cgmark.xsl" />
   <xsl:include href="helper/position.xsl"/>
@@ -44,18 +47,19 @@
   <xsl:param name="fontsize_figure_title"/>
 
   <xsl:param name="dmOwner"/>
-  <xsl:param name="absolute_asset_path"/>
   
-  <xsl:output method="xml" omit-xml-declaration="yes"/>
+  <xsl:param name="absolute_asset_path"/>
+  <xsl:param name="absolute_path_csdbInput"/>
+  
 
   <xsl:template match="dmodule">
     <xsl:apply-templates select="//content/description"/>
   </xsl:template>
   
   <xsl:template match="description">
-  <!-- jangan dibungkus div karena div akan di render, dan akan menambah page kosong di akhir
-    <div>  </div> -->
-    <xsl:apply-templates select="levelledPara"/>
+    <div>
+      <xsl:apply-templates select="levelledPara"/>
+    </div>
   </xsl:template>
 
 </xsl:stylesheet>

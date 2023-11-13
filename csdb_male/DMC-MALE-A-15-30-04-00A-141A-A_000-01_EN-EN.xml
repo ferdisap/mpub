@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/crew.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="04" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="07" />
+        <dmTitle>
+          <techName>RC Lost Command</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <crew>
+      <descrCrew>
+        <levelledPara>
+          <title>On Ground</title>
+          <para>Indication: TBD</para>
+          <crewDrill>
+            <para>Engine rotation will be decrease to idle.</para>
+          </crewDrill>
+        </levelledPara>
+        <levelledPara>
+          <title>In Flight</title>
+          <crewDrill orderedStepsFlag="1">
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Aircraft</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para>MONITOR</para></response>
+              </challengeAndResponse>
+              <note>
+                <notePara>Monitor and report aircraft location and condition (altitude, airpseed, and direction).</notePara>
+              </note>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>RTH Waypoint</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm03"/>
+                </crewMemberGroup>
+                <response><para>SEND</para></response>
+              </challengeAndResponse>
+              <note>
+                <notePara>The air vehicle should be holding at runway area.</notePara>
+                <notePara>The RC should be fix.</notePara>
+              </note>
+            </crewDrillStep>
+            <if>
+              <caseCond>If the RC is not possible to fix:</caseCond>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Autoland Waypoint</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm03"/>
+                  </crewMemberGroup>
+                  <response><para>INSERT LANDING</para></response>
+                </challengeAndResponse>
+                <note>
+                  <notePara>The air vehicle should be in landing mode.</notePara>
+                </note>
+              </crewDrillStep>
+            </if>
+          </crewDrill>
+        </levelledPara>
+      </descrCrew>
+    </crew>
+  </content>
+</dmodule>

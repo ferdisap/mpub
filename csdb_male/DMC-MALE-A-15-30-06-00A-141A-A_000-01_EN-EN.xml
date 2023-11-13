@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/crew.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="15" subSystemCode="3" subSubSystemCode="0" assyCode="06" disassyCode="00" disassyCodeVariant="A" infoCode="141" infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="11" day="07" />
+        <dmTitle>
+          <techName>GCS Failure</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic id="appl-001">
+        <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText>
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <crew>
+      <descrCrew>
+        <levelledPara>
+          <title>GCS Fire and Smoke</title>
+          <para>Indication: TBD</para>
+          <crewDrill orderedStepsFlag="1">
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Set the aircraft to auto return.</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para></para></response>
+              </challengeAndResponse>
+              <challengeAndResponse>
+                <challenge><para>GCS cabin door</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm03"/>
+                </crewMemberGroup>
+                <response><para>OPEN</para></response>
+              </challengeAndResponse>
+              <note>
+                <notePara>Open the primary and emergency if condition may allowed.</notePara>
+                <notePara>Evacuate all personnel</notePara>
+              </note>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Fire extinguisher</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm07"/>
+                </crewMemberGroup>
+                <response><para>APPLIED</para></response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>GCS power-supply</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm07"/>
+                </crewMemberGroup>
+                <response><para>CUT OFF</para></response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>Mission</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para>ABORTED</para></response>
+              </challengeAndResponse>
+            </crewDrillStep>
+          </crewDrill>
+        </levelledPara>
+        <levelledPara>
+          <title>GCS Power Lost</title>
+          <para>Indication: TBD</para>
+          <para>
+            When the GCS primary power (Landline) is lost, the UPS should be 
+            performed automatically for around of 15 minutes. At the time, secondary 
+            power (Genset) should be available. Complete The use of GCS secondary power procedure.
+          </para>
+          <crewDrill orderedStepsFlag="1">
+            <case>
+              <caseCond>In Flight and Lost both of GCS power source:</caseCond>
+              <case>
+                <caseCond>Autopilot OFF</caseCond>
+                <crewDrillStep>
+                  <para>Complete Emergency Landing Procedure</para>
+                </crewDrillStep>
+              </case>
+              <case>
+                <caseCond>Autopilot ON</caseCond>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Air vehicle</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>MONITOR</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>GCS electrical load</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm03"/>
+                    </crewMemberGroup>
+                    <response><para>REDUCED</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep>
+                  <challengeAndResponse>
+                    <challenge><para>Autipilot</para></challenge>
+                    <crewMemberGroup>
+                      <crewMember crewMemberType="cm02"/>
+                    </crewMemberGroup>
+                    <response><para>OFF</para></response>
+                  </challengeAndResponse>
+                </crewDrillStep>
+                <crewDrillStep>
+                  <para>Landing as soon as possible</para>
+                </crewDrillStep>
+              </case>
+            </case>
+          </crewDrill>
+        </levelledPara>
+        <levelledPara>
+          <title>Software Failure</title>
+          <para>Indication: TBD</para>
+          <crewDrill orderedStepsFlag="1">
+            <crewDrillStep>
+              <challengeAndResponse>
+                <challenge><para>GCS software</para></challenge>
+                <crewMemberGroup>
+                  <crewMember crewMemberType="cm02"/>
+                </crewMemberGroup>
+                <response><para>RESTART</para></response>
+              </challengeAndResponse>
+            </crewDrillStep>
+            <if>
+              <caseCond>If not possible to solve the software,</caseCond>
+              <crewDrillStep>
+                <challengeAndResponse>
+                  <challenge><para>Mission</para></challenge>
+                  <crewMemberGroup>
+                    <crewMember crewMemberType="cm02"/>
+                  </crewMemberGroup>
+                  <response><para>ABORTED</para></response>
+                </challengeAndResponse>
+              </crewDrillStep>
+            </if>
+          </crewDrill>
+        </levelledPara>
+      </descrCrew>
+    </crew>
+  </content>
+</dmodule>
