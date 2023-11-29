@@ -10,10 +10,9 @@ use Ptdi\Mpub\CSDB;
  */
 trait Applicability
 {
-  public function getApplicability($id = '', $options = '', $useDisplayText = true)
+  public function getApplicability($id = '', $options = '', $useDisplayName = true, $appl = null)
   {
-    $appl = CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
-    // dd($appl);
+    $appl = $appl ?? CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
     $this->applicability = $appl['applicability'];
     $CSDB = $appl['CSDB'];
 
@@ -35,7 +34,7 @@ trait Applicability
           if ($applicPropertyIdent[0] == '%') continue;
           $str .= $stringApplic;
         }
-        if (!$useDisplayText) return $str;
+        if (!$useDisplayName) return $str;
         $applicPropertyIdent = array_key_first($this->applicability[array_key_first($this->applicability)]);
         $applicPropertyType = $this->applicability[array_key_first($this->applicability)]['%APPLICPROPERTYTYPE'];
         // dd($CSDB);

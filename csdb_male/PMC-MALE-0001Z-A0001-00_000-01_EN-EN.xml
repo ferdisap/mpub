@@ -51,9 +51,17 @@
       <qualityAssurance>
         <unverified />
       </qualityAssurance>
+      <qualityAssurance applicRefId="appl-001">
+        <firstVerification verificationType="tabtop" />
+      </qualityAssurance>
     </pmStatus>
   </identAndStatusSection>
   <content>
+    <referencedApplicGroup>
+      <applic id="appl-001">
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+    </referencedApplicGroup>
     <pmEntry>
       <pmRef>
         <pmRefIdent>

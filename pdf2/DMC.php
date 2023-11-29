@@ -43,7 +43,8 @@ class DMC
 
     $this->DOMDocument = CSDB::importDocument($this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.$filename,'','dmodule');
 
-    $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
+    // $schemaXsd = self::getSchemaName($this->DOMDocument->firstElementChild);
+    $schemaXsd = CSDB::getSchemaUsed($this->DOMDocument, 'name');
     $this->schemaXsd = $schemaXsd;
     $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
 

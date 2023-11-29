@@ -29,7 +29,7 @@
      <applicCrossRefTableRef>
         <dmRef>
           <dmRefIdent>
-            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />                -->
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A" infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
             <issueInfo issueNumber="000" inWork="01" />
             <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
@@ -90,7 +90,7 @@
             <dmCode modelIdentCode="MALE" systemDiffCode="A"
               systemCode="00" subSystemCode="0" subSubSystemCode="0"
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
-              infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
+              infoCode="00Q" infoCodeVariant="A" itemLocationCode="D" />
               <issueInfo issueNumber="000" inWork="01" />
               <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
@@ -102,7 +102,7 @@
             <dmCode modelIdentCode="MALE" systemDiffCode="A"
               systemCode="00" subSystemCode="0" subSubSystemCode="0"
               assyCode="00" disassyCode="00" disassyCodeVariant="A"
-              infoCode="00Q" infoCodeVariant="A" itemLocationCode="D" />
+              infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
               <issueInfo issueNumber="000" inWork="01" />
               <language languageIsoCode="en" countryIsoCode="EN" />
           </dmRefIdent>
