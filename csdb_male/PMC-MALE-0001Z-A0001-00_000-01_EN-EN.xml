@@ -51,9 +51,6 @@
       <qualityAssurance>
         <unverified />
       </qualityAssurance>
-      <qualityAssurance applicRefId="appl-001">
-        <firstVerification verificationType="tabtop" />
-      </qualityAssurance>
     </pmStatus>
   </identAndStatusSection>
   <content>

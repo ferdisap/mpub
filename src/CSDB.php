@@ -20,16 +20,16 @@ class CSDB
   protected static array $errors = array();
   public static string $processid = '';
 
-  public CONST SCHEMA_PATH = __DIR__. DIRECTORY_SEPARATOR. "Schema";
+  public const SCHEMA_PATH = __DIR__ . DIRECTORY_SEPARATOR . "Schema";
 
   public static function getSchemaUsed(\DOMDocument $doc, $option = 'file')
   {
-    $schema = $doc->firstElementChild->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance',"noNamespaceSchemaLocation");
-    preg_match("/\w+.xsd/",$schema, $schema);
-    if(!empty($schema)) $schema = $schema[0];
+    $schema = $doc->firstElementChild->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', "noNamespaceSchemaLocation");
+    preg_match("/\w+.xsd/", $schema, $schema);
+    if (!empty($schema)) $schema = $schema[0];
 
-    if($option == 'file'){
-      $file = self::importDocument(__DIR__."/Schema//",$schema,null,'');
+    if ($option == 'file') {
+      $file = self::importDocument(__DIR__ . "/Schema//", $schema, null, '');
       return $file;
     } else {
       return $schema;
@@ -65,9 +65,9 @@ class CSDB
    * fungsi ini depreciated
    * @param string $filename The csdb object
    */
-  public static function load(string $filename,$tes = false)
+  public static function load(string $filename, $tes = false)
   {
-    if(!file_exists($filename)){
+    if (!file_exists($filename)) {
       preg_match("/(?<=\/|\\\\)(DMC|ICN|PMC).+/", $filename, $matches);
       self::$errors['file_exists'][] = "{$matches[0]} is not exist";
       return false;
@@ -80,10 +80,10 @@ class CSDB
       case 'text/xml':
         return self::loadXmlDoc($filename);
       case 'text/plain':
-        return file_get_contents($filename,true);
+        return file_get_contents($filename, true);
         break;
       case 'image/jpeg':
-        return [file_get_contents($filename,true), $mime];
+        return [file_get_contents($filename, true), $mime];
       default:
         throw new Exception("No such object of csdb");
         break;
@@ -115,52 +115,46 @@ class CSDB
 
   // tambahan saat buat pdf
   /**
+   * untuk absolute path, tambahkan back slash "/" di akhir string
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
   public static function importDocument(mixed $absolute_path = null, string $filename = '', string $xml_string = null, string $rootname = '', $tes = false)
   {
     libxml_use_internal_errors(true);
-    if(!empty($absolute_path) OR !empty($xml_string)){
-      if(!empty($absolute_path) AND 
-        (!file_exists($absolute_path.$filename) OR !is_file($absolute_path.$filename))
-      ){
+    if (!empty($absolute_path) or !empty($xml_string)) {
+      if (
+        !empty($absolute_path) and
+        (!file_exists($absolute_path . $filename) or !is_file($absolute_path . $filename))
+      ) {
         $m = "{$filename} does not exist.";
         self::$errors['file_exists'][] = $m;
         return false;
       }
       $text = $xml_string ?? '';
-      $mime = file_exists($absolute_path.$filename) ? mime_content_type($absolute_path.$filename) : '';
-      if(str_contains($mime,'text') OR $text){
+      $mime = file_exists($absolute_path . $filename) ? mime_content_type($absolute_path . $filename) : '';
+      if (str_contains($mime, 'text') or $text) {
         $obj = new DOMDocument();
-        if($text){
+        if ($text) {
           $obj->loadXML(trim($text));
         } else {
-          $obj->load($absolute_path.$filename); // pakai load supaya ada base URI sehingga bisa relative path kalau perlu operasi import/include di xml nya. 
+          $obj->load($absolute_path . $filename); // pakai load supaya ada base URI sehingga bisa relative path kalau perlu operasi import/include di xml nya. 
         }
-        if ((isset($obj->firstElementChild)) AND !empty($rootname) AND ($obj->firstElementChild->tagName != "{$rootname}")) {
-          if(!self::$CSDB_use_internal_error){
+        if ((isset($obj->firstElementChild)) and !empty($rootname) and ($obj->firstElementChild->tagName != "{$rootname}")) {
+          if (!self::$CSDB_use_internal_error) {
             throw new \Exception("The root element must be <{$rootname}>", 1);
-          }
-          else {
+          } else {
             self::$processid ? (self::$errors[self::$processid][] = "The root element must be <{$rootname}>") : (self::$errors[] = "The root element must be <{$rootname}>");
-            // if (self::$processid) {
-            //   self::$errors[self::$processid][] = "The root element must be <{$rootname}>";
-            // } else {
-            //   self::$errors[] = "The root element must be <{$rootname}>";
-            // }
             return false;
           }
         }
         $obj->absolute_path = $absolute_path;
         return $obj;
-      }
-      else {
-        $obj = [file_get_contents($absolute_path.$filename), $mime];
+      } else {
+        $obj = [file_get_contents($absolute_path . $filename), $mime];
         return $obj;
       }
-    } 
-    else {
+    } else {
       self::$processid ? (self::$errors[self::$processid][] = "there is no data to be document.") : (self::$errors[] = "there is no data to be document.");
       return false;
     }
@@ -168,62 +162,133 @@ class CSDB
 
 
     # script lama
-  //   libxml_use_internal_errors(true);
-  //   // $DOMDocument = null;
-  //   $DOMDocument = new DOMDocument();
-  //   if (!empty($absolute_path)){
-  //     $DOMDocument = CSDB::load($absolute_path.$filename,$tes);
-  //   } elseif (!empty($xml_string)) {
-  //     $DOMDocument->loadXML($xml_string);
-  //   } else {
-  //     return false;
-  //   }
+    //   libxml_use_internal_errors(true);
+    //   // $DOMDocument = null;
+    //   $DOMDocument = new DOMDocument();
+    //   if (!empty($absolute_path)){
+    //     $DOMDocument = CSDB::load($absolute_path.$filename,$tes);
+    //   } elseif (!empty($xml_string)) {
+    //     $DOMDocument->loadXML($xml_string);
+    //   } else {
+    //     return false;
+    //   }
 
-  //   // jika bukan XML, misal mime= text/plain atau image
-  //   if(!($DOMDocument instanceof \DOMDocument)){
-  //     return $DOMDocument;
-  //   }
+    //   // jika bukan XML, misal mime= text/plain atau image
+    //   if(!($DOMDocument instanceof \DOMDocument)){
+    //     return $DOMDocument;
+    //   }
 
-  //   // jika tidak ada firstElementChild, return false
-  //   if (!isset($DOMDocument->firstElementChild)) {
-  //     // jika rootname ada DAN firstElementChild tidak sama dengan rootname, return false atau error
-  //     return false;
-  //   }
-  //   if (!empty($rootname) and ($DOMDocument->firstElementChild->tagName != "{$rootname}")) {
-  //     if (!self::$CSDB_use_internal_error) {
-  //       throw new \Exception("The root element must be <{$rootname}>", 1);
-  //     } else {
-  //       if (self::$processid) {
-  //         self::$errors[self::$processid][] = "The root element must be <{$rootname}>";
-  //       } else {
-  //         self::$errors[] = "The root element must be <{$rootname}>";
-  //       }
-  //       return false;
-  //     }
-  //   }
+    //   // jika tidak ada firstElementChild, return false
+    //   if (!isset($DOMDocument->firstElementChild)) {
+    //     // jika rootname ada DAN firstElementChild tidak sama dengan rootname, return false atau error
+    //     return false;
+    //   }
+    //   if (!empty($rootname) and ($DOMDocument->firstElementChild->tagName != "{$rootname}")) {
+    //     if (!self::$CSDB_use_internal_error) {
+    //       throw new \Exception("The root element must be <{$rootname}>", 1);
+    //     } else {
+    //       if (self::$processid) {
+    //         self::$errors[self::$processid][] = "The root element must be <{$rootname}>";
+    //       } else {
+    //         self::$errors[] = "The root element must be <{$rootname}>";
+    //       }
+    //       return false;
+    //     }
+    //   }
 
-  //   $DOMDocument->absolute_path = $absolute_path;
-  //   return $DOMDocument;
+    //   $DOMDocument->absolute_path = $absolute_path;
+    //   return $DOMDocument;
   }
+
+  public static function decode_dmCode(string $name)
+  {
+    $doc = new DOMDocument();
+    $doc->loadXML("<dmCode/>");
+
+    $dmCode = $doc->documentElement;
+    $arr = explode("-", $name);
+    $att = ['modelIdentCode', 'systemDiffCode', 'systemCode', 'subSystemCode', 'assyCode' ,'disassyCode', 'infoCode', 'itemLocationCode'];
+    foreach ($arr as $k => $v) {
+      switch ($att[$k]) {
+        case 'subSystemCode':
+          $subSystemCode = substr($arr[$k],0,1);
+          $subSubSystemCode = substr($arr[$k],1);
+          $dmCode->setAttribute('subSystemCode', $subSystemCode);
+          $dmCode->setAttribute('subSubSystemCode', $subSubSystemCode);
+          break;
+        case 'disassyCode':
+          $disassyCodeVariant = substr($arr[$k], 2);
+          $disassyCode = rtrim($arr[$k], $disassyCodeVariant);
+          $dmCode->setAttribute('disassyCode', $disassyCode);
+          $dmCode->setAttribute('disassyCodeVariant', $disassyCodeVariant);
+          break;
+        case 'infoCode':
+          // dd($name,$att, $k, $arr);
+          $infoCodeVariant = substr($arr[$k], 3);
+          $infoCode = rtrim($arr[$k], $infoCodeVariant);
+          $dmCode->setAttribute('infoCode', $infoCode);
+          $dmCode->setAttribute('infoCodeVariant', $infoCodeVariant);
+          break;
+        default:
+          $dmCode->setAttribute($att[$k], $v);
+          break;
+      }
+    }
+    return $dmCode->cloneNode();
+  }
+
+  public static function decode_issueInfo(string $name)
+  {
+    $doc = new DOMDocument();
+    $doc->loadXML("<issueInfo/>");
+
+    $issueInfo = $doc->documentElement;
+    $arr = explode("-", $name);
+    $att = ['issueNumber', 'inWork'];
+    foreach ($arr as $k => $v) {
+      $issueInfo->setAttribute($att[$k], $v);
+    }
+    return $issueInfo->cloneNode();
+  }
+
+  public static function decode_language(string $name)
+  {
+    $doc = new DOMDocument();
+    $doc->loadXML("<language/>");
+
+    $language = $doc->documentElement;
+    $arr = explode("-", $name);
+    $att = ['languageIsoCode', 'countryIsoCode'];
+    foreach ($arr as $k => $v) {
+      switch ($att[$k]) {
+        case 'languageIsoCode':
+          $language->setAttribute($att[$k], strtolower($v));
+          break;
+        case 'countryIsoCode':
+          $language->setAttribute($att[$k], $v);
+          break;
+      }
+    }
+    return $language->cloneNode();
+  }
+
 
   public static function get_errors(bool $deleteErrors = true, string $processid = '')
   {
-    if ($processid AND isset(self::$errors[$processid])) {
+    if ($processid and isset(self::$errors[$processid])) {
       $e = self::$errors[$processid];
-      if($deleteErrors){
+      if ($deleteErrors) {
         unset(self::$errors[$processid]);
       }
       return $e;
-    }
-    elseif($processid AND !isset(self::$errors[$processid])){
+    } elseif ($processid and !isset(self::$errors[$processid])) {
       return null;
-    }
-    elseif(!$processid){
-     $e = self::$errors; 
-     if($deleteErrors){
-      self::$errors = array();
-     }
-     return $e;
+    } elseif (!$processid) {
+      $e = self::$errors;
+      if ($deleteErrors) {
+        self::$errors = array();
+      }
+      return $e;
     }
 
     // if (!$deleteErrors) {
@@ -374,11 +439,11 @@ class CSDB
   public static function get_childrenElement(\DOMElement $element, $excludeElement = '')
   {
     $arr = [];
-    if(is_string($excludeElement)){
+    if (is_string($excludeElement)) {
       $excludeElement = array($excludeElement);
     }
     foreach ($element->childNodes as $childNodes) {
-      if(($childNodes instanceof \DOMElement) AND !in_array($childNodes->nodeName, $excludeElement)){
+      if (($childNodes instanceof \DOMElement) and !in_array($childNodes->nodeName, $excludeElement)) {
         $arr[] = $childNodes;
       }
       // (($childNodes instanceof \DOMElement) and ($childNodes->nodeName != $excludeElement)) ? array_push($arr, $childNodes) : null;
@@ -403,16 +468,15 @@ class CSDB
       $responsiblePartnerCompany = $responsiblePartnerCompany[0];
     }
 
-    if($option == 'enterpriseName' AND $$option = $responsiblePartnerCompany->firstElementChild){
+    if ($option == 'enterpriseName' and $$option = $responsiblePartnerCompany->firstElementChild) {
       return $$option->nodeValue;
-    }
-    elseif($option == 'enterpriseCode' AND $$option = $responsiblePartnerCompany->getAttribute($option)){
+    } elseif ($option == 'enterpriseCode' and $$option = $responsiblePartnerCompany->getAttribute($option)) {
       return $$option;
-    }
-    elseif($option == 'both' AND
-    ( ($enterpriseName = $responsiblePartnerCompany->firstElementChild) OR $enterpriseCode = $responsiblePartnerCompany->getAttribute('enterpriseCode') )
-    ){
-      return ($enterpriseName ? $enterpriseName->nodeValue : '').",". ($enterpriseCode ?? '');
+    } elseif (
+      $option == 'both' and
+      (($enterpriseName = $responsiblePartnerCompany->firstElementChild) or $enterpriseCode = $responsiblePartnerCompany->getAttribute('enterpriseCode'))
+    ) {
+      return ($enterpriseName ? $enterpriseName->nodeValue : '') . "," . ($enterpriseCode ?? '');
     }
   }
 
@@ -448,7 +512,8 @@ class CSDB
     return $txt;
   }
 
-  public static function test($par){
+  public static function test($par)
+  {
     return $par;
   }
 
@@ -598,7 +663,7 @@ class CSDB
 
   public static function getStatus($children = ['applic', 'qualityAssurance'], \DOMDocument $doc = null, string $absolute_path_csdbInput = '')
   {
-    foreach($children as $child){
+    foreach ($children as $child) {
       switch ($child) {
         case 'applic':
           return self::getApplicability($doc, $absolute_path_csdbInput);
@@ -681,7 +746,7 @@ class CSDB
     $domxpath = new DOMXPath($doc);
     $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/descendant::applicCrossRefTableRef/descendant::dmRefIdent")[0];
     $ACTdoc = self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
-    if(!$ACTdoc){
+    if (!$ACTdoc) {
       CSDB::setError(__FUNCTION__, join(", ", CSDB::get_errors(true, 'file_exists')));
       return false;
     }
@@ -820,7 +885,7 @@ class CSDB
     // $this->applicPropertyValues = $applicPropertyValues;
 
     // validation CCTdoc
-    if($applicPropertyType == 'condition' AND !$this->CCTdoc){
+    if ($applicPropertyType == 'condition' and !$this->CCTdoc) {
       CSDB::setError('getApplicability', join(", ", CSDB::get_errors(true, 'file_exists')));
       return false;
     }
@@ -991,5 +1056,4 @@ class CSDB
     $ret = array($applicPropertyIdent => $testedValues);
     return $ret;
   }
-
 }

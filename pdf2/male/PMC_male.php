@@ -165,7 +165,7 @@ class PMC_male extends PMC_PDF
       foreach($controlAuthoritys as $controlAuthority){
         // dump($controlAuthority);
         if($ishtml){
-          $xsl = CSDB::importDocument(__DIR__."./xsl/element/controlAuthority.xsl", '',"xsl:stylesheet");
+          $xsl = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."xsl/element/", 'controlAuthority.xsl', '',"xsl:stylesheet");
           $xsltproc = new XSLTProcessor($xsl);
           $xsltproc->importStylesheet($xsl);
   

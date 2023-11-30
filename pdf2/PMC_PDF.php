@@ -2,7 +2,9 @@
 
 namespace Ptdi\Mpub\Pdf2;
 
+use DOMAttr;
 use DOMDocument;
+use DOMElement;
 use DOMXPath;
 use Ptdi\Mpub\CSDB;
 use TCPDF;
@@ -122,6 +124,78 @@ class PMC_PDF extends TCPDF
     
     $this->applicability = $this->getApplicability('','first','false');
   }
+
+  /**
+   * @param string $absolute_path for publication module, if empty string, it call the $xml_string
+   * @param string $xml_string of publication module
+  */
+  public function importDocument_dump(string $pmType = '', $contentDocument = [])
+  {
+
+    $this->DOMDocument = new DOMDocument();
+    $this->DOMDocument->load(__DIR__.DIRECTORY_SEPARATOR."../csdb_dump/PMC-DUMP-0001Z-XXXXX-00_000-01_EN-EN.xml");
+    
+    $this->DOMDocument->documentElement->setAttribute('pmType', $contentDocument['pmType']);
+    
+    $content = $this->DOMDocument->createElement('content');
+    $this->DOMDocument->firstElementChild->appendChild($content);
+
+    $pmEntry = $this->DOMDocument->createElement('pmEntry');
+    $pmEntry->setAttribute('pmEntryType', $contentDocument['pmEntryType']);
+    $content->appendChild($pmEntry);
+
+    $objectRef = $contentDocument['objectRef'];
+
+    foreach($objectRef as $filename){
+      preg_match_all("/(?:^\w+-)|.+/", $filename, $matches, );
+      $prefix = $matches[0][0];
+      $name = preg_replace("/\.\w+/",'',$matches[0][1]);
+
+      switch ($prefix) {
+        case 'DMC-':
+          // dmRef
+          $dmRef = $this->DOMDocument->createElement('dmRef');
+          $pmEntry->appendChild($dmRef);
+      
+          // dmRefIdent
+          $dmRefIdent = $this->DOMDocument->createElement('dmRefIdent');
+          $dmRef->appendChild($dmRefIdent);
+              
+          $ident = explode('_',$name);
+          $dmCode = $ident[0];
+          $issueInfo = $ident[1];
+          $language = $ident[2];
+          
+          // dmCode
+          $dmCode = CSDB::decode_dmCode($dmCode, $this->DOMDocument->createElement('dmCode'));
+          $dmCode = $this->DOMDocument->importNode($dmCode,true);
+          $dmRefIdent->appendChild($dmCode);    
+          
+          // issueInfo
+          $issueInfo = CSDB::decode_issueInfo($issueInfo, $this->DOMDocument->createElement('issueInfo'));
+          $issueInfo = $this->DOMDocument->importNode($issueInfo,true);
+          $dmRefIdent->appendChild($issueInfo);
+          
+          // language
+          $language = CSDB::decode_language($language, $this->DOMDocument->createElement('language'));
+          $language = $this->DOMDocument->importNode($language,true);
+          $dmRefIdent->appendChild($language);
+          break;
+      }
+    }
+    $pmType_value = $this->DOMDocument->documentElement->getAttribute('pmType');
+    $attributes = require "dump/config/attributes.php";
+    $this->pmType_config = $attributes['pmType'][$pmType_value];
+
+    $this->pmCode = CSDB::resolve_pmCode($this->DOMDocument->getElementsByTagName('pmCode')[0]);
+    
+    $format = $this->pmType_config['page']['format'];
+    $this->setPageFormat($format);  
+    $this->setPageOrientation($this->get_pmType_config()['page']['orientation']);  
+    
+    $this->applicability = 'dump_aircraft';
+  }
+
   /**
    * @param string $aa_name
    * @param string $approved_date
@@ -140,7 +214,7 @@ class PMC_PDF extends TCPDF
     
     $DOMXpath = new \DOMXPath($this->DOMDocument);
     $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
-    foreach ($pmEntries as $index => $pmEntry) {   
+    foreach ($pmEntries as $index => $pmEntry) {
       $this->pmEntry($pmEntry);
     }
   }
@@ -160,7 +234,7 @@ class PMC_PDF extends TCPDF
     
     // dump($pmEntryType_config);
     $this->pmEntryType_config = $pmEntryType_config;
-
+    
     $orientation = $this->pmType_config['page']['orientation'];
     $headerMargin = $this->pmType_config['page']['headerMargin'];
     $footerMargin = $this->pmType_config['page']['footerMargin'];
@@ -3389,6 +3463,7 @@ class PMC_PDF extends TCPDF
 		} else {
 			$pask = 0;
 		}
+    
 		if ($this->inxobj) {
 			// we are inside an XObject template
 			$startlinepos = strlen($this->xobjects[$this->xobjid]['outdata']);
