@@ -2,9 +2,7 @@
 
 namespace Ptdi\Mpub\Pdf2;
 
-use DOMAttr;
 use DOMDocument;
-use DOMElement;
 use DOMXPath;
 use Ptdi\Mpub\CSDB;
 use TCPDF;
@@ -12,8 +10,8 @@ use TCPDF_COLORS;
 use TCPDF_FONT_DATA;
 use TCPDF_FONTS;
 use TCPDF_STATIC;
-use Ptdi\Mpub\Pdf2\male\PMC_MALE;
 use TCPDF_IMAGES;
+use XSLTProcessor;
 
 class PMC_PDF extends TCPDF
 {
@@ -47,6 +45,10 @@ class PMC_PDF extends TCPDF
     'staging' => [],
     'collection' => [],
   ];
+
+  public static function pmcpdf_path(){
+    return __DIR__;
+  }
 
   public function getDOMDocument(){
     return $this->DOMDocument;
@@ -297,14 +299,28 @@ class PMC_PDF extends TCPDF
           break;
 
         case 'pmRef':
-          $pmCode = CSDB::resolve_pmCode($child->getElementsByTagName('pmCode')[0]);
-          $issueInfo = ($if = CSDB::resolve_issueInfo($child->getElementsByTagName('issueInfo')[0])) ? "_". $if : '';
-          $languange = ($lg = CSDB::resolve_languange($child->getElementsByTagName('language')[0])) ? "_". $lg : '';
-
-          $file_withLanguangeCode = $this->absolute_path_csdbInput.DIRECTORY_SEPARATOR.strtoupper($pmCode.$issueInfo.$languange).".xml";
-
-          $this->importDocument($file_withLanguangeCode,'');
+          $filename = CSDB::resolve_pmIdent($child->getElementsByTagName('pmRefIdent')[0]);
+          $this->importDocument($this->absolute_path_csdbInput.DIRECTORY_SEPARATOR,$filename,'');
           $this->render();
+
+        case 'externalPubRef';
+          $this->setLeftMargin($leftMargin);
+          $xsl = CSDB::importDocument(PMC_PDF::pmcpdf_path() . DIRECTORY_SEPARATOR . "/general/xsl/", 'externalPubRef.xsl');
+
+          $externalPubRef = new DOMDocument();
+          $child = $externalPubRef->importNode($child->cloneNode(true), true);
+          $externalPubRef->appendChild($child);
+
+          $xsltprocc = new XSLTProcessor();
+          $xsltprocc->importStylesheet($xsl);
+          $html = $xsltprocc->transformToXml($externalPubRef);
+
+          $this->setPrintHeader(false);
+          $this->setPrintFooter(false);
+          $this->AddPage();
+          $this->writeHTML($html, true, false, true, true,'J',true, $DOMDocument = null, $usefootnote = false);
+          $this->addIntentionallyLeftBlankPage($this);
+          break;
       }
     }
     // add TOC

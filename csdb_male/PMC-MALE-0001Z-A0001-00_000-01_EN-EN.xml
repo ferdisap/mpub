@@ -96,6 +96,17 @@
         </pmRefIdent>
       </pmRef>
     </pmEntry>
+    <pmEntry>      
+      <externalPubRef>
+        <externalPubRefIdent>
+          <externalPubCode>POM Supplement Beechjet 400A UK.pdf</externalPubCode>
+          <externalPubTitle>POM Supplement Beechjet 400A UK</externalPubTitle>
+          <externalPubIssueInfo>
+            <externalPubIssue>Revision No: xxx</externalPubIssue>
+          </externalPubIssueInfo>
+        </externalPubRefIdent>
+      </externalPubRef>
+    </pmEntry>
     
     <!-- <pmEntry pmEntryType="pmt01">
       <pmEntryTitle>FRONTMATTER</pmEntryTitle>

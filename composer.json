@@ -6,7 +6,6 @@
   "autoload": {
       "psr-4": {
           "Ptdi\\Mpub\\": "src/",
-          "Ptdi\\Mpub\\Pdf\\": "pdf/",
           "Ptdi\\Mpub\\Pdf2\\": "pdf2/"
       }
   },
