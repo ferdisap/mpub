@@ -16,7 +16,8 @@
       }
   ],
   "require": {
-      "tecnickcom/tcpdf": "*"
+      "tecnickcom/tcpdf": "*",
+    "james-heinrich/getid3": "^1.9"
   },
   "require-dev": {
     "symfony/var-dumper": "^6.3"

@@ -115,7 +115,6 @@ class PMC_male extends PMC_PDF
 
           $xsltprocc = new XSLTProcessor();
           $xsltprocc->importStylesheet($xsl);
-          // $xsltprocc->setParameter('','absolute_path_csdbInput', $this->absolute_path_csdbInput,);
           $html = $xsltprocc->transformToXml($externalPubRef);
 
           $this->setPrintHeader(false);
