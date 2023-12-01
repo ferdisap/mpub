@@ -60,50 +60,52 @@ class CSDB
     return $docIdent;
   }
 
-  /**
-   * Load CSDB object
-   * fungsi ini depreciated
-   * @param string $filename The csdb object
-   */
-  public static function load(string $filename, $tes = false)
-  {
-    if (!file_exists($filename)) {
-      preg_match("/(?<=\/|\\\\)(DMC|ICN|PMC).+/", $filename, $matches);
-      self::$errors['file_exists'][] = "{$matches[0]} is not exist";
-      return false;
-    }
-    $mime = mime_content_type($filename);
-    if (!$mime) {
-      return false;
-    }
-    switch ($mime) {
-      case 'text/xml':
-        return self::loadXmlDoc($filename);
-      case 'text/plain':
-        return file_get_contents($filename, true);
-        break;
-      case 'image/jpeg':
-        return [file_get_contents($filename, true), $mime];
-      default:
-        throw new Exception("No such object of csdb");
-        break;
-    }
-  }
+  // nggak dipakai karena fungsi importDocument tidak lagi memakai ini
+  // fungsi ini di pakai / di override di ICNDocument.php
+  // /**
+  //  * Load CSDB object
+  //  * fungsi ini depreciated
+  //  * @param string $filename The csdb object
+  //  */
+  // public static function load(string $filename, $tes = false)
+  // {
+  //   if (!file_exists($filename)) {
+  //     preg_match("/(?<=\/|\\\\)(DMC|ICN|PMC).+/", $filename, $matches);
+  //     self::$errors['file_exists'][] = "{$matches[0]} is not exist";
+  //     return false;
+  //   }
+  //   $mime = mime_content_type($filename);
+  //   if (!$mime) {
+  //     return false;
+  //   }
+  //   switch ($mime) {
+  //     case 'text/xml':
+  //       return self::loadXmlDoc($filename);
+  //     case 'text/plain':
+  //       return file_get_contents($filename, true);
+  //       break;
+  //     case 'image/jpeg':
+  //       return [file_get_contents($filename, true), $mime];
+  //     default:
+  //       throw new Exception("No such object of csdb");
+  //       break;
+  //   }
+  // }
 
-  /**
-   * Load xml document from local
-   * 
-   * @param string $filename The xml file
-   * 
-   * @return \DOMDocument document or false
-   */
-  private static function loadXmlDoc(String $filename)
-  {
-    $doc = new \DOMDocument();
-    $doc->load($filename, LIBXML_PARSEHUGE);
+  // /**
+  //  * Load xml document from local
+  //  * 
+  //  * @param string $filename The xml file
+  //  * 
+  //  * @return \DOMDocument document or false
+  //  */
+  // private static function loadXmlDoc(String $filename)
+  // {
+  //   $doc = new \DOMDocument();
+  //   $doc->load($filename, LIBXML_PARSEHUGE);
 
-    return $doc;
-  }
+  //   return $doc;
+  // }
 
   public function setCsdbPath(string $app_path, string $modelIdentCode = null)
   {
@@ -151,8 +153,11 @@ class CSDB
         $obj->absolute_path = $absolute_path;
         return $obj;
       } else {
-        $obj = [file_get_contents($absolute_path . $filename), $mime];
-        return $obj;
+        $icn =  new ICNDocument();
+        $icn->load($absolute_path, $filename);
+        return $icn;
+        // $obj = [file_get_contents($absolute_path . $filename), $mime];
+        // return $obj;
       }
     } else {
       self::$processid ? (self::$errors[self::$processid][] = "there is no data to be document.") : (self::$errors[] = "there is no data to be document.");
