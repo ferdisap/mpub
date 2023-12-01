@@ -2,20 +2,57 @@
 
 namespace Ptdi\Mpub;
 
+use DOMDocument;
 use DOMElement;
 use DOMNodeList;
 use DOMXPath;
+use Ptdi\Mpub\Schema\Schema;
 
 /**
  * 
  */
 trait Validation
 {
-  public static function validate(string $type = null, \DOMDocument $doc, $validator = null, $absolute_path = '')
+  public static function validate(string $type = null, $doc, $validator = '', $absolute_path = '')
   {
     if($type == 'BREX'){
       return self::validateByBrex($doc, $validator, $absolute_path);
     }
+    elseif($type == 'BREX-NONCONTEXT'){
+      return self::validateByBrexForNonContext($doc, $absolute_path);
+    }
+    elseif($type == 'XSI'){
+      return self::validateBySchema($doc, $validator);
+    }
+  }
+
+  private static function validateByBrexForNonContext(string $doc, $absolute_path){
+    return true;
+  }
+
+  private static function validateBySchema(\DOMDocument $doc, string $validator = '')
+  {
+    libxml_use_internal_errors(true);
+
+    if($validator == ''){
+      $validator = CSDB::getSchemaUsed($doc,'filename');  
+    }
+    $schema = CSDB::importDocument(__DIR__."/Schema\/",$validator,null,'');
+    if(!$schema) {
+      CSDB::setError('validateBySchema', "schema cannot be identified");
+      return false;
+    }
+    $doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
+    $errors = libxml_get_errors();
+    if(!empty($errors)){
+      CSDB::setError('validateBySchema', "error during validate by xsi in file ".CSDB::resolve_DocIdent($doc).".");
+      foreach ($errors as $err) {
+        CSDB::setError('validateBySchema', "line: {$err->line}; message: {$err->message}");
+      }
+      return false;
+    } else {
+      return true;
+    }    
   }
 
   /**
@@ -24,6 +61,7 @@ trait Validation
    */
   private static function validateByBrex(\DOMDocument $doc, $validator = null, $absolute_path = null)
   {
+    // dd(CSDB::resolve_dmIdent($doc->getElementsByTagName('dmIdent')[0]));
     $domXpath = new DOMXPath($doc);
     $brexDoc = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef");
     if($brexDoc->length == 0){
@@ -34,7 +72,14 @@ trait Validation
       $brexDoc = $brexDoc[0];
       $brexDoc = CSDB::resolve_dmIdent($brexDoc);
       $path = !empty($absolute_path) ? $absolute_path : $doc->absolute_path;
-      $brexDoc = CSDB::importDocument($path."/{$brexDoc}");
+      $brexDoc = CSDB::importDocument($path."/",$brexDoc,null,'','brexDoc');
+      if($errors = CSDB::get_errors(true,'file_exists')){
+        CSDB::setError('validateByBrex', "error during validate by brex in file ".CSDB::resolve_DocIdent($doc).".");
+        foreach($errors as $err){
+          CSDB::setError('validateByBrex', $err);
+        }
+        return false;
+      }
     }
 
     $schema = CSDB::getSchemaUsed($brexDoc,'filename');
@@ -48,13 +93,13 @@ trait Validation
         self::validateByStructureObjectRule($doc, $structureObjectRule);
       }
     }
-    
-    $errors = CSDB::get_errors(false,'validateByStructureObjectRule');
+    $errors = CSDB::get_errors(false,'validateByBrex');
     return empty($errors) ? true: false;
   }
 
   /**
    * php tidak bisa pakai fungsi xpath //applic/child::*\/name(), melainkan local-name(//applic/child::*)
+   * hindari objectPath yang bernilai boolean karena jika dari setiap result ada yang true, padahal yang lain false, maka hasilnya true
    */
   private static function validateByStructureObjectRule(\DOMDocument $doc, \DOMElement $structureObjectRule)
   {
@@ -115,7 +160,8 @@ trait Validation
     } 
     // jika tidak ada yang ditemukan, berarti aman (tidak perlu di validasi)
     // elseif (count($results) == 0){
-    elseif (is_array($results) AND count($results) == 0){
+    // elseif (is_array($results) AND count($results) == 0){
+    elseif (is_iterable($results) AND count($results) == 0){
       return;
     }
 
@@ -129,7 +175,6 @@ trait Validation
     }
     $results = $res;
     unset($res);
-    // dd($results);
 
     // configurasi
     $type = '';
@@ -142,7 +187,8 @@ trait Validation
       $type = 'objectPath_is_not_allowed';
     }
     elseif($allowedObjectFlag == 1 AND !empty($objectValues)){
-      // berarti jika Xpath pada result match tapi tidak satupun value match, maka fail
+      // INI SALAH: berarti jika Xpath pada result match tapi tidak satupun value match, maka fail
+      // jika ada result yang tidak match, maka fail      
       $type = 'value_is_allowed';
     }
     elseif($allowedObjectFlag == 1 AND empty($objectValues)){
@@ -161,21 +207,18 @@ trait Validation
         CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue}");
       }
     }
-
-    // validate type
-    $lengthV = count($objectValues);
-    foreach($results as $result){
-      foreach ($objectValues as $key => $value) {
-        if($type == 'value_is_not_allowed'){
+    
+    if($type == 'value_is_not_allowed'){
+      foreach($results as $result){
+        foreach($objectValues as $value){
           if(isset($value['valueForm']) AND isset($value['valueAllowed'])){
             if($value['valueForm'] == 'single'){
-              if($result['value'] != $value['valueAllowed']){
+              if($result['value'] == $value['valueAllowed']){
                 CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue} Value Text: {$value['valueText']}");
               }
             }
             elseif($value['valueForm'] == 'pattern'){
               preg_match_all($value['valueAllowed'], $result['value'], $matches);
-  
               // untuk check jika ada value yang tidak kosong (matched) maka fail
               $m = function($matches, $m) use ($docIdent, $id, $brDecisionIdentNumber, $objectUse, $value){
                 $k = 0;
@@ -196,34 +239,40 @@ trait Validation
               $range = explode('~', $value['valueAllowed']);
               $range = range($range[0], $range[1]);
               // jika nodeValue ada di range, maka fail (karena @allowedObjectFlag = 0)
-              if(!in_array($result['value'], $range)){
+              if(in_array($result['value'], $range)){
                 CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue} Value Text: {$value['valueText']}");
               }
             }
-          } 
+          }
         }
-        elseif($type == "value_is_allowed"){
+      }
+    }
+    elseif($type == "value_is_allowed"){
+      $lengthV = count($objectValues);
+      foreach($results as $result){
+        $k = 0;
+        while(isset($objectValues[$k]) AND $k < $lengthV){
+          $value = $objectValues[$k];
           if(isset($value['valueForm']) AND isset($value['valueAllowed'])){
-            if($value['valueForm'] == 'single'){
-              if($value['valueAllowed'] == $result['value']){
-                break; // berarti udah ada yang match
-              }
+            if($value['valueForm'] == 'single' AND $value['valueAllowed'] == $result['value']){
+              break; // berarti udah ada yang match.
             }
             elseif($value['valueForm'] == 'pattern'){
               preg_match_all($value['valueAllowed'], $result['value'], $matches);
-
               // untuk check jika ada value match maka break. artinya udah ada yang benar
-              $m = function($matches) use ($docIdent, $id, $brDecisionIdentNumber, $value){
+              $m = function($matches) use ($docIdent, $id, $brDecisionIdentNumber, $objectUse, $value){
                 $k = 0;
                 $l = count($matches);
                 while(is_array($matches) AND $k < $l){
                   if(!empty($matches[$k])){
-                    break; // berarti udah ada yang match.
+                    return true; // berarti udah ada yang match.
                   }
                   $k++;
                 }
               };
-              $m($matches);
+              if($m($matches)){
+                break; // akan break while
+              };
             }
             elseif($value['valueForm'] == 'range'){
               $range = explode('~', $value['valueAllowed']);
@@ -232,13 +281,41 @@ trait Validation
                 break; // berarti udah ada yang match.
               }
             }
-            // jika sampai value terakhir masih tidak ada yang match, berarti fail karena harus ada yang match
-            elseif($key >= ($lengthV-1)){
-              CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue} Value Text: {$value['valueText']}");
-            }
+          }
+          $k++;
+          if($k == $lengthV){
+            CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue}");
           }
         }
       }
     }
+  }
+
+  public static function validateRootname($dom){
+    if(!isset($dom->firstElementChild->tagName)){
+      CSDB::$errors[__FUNCTION__][] = 'Text must be valid of XML written.';
+      return false;
+    }
+    $rootname = $dom->firstElementChild->tagName;
+    if($rootname == 'dmodule'){
+      $csdbIdent = $dom->getElementsByTagName('dmIdent')[0];
+      $csdb_filename = CSDB::resolve_dmIdent($csdbIdent);
+      $ident = 'dmodule';
+    } 
+    elseif ($rootname == 'pm'){
+      $csdbIdent = $dom->getElementsByTagName('pmIdent')[0];
+      $csdb_filename = CSDB::resolve_pmIdent($csdbIdent);
+      $ident = 'pm';
+    } 
+    elseif ($rootname == 'dml'){
+      $csdbIdent = $dom->getElementsByTagName('dmlIdent')[0];
+      $csdb_filename = CSDB::resolve_dmlIdent($csdbIdent);
+      $ident = 'dml';
+    } 
+    else {
+      CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM or DM.';
+      return false;
+    }
+    return [$csdbIdent, $csdb_filename, $ident];
   }
 }

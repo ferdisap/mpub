@@ -20,14 +20,17 @@ class CSDB
   protected static array $errors = array();
   public static string $processid = '';
 
+  public const SCHEMA_PATH = __DIR__ . DIRECTORY_SEPARATOR . "Schema";
+
   public static function getSchemaUsed(\DOMDocument $doc, $option = 'file')
   {
-    $schema = $doc->firstElementChild->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance',"noNamespaceSchemaLocation");
-    preg_match("/\w+.xsd/",$schema, $schema);
-    if(!empty($schema)) $schema = $schema[0];
+    $schema = $doc->firstElementChild->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', "noNamespaceSchemaLocation");
+    preg_match("/\w+.xsd/", $schema, $schema);
+    if (!empty($schema)) $schema = $schema[0];
 
-    if($option == 'file'){
-      return self::importDocument(__DIR__."/Schema/{$schema}",'',null,'','tes');
+    if ($option == 'file') {
+      $file = self::importDocument(__DIR__ . "/Schema//", $schema, null, '');
+      return $file;
     } else {
       return $schema;
     }
@@ -50,7 +53,7 @@ class CSDB
       $docIdent = self::resolve_pmIdent($docIdent);
     } elseif ($docType == 'dmodule') {
       $docIdent = $doc->getElementsByTagName('dmIdent')[0];
-      $docIdent = self::resolve_pmIdent($docIdent);
+      $docIdent = self::resolve_dmIdent($docIdent);
     } else {
       $docIdent = '';
     }
@@ -59,11 +62,16 @@ class CSDB
 
   /**
    * Load CSDB object
-   * 
+   * fungsi ini depreciated
    * @param string $filename The csdb object
    */
-  public static function load(string $filename)
+  public static function load(string $filename, $tes = false)
   {
+    if (!file_exists($filename)) {
+      preg_match("/(?<=\/|\\\\)(DMC|ICN|PMC).+/", $filename, $matches);
+      self::$errors['file_exists'][] = "{$matches[0]} is not exist";
+      return false;
+    }
     $mime = mime_content_type($filename);
     if (!$mime) {
       return false;
@@ -72,10 +80,10 @@ class CSDB
       case 'text/xml':
         return self::loadXmlDoc($filename);
       case 'text/plain':
-        return file_get_contents($filename,true);
+        return file_get_contents($filename, true);
         break;
       case 'image/jpeg':
-        return;
+        return [file_get_contents($filename, true), $mime];
       default:
         throw new Exception("No such object of csdb");
         break;
@@ -107,66 +115,197 @@ class CSDB
 
   // tambahan saat buat pdf
   /**
+   * untuk absolute path, tambahkan back slash "/" di akhir string
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
   public static function importDocument(mixed $absolute_path = null, string $filename = '', string $xml_string = null, string $rootname = '', $tes = false)
   {
     libxml_use_internal_errors(true);
-    // $DOMDocument = null;
-    $DOMDocument = new DOMDocument();
-    if (!empty($absolute_path)) {
-      $DOMDocument = CSDB::load($absolute_path.$filename);
-    } elseif (!empty($xml_string)) {
-      $DOMDocument->loadXML($xml_string);
-    } else {
-      return false;
-    }
-
-    // jika bukan XML, misal mime= text/plain atau image
-    if(!($DOMDocument instanceof \DOMDocument)){
-      return $DOMDocument;
-    }
-
-    // jika tidak ada firstElementChild, return false
-    if (!isset($DOMDocument->firstElementChild)) {
-      // jika rootname ada DAN firstElementChild tidak sama dengan rootname, return false atau error
-      return false;
-    }
-    if (!empty($rootname) and ($DOMDocument->firstElementChild->tagName != "{$rootname}")) {
-      if (!self::$CSDB_use_internal_error) {
-        throw new \Exception("The root element must be <{$rootname}>", 1);
-      } else {
-        if (self::$processid) {
-          self::$errors[self::$processid][] = "The root element must be <{$rootname}>";
-        } else {
-          self::$errors[] = "The root element must be <{$rootname}>";
-        }
+    if (!empty($absolute_path) or !empty($xml_string)) {
+      if (
+        !empty($absolute_path) and
+        (!file_exists($absolute_path . $filename) or !is_file($absolute_path . $filename))
+      ) {
+        $m = "{$filename} does not exist.";
+        self::$errors['file_exists'][] = $m;
         return false;
       }
+      $text = $xml_string ?? '';
+      $mime = file_exists($absolute_path . $filename) ? mime_content_type($absolute_path . $filename) : '';
+      if (str_contains($mime, 'text') or $text) {
+        $obj = new DOMDocument();
+        if ($text) {
+          $obj->loadXML(trim($text));
+        } else {
+          $obj->load($absolute_path . $filename); // pakai load supaya ada base URI sehingga bisa relative path kalau perlu operasi import/include di xml nya. 
+        }
+        if ((isset($obj->firstElementChild)) and !empty($rootname) and ($obj->firstElementChild->tagName != "{$rootname}")) {
+          if (!self::$CSDB_use_internal_error) {
+            throw new \Exception("The root element must be <{$rootname}>", 1);
+          } else {
+            self::$processid ? (self::$errors[self::$processid][] = "The root element must be <{$rootname}>") : (self::$errors[] = "The root element must be <{$rootname}>");
+            return false;
+          }
+        }
+        $obj->absolute_path = $absolute_path;
+        return $obj;
+      } else {
+        $obj = [file_get_contents($absolute_path . $filename), $mime];
+        return $obj;
+      }
+    } else {
+      self::$processid ? (self::$errors[self::$processid][] = "there is no data to be document.") : (self::$errors[] = "there is no data to be document.");
+      return false;
     }
 
-    $DOMDocument->absolute_path = $absolute_path;
-    return $DOMDocument;
+
+
+    # script lama
+    //   libxml_use_internal_errors(true);
+    //   // $DOMDocument = null;
+    //   $DOMDocument = new DOMDocument();
+    //   if (!empty($absolute_path)){
+    //     $DOMDocument = CSDB::load($absolute_path.$filename,$tes);
+    //   } elseif (!empty($xml_string)) {
+    //     $DOMDocument->loadXML($xml_string);
+    //   } else {
+    //     return false;
+    //   }
+
+    //   // jika bukan XML, misal mime= text/plain atau image
+    //   if(!($DOMDocument instanceof \DOMDocument)){
+    //     return $DOMDocument;
+    //   }
+
+    //   // jika tidak ada firstElementChild, return false
+    //   if (!isset($DOMDocument->firstElementChild)) {
+    //     // jika rootname ada DAN firstElementChild tidak sama dengan rootname, return false atau error
+    //     return false;
+    //   }
+    //   if (!empty($rootname) and ($DOMDocument->firstElementChild->tagName != "{$rootname}")) {
+    //     if (!self::$CSDB_use_internal_error) {
+    //       throw new \Exception("The root element must be <{$rootname}>", 1);
+    //     } else {
+    //       if (self::$processid) {
+    //         self::$errors[self::$processid][] = "The root element must be <{$rootname}>";
+    //       } else {
+    //         self::$errors[] = "The root element must be <{$rootname}>";
+    //       }
+    //       return false;
+    //     }
+    //   }
+
+    //   $DOMDocument->absolute_path = $absolute_path;
+    //   return $DOMDocument;
   }
+
+  public static function decode_dmCode(string $name)
+  {
+    $doc = new DOMDocument();
+    $doc->loadXML("<dmCode/>");
+
+    $dmCode = $doc->documentElement;
+    $arr = explode("-", $name);
+    $att = ['modelIdentCode', 'systemDiffCode', 'systemCode', 'subSystemCode', 'assyCode' ,'disassyCode', 'infoCode', 'itemLocationCode'];
+    foreach ($arr as $k => $v) {
+      switch ($att[$k]) {
+        case 'subSystemCode':
+          $subSystemCode = substr($arr[$k],0,1);
+          $subSubSystemCode = substr($arr[$k],1);
+          $dmCode->setAttribute('subSystemCode', $subSystemCode);
+          $dmCode->setAttribute('subSubSystemCode', $subSubSystemCode);
+          break;
+        case 'disassyCode':
+          $disassyCodeVariant = substr($arr[$k], 2);
+          $disassyCode = rtrim($arr[$k], $disassyCodeVariant);
+          $dmCode->setAttribute('disassyCode', $disassyCode);
+          $dmCode->setAttribute('disassyCodeVariant', $disassyCodeVariant);
+          break;
+        case 'infoCode':
+          // dd($name,$att, $k, $arr);
+          $infoCodeVariant = substr($arr[$k], 3);
+          $infoCode = rtrim($arr[$k], $infoCodeVariant);
+          $dmCode->setAttribute('infoCode', $infoCode);
+          $dmCode->setAttribute('infoCodeVariant', $infoCodeVariant);
+          break;
+        default:
+          $dmCode->setAttribute($att[$k], $v);
+          break;
+      }
+    }
+    return $dmCode->cloneNode();
+  }
+
+  public static function decode_issueInfo(string $name)
+  {
+    $doc = new DOMDocument();
+    $doc->loadXML("<issueInfo/>");
+
+    $issueInfo = $doc->documentElement;
+    $arr = explode("-", $name);
+    $att = ['issueNumber', 'inWork'];
+    foreach ($arr as $k => $v) {
+      $issueInfo->setAttribute($att[$k], $v);
+    }
+    return $issueInfo->cloneNode();
+  }
+
+  public static function decode_language(string $name)
+  {
+    $doc = new DOMDocument();
+    $doc->loadXML("<language/>");
+
+    $language = $doc->documentElement;
+    $arr = explode("-", $name);
+    $att = ['languageIsoCode', 'countryIsoCode'];
+    foreach ($arr as $k => $v) {
+      switch ($att[$k]) {
+        case 'languageIsoCode':
+          $language->setAttribute($att[$k], strtolower($v));
+          break;
+        case 'countryIsoCode':
+          $language->setAttribute($att[$k], $v);
+          break;
+      }
+    }
+    return $language->cloneNode();
+  }
+
 
   public static function get_errors(bool $deleteErrors = true, string $processid = '')
   {
-    if (!$deleteErrors) {
-      if ($processid and isset(self::$errors[$processid])) {
-        return self::$errors[$processid];
-      } else {
-        return self::$errors;
+    if ($processid and isset(self::$errors[$processid])) {
+      $e = self::$errors[$processid];
+      if ($deleteErrors) {
+        unset(self::$errors[$processid]);
       }
-    } elseif ($processid and isset(self::$errors[$processid])) {
-      $errors = self::$errors[$processid];
-      self::$errors[$processid] = array();
-      return $errors;
-    } else {
-      $errors = self::$errors;
-      self::$errors = array();
-      return $errors;
+      return $e;
+    } elseif ($processid and !isset(self::$errors[$processid])) {
+      return null;
+    } elseif (!$processid) {
+      $e = self::$errors;
+      if ($deleteErrors) {
+        self::$errors = array();
+      }
+      return $e;
     }
+
+    // if (!$deleteErrors) {
+    //   if ($processid and isset(self::$errors[$processid])) {
+    //     return self::$errors[$processid];
+    //   } else {
+    //     return null;
+    //   }
+    // } elseif ($processid and isset(self::$errors[$processid])) {
+    //   $errors = self::$errors[$processid];
+    //   self::$errors[$processid] = array();
+    //   return $errors;
+    // } else {
+    //   $errors = self::$errors;
+    //   self::$errors = array();
+    //   return $errors;
+    // }
   }
 
   /**
@@ -300,11 +439,11 @@ class CSDB
   public static function get_childrenElement(\DOMElement $element, $excludeElement = '')
   {
     $arr = [];
-    if(is_string($excludeElement)){
+    if (is_string($excludeElement)) {
       $excludeElement = array($excludeElement);
     }
     foreach ($element->childNodes as $childNodes) {
-      if(($childNodes instanceof \DOMElement) AND !in_array($childNodes->nodeName, $excludeElement)){
+      if (($childNodes instanceof \DOMElement) and !in_array($childNodes->nodeName, $excludeElement)) {
         $arr[] = $childNodes;
       }
       // (($childNodes instanceof \DOMElement) and ($childNodes->nodeName != $excludeElement)) ? array_push($arr, $childNodes) : null;
@@ -317,6 +456,28 @@ class CSDB
     $dmCode = $doc->getElementsByTagName('dmCode')[0];
     $modelIdentCode = $dmCode->getAttribute('modelIdentCode');
     return $modelIdentCode;
+  }
+
+  /**
+   * @return string
+   */
+  public static function resolve_responsiblePartnerCompany($responsiblePartnerCompany, $option = 'enterpriseName')
+  {
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($responsiblePartnerCompany)) {
+      $responsiblePartnerCompany = $responsiblePartnerCompany[0];
+    }
+
+    if ($option == 'enterpriseName' and $$option = $responsiblePartnerCompany->firstElementChild) {
+      return $$option->nodeValue;
+    } elseif ($option == 'enterpriseCode' and $$option = $responsiblePartnerCompany->getAttribute($option)) {
+      return $$option;
+    } elseif (
+      $option == 'both' and
+      (($enterpriseName = $responsiblePartnerCompany->firstElementChild) or $enterpriseCode = $responsiblePartnerCompany->getAttribute('enterpriseCode'))
+    ) {
+      return ($enterpriseName ? $enterpriseName->nodeValue : '') . "," . ($enterpriseCode ?? '');
+    }
   }
 
   public static function resolve_issueDate($issueDate, $format = "M-d-Y")
@@ -351,6 +512,11 @@ class CSDB
     return $txt;
   }
 
+  public static function test($par)
+  {
+    return $par;
+  }
+
   public static function resolve_dmTitle($dmTitle, string $child = '')
   {
     // untuk mengakomodir penggunaan fungsi di XSLT
@@ -377,6 +543,22 @@ class CSDB
         return $techName . ($infoname ? " - " . $infoname : '') . ($infoNameVariant ? " - " . $infoNameVariant : '');
         break;
     }
+  }
+
+  /**
+   * shortPmTitle tidak bisa di dapatkan dari nextElementSibling jika dari XSL
+   */
+  public static function resolve_pmTitle($pmTitle, $shortPmTitle = null)
+  {
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($pmTitle)) {
+      $pmTitle = $pmTitle[0];
+    }
+    if (is_array($shortPmTitle)) {
+      $shortPmTitle = $shortPmTitle[0];
+    }
+    $shortPmTitle = $shortPmTitle ?? $pmTitle->nextElementSibling;
+    return $pmTitle->nodeValue . ($shortPmTitle ? " - " . $shortPmTitle->nodeValue : '');
   }
 
   public static function resolve_dmCode($dmCode, string $prefix = 'DMC-')
@@ -429,6 +611,31 @@ class CSDB
     return $name;
   }
 
+  public static function resolve_dmlCode($dmlCode, string $prefix = 'DML-')
+  {
+    if (!$dmlCode) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($dmlCode)) {
+      $dmlCode = $dmlCode[0];
+    }
+    // <dmlCode modelIdentCode="MALE" senderIdent="0001Z" dmlType="p" yearOfDataIssue="2023" seqNumber="00001" />
+    // <issueInfo issueNumber="000" inWork="01" />
+    $modelIdentCode = $dmlCode->getAttribute('modelIdentCode');
+    $senderIdent = $dmlCode->getAttribute('senderIdent');
+    $dmlType = $dmlCode->getAttribute('dmlType');
+    $yearOfDataIssue = $dmlCode->getAttribute('yearOfDataIssue');
+    $seqNumber = $dmlCode->getAttribute('seqNumber');
+
+    $name = $prefix .
+      $modelIdentCode . "-" .
+      $senderIdent . "-" .
+      $dmlType . "-" .
+      $yearOfDataIssue . "-" .
+      $seqNumber;
+
+    return strtoupper($name);
+  }
+
   public static function resolve_issueInfo($issueInfo = null)
   {
     if (!$issueInfo) return '';
@@ -452,6 +659,32 @@ class CSDB
     $languangeIsoCode = $languange->getAttribute('languageIsoCode');
     $countryIsoCode = $languange->getAttribute('countryIsoCode');
     return $languangeIsoCode . "-" . $countryIsoCode;
+  }
+
+  public static function getStatus($children = ['applic', 'qualityAssurance'], \DOMDocument $doc = null, string $absolute_path_csdbInput = '')
+  {
+    foreach ($children as $child) {
+      switch ($child) {
+        case 'applic':
+          return self::getApplicability($doc, $absolute_path_csdbInput);
+          break;
+        case 'qualityAssurance': // return json
+          $type = $doc->firstElementChild->tagName;
+          $qas = $doc->getElementsByTagName("{$type}Status")[0]->getElementsByTagName($child);
+          $r = [];
+          foreach ($qas as $qa) {
+            $applicRefId = $qa->getAttribute('applicRefId');
+            $stt = $qa->firstElementChild;
+            $verificationType = $stt->getAttribute('verificationType');
+            $r[] = [
+              'applicRefId' => $applicRefId,
+              'status' => $stt->tagName,
+              'verificationType' => $verificationType,
+            ];
+          }
+          return json_encode($r);
+      }
+    }
   }
 
   public static function resolve_dmIdent($dmIdent = null, array $idents = [], $prefix = 'DMC-', $format = '.xml')
@@ -491,23 +724,44 @@ class CSDB
     return strtoupper($pmCode . $issueInfo . $languange) . $format;
   }
 
+  public static function resolve_dmlIdent($dmlIdent = null, array $idents = [], $prefix = 'DML-', $format = '.xml')
+  {
+    if (empty($idents)) {
+      if (is_array($dmlIdent)) {
+        $dmlIdent = $dmlIdent[0];
+      }
+      $dmlCode = self::resolve_dmlCode($dmlIdent->getElementsByTagName('dmlCode')[0], $prefix);
+      $issueInfo = ($if = self::resolve_issueInfo($dmlIdent->getElementsByTagName('issueInfo')[0])) ? "_" . $if : '';
+    } else {
+      $dmlCode = $idents[0];
+      $issueInfo = isset($idents[1]) ? "_" . $idents[1] : '';
+    }
+    return strtoupper($dmlCode . $issueInfo) . $format;
+  }
+
   public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = '')
   {
     $CSDB = new self();
 
     $domxpath = new DOMXPath($doc);
     $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/descendant::applicCrossRefTableRef/descendant::dmRefIdent")[0];
-    $ACTdoc = self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR . self::resolve_dmIdent($dmRefIdent), '', 'dmodule');
+    $ACTdoc = self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    if (!$ACTdoc) {
+      CSDB::setError(__FUNCTION__, join(", ", CSDB::get_errors(true, 'file_exists')));
+      return false;
+    }
+
     $CSDB->ACTdoc = $ACTdoc;
 
     $actdomxpath = new DOMXPath($ACTdoc);
     $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/condCrossRefTableRef/descendant::dmRefIdent")[0];
-    $CCTdoc =  self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR . self::resolve_dmIdent($dmRefIdent), '', 'dmodule');
+    $CCTdoc =  self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
     $CSDB->CCTdoc = $CCTdoc;
 
-    $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/productCrossRefTableRef/descendant::dmRefIdent")[0];
-    $PCTdoc =  self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR . self::resolve_dmIdent($dmRefIdent), '', 'dmodule');
-    $CSDB->PCTdoc = $PCTdoc;
+    // PCT tidak di gunakan untuk mendapatkan applicability, melainkan untuk filter saja
+    // $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/productCrossRefTableRef/descendant::dmRefIdent")[0];
+    // $PCTdoc =  self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    // $CSDB->PCTdoc = $PCTdoc;
 
     $CSDB->applics = array();
     $applics = $domxpath->evaluate("//applic");
@@ -629,6 +883,12 @@ class CSDB
     $applicPropertyValues = $assert->getAttribute('applicPropertyValues');
 
     // $this->applicPropertyValues = $applicPropertyValues;
+
+    // validation CCTdoc
+    if ($applicPropertyType == 'condition' and !$this->CCTdoc) {
+      CSDB::setError('getApplicability', join(", ", CSDB::get_errors(true, 'file_exists')));
+      return false;
+    }
 
     // #1 getApplicPropertyValuesFromCrossRefTable
     $crossRefTable = ($applicPropertyType == 'prodattr') ? $this->ACTdoc : $this->CCTdoc;

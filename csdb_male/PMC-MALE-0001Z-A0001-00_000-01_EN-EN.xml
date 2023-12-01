@@ -54,6 +54,11 @@
     </pmStatus>
   </identAndStatusSection>
   <content>
+    <referencedApplicGroup>
+      <applic id="appl-001">
+        <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="MALE"/>
+      </applic>
+    </referencedApplicGroup>
     <pmEntry>
       <pmRef>
         <pmRefIdent>
@@ -90,6 +95,17 @@
           <language languageIsoCode="en" countryIsoCode="EN" />
         </pmRefIdent>
       </pmRef>
+    </pmEntry>
+    <pmEntry>      
+      <externalPubRef>
+        <externalPubRefIdent>
+          <externalPubCode>POM Supplement Beechjet 400A UK.pdf</externalPubCode>
+          <externalPubTitle>POM Supplement Beechjet 400A UK</externalPubTitle>
+          <externalPubIssueInfo>
+            <externalPubIssue>Revision No: xxx</externalPubIssue>
+          </externalPubIssueInfo>
+        </externalPubRefIdent>
+      </externalPubRef>
     </pmEntry>
     
     <!-- <pmEntry pmEntryType="pmt01">

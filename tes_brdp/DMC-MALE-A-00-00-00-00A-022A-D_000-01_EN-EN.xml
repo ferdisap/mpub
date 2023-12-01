@@ -7,7 +7,7 @@
   <identAndStatusSection>
     <dmAddress>
       <dmIdent>
-        <dmCode modelIdentCode="N219" systemDiffCode="A"
+        <dmCode modelIdentCode="MALE" systemDiffCode="A"
           systemCode="00" subSystemCode="0" subSubSystemCode="0"
           assyCode="00" disassyCode="00" disassyCodeVariant="A"
           infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
@@ -17,7 +17,7 @@
       <dmAddressItems>
         <issueDate day="01" month="01" year="2016" />
         <dmTitle>
-          <techName>N219</techName>
+          <techName>MALE</techName>
           <infoName>Business rules exchange index</infoName>
         </dmTitle>
       </dmAddressItems>
@@ -32,13 +32,13 @@
       </originator>
       <applic>
         <displayText>
-          <simplePara>N219 All</simplePara>
+          <simplePara>MALE All</simplePara>
         </displayText>
       </applic>
       <brexDmRef>
         <dmRef>
           <dmRefIdent>
-            <dmCode modelIdentCode="N219" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
 						<issueInfo issueNumber="001" inWork="00"/>
           </dmRefIdent>
         </dmRef>
@@ -51,7 +51,7 @@
   <content>
     <brex>
       <commonInfo>
-        <para>This BREX data module gives the rules (chapterized) that applied to the N219.</para>
+        <para>This BREX data module gives the rules (chapterized) that applied to the MALE.</para>
       </commonInfo>
       <snsRules>
         <snsDescr>
@@ -1642,7 +1642,7 @@
             <brDecisionRef brDecisionIdentNumber="0001Z-S1-00332"/>
             <brDecisionRef brDecisionIdentNumber="0001Z-S1-00333"/>
             <objectPath allowedObjectFlag="1">//identAndStatusSection//dmCode/@modelIdentCode</objectPath>
-            <objectValue valueForm="single" valueAllowed="N219"/>
+            <objectValue valueForm="single" valueAllowed="MALE"/>
           </structureObjectRule>
           <structureObjectRule id="sbr-037">
             <brDecisionRef brDecisionIdentNumber="0001Z-S1-00331"/>
