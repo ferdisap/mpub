@@ -49,6 +49,7 @@ class DMC_male extends DMC
       return self::class."::$name";
     },get_class_methods(self::class));
     $xsltproc->registerPHPFunctions($DMC_male_class_methods);
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions();
     
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];
@@ -112,7 +113,9 @@ class DMC_male extends DMC
     $xsltproc->importStylesheet($xsl);
     // dd(__CLASS__."::"."getApplicabilty", PMC_PDF::class."::".'getCrewMember');
     $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
+    // $xsltproc->registerPHPFunctions(__CLASS__."::setLastPositionCrewDrillStep");
     // $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];

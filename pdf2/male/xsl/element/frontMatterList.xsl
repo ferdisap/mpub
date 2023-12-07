@@ -52,8 +52,13 @@
         </thead>
         <tbody>
          <xsl:for-each select="frontMatterSubList/frontMatterDmEntry">
+          <xsl:variable name="filename" select="php:function('Ptdi\Mpub\CSDB::resolve_dmIdent', descendant::dmRefIdent)"/>
           <tr>
-            <td style="width:20%"><xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_dmTitle', //identAndStatusSection/dmAddress/dmAddressItems/dmTitle, 'techname')"/></td>
+            <td style="width:20%">
+              <!-- <xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_dmTitle', //identAndStatusSection/dmAddress/dmAddressItems/dmTitle, 'techname')"/> -->
+              <xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve', $absolute_path_csdbInput, $filename, 'resolve_dmTitle')"/>
+              <xsl:text> </xsl:text> <!-- supaya tidak error jika hasil resolve null -->
+            </td>
             <td style="width:35%"><xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_dmCode', //identAndStatusSection/dmAddress/dmIdent/dmCode)"/></td>
             <td style="width:5%">
               &#160;
@@ -62,9 +67,19 @@
               </xsl:if>
               &#160;
             </td>
-            <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_issueDate', //identAndStatusSection/dmAddress/dmAddressItems/issueDate)"/></td>
+
+            <!-- issue Date -->
+            <td style="width:15%">
+              <!-- <xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve_issueDate', //identAndStatusSection/dmAddress/dmAddressItems/issueDate)"/> -->
+              <xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve', $absolute_path_csdbInput, $filename, 'resolve_issueDate')"/>
+              <xsl:text> </xsl:text>
+            </td>
+
+            <!-- applicability -->
             <!-- <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\CSDB::get_applic_display_text', //identAndStatusSection/dmStatus/applic)"/></td> -->
-            <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicability', '', 'first')"/></td>
+            <!-- <td style="width:15%"><xsl:value-of select="php:function('Ptdi\Mpub\Pdf2\DMC::getApplicability', '', 'first')"/></td> -->
+            <xsl:value-of select="php:function('Ptdi\Mpub\CSDB::resolve', $absolute_path_csdbInput, $filename, 'getApplicability')"/>
+            <xsl:text> </xsl:text>
           </tr>
         </xsl:for-each>
         </tbody>

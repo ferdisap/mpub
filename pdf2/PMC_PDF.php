@@ -46,6 +46,9 @@ class PMC_PDF extends TCPDF
   public int $pmEntry_level = 0;
 
   public array $paper_color = array(255, 255, 255);
+  
+  public $ignore_error = false;
+  public $dump = false;
 
   public bool $inFootnote = false;
   public array $footnotes = [
@@ -127,8 +130,13 @@ class PMC_PDF extends TCPDF
   public function importDocument(string $absolute_path = '', string $filename = '', string $xml_string = '')
   {
     // $this->pmc_path = $absolute_path;
-    $this->DOMDocument = CSDB::importDocument($absolute_path, $filename, $xml_string, 'pm');
+    $DOMDocument = CSDB::importDocument($absolute_path, $filename, $xml_string, 'pm');
+    if(!$DOMDocument){
+      throw new \Exception("{$filename} is not exist in database.");
+    }
+    $this->DOMDocument = $DOMDocument;
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $this->modelIdentCode = $modelIdentCode;
 
     # validate DOMDocument here
 
@@ -145,12 +153,22 @@ class PMC_PDF extends TCPDF
     $this->applicability = $this->getApplicability('', 'first', 'false');
   }
 
+  public function setDocument(\DOMDocument $doc)
+  {
+    $this->DOMDocument = $doc;  
+  }
+
   /**
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
   public function importDocument_dump(string $pmType = '', $contentDocument = [])
   {
+    $this->modelIdentCode = "DUMP";
+
+    if(isset($contentDocument['use_DMC_modelIdentCode']) AND $contentDocument['use_DMC_modelIdentCode']){
+      $this->use_DMC_modelIdentCode = true;
+    }
 
     $this->DOMDocument = new DOMDocument();
     $this->DOMDocument->load(__DIR__ . DIRECTORY_SEPARATOR . "../csdb_dump/PMC-DUMP-0001Z-XXXXX-00_000-01_EN-EN.xml");
@@ -230,9 +248,9 @@ class PMC_PDF extends TCPDF
     if (!$this->validateSchema) {
       return false;
     }
-
+    
     $this->setAllowLocalFiles(true);
-
+    
     $DOMXpath = new \DOMXPath($this->DOMDocument);
     $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
     foreach ($pmEntries as $index => $pmEntry) {
@@ -371,7 +389,14 @@ class PMC_PDF extends TCPDF
     //   self::addIntentionallyLeftBlankPage($this);
     // }
 
-    $dmc = new DMC();
+    if(isset($this->use_DMC_modelIdentCode)){
+      $modelIdentCode = ($dmRef->getElementsByTagName('dmCode')[0]->getAttribute('modelIdentCode'));
+      $modelIdentCode = strtolower($modelIdentCode);
+      $dmc = new ("Ptdi\Mpub\Pdf2\\{$modelIdentCode}\DMC_{$modelIdentCode}");
+    } else {
+      $dmc = new DMC();
+    }
+
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
     $dmc->setDocument($dmRef);
