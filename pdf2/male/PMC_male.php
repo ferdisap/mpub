@@ -40,9 +40,7 @@ class PMC_male extends PMC_PDF
       $this->responsiblePartnerCompany->getAttribute('enterpriseCode')
     ) : '';
 
-    $pmEntryType_config = require "config/attributes.php";
-    $pmEntryType_config = $pmEntryType_config['pmEntryType'];
-    $pmEntryType_config = $pmEntryType_config[$pmEntry->getAttribute('pmEntryType')] ?? [];
+    $pmEntryType_config = $this->attributes['pmEntryType'][$pmEntry->getAttribute('pmEntryType')];
     $this->pmEntryType_config = $pmEntryType_config;
 
     $orientation = $this->pmType_config['page']['orientation'];
@@ -54,7 +52,6 @@ class PMC_male extends PMC_PDF
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
     $fontsize = $this->pmType_config['fontsize']['para'];
     $this->SetFont($this->pmType_config['fontfamily']);
-    // $this->SetFont($this->pmType_config['fontfamily'],'',null,'',true,);
 
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
@@ -64,39 +61,33 @@ class PMC_male extends PMC_PDF
     $this->setFontSize($fontsize);
     $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-    if (!empty($pmEntryType_config)) {
-      $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
-      $this->startPageGroup();
-      $this->AddPage();
-      $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $leftMargin, $rightMargin);
-      $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
-    }
+    $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
+    $this->startPageGroup();
+    ($this->page < 1) ? $this->AddPage() : null;
+    $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $leftMargin, $rightMargin);
+    $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
 
     $TOC = $pmEntryType_config['usetoc'] ?? false;
     $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
 
+    $level = $this->checkLevel($pmEntry);
     if ($BOOKMARK) {
-      $level = $this->checkLevel($pmEntry);
-
       $title = $this->pmTitle;
-
       $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($title);
       $this->Bookmark(strtoupper($txt), $level);
     }
-
     $children = CSDB::get_childrenElement($pmEntry);
-    foreach ($children as $child) {
+    foreach ($children as $key => $child) {
+      // dd($child->nodeName, $this->pmTitle);
       switch ($child->nodeName) {
         case 'dmRef':
           $this->setFontSize($fontsize);
           $this->pmEntry_level = $level;
           $this->resetFootnotes();
-
           if (($this->page > 1) and ($this->page % 2 == 0)) {
             $this->AddPage();
             $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $leftMargin, $rightMargin);
           }
-
           $this->dmRef($child);
           $this->addIntentionallyLeftBlankPage($this);
           break;

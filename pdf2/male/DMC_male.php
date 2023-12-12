@@ -106,7 +106,7 @@ class DMC_male extends DMC
 
   public function render_crewXsd()
   {
-    $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
+    $this->pdf->page_ident = (isset($this->pdf->get_pmEntryType_config()['printpageident']) AND $this->pdf->get_pmEntryType_config()['printpageident']) ? $this->dmCode : '';
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     $xsl = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."./xsl/", 'crew.xsl' ,'',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
