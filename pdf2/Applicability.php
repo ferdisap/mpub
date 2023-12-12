@@ -13,10 +13,13 @@ trait Applicability
   public function getApplicability($id = '', $options = '', $useDisplayName = true, $appl = null)
   {
     $appl = $appl ?? CSDB::getApplicability($this->DOMDocument, $this->absolute_path_csdbInput);
+    if((isset($this->ignore_error) AND $this->ignore_error) AND !$appl){
+      return '';
+    }
     $this->applicability = $appl['applicability'];
     $CSDB = $appl['CSDB'];
 
-    if ($id) {
+    if($id) {
       if (!isset($this->applicability[$id])) {
         throw new Exception("No such $id inside $this->dmIdent", 1);
       };
@@ -36,8 +39,9 @@ trait Applicability
         }
         if (!$useDisplayName) return $str;
         $applicPropertyIdent = array_key_first($this->applicability[array_key_first($this->applicability)]);
-        $applicPropertyType = $this->applicability[array_key_first($this->applicability)]['%APPLICPROPERTYTYPE'];
-        // dd($CSDB);
+        $applicPropertyType = $this->applicability[array_key_first($this->applicability)]['%APPLICPROPERTYTYPE'] ?? '';
+        if(!$applicPropertyType AND (isset($this->ignore_error) AND $this->ignore_error)) return '';
+        
         $ct = ($applicPropertyType == 'prodattr') ? $CSDB->ACTdoc : $CSDB->CCTdoc;
         $ctxpath = new \DOMXPath($ct);
         $dt = $ctxpath->evaluate("//productAttribute[@id = '{$applicPropertyIdent}']")[0];

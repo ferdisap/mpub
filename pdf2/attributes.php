@@ -3,9 +3,9 @@
 
 
 $pmType = [
-  'pt51' => [
-    'interpretation' => 'POH-AFM',
-    'value' => 'pt51',
+  '' => [
+    'interpretation' => 'DEFAULT',
+    'value' => '',
     'useheader' => false,
     'usefooter' => false,
     'usetoc' => false,
@@ -13,15 +13,14 @@ $pmType = [
     'page' => [
       'orientation' => 'P',
       'unit' => 'mm',
-      'format' => 'A5',
-      'margins' => [ 'L' => 20, 'T' => 17, 'R' => 10, 'B' => 12 ],
+      'format' => 'A4',
+      'margins' => [ 'L' => 20, 'T' => 22, 'R' => 10, 'B' => 17 ],
       'headerMargin' => 5,
       'footerMargin' => 10,
     ],
     'fontsize' => [
       'levelledPara' => [
         'title' =>[12,11,10,9,8],
-        'para' => 9, // yang ini nantinya tidak dipakai. Semua dikeluarkan dari levelledPara
         'figure' => [ 
           'title' => 9, 
           'legend' => [
@@ -50,35 +49,37 @@ $pmType = [
         'engine_limitation' => [
           'cellpadding' => '1mm',
         ],
-        // 'gcs_limitation' => [
-        //   'cellpadding' => '1mm',
-        // ]
-        
       ],
     ],
     'attributes' =>[
       'crewMemberType' => [
-        'cm02' => 'PIL',
-        'cm03' => 'GCSOP',
-        'cm04' => 'GCSOP#1',
-        'cm05' => 'GCSOP#2',
-        'cm06' => 'GCSOP#3',
-        'cm07' => 'Tech',
-        'cm08' => 'ALL',
-        'cm09' => 'SPOT',
+        'cm02' => 'CM2',
+        'cm03' => 'CM3',
+        'cm04' => 'CM4',
+        'cm05' => 'CM5',
       ]
     ],
   ],
 ];
 
 $pmEntryType = [
-  '' => (fn() => (require __DIR__."/../../attributes.php")['pmEntryType'][''])(),
+  '' => [
+    'interpretation' =>  '',
+    'useheader' => false,
+    'usefooter' => false,
+    'usetoc' => false,
+    'usebookmark' => false,
+    'printpageident' => false,
+    'page' => [
+      'margins' => [ 'L' => 20, 'T' => 10, 'R' => 10, 'B' => 15 ],
+    ],
+  ],
   'pmt01' => [
     'interpretation' =>  'TITLE PAGE',
     'useheader' => false,
     'usefooter' => false,
     'usetoc' => false,
-    'usebookmark' => true,
+    'usebookmark' => false,
     'printpageident' => false,
     'page' => [
       'margins' => [ 'L' => 20, 'T' => 10, 'R' => 10, 'B' => 15 ],
@@ -86,26 +87,26 @@ $pmEntryType = [
   ],
   'pmt06' => [
     'interpretation' =>  'LEODM',
-    'useheader' => true,
-    'usefooter' => true,
+    'useheader' => false,
+    'usefooter' => false,
     'usetoc' => false,
-    'usebookmark' => true,
+    'usebookmark' => false,
     'printpageident' => true,
   ],
   'pmt08' => [
     'interpretation' =>  'HIGH',
-    'useheader' => true,
-    'usefooter' => true,
+    'useheader' => false,
+    'usefooter' => false,
     'usetoc' => false,
-    'usebookmark' => true,
+    'usebookmark' => false,
     'printpageident' => true,
   ],
   'pmt61' => [
     'interpretation' => 'CONTENT',
-    'useheader' => true,
-    'usefooter' => true,
-    'usetoc' => true,
-    'usebookmark' => true,
+    'useheader' => false,
+    'usefooter' => false,
+    'usetoc' => false,
+    'usebookmark' => false,
     'printpageident' => true,
   ],
 ];

@@ -58,7 +58,7 @@ class DMC
     
     // $assyCode = number_format($this->DOMDocument->getElementsByTagName('dmCode')[0]->getAttribute('assyCode'));
     // $dmTitle = $this->DOMDocument->getElementsByTagName('dmTitle')[0];
-    // $dmTechname
+    // $dmTechnamegg
     // $this->pdf->writeHTML("<h1></h1>", true, false, true, true,'J',true, $DOMDocument = $this->DOMDocument, $usefootnote = true, $tes = true);
 
     // $this->dmTitle_element = $this->DOMDocument->getElementsByTagName('dmTitle')[0];
@@ -173,6 +173,7 @@ class DMC
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions(__CLASS__."::"."getApplicabilty");
     $xsltproc->registerPHPFunctions();
     
@@ -204,6 +205,7 @@ class DMC
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     $xsltproc->registerPHPFunctions($CSDB_class_methods);
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions(__CLASS__."::"."getApplicabilty");
     $xsltproc->registerPHPFunctions();
     $xsltproc->setParameter('','dmOwner',$this->dmIdent);
@@ -234,6 +236,7 @@ class DMC
     // dd(__CLASS__."::"."getApplicabilty", PMC_PDF::class."::".'getCrewMember');
     $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
     // $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];
@@ -272,6 +275,7 @@ class DMC
     $xsltproc = new XSLTProcessor();
 
     $xsltproc->importStylesheet($xsl);
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];
@@ -344,14 +348,6 @@ class DMC
     if(isset($this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type])){
       return $this->pdf->get_pmType_config()['attributes']['crewMemberType'][$type];
     }
-  }
-
-  public function set_last_crewDrillStep(int $num, string $tagName){
-    // $this->lastCrewDrill
-    // $this->last_crewDrillStep = $num;
-  }
-  public function get_last_crewDrillStep(){
-    // return $this->last_crewDrillStep;
   }
 
   public static function getSchemaName(\DOMElement $dmodule)

@@ -6,12 +6,12 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use Exception;
+use Ptdi\Mpub\Pdf2\PMC_PDF;
 
 // abstract class CSDB {
 //  untuk keperluan program baru, ini dibuat tidak abstact
 class CSDB
 {
-
   use Validation;
 
   protected string $modelIdentCode;
@@ -19,17 +19,37 @@ class CSDB
   public static bool $CSDB_use_internal_error = true;
   protected static array $errors = array();
   public static string $processid = '';
-
+  protected static $object_to_export = [];
   public const SCHEMA_PATH = __DIR__ . DIRECTORY_SEPARATOR . "Schema";
 
-  public static function getSchemaUsed(\DOMDocument $doc, $option = 'file')
+  public static function get_object_to_export()
   {
-    $schema = $doc->firstElementChild->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', "noNamespaceSchemaLocation");
+    return self::$object_to_export;
+  }
+
+  public static function set_object_to_export(mixed $val)
+  {
+    if(is_array($val)){
+      self::$object_to_export = array_unique(array_merge($val, self::$object_to_export));
+    } 
+    elseif(is_numeric($val) OR is_string($val)){
+      self::$object_to_export[] = $val;
+    }
+  }
+
+  public static function getSchemaUsed($doc, $option = 'file')
+  {
+    if (!$doc) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($doc)) {
+      $doc = $doc[0];
+    }
+    $schema = $doc->documentElement->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', "noNamespaceSchemaLocation");
     preg_match("/\w+.xsd/", $schema, $schema);
     if (!empty($schema)) $schema = $schema[0];
-
+    
     if ($option == 'file') {
-      $file = self::importDocument(__DIR__ . "/Schema//", $schema, null, '');
+      $file = self::importDocument(__DIR__ . "/Schema\/", $schema, null, '');
       return $file;
     } else {
       return $schema;
@@ -485,6 +505,58 @@ class CSDB
     }
   }
 
+  public static function dump($arg)
+  {
+    // dd(file_exists($arg));
+    dd($arg);
+  }
+
+  public static function resolve($path, $filename, $csdbFunction)
+  {
+    if(is_array($path) AND ($path[0] instanceof \DOMDocument)){
+      $doc = $path[0];
+      $path = Helper::analyzeURI($doc->documentURI)['path'];      
+    } else {
+      $doc = self::importDocument($path, $filename);
+    }
+
+    if(!$doc)return null;
+    $docxpath = new DOMXPath($doc);
+    switch($csdbFunction){
+      case 'resolve_dmTitle':
+        $dmTitle = $docxpath->evaluate('//identAndStatusSection/descendant::dmTitle');
+        return self::resolve_dmTitle($dmTitle[0] ?? '');
+        break;      
+      case 'resolve_pmTitle':
+        $pmTitle = $docxpath->evaluate('//identAndStatusSection/descendant::pmTitle');
+        return self::resolve_pmTitle($pmTitle[0] ?? '');
+        break;      
+      case 'resolve_issueDate':
+        $issueDate = $docxpath->evaluate('//identAndStatusSection/descendant::issueDate');
+        return self::resolve_issueDate($issueDate[0] ?? '');
+        break;  
+      case 'getApplicability':
+        $params = array_values(array_filter(func_get_args(),(fn($v, $i) => $i > 2), ARRAY_FILTER_USE_BOTH));
+        $pmc = new PMC_PDF($path);
+        $pmc->ignore_error = $params[0] ?? $pmc->ignore_error;
+        $pmc->setDocument($doc);
+        return $pmc->getApplicability('','first');
+        break;
+      // case 'resolve_issueType':
+        // $params = array_values(array_filter(func_get_args(),(fn($v, $i) => $i > 2), ARRAY_FILTER_USE_BOTH));
+        // $issueType = self::resolve_issueType();
+        // break;
+      default:
+        break;
+    }
+    
+    // dd($params);
+    // dd(self::class."::$csdbFunction");
+    // $res = call_user_func(self::class."::$csdbFunction", $params);
+    // dd($res);
+    // dd($doc, $path, $filename);
+  }
+
   public static function resolve_issueDate($issueDate, $format = "M-d-Y")
   {
     // untuk mengakomodir penggunaan fungsi di XSLT
@@ -524,6 +596,7 @@ class CSDB
 
   public static function resolve_dmTitle($dmTitle, string $child = '')
   {
+    if(!$dmTitle) return '';
     // untuk mengakomodir penggunaan fungsi di XSLT
     if (is_array($dmTitle)) {
       $dmTitle = $dmTitle[0];
@@ -555,6 +628,7 @@ class CSDB
    */
   public static function resolve_pmTitle($pmTitle, $shortPmTitle = null)
   {
+    if(!$pmTitle) return '';
     // untuk mengakomodir penggunaan fungsi di XSLT
     if (is_array($pmTitle)) {
       $pmTitle = $pmTitle[0];
@@ -781,11 +855,12 @@ class CSDB
           if ($assert->parentNode->nodeName == 'evaluate') {
             return $test;
           } else {
-            if ($test[array_key_first($test)]['STATUS'] == 'fail') {
-              $xpath = new DOMXPath($assert->ownerDocument);
-              $dmIdent = $xpath->evaluate("//identAndStatusSection/descendant::dmIdent")[0];
-              $dmIdent = self::resolve_dmIdent($dmIdent);
-              throw new Exception("Error processing applicability inside $dmIdent.", 1);
+            if ($test[array_key_first($test)]['STATUS'] == 'fail'){
+              $applicPropertyIdent = array_key_first($test);
+              $values = array_filter($test[$applicPropertyIdent], (fn($v, $i) => is_numeric($i)), ARRAY_FILTER_USE_BOTH);
+              $values = join(", ", $values);
+              $filename = self::resolve_DocIdent($assert->ownerDocument);
+              throw new Exception("Error processing applicability inside $filename. For '$applicPropertyIdent' does not contains such $values", 1);
             } else {
               unset($test[array_key_first($test)]['STATUS']);
               return $test;

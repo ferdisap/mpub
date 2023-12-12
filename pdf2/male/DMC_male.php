@@ -49,6 +49,7 @@ class DMC_male extends DMC
       return self::class."::$name";
     },get_class_methods(self::class));
     $xsltproc->registerPHPFunctions($DMC_male_class_methods);
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions();
     
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];
@@ -105,14 +106,16 @@ class DMC_male extends DMC
 
   public function render_crewXsd()
   {
-    $this->pdf->page_ident = $this->pdf->get_pmEntryType_config()['printpageident'] ? $this->dmCode : '';
+    $this->pdf->page_ident = (isset($this->pdf->get_pmEntryType_config()['printpageident']) AND $this->pdf->get_pmEntryType_config()['printpageident']) ? $this->dmCode : '';
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     $xsl = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."./xsl/", 'crew.xsl' ,'',"xsl:stylesheet");
     $xsltproc = new XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
     // dd(__CLASS__."::"."getApplicabilty", PMC_PDF::class."::".'getCrewMember');
     $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
+    // $xsltproc->registerPHPFunctions(__CLASS__."::setLastPositionCrewDrillStep");
     // $xsltproc->registerPHPFunctions(__CLASS__."::".'getCrewMember');
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => __CLASS__."::$name", get_class_methods(__CLASS__)))());
     $xsltproc->registerPHPFunctions();
 
     $padding_levelPara = $this->pdf->get_pmType_config()['content']['padding']['levelledPara'];

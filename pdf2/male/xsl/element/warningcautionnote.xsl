@@ -6,8 +6,10 @@
   
   <xsl:template match="warning">
     <xsl:variable name="warning_logo">
-    <xsl:value-of select="$absolute_asset_path"/>
-    <xsl:text>warning.jpg</xsl:text>
+    <!-- <xsl:value-of select="$absolute_asset_path"/>
+    <xsl:text>warning.jpg</xsl:text> -->
+    <xsl:value-of select="$absolute_path_csdbInput"/>
+      <xsl:value-of select="symbol/@infoEntityIdent"/>
     </xsl:variable>
     <table style="text-align:center;width:100%">
       <xsl:call-template name="cgmark"/>
@@ -29,8 +31,10 @@
   
   <xsl:template match="caution">
     <xsl:variable name="caution_logo">
-    <xsl:value-of select="$absolute_asset_path"/>
-    <xsl:text>caution.jpg</xsl:text>
+    <!-- <xsl:value-of select="$absolute_asset_path"/>
+    <xsl:text>caution.jpg</xsl:text> -->
+    <xsl:value-of select="$absolute_path_csdbInput"/>
+      <xsl:value-of select="symbol/@infoEntityIdent"/>
     </xsl:variable>
     <table style="text-align:center;width:100%">
       <xsl:call-template name="cgmark"/>

@@ -2,16 +2,39 @@
 
 namespace Ptdi\Mpub;
 
-require './vendor/james-heinrich/getid3/getid3/getid3.php';
-
 class ICNDocument extends CSDB
 {
-  protected array $getID3;
+  protected array $fileinfo;
+  protected string $filename;
+  protected string $path;
   
   public function load($path, $filename)
   {
     $getID3 = new \getID3();
-    $fileInfo = $getID3->analyze($path . DIRECTORY_SEPARATOR . $filename);
-    $this->getID3 = $fileInfo;
+    $fileinfo = $getID3->analyze($path . DIRECTORY_SEPARATOR . $filename);
+    $this->fileinfo = $fileinfo;
+    $this->filename = $filename;
+    $this->path = $fileinfo['filepath'];
+  }
+
+  public function getFileinfo()
+  {
+    return $this->fileinfo;
+  }
+
+  public function getFile($option = '')
+  {
+    switch ($option) {
+      case '':
+        return (file_get_contents($this->fileinfo['filepath']. DIRECTORY_SEPARATOR. $this->filename));
+        break;
+      case 'base64':
+        return base64_encode((file_get_contents($this->fileinfo['filepath']. DIRECTORY_SEPARATOR. $this->filename)));
+        break;
+      
+      default:
+        # code...
+        break;
+    }
   }
 }

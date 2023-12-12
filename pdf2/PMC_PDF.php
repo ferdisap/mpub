@@ -32,6 +32,7 @@ class PMC_PDF extends TCPDF
   protected bool $validateSchema = true;
   protected bool $validateBrex = true;
   protected array $pmType_config;
+  protected static array $static_pmType_config = [];
   protected array $pmEntryType_config;
 
   public string $prefix_pagenum = '';
@@ -46,6 +47,9 @@ class PMC_PDF extends TCPDF
   public int $pmEntry_level = 0;
 
   public array $paper_color = array(255, 255, 255);
+  
+  public $ignore_error = false;
+  public $dump = false;
 
   public bool $inFootnote = false;
   public array $footnotes = [
@@ -127,14 +131,34 @@ class PMC_PDF extends TCPDF
   public function importDocument(string $absolute_path = '', string $filename = '', string $xml_string = '')
   {
     // $this->pmc_path = $absolute_path;
-    $this->DOMDocument = CSDB::importDocument($absolute_path, $filename, $xml_string, 'pm');
+    $DOMDocument = CSDB::importDocument($absolute_path, $filename, $xml_string, 'pm');
+    if(!$DOMDocument){
+      throw new \Exception("{$filename} is not exist in database.");
+    }
+    $this->DOMDocument = $DOMDocument;
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    $this->modelIdentCode = $modelIdentCode;
 
     # validate DOMDocument here
 
-    $pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType');
-    $attributes = require $modelIdentCode . "/config/attributes.php";
-    $this->pmType_config = $attributes['pmType'][$pmType_value];
+    // config akan mengikuti the TOP of PMC.
+    if(($pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType')) AND empty(self::$static_pmType_config)){
+      $attributes = require $modelIdentCode . "/config/attributes.php";
+      $this->attributes = $attributes;
+      // $this->pmType_config = $attributes['pmType'][$pmType_value];
+      self::$static_pmType_config = $attributes['pmType'][$pmType_value];
+      $this->pmType_config = self::$static_pmType_config;
+    }
+    elseif(empty(self::$static_pmType_config)){
+      $attributes = require "attributes.php";
+      $this->attributes = $attributes;
+      $this->pmType_config = $attributes['pmType'][''];
+      self::$static_pmType_config = $attributes['pmType'][''];
+      $this->pmType_config = self::$static_pmType_config;
+    }
+    else {
+      $this->pmType_config = self::$static_pmType_config;
+    }
 
     $this->pmCode = CSDB::resolve_pmCode($this->DOMDocument->getElementsByTagName('pmCode')[0]);
 
@@ -145,12 +169,22 @@ class PMC_PDF extends TCPDF
     $this->applicability = $this->getApplicability('', 'first', 'false');
   }
 
+  public function setDocument(\DOMDocument $doc)
+  {
+    $this->DOMDocument = $doc;  
+  }
+
   /**
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
   public function importDocument_dump(string $pmType = '', $contentDocument = [])
   {
+    $this->modelIdentCode = "DUMP";
+
+    if(isset($contentDocument['use_DMC_modelIdentCode']) AND $contentDocument['use_DMC_modelIdentCode']){
+      $this->use_DMC_modelIdentCode = true;
+    }
 
     $this->DOMDocument = new DOMDocument();
     $this->DOMDocument->load(__DIR__ . DIRECTORY_SEPARATOR . "../csdb_dump/PMC-DUMP-0001Z-XXXXX-00_000-01_EN-EN.xml");
@@ -230,9 +264,9 @@ class PMC_PDF extends TCPDF
     if (!$this->validateSchema) {
       return false;
     }
-
+    
     $this->setAllowLocalFiles(true);
-
+    
     $DOMXpath = new \DOMXPath($this->DOMDocument);
     $pmEntries = $DOMXpath->evaluate("//content/pmEntry");
     foreach ($pmEntries as $index => $pmEntry) {
@@ -247,13 +281,12 @@ class PMC_PDF extends TCPDF
     // $this->pmTitle = $pmEntry->getElementsByTagName('pmEntryTitle')[0];
     // $this->pmTitle = $this->pmTitle->nodeValue;
 
-    $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
-    $pmEntryType_config = require $modelIdentCode . "/config/attributes.php";
-    $pmEntryType_config = $pmEntryType_config['pmEntryType'];
-    $pmEntryType = $pmEntry->getAttribute('pmEntryType');
-    $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
-
-    // dump($pmEntryType_config);
+    // $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
+    // $pmEntryType_config = require $modelIdentCode . "/config/attributes.php";
+    // $pmEntryType_config = $pmEntryType_config['pmEntryType'];
+    // $pmEntryType = $pmEntry->getAttribute('pmEntryType');
+    // $pmEntryType_config = $pmEntryType_config[$pmEntryType] ?? [];
+    $pmEntryType_config = $this->attributes['pmEntryType'][$pmEntry->getAttribute('pmEntryType')];
     $this->pmEntryType_config = $pmEntryType_config;
 
     $orientation = $this->pmType_config['page']['orientation'];
@@ -263,10 +296,8 @@ class PMC_PDF extends TCPDF
     $bottomMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['B'] : $this->pmType_config['page']['margins']['B'];
     $leftMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['L'] : $this->pmType_config['page']['margins']['L'];
     $rightMargin = isset($pmEntryType_config['page']['margins']['B']) ? $pmEntryType_config['page']['margins']['R'] : $this->pmType_config['page']['margins']['R'];
-    // $fontsize = $this->pmType_config['fontsize']['levelledPara']['para'];
     $fontsize = $this->pmType_config['fontsize']['para'];
     $this->SetFont($this->pmType_config['fontfamily'], '', null, '', false);
-    // $this->SetFont('tahoma_0','',null,);
 
     $this->setHeaderMargin($headerMargin);
     $this->setFooterMargin($footerMargin);
@@ -275,26 +306,18 @@ class PMC_PDF extends TCPDF
     $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $rightMargin, $leftMargin);
     $this->setFontSize($fontsize);
     $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-    // $this->setTopMargin($topMargin);
-    // $this->setPrintFooter(true);
-    if (!empty($pmEntryType_config)) {
-      // dump($this->page."|".$pmEntryType);
-      $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
-      $this->startPageGroup();
-      $this->AddPage();
-      $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $leftMargin, $rightMargin);
-      $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
-      // dump($this->page."|".$pmEntryType);
-      // dump($pmEntryType_config['usefooter'], $this->page);
-      // $this->setPrintFooter(true);
-    }
-    // dump($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
-
+    
+    $this->setPrintHeader($pmEntryType_config['useheader'] ?? $this->pmType_config['useheader']);
+    $this->startPageGroup();
+    ($this->page < 1) ? $this->AddPage() : null;
+    $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $leftMargin, $rightMargin);
+    $this->setPrintFooter($pmEntryType_config['usefooter'] ?? $this->pmType_config['usefooter']);
+    
     $TOC = $pmEntryType_config['usetoc'] ?? false;
     $BOOKMARK = $pmEntryType_config['usebookmark'] ?? false;
 
+    $level = $this->checkLevel($pmEntry);
     if ($BOOKMARK) {
-      $level = $this->checkLevel($pmEntry);
       $pmEntryType_interpretation = $this->pmEntryType_config['interpretation'] ?? '';
       $txt = ($pmEntryTitle = $pmEntry->firstElementChild)->tagName == 'pmEntryTitle' ? $pmEntryTitle->nodeValue : ($pmEntryType_interpretation ?? 'Entry ' . $level);
       $this->Bookmark($txt, $level);
@@ -304,9 +327,14 @@ class PMC_PDF extends TCPDF
     foreach ($children as $child) {
       switch ($child->nodeName) {
         case 'dmRef':
+          $this->setFontSize($fontsize);
           $this->pmEntry_level = $level;
-          $this->dmRef($child);
           $this->resetFootnotes();
+          if (($this->page > 1) and ($this->page % 2 == 0)) {
+            $this->AddPage();
+            $orientation == 'L' ? $this->setVgutter(10) : $this->setBooklet(true, $leftMargin, $rightMargin);
+          }
+          $this->dmRef($child);
           $this->addIntentionallyLeftBlankPage($this);
           break;
 
@@ -371,7 +399,14 @@ class PMC_PDF extends TCPDF
     //   self::addIntentionallyLeftBlankPage($this);
     // }
 
-    $dmc = new DMC();
+    if(isset($this->use_DMC_modelIdentCode)){
+      $modelIdentCode = ($dmRef->getElementsByTagName('dmCode')[0]->getAttribute('modelIdentCode'));
+      $modelIdentCode = strtolower($modelIdentCode);
+      $dmc = new ("Ptdi\Mpub\Pdf2\\{$modelIdentCode}\DMC_{$modelIdentCode}");
+    } else {
+      $dmc = new DMC();
+    }
+
     $dmc->absolute_path_csdbInput = $this->absolute_path_csdbInput;
     $dmc->pdf = $this;
     $dmc->setDocument($dmRef);

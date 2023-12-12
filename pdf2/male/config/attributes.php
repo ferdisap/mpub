@@ -1,7 +1,5 @@
 <?php
 
-
-
 $pmType = [
   'pt51' => [
     'interpretation' => 'POH-AFM',
@@ -72,6 +70,7 @@ $pmType = [
 ];
 
 $pmEntryType = [
+  '' => (fn() => (require __DIR__."/../../attributes.php")['pmEntryType'][''])(),
   'pmt01' => [
     'interpretation' =>  'TITLE PAGE',
     'useheader' => false,
