@@ -32,7 +32,7 @@ class PMC_PDF extends TCPDF
   protected bool $validateSchema = true;
   protected bool $validateBrex = true;
   protected array $pmType_config;
-  protected static array $static_pmType_config = [];
+  public  static array $static_pmType_config = [];
   protected array $pmEntryType_config;
 
   public string $prefix_pagenum = '';
@@ -135,6 +135,10 @@ class PMC_PDF extends TCPDF
     if(!$DOMDocument){
       throw new \Exception("{$filename} is not exist in database.");
     }
+    $this->setConfig($DOMDocument);
+  }
+
+  public function setConfig(\DOMDocument $DOMDocument, $params = []){
     $this->DOMDocument = $DOMDocument;
     $modelIdentCode = strtolower(CSDB::get_modelIdentCode($this->DOMDocument));
     $this->modelIdentCode = $modelIdentCode;
@@ -142,7 +146,8 @@ class PMC_PDF extends TCPDF
     # validate DOMDocument here
 
     // config akan mengikuti the TOP of PMC.
-    if(($pmType_value = $this->DOMDocument->firstElementChild->getAttribute('pmType')) AND empty(self::$static_pmType_config)){
+    $pmType_value = $params['pmType'] ?? $this->DOMDocument->firstElementChild->getAttribute('pmType');
+    if($pmType_value AND empty(self::$static_pmType_config)){
       $attributes = require $modelIdentCode . "/config/attributes.php";
       $this->attributes = $attributes;
       // $this->pmType_config = $attributes['pmType'][$pmType_value];
@@ -165,7 +170,6 @@ class PMC_PDF extends TCPDF
     $format = $this->pmType_config['page']['format'];
     $this->setPageFormat($format);
     $this->setPageOrientation($this->get_pmType_config()['page']['orientation']);
-
     $this->applicability = $this->getApplicability('', 'first', 'false');
   }
 
@@ -178,7 +182,7 @@ class PMC_PDF extends TCPDF
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
-  public function importDocument_dump(string $pmType = '', $contentDocument = [])
+  public function importDocument_dump($contentDocument = [])
   {
     $this->modelIdentCode = "DUMP";
 
@@ -239,7 +243,10 @@ class PMC_PDF extends TCPDF
     }
     $pmType_value = $this->DOMDocument->documentElement->getAttribute('pmType');
     $attributes = require "dump/config/attributes.php";
-    $this->pmType_config = $attributes['pmType'][$pmType_value];
+    $this->attributes = $attributes;
+    // $this->pmType_config = $attributes['pmType'][$pmType_value];
+    self::$static_pmType_config = $attributes['pmType'][$pmType_value];
+    $this->pmType_config = self::$static_pmType_config;
 
     $this->pmCode = CSDB::resolve_pmCode($this->DOMDocument->getElementsByTagName('pmCode')[0]);
 
