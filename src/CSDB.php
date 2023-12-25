@@ -38,7 +38,7 @@ class CSDB
 
   public static function getSchemaUsed($doc, $option = 'file')
   {
-    if (!$doc) return '';
+    if (!$doc or !($doc instanceof \DOMDocument)) return '';
     // untuk mengakomodir penggunaan fungsi di XSLT
     if (is_array($doc)) {
       $doc = $doc[0];

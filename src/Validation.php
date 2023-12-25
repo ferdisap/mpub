@@ -42,7 +42,7 @@ trait Validation
       CSDB::setError('validateBySchema', "schema cannot be identified");
       return false;
     }
-    $doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
+    @$doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
     if(!empty($errors)){
       CSDB::setError('validateBySchema', "error during validate by xsi in file ".CSDB::resolve_DocIdent($doc).".");
