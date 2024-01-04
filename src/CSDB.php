@@ -204,7 +204,7 @@ class CSDB
         (!file_exists($absolute_path . $filename) or !is_file($absolute_path . $filename))
       ) {
         $m = "{$filename} does not exist.";
-        self::$errors['file_exists'][] = $m;
+        self::$processid ? (self::$errors[self::$processid][] = $m) : (self::$errors['file_exists'][] = $m);
         return false;
       }
       $text = $xml_string ?? '';
@@ -922,6 +922,7 @@ class CSDB
     if (!$ACTdoc) {
       $error = CSDB::get_errors(true, 'file_exists') ?? CSDB::get_errors();
       $error = array_map((fn($v) => is_array($v) ? ($v = join(", ", $v)) : $v), $error);
+      array_unshift($error, "Error inside ".Helper::analyzeURI($doc->baseURI)['filename']);
       CSDB::setError(__FUNCTION__, implode(", ", $error));
       return false;
     }
@@ -1231,5 +1232,159 @@ class CSDB
     }
     $ret = array($applicPropertyIdent => $testedValues);
     return $ret;
+  }
+
+  public static function document($path, $filename)
+  {
+    if(is_array($path)){
+      $path = $path[0];
+    }
+    if($path instanceof \DOMDocument){
+      $path = Helper::analyzeURI($path->baseURI)['path'];
+    }
+    if(is_array($filename) AND $filename[0] instanceof \DOMAttr){
+      $filename = $filename[0]->nodeValue;
+    }
+    if(substr($filename, 0, 3) == 'ICN'){
+      $filename = self::detectIMF($path, $filename);
+    } 
+    CSDB::$processid = 'ignore';
+    $dom = CSDB::importDocument($path."/", $filename);
+    $errors = CSDB::get_errors(true, 'ignore');
+
+    if($dom){
+      return $dom;
+    } else {
+      return new DOMDocument();
+    }
+  }
+
+  /**
+   * @return string filename IMF
+   */
+  public static function detectIMF($path, $icnFilename)
+  {
+    $icnFilename_withoutFormat = preg_replace("/.\w+$/",'',$icnFilename);
+    $icnFilename_array = explode("-",$icnFilename_withoutFormat);
+    
+    $imfFilename_array = $icnFilename_array;
+    $imfFilename_array[0] = 'IMF';
+
+    // mencari dengan issueNumber dan/atau inWork terbesar
+    $searchImf = function($path) use($imfFilename_array) {
+      $filename = join("-", $imfFilename_array);
+
+      $dir = array_diff(scandir($path));
+      $collection = [];
+      foreach($dir as $file){
+        if(str_contains($file, $filename)){
+          $collection[] = $file;
+        }
+      }
+      $c = array_map(function($v){
+        $v = preg_replace("/IMF-[\w-]+_/", '',$v);
+        $v = preg_replace("/.xml/", '',$v);
+        $v = explode("-",$v);
+        return $v;
+      }, $collection);
+
+      if(empty($c)){
+        return '';
+      }
+
+      $in = array_map((fn($v) => (int)($v[0])), $c);
+      $iw = array_map((fn($v) => (int)($v[1])), $c);
+
+      $in_max = str_pad(max($in), 3, '0', STR_PAD_LEFT);
+      $iw_max = str_pad(max($iw), 3, '0', STR_PAD_LEFT);
+
+      $filterBy = array_filter($c, (fn($v) => $v[0] == $in_max));
+      if(count($filterBy) > 1){
+        $filterBy = array_filter($c, (fn($v) => ($v[0] == $in_max AND $v[1] == $iw_max)));
+      }
+      $issueInfo = join("-", $filterBy[0]);
+      $filename .= "_".$issueInfo.".xml";
+      return $filename;
+    };
+    $filename = $searchImf($path);
+    return $filename;
+  }
+
+  /**
+   * @return string infoEntityIdent eg: ICN...-01.jpeg,hot-001 atau (tanpa hot-001) eg: ICN...-01.jpeg
+   * @return Array ['ICN....-01.jpeg', 'hot-001'];
+   * fungsi ini lebih diperuntukkan untuk hot
+   * example: input $id = fig-001-gra-001-hot-001 (menggunakan hotspot dari IMF) 
+   * pada data module: 
+   * <figure id="fig-001">
+   *    <graphic id="fig-001-gra-001" infoEntityIdent="..."/>
+   * </figure> 
+   * <internalRef internalRefTargetType="irtt51" internalRefId="fig-001-gra-001-hot-001">tes hotspot</internalRef>
+   */
+  public static function getEntityIdentFromId($doc, $id, $return = 'string')
+  {
+    if(is_array($doc)){
+      $doc = $doc[0];
+    }
+    if(is_array($id)){
+      $id = $id[0];
+    }
+    if($id instanceof \DOMAttr){
+      $id = $id->nodeValue;
+    }
+    $domXpath = new \DOMXPath($doc);
+    $res = $domXpath->evaluate("//*[@id = '{$id}']");
+    // evaluasi id secara langsung, return
+    if($res->length > 0){
+      $infoEntityIdent = $res[0]->getAttribute('infoEntityIdent');
+      return $return == 'string' ? $infoEntityIdent : [$infoEntityIdent, ''];
+    } 
+    else {
+      $id_array = explode('-', $id); //ex: [gra,001,hot,001] 
+
+      // jika ganjil maka return ''. Harusnya genap karena ada dash pada setiap id fig-001-gra-001
+      if(($length_id_array = count($id_array)) % 2){ 
+        return '';
+      }
+
+      // jika > 2 artinya levelled internalRefid="fig-001-gra-001" (cari graphic 1 yang parentnya fig-001);
+      elseif($length_id_array > 2){
+        $descendant_id = [$id_array[$length_id_array-2], $id_array[$length_id_array-1]];
+        unset($id_array[$length_id_array-2]);
+        unset($id_array[$length_id_array-1]);
+
+        $try_id = join('-', $id_array);
+        $res = $domXpath->evaluate("//*[@id = '{$try_id}']");        
+        if($res->length > 0){
+          $infoEntityIdent = $res[0]->getAttribute('infoEntityIdent');
+          return $return == 'string' ? ($infoEntityIdent . ','. join('-',$descendant_id)) : [$infoEntityIdent, join('-',$descendant_id)];
+        }
+      }
+
+      /**
+       * jika cara penamaan id pada <graphic> tidak levelled maka xpath = "//descendant::*[@id = 'fig-001'/descendant::*[@id = 'gra-001']]"
+       * <graphic id="gra-001" infoEntityIdent="..."/>
+      */
+      $xpath = '/';
+      array_filter($id_array, function($v,$k) use($id_array, &$xpath){
+        if($k % 2){
+          $id_array[$k-1] .= "-{$v}";
+          $xpath .= "/descendant::*[@id = '{$id_array[$k-1]}']";
+          unset($id_array[$k]);
+        }
+      },ARRAY_FILTER_USE_BOTH); // ex: $id_array = [gra-001,hot-001] 
+      $res = $domXpath->evaluate($xpath);
+      if($res->length <= 0){
+        return '';
+      }
+      $infoEntityIdent = $res[0]->getAttribute('infoEntityIdent');
+
+      // jika ada $descendant_id artinya levelled id
+      if($return == 'string'){
+        return  isset($descendant_id) ? ($infoEntityIdent . ','. join('-',$descendant_id)) : ($infoEntityIdent);
+      } else {
+        return  isset($descendant_id) ? [$infoEntityIdent, $descendant_id] : [$infoEntityIdent, ''];
+      }
+    }
   }
 }

@@ -37,7 +37,7 @@ trait Validation
     if($validator == ''){
       $validator = CSDB::getSchemaUsed($doc,'filename');  
     }
-    $schema = CSDB::importDocument(__DIR__."/Schema\/",$validator,null,'');
+    $schema = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."Schema".DIRECTORY_SEPARATOR,$validator,null,'');
     if(!$schema) {
       CSDB::setError('validateBySchema', "schema cannot be identified");
       return false;
@@ -63,15 +63,16 @@ trait Validation
   {
     // dd(CSDB::resolve_dmIdent($doc->getElementsByTagName('dmIdent')[0]));
     $domXpath = new DOMXPath($doc);
-    $brexDoc = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef");
+    // $brexDoc = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef");
+    $brexDoc = $domXpath->evaluate("//brexDmRef",$doc->firstElementChild->firstElementChild);
     if($brexDoc->length == 0){
       $docIdent = CSDB::resolve_DocIdent($doc);
-      CSDB::setError('validateByBrex', "element <brexDmRe> cannot found in identAndStatusSection of {$docIdent}");
+      CSDB::setError('validateByBrex', "element brexDmRef cannot found in identAndStatusSection of {$docIdent}");
       return false;
     } else {
       $brexDoc = $brexDoc[0];
       $brexDoc = CSDB::resolve_dmIdent($brexDoc);
-      $path = !empty($absolute_path) ? $absolute_path : $doc->absolute_path;
+      $path = $absolute_path ?? Helper::analyzeURI($doc->baseURI)['path'];
       $brexDoc = CSDB::importDocument($path."/",$brexDoc,null,'','brexDoc');
       if($errors = CSDB::get_errors(true,'file_exists')){
         CSDB::setError('validateByBrex', "error during validate by brex in file ".CSDB::resolve_DocIdent($doc).".");
@@ -90,7 +91,7 @@ trait Validation
       $structureObjectRuleGroup = $contextRule->firstElementChild;
       $structureObjectRules = CSDB::get_childrenElement($structureObjectRuleGroup,'');
       foreach ($structureObjectRules as $structureObjectRule){
-        self::validateByStructureObjectRule($doc, $structureObjectRule);
+        self::validateByStructureObjectRule($doc, $structureObjectRule, $path);
       }
     }
     $errors = CSDB::get_errors(false,'validateByBrex');
@@ -101,18 +102,43 @@ trait Validation
    * php tidak bisa pakai fungsi xpath //applic/child::*\/name(), melainkan local-name(//applic/child::*)
    * hindari objectPath yang bernilai boolean karena jika dari setiap result ada yang true, padahal yang lain false, maka hasilnya true
    */
-  private static function validateByStructureObjectRule(\DOMDocument $doc, \DOMElement $structureObjectRule)
+  private static function validateByStructureObjectRule(\DOMDocument $doc, \DOMElement $structureObjectRule, $absolute_path = '')
   {
     $docIdent = CSDB::resolve_DocIdent($doc);
 
     $id = $structureObjectRule->getAttribute(('id'));
 
-    $brDecisionRef = $structureObjectRule->getElementsByTagName('brDecisionRef'); // DOM Element
+    $brDecisionRefs = $structureObjectRule->getElementsByTagName('brDecisionRef'); // DOM Element
     $brDecisionIdentNumber = array();
-    foreach ($brDecisionRef as $value) {
-      $brDecisionIdentNumber[] = $value->getAttribute('brDecisionIdentNumber');
+    foreach ($brDecisionRefs as $brDecisionRef) {
+      $brDecisionIdentNumber[] = $brDecisionRef->getAttribute('brDecisionIdentNumber');
     }
     $brDecisionIdentNumber = join(", ", $brDecisionIdentNumber);
+    
+    // validasi apakah schema nya termasuk di contextRule atau tidak
+    $allowedSchema = [];
+    foreach ($brDecisionRefs as $brDecisionRef) {
+      $brDecisionIdentNumber = $brDecisionRef->getAttribute('brDecisionIdentNumber');
+      if($brDecisionRef->firstElementChild){
+        $refs = $brDecisionRef->firstElementChild;
+        if($refs->firstElementChild->tagName == 'dmRef'){
+          $dom = CSDB::importDocument($absolute_path."/", CSDB::resolve_dmIdent($refs->firstElementChild));
+          $domXpath = new \DOMXPath($dom);
+          $res = $domXpath->evaluate("//brDecision[@brDecisionIdentNumber = '{$brDecisionIdentNumber}']/ancestor::brPara/descendant::s1000dSchemas/@*[. = 1]");
+          foreach($res as $schema){
+            $allowedSchema[] = str_replace('Xsd', '.xsd', $schema->nodeName);
+          }
+        }
+      }
+    }
+    if(!empty($allowedSchema)){
+      $schmeUsed = CSDB::getSchemaUsed($doc, 'filename');
+      // jika tidak ada di allowable schema, maka tidak perlu di validasi (aman)
+      if(!in_array($schmeUsed, $allowedSchema)){
+        return;
+      }
+    }
+
 
     $objectPath = $structureObjectRule->getElementsByTagName('objectPath')[0]; // DOM Element
     $allowedObjectFlag = $objectPath->getAttribute('allowedObjectFlag');
@@ -134,7 +160,7 @@ trait Validation
     }
     $objectValues = $values;
     unset($values);
-    
+
     // jika objectPath result boolean
     $domXpath = new DOMXPath($doc);
     $results = $domXpath->evaluate($objectPath->nodeValue);
@@ -148,6 +174,10 @@ trait Validation
     elseif(is_bool($results) AND $results == true AND $allowedObjectFlag == 0) {
       CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue}");
       return;
+    }
+    // jika result bernilai true, tapi sunnah, maka aman
+    elseif(is_bool($results) AND $results == true AND $allowedObjectFlag == 2){
+      return;
     } 
     // jika result bernilai false, maka fail karena harusnya diperbolehkan (harus true)
     elseif(is_bool($results) AND $results == false AND $allowedObjectFlag == 1) {
@@ -156,6 +186,11 @@ trait Validation
     } 
     // jika result bernilai false dan juga tidak diperbolehkan, maka aman
     elseif(is_bool($results) AND $results == false AND $allowedObjectFlag == 0) {
+      return;
+    }
+    // jika result bernilai false, tapi sunnah, fail
+    elseif(is_bool($results) AND $results == false AND $allowedObjectFlag == 2){
+      // harusnya return warning/caution/info saja. Nanti buat CSDB::setInfo()
       return;
     } 
     // jika tidak ada yang ditemukan, berarti aman (tidak perlu di validasi)
@@ -311,9 +346,14 @@ trait Validation
       $csdbIdent = $dom->getElementsByTagName('dmlIdent')[0];
       $csdb_filename = CSDB::resolve_dmlIdent($csdbIdent);
       $ident = 'dml';
-    } 
+    }
+    elseif($rootname == 'icnMetadataFile'){
+      $csdbIdent = $dom->getElementsByTagName('imfCode')[0];
+      $csdb_filename = "ICN-".$csdbIdent->getAttribute('imfIdentIcn') . '.xml';
+      $ident = 'icnMetadataFile';
+    }
     else {
-      CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM or DM.';
+      CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM, DM, ICN Meta Data File.';
       return false;
     }
     return [$csdbIdent, $csdb_filename, $ident];
