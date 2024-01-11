@@ -26,6 +26,45 @@ trait Validation
     }
   }
 
+  /**
+   * jika $object type tidak termasuk bagian yang perlu di validasi dmrl, maka dianggap true
+   * if true, return [true, ''];
+   * else, return [false, [$text], 'info/dmrl/entry'];
+   * 'info' ini semacam kode error tapi tidak fatal
+   */
+  public static function validateByDMRL( $dmrlpath = '', $dmrlfilename = '', string $entryFilename, string $type = '')
+  {
+    // dd($dmrlpath, $dmrlfilename, $entryFilename, $type);
+    if (!in_array($type, ['dmodule', 'pm', 'infoEntity', 'comment', 'dml'])) {
+      return [true, ''];
+    }
+    $dmrl_dom = CSDB::importDocument($dmrlpath, $dmrlfilename);
+    if(!$dmrl_dom) return [false, 'No such DMRL', 'dmrl'];
+    if(!CSDB::validate('XSI', $dmrl_dom, 'dml.xsd')){
+      $err = CSDB::get_errors(true, 'validateBySchema');
+      $err[] = "DMRL must be comply to dml.xsd";
+      return [false, join(", ", $err), 'dmrl'];
+    }
+
+    $xpath = new \DOMXPath($dmrl_dom);
+    $dmlEntries = $xpath->evaluate("//dmlEntry");
+    $nominal_idents = array();
+    foreach ($dmlEntries as $key => $dmlEntry) {
+      $ident = str_replace("Ref", '', $dmlEntry->firstElementChild->tagName);
+      if ($dmlEntry->firstElementChild->tagName == 'infoEntityRef') {
+        $nominal_idents[] = $dmlEntry->firstElementChild->getAttribute('infoEntityRefIdent');
+      } else {
+        $nominal_idents[] = call_user_func_array(CSDB::class . "::resolve_{$ident}Ident", [$dmlEntry->getElementsByTagName("{$ident}RefIdent")[0]]);
+      }
+    }
+    $actual_ident = preg_replace("/_\d{3,5}-\d{2}|_[A-Za-z]{2,3}-[A-Z]{2}/", '', $entryFilename); // untuk membersihkan inwork dan issue number pada filename
+    if (!in_array($actual_ident, $nominal_idents)) {
+      $actual_ident = preg_replace('/\.\w+$/', '', $actual_ident);
+      return [false, "{$actual_ident} is not required by the DMRL.", 'entry'];
+    }
+    return [true, ''];
+  }
+
   private static function validateByBrexForNonContext(string $doc, $absolute_path){
     return true;
   }
@@ -348,9 +387,11 @@ trait Validation
       $ident = 'dml';
     }
     elseif($rootname == 'icnMetadataFile'){
-      $csdbIdent = $dom->getElementsByTagName('imfCode')[0];
-      $csdb_filename = "ICN-".$csdbIdent->getAttribute('imfIdentIcn') . '.xml';
+      $csdbIdent = $dom->getElementsByTagName('imfIdent')[0];
+      $csdb_filename = CSDB::resolve_imfIdent($csdbIdent);
       $ident = 'icnMetadataFile';
+      // $csdbIdent = $dom->getElementsByTagName('imfCode')[0];
+      // $csdb_filename = "IMF-".$csdbIdent->getAttribute('imfIdentIcn')."_". $csdbIdent->nextElementSibling->getAttribute('issueNumber')."-". $csdbIdent->nextElementSibling->getAttribute('inWork'). '.xml';
     }
     else {
       CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM, DM, ICN Meta Data File.';

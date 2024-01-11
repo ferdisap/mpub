@@ -98,10 +98,54 @@ class CSDB
     } elseif ($docType == 'dmodule') {
       $docIdent = $doc->getElementsByTagName('dmIdent')[0];
       $docIdent = self::resolve_dmIdent($docIdent);
+    } elseif ($docType == 'icnMetadataFile') {
+      $docIdent = $doc->getElementsByTagName('imfIdent')[0];
+      $docIdent = CSDB::resolve_imfIdent($docIdent);
     } else {
       $docIdent = '';
     }
     return $docIdent;
+  }
+
+  public static function resolve_DocTitle(\DOMDocument $doc)
+  {
+    $docType = $doc->firstElementChild->tagName;
+    switch ($docType) {
+      case 'dmodule':
+        $title = $doc->getElementsByTagName('dmTitle')[0];
+        $title = CSDB::resolve_dmTitle($title);
+        break;
+      case 'pm':
+        $title = $doc->getElementsByTagName('pmTitle')[0];
+        $title = CSDB::resolve_pmTitle($title);
+        break;
+      case 'icnMetadataFile':
+        $title = new \DOMXPath($doc);
+        $title = $title->evaluate("//icnInfoItem[@icnInfoItemType = 'iiit54']")[0];
+        $title = $title->textContent ?? '';
+        break;
+      default:
+        $title = '';
+        break;
+    }
+    return $title;
+  }
+
+  public static function resolve_imfIdent($imfIdent = null, array $idents = [], $prefix = 'PMC-', $format = '.xml')
+  {
+    if (empty($idents)) {
+      if (is_array($imfIdent)) {
+        $imfIdent = $imfIdent[0];
+      }
+      $imfCode = $imfIdent->getElementsByTagName('imfCode')[0]->getAttribute('imfIdentIcn');
+      $issueInfo = ($if = self::resolve_issueInfo($imfIdent->getElementsByTagName('issueInfo')[0])) ? "_" . $if : '';
+    } else {
+      $imfCode = $idents[0];
+      $issueInfo = isset($idents[1]) ? "_" . $idents[1] : '';
+      $languange = isset($idents[2]) ? "_" . $idents[2] : '';
+    }
+
+    return strtoupper($prefix .$imfCode . $issueInfo ) . $format;
   }
 
   // nggak dipakai karena fungsi importDocument tidak lagi memakai ini
@@ -195,9 +239,10 @@ class CSDB
    * @param string $absolute_path for publication module, if empty string, it call the $xml_string
    * @param string $xml_string of publication module
    */
-  public static function importDocument(mixed $absolute_path = null, string $filename = '', string $xml_string = null, string $rootname = '', $tes = false)
+  public static function importDocument(mixed $absolute_path = null, $filename = '', string $xml_string = null, string $rootname = '', $tes = false)
   {
     libxml_use_internal_errors(true);
+    $absolute_path = !empty($absolute_path) ? $absolute_path.DIRECTORY_SEPARATOR : '';
     if (!empty($absolute_path) or !empty($xml_string)) {
       if (
         !empty($absolute_path) and
@@ -862,6 +907,7 @@ class CSDB
 
     if (empty($idents)) {
       if (is_array($dmIdent)) {
+        if(empty($dmIdent)) return '';
         $dmIdent = $dmIdent[0];
       }
       $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0], $prefix);
@@ -917,6 +963,9 @@ class CSDB
 
     $domxpath = new DOMXPath($doc);
     $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/descendant::applicCrossRefTableRef/descendant::dmRefIdent")[0];
+    if(!$dmRefIdent){
+      return '';
+    }
     // $ACTdoc = self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
     $ACTdoc = self::importDocument($absolute_path_csdbInput . '/', self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
     if (!$ACTdoc) {
@@ -1234,16 +1283,13 @@ class CSDB
     return $ret;
   }
 
-  public static function document($path, $filename)
+  public static function document($path, string $filename)
   {
     if(is_array($path)){
       $path = $path[0];
     }
     if($path instanceof \DOMDocument){
       $path = Helper::analyzeURI($path->baseURI)['path'];
-    }
-    if(is_array($filename) AND $filename[0] instanceof \DOMAttr){
-      $filename = $filename[0]->nodeValue;
     }
     if(substr($filename, 0, 3) == 'ICN'){
       $filename = self::detectIMF($path, $filename);
@@ -1321,16 +1367,10 @@ class CSDB
    * </figure> 
    * <internalRef internalRefTargetType="irtt51" internalRefId="fig-001-gra-001-hot-001">tes hotspot</internalRef>
    */
-  public static function getEntityIdentFromId($doc, $id, $return = 'string')
+  public static function getEntityIdentFromId($doc, string $id, $return = 'string')
   {
     if(is_array($doc)){
       $doc = $doc[0];
-    }
-    if(is_array($id)){
-      $id = $id[0];
-    }
-    if($id instanceof \DOMAttr){
-      $id = $id->nodeValue;
     }
     $domXpath = new \DOMXPath($doc);
     $res = $domXpath->evaluate("//*[@id = '{$id}']");

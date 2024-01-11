@@ -17,11 +17,6 @@ class ICNDocument extends CSDB
     $this->path = $fileinfo['filepath'];
   }
 
-  public function getFileinfo()
-  {
-    return $this->fileinfo;
-  }
-
   public function getFile($option = '')
   {
     switch ($option) {
@@ -36,5 +31,17 @@ class ICNDocument extends CSDB
         # code...
         break;
     }
+  }
+
+  public function getFileinfo(){
+    return $this->fileinfo;
+  }
+
+  public function changeFilename($filename){
+    $this->filename = $filename;
+  }
+
+  public function getFilename(){
+    return $this->filename;
   }
 }
