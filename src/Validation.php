@@ -34,7 +34,7 @@ trait Validation
    */
   public static function validateByDMRL( $dmrlpath = '', $dmrlfilename = '', string $entryFilename, string $type = '')
   {
-    // dd($dmrlpath, $dmrlfilename, $entryFilename, $type);
+    // ini adalah firstElementChild pof \DOMDocument
     if (!in_array($type, ['dmodule', 'pm', 'infoEntity', 'comment', 'dml'])) {
       return [true, ''];
     }
@@ -375,21 +375,25 @@ trait Validation
       $csdbIdent = $dom->getElementsByTagName('dmIdent')[0];
       $csdb_filename = CSDB::resolve_dmIdent($csdbIdent);
       $ident = 'dmodule';
+      $initial = 'dm';
     } 
     elseif ($rootname == 'pm'){
       $csdbIdent = $dom->getElementsByTagName('pmIdent')[0];
       $csdb_filename = CSDB::resolve_pmIdent($csdbIdent);
       $ident = 'pm';
+      $initial = 'pm';
     } 
     elseif ($rootname == 'dml'){
       $csdbIdent = $dom->getElementsByTagName('dmlIdent')[0];
       $csdb_filename = CSDB::resolve_dmlIdent($csdbIdent);
       $ident = 'dml';
+      $initial = 'dml';
     }
     elseif($rootname == 'icnMetadataFile'){
       $csdbIdent = $dom->getElementsByTagName('imfIdent')[0];
       $csdb_filename = CSDB::resolve_imfIdent($csdbIdent);
       $ident = 'icnMetadataFile';
+      $initial = 'imf';
       // $csdbIdent = $dom->getElementsByTagName('imfCode')[0];
       // $csdb_filename = "IMF-".$csdbIdent->getAttribute('imfIdentIcn')."_". $csdbIdent->nextElementSibling->getAttribute('issueNumber')."-". $csdbIdent->nextElementSibling->getAttribute('inWork'). '.xml';
     }
@@ -397,6 +401,6 @@ trait Validation
       CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM, DM, ICN Meta Data File.';
       return false;
     }
-    return [$csdbIdent, $csdb_filename, $ident];
+    return [$csdbIdent, $csdb_filename, $ident, $initial];
   }
 }

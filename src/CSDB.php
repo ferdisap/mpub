@@ -101,6 +101,9 @@ class CSDB
     } elseif ($docType == 'icnMetadataFile') {
       $docIdent = $doc->getElementsByTagName('imfIdent')[0];
       $docIdent = CSDB::resolve_imfIdent($docIdent);
+    } elseif ($docType == 'dml') {
+      $docIdent = $doc->getElementsByTagName('dmlIdent')[0];
+      $docIdent = CSDB::resolve_dmlIdent($docIdent);
     } else {
       $docIdent = '';
     }
@@ -131,7 +134,7 @@ class CSDB
     return $title;
   }
 
-  public static function resolve_imfIdent($imfIdent = null, array $idents = [], $prefix = 'PMC-', $format = '.xml')
+  public static function resolve_imfIdent($imfIdent = null, array $idents = null, $prefix = 'PMC-', $format = '.xml')
   {
     if (empty($idents)) {
       if (is_array($imfIdent)) {
@@ -661,10 +664,6 @@ class CSDB
         $pmc->setDocument($doc);
         return $pmc->getApplicability('', 'first');
         break;
-        // case 'resolve_issueType':
-        // $params = array_values(array_filter(func_get_args(),(fn($v, $i) => $i > 2), ARRAY_FILTER_USE_BOTH));
-        // $issueType = self::resolve_issueType();
-        // break;
       default:
         break;
     }
@@ -902,7 +901,7 @@ class CSDB
     ) : '';
   }
 
-  public static function resolve_dmIdent($dmIdent = null, array $idents = [], $prefix = 'DMC-', $format = '.xml')
+  public static function resolve_dmIdent($dmIdent = null, array $idents = null, $prefix = 'DMC-', $format = '.xml')
   {
 
     if (empty($idents)) {
@@ -922,7 +921,7 @@ class CSDB
     return strtoupper($dmCode . $issueInfo . $languange) . $format;
   }
 
-  public static function resolve_pmIdent($pmIdent = null, array $idents = [], $prefix = 'PMC-', $format = '.xml')
+  public static function resolve_pmIdent($pmIdent = null, array $idents = null, $prefix = 'PMC-', $format = '.xml')
   {
     if (empty($idents)) {
       if (is_array($pmIdent)) {
@@ -940,7 +939,7 @@ class CSDB
     return strtoupper($pmCode . $issueInfo . $languange) . $format;
   }
 
-  public static function resolve_dmlIdent($dmlIdent = null, array $idents = [], $prefix = 'DML-', $format = '.xml')
+  public static function resolve_dmlIdent($dmlIdent = null, array $idents = null, $prefix = 'DML-', $format = '.xml')
   {
     if (empty($idents)) {
       if (is_array($dmlIdent)) {
@@ -955,10 +954,12 @@ class CSDB
     return strtoupper($dmlCode . $issueInfo) . $format;
   }
 
-  public static $countest = 0;
-  public static function getApplicability(\DOMDocument $doc, string $absolute_path_csdbInput = '')
+  public static function getApplicability(\DOMDocument $doc, $absolute_path_csdbInput = '')
   {
-    self::$countest += 1;
+    if(!$absolute_path_csdbInput){
+      $analyzeURI = Helper::analyzeURI($doc->baseURI);
+      $absolute_path_csdbInput = $analyzeURI['path'];
+    }
     $CSDB = new self();
 
     $domxpath = new DOMXPath($doc);
@@ -966,13 +967,17 @@ class CSDB
     if(!$dmRefIdent){
       return '';
     }
-    // $ACTdoc = self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
-    $ACTdoc = self::importDocument($absolute_path_csdbInput . '/', self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    $ACTdoc = self::importDocument($absolute_path_csdbInput, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    // if (!$ACTdoc) {
+    //   CSDB::get_errors(true,'file_exists'); // menghapus error karena mau dicoba import lagi dengan path yang berbeda
+    //   $absolute_path_csdbInput = preg_replace("/(\/|\\\\)__[\w\d\.-]+$/",'',$absolute_path_csdbInput); // untuk menghilangkan /__unsued
+    //   $ACTdoc = self::importDocument($absolute_path_csdbInput, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    // }
     if (!$ACTdoc) {
       $error = CSDB::get_errors(true, 'file_exists') ?? CSDB::get_errors();
       $error = array_map((fn($v) => is_array($v) ? ($v = join(", ", $v)) : $v), $error);
       array_unshift($error, "Error inside ".Helper::analyzeURI($doc->baseURI)['filename']);
-      CSDB::setError(__FUNCTION__, implode(", ", $error));
+      CSDB::setError(__FUNCTION__, implode(", ", $error)); // menghapus error karena mau dicoba import lagi dengan path yang berbeda
       return false;
     }
 
@@ -980,7 +985,12 @@ class CSDB
 
     $actdomxpath = new DOMXPath($ACTdoc);
     $dmRefIdent = $actdomxpath->evaluate("//content/applicCrossRefTable/condCrossRefTableRef/descendant::dmRefIdent")[0];
-    $CCTdoc =  self::importDocument($absolute_path_csdbInput . DIRECTORY_SEPARATOR, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    $CCTdoc =  self::importDocument($absolute_path_csdbInput, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    // if (!$CCTdoc) {
+    //   CSDB::get_errors(true,'file_exists');
+    //   $absolute_path_csdbInput = preg_replace("/(\/|\\\\)__[\w\d\.-]+$/",'',$absolute_path_csdbInput); // untuk menghilangkan /__unsued
+    //   $$CCTdoc = self::importDocument($absolute_path_csdbInput, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
+    // }
     $CSDB->CCTdoc = $CCTdoc;
 
     // PCT tidak di gunakan untuk mendapatkan applicability, melainkan untuk filter saja
@@ -992,8 +1002,28 @@ class CSDB
     $applics = $domxpath->evaluate("//applic");
     $result = [];
 
+    // $output = [
+    //   'aircraft' => [
+    //     '0' => 'MALE, Amphibi',
+    //     '&APPLICPROPERTYTYPE' => 'prodattr'
+    //   ]
+    // ]
     $resolve = function ($childApplic, $resolve_fn) use ($CSDB) {
       switch ($childApplic->tagName) {
+        case 'displayText':
+          $simpleParas = self::get_childrenElement($childApplic);
+          $str = [];
+          foreach($simpleParas as $simplePara){
+            $str[] = $simplePara->nodeValue;
+          }
+          // sengaja return index '0' agar disesuaikan outputnya dengan yang child lain (eg: assert)
+          return [
+            '%DISPLAYTEXT' => [
+              '0' => join(", ", $str),
+              '%STATUS' => 'success'
+            ],
+          ];
+          break;
         case 'assert':
           $assert = $childApplic;
           $test =  $CSDB->assertTest($assert);
@@ -1001,16 +1031,24 @@ class CSDB
           if ($assert->parentNode->nodeName == 'evaluate') {
             return $test;
           } else {
-            if ($test[array_key_first($test)]['STATUS'] == 'fail') {
+            if ($test[array_key_first($test)]['%STATUS'] == 'fail') {
               $applicPropertyIdent = array_key_first($test);
               $values = array_filter($test[$applicPropertyIdent], (fn ($v, $i) => is_numeric($i)), ARRAY_FILTER_USE_BOTH);
               $values = join(", ", $values);
-              $filename = self::resolve_DocIdent($assert->ownerDocument);
-              throw new Exception("Error processing applicability inside $filename. For '$applicPropertyIdent' does not contains such $values", 1);
-            } else {
-              unset($test[array_key_first($test)]['STATUS']);
-              return $test;
-            }
+              // $filename = self::resolve_DocIdent($assert->ownerDocument);
+              $test[array_key_first($test)]['%MESSAGE'] = "For '$applicPropertyIdent' does not contains such $values";
+              // dd($test);
+              // return $test;
+              // self::setError(__FUNCTION__,"Error processing applicability inside $filename. For '$applicPropertyIdent' does not contains such $values");
+              // throw new Exception("Error processing applicability inside $filename. For '$applicPropertyIdent' does not contains such $values", 1);
+              // dd($test);
+              // return [];
+            } 
+            // else {
+              // unset($test[array_key_first($test)]['%STATUS']);
+              // return $test;
+            // }
+            return $test;
           }
           break;
         case 'evaluate':
@@ -1033,26 +1071,26 @@ class CSDB
                 $results = array_merge($res1, $res2);
               }
               foreach ($results as $applicPropertyIdent => $values) {
-                if ($results[$applicPropertyIdent]['STATUS'] == 'fail') {
+                if ($results[$applicPropertyIdent]['%STATUS'] == 'fail') {
                   $xpath = new DOMXPath($evaluate->ownerDocument);
                   $dmIdent = $xpath->evaluate("//identAndStatusSection/descendant::dmIdent")[0];
                   $dmIdent = self::resolve_dmIdent($dmIdent);
 
                   throw new Exception("Error processing applicability inside $dmIdent.", 1);
                 }
-                unset($results[$applicPropertyIdent]['STATUS']);
+                unset($results[$applicPropertyIdent]['%STATUS']);
               }
               // dd('bbb', $results);
               break;
             case 'or':
               $res1 = $results[0];
               $res2 = $results[1];
-              if ($res1[array_key_first($res1)]['STATUS'] != 'fail') {
-                unset($res1[array_key_first($res1)]['STATUS']);
+              if ($res1[array_key_first($res1)]['%STATUS'] != 'fail') {
+                unset($res1[array_key_first($res1)]['%STATUS']);
                 $r[array_key_first($res1)] = $res1[array_key_first($res1)];
                 $results = $r;
-              } elseif ($res2[array_key_first($res2)]['STATUS'] != 'fail') {
-                unset($res2[array_key_first($res2)]['STATUS']);
+              } elseif ($res2[array_key_first($res2)]['%STATUS'] != 'fail') {
+                unset($res2[array_key_first($res2)]['%STATUS']);
                 $r[array_key_first($res2)] = $res2[array_key_first($res2)];
                 $results = $r;
               } else {
@@ -1070,20 +1108,23 @@ class CSDB
     $applicability = [];
     foreach ($applics as $applic) {
       $id = $applic->getAttribute('id');
-      foreach (self::get_childrenElement($applic, 'displayText') as $child) {
-        $result = [];
+      // $childApplic = self::get_childrenElement($applic, 'displayText');
+      $childApplic = self::get_childrenElement($applic);
+      $result = [];
+      foreach ($childApplic as $child) {
         $r = $resolve($child, $resolve);
-        // dd($r,__CLASS__,__LINE__);
+        // dump($r);
         foreach ($r as $applicPropertyIdent => $testedValues) {
           $result[$applicPropertyIdent] = $testedValues[0];
           unset($testedValues[0]);
           foreach ($testedValues as $conf => $val) {
             $result[$conf] = $val;
           }
-          // tidak dipakai karena akan menjoin semua value element (ada 'STATUS', 'APPLICPROPERTYTYPE);
+          // tidak dipakai karena akan menjoin semua value element (ada '%STATUS', 'APPLICPROPERTYTYPE);
           // $result[$applicPropertyIdent] = join('',$testedValues); // setiap testedValues sudah ada separator nya
         }
       }
+      // dd($result);
       ($id) ? ($applicability[$id] = $result) : $applicability[]  = $result;
     }
     return [
@@ -1092,6 +1133,9 @@ class CSDB
     ];
   }
 
+  /**
+   * assert harus ada attribute 'applicPropertyIdent', 'applicPropertyType', dan 'applicPropertyValues'
+   */
   private function assertTest(\DOMElement $assert)
   {
     foreach ($assert->attributes as $att) {
@@ -1276,7 +1320,7 @@ class CSDB
         $testedValues = [];
         $testedValues[] = $r;
       }
-      $testedValues['STATUS'] = $status;
+      $testedValues['%STATUS'] = $status;
       $testedValues['%APPLICPROPERTYTYPE'] = $applicPropertyType;
     }
     $ret = array($applicPropertyIdent => $testedValues);
@@ -1342,7 +1386,7 @@ class CSDB
       $iw = array_map((fn($v) => (int)($v[1])), $c);
 
       $in_max = str_pad(max($in), 3, '0', STR_PAD_LEFT);
-      $iw_max = str_pad(max($iw), 3, '0', STR_PAD_LEFT);
+      $iw_max = str_pad(max($iw), 2, '0', STR_PAD_LEFT);
 
       $filterBy = array_filter($c, (fn($v) => $v[0] == $in_max));
       if(count($filterBy) > 1){
