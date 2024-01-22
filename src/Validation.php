@@ -74,15 +74,20 @@ trait Validation
     libxml_use_internal_errors(true);
 
     if($validator == ''){
-      $validator = CSDB::getSchemaUsed($doc,'filename');  
+      $validator = CSDB::getSchemaUsed($doc,'filename');
     }
-    $schema = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."Schema".DIRECTORY_SEPARATOR,$validator,null,'');
+    // $schema = new DOMDocument();
+    // $schema->strictErrorChecking = false;
+    // $schema->load(__DIR__.DIRECTORY_SEPARATOR."Schema".DIRECTORY_SEPARATOR.$validator);
+    // $schema = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."Schema".DIRECTORY_SEPARATOR, $validator,null,'');
+    $schema = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."Schema", $validator,null,'');
     if(!$schema) {
       CSDB::setError('validateBySchema', "schema cannot be identified");
       return false;
     }
     @$doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
+    $errors = array_filter($errors, (fn($LibXMLError) => $LibXMLError->level > 2 ? true : false)); // supaya error hanya LIBXML_ERR_FATAL doang
     if(!empty($errors)){
       CSDB::setError('validateBySchema', "error during validate by xsi in file ".CSDB::resolve_DocIdent($doc).".");
       foreach ($errors as $err) {
@@ -100,10 +105,8 @@ trait Validation
    */
   private static function validateByBrex(\DOMDocument $doc, $validator = null, $absolute_path = null)
   {
-    // dd(CSDB::resolve_dmIdent($doc->getElementsByTagName('dmIdent')[0]));
-    $domXpath = new DOMXPath($doc);
-    // $brexDoc = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef");
-    $brexDoc = $domXpath->evaluate("//brexDmRef",$doc->firstElementChild->firstElementChild);
+    $domXpath = new \DOMXPath($doc);
+    $brexDoc = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef");
     if($brexDoc->length == 0){
       $docIdent = CSDB::resolve_DocIdent($doc);
       CSDB::setError('validateByBrex', "element brexDmRef cannot found in identAndStatusSection of {$docIdent}");
@@ -121,7 +124,7 @@ trait Validation
         return false;
       }
     }
-
+    
     $schema = CSDB::getSchemaUsed($brexDoc,'filename');
     $domXpath = new DOMXPath($brexDoc);
     $contexRules = $domXpath->evaluate("//contextRules[not(@rulesContext)] | //contextRules[@rulesContext = '{$schema}']");

@@ -43,7 +43,9 @@ class CSDB
     if (is_array($doc)) {
       $doc = $doc[0];
     }
-    $schema = $doc->documentElement->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', "noNamespaceSchemaLocation");
+    // kalau document di loadXML, tidak bisa pakai getAttributeNS.
+    // $schema = $doc->documentElement->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', "noNamespaceSchemaLocation");
+    $schema = $doc->documentElement->getAttribute("xsi:noNamespaceSchemaLocation");
     preg_match("/\w+.xsd/", $schema, $schema);
     if (!empty($schema)) $schema = $schema[0];
 
@@ -341,6 +343,10 @@ class CSDB
     //   return $DOMDocument;
   }
 
+  /**
+   * depreciated. Akan diganti dengan Helper::decode_ident
+   * @return \DOMElement $dmCode
+   */
   public static function decode_dmCode(string $name)
   {
     $doc = new DOMDocument();
@@ -378,6 +384,10 @@ class CSDB
     return $dmCode->cloneNode();
   }
 
+  /**
+   * depreciated. Akan diganti dengan Helper::decode_ident
+   * @return \DOMElement $issueInfo
+   */
   public static function decode_issueInfo(string $name)
   {
     $doc = new DOMDocument();
@@ -392,6 +402,10 @@ class CSDB
     return $issueInfo->cloneNode();
   }
 
+  /**
+   * depreciated. Akan diganti dengan Helper::decode_ident
+   * @return \DOMElement $language
+   */
   public static function decode_language(string $name)
   {
     $doc = new DOMDocument();
@@ -825,6 +839,7 @@ class CSDB
     $yearOfDataIssue = $dmlCode->getAttribute('yearOfDataIssue');
     $seqNumber = $dmlCode->getAttribute('seqNumber');
 
+    if(strtolower($dmlType) == 's') ($prefix = 'CSL-');
     $name = $prefix .
       $modelIdentCode . "-" .
       $senderIdent . "-" .
@@ -954,6 +969,25 @@ class CSDB
     return strtoupper($dmlCode . $issueInfo) . $format;
   }
 
+  /**
+   * untuk sementara $ident diabaikan. Ini dijadikan parameter agar sama dengan fungsi lainnya. Fungsi lainnya pun tidak begitu berguna $ident. Tapi karna terpakai di xsl, jadi belum bisa di hapus parameter ini 
+   * @return string
+   */
+  public static function resolve_infoEntityIdent($infoEntityIdent = null, array $ident = null, $prefix = '', $format = '')
+  {
+    if (is_array($infoEntityIdent)) {
+      $infoEntityIdent = $infoEntityIdent[0];
+    }
+    $ident = $infoEntityIdent->getAttribute('infoEntityRefIdent');
+    if($prefix){
+      $ident = str_replace('ICN-', $prefix, $ident);
+    }
+    if($format){
+      $ident = preg_replace("/\.\w+$/",$format,$ident);
+    }
+    return $ident;
+  }
+
   public static function getApplicability(\DOMDocument $doc, $absolute_path_csdbInput = '')
   {
     if(!$absolute_path_csdbInput){
@@ -1036,7 +1070,7 @@ class CSDB
               $values = array_filter($test[$applicPropertyIdent], (fn ($v, $i) => is_numeric($i)), ARRAY_FILTER_USE_BOTH);
               $values = join(", ", $values);
               // $filename = self::resolve_DocIdent($assert->ownerDocument);
-              $test[array_key_first($test)]['%MESSAGE'] = "For '$applicPropertyIdent' does not contains such $values";
+              $test[array_key_first($test)]['%MESSAGE'] = "ERROR: For '$applicPropertyIdent' does not contains such $values";
               // dd($test);
               // return $test;
               // self::setError(__FUNCTION__,"Error processing applicability inside $filename. For '$applicPropertyIdent' does not contains such $values");
@@ -1470,5 +1504,91 @@ class CSDB
         return  isset($descendant_id) ? [$infoEntityIdent, $descendant_id] : [$infoEntityIdent, ''];
       }
     }
+  }
+
+  /**
+   * belum mengakomodir element <answer>
+   * @param string $name adalah filename sebuah csdb object
+   * @return array contains all dmlEntry or array contain decode dmlEntry result
+   */
+  public static function identifyDmlEntries(\DOMDocument $dom, string $name = '')
+  {
+    $dmlEntries = $dom->getElementsByTagName('dmlEntry');
+    $entries = [];
+    foreach ($dmlEntries as $position => $dmlEntry) {
+      $dmlEntryType = $dmlEntry->getAttribute('dmlEntryType');
+      $issueType = $dmlEntry->getAttribute('issueType');
+      
+      $initial = str_replace("Ref",'',$dmlEntry->firstElementChild->tagName);
+      $code = call_user_func_array(self::class."::resolve_{$initial}Ident",[$dmlEntry->firstElementChild]);
+      if($name AND (str_contains($name, $code) OR str_contains($code, $name))) $found = true; // untuk ngecek $name, extension filename tidak dipermasalahkan karena dicheck dua arah. Jika filename ICN-...jpeg dicheck terhadap ICN-...png, $found = false;
+      preg_match('/\.\w+$/',$code, $matches);
+      $code_extension = $matches[0] ?? '';
+      $code = str_replace($code_extension,'',$code);
+
+      $security = $dmlEntry->getElementsByTagName('security')[0];
+      $securityClassification = ($security ? $security->getAttribute('securityClassification') : '');
+      $commercialClassification = ($security ? $security->getAttribute('commercialClassification') : '');
+      $caveat = ($security ? $security->getAttribute('caveat') : '');
+      $derivativeClassificationRefId = ($security ? $security->getAttribute('derivativeClassificationRefId') : '');
+
+      $responsiblePartnerCompany = $dmlEntry->getElementsByTagName('responsiblePartnerCompany')[0];
+      $enterpriseCode = $responsiblePartnerCompany->getAttribute('enterpriseCode');
+      $enterpriseName = $responsiblePartnerCompany->firstElementChild->nodeValue;
+
+      $remarks = $dmlEntry->getElementsByTagName('remarks')[0];
+      if($remarks){
+        $simpleParas = $remarks->childNodes;
+        $remark = [];
+        foreach ($simpleParas as $simplePara) {
+          $remark[] = $simplePara->nodeValue;
+        }
+        $remark = join(" ",$remark);
+      }
+
+      $ret = [
+        'code' => $code,
+        'extension' => $code_extension,
+        'position' => $position,
+        // 'objects' => $objects,
+        'dmlEntryType' => $dmlEntryType,
+        'issueType' => $issueType,
+        'security' => [
+          'securityClassification' => $securityClassification,
+          'commercialClassification' => $commercialClassification,
+          'caveat' => $caveat,
+          'derivativeClassificationRefId' => $derivativeClassificationRefId,
+        ],
+        'responsiblePartnerCompany' => [
+          'enterpriseCode' => $enterpriseCode,
+          'enterpriseName' => $enterpriseName,
+        ],
+        'remark' => $remark ?? ''
+      ];
+
+      if(isset($found) AND $found) return $ret;
+      $entries[] = $ret;
+    }
+    return $entries;
+  }
+
+  public static function commit(\DOMDocument $dom)
+  {
+    $validated = self::validateRootname($dom);
+    if(!$validated) return false; // error sudah di set di function @validateRootname
+
+    $domxpath = new \DOMXPath($dom);
+    $issueInfo = $domxpath->evaluate("//identAndStatusSection/{$validated[3]}Address/{$validated[3]}Ident/issueInfo")[0];
+    $inWork = (int)$issueInfo->getAttribute('inWork');
+    if($inWork == 0) {
+      CSDB::setError('commit', "{$validated[1]} cannot be commited due to the current inWork is '00'.");
+      return false;
+    } 
+    if($inWork == 99) ($inWork = 'AA');
+    else ($inWork++);
+    $inWork = str_pad($inWork, 2, '0', STR_PAD_LEFT);
+    $issueInfo->setAttribute('inWork', $inWork);
+    $dom->saveXML();
+    return $dom;
   }
 }

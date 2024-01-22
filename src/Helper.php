@@ -23,14 +23,22 @@ class Helper
     return $ret;
   }
 
+  /**
+   * #return 
+   */
   public static function decode_ident(string $filename, bool $ref = true)
   {
     $prefix = substr($filename,0,4);
     switch ($prefix) {
       case 'DMC-':
-        return self::decode_dmIdent($filename);
+        return self::decode_dmIdent($filename, $ref);
         break;
-      
+      case 'DML-':
+        return self::decode_dmlIdent($filename, $ref);      
+        break;
+      case 'PMC-':
+        return self::decode_pmIdent($filename, $ref);
+        break;
       default:
         return  '';
         break;
@@ -38,13 +46,12 @@ class Helper
   }
 
   /**
-   * $xmlString dmIdent tidak 
    * @return Array
    */
-  public static function decode_dmIdent(string $filename, $ref="true")
+  public static function decode_pmIdent(string $filename, $ref = true)
   {
-    $prefix = 'DMC-'; // DMC-,
-    $f = substr($filename,4); // MALE-SNS-Disscode-infoCode,
+    $prefix = 'PMC-';
+    $f = str_replace($prefix, '', $filename); // MALE-K0378-A0001-00_000-01_EN-EN.xml
     $f = preg_replace('/.xml/','',$f);
 
     $f_array = explode('_', $f);
@@ -56,7 +63,153 @@ class Helper
     $issueInfo_array = explode('-', $issueInfo);
     $language_array = explode('-', $language);
 
-    $ref = $ref ? 'Ref' : '';    
+    $ref = $ref ? 'Ref' : '';
+
+    $data = [];
+    $data['pmCode'] =  [
+      "modelIdentCode" => $code_array[0],
+      "pmIssuer" => $code_array[1],
+      "pmNumber" => $code_array[2],
+      "pmVolume" => $code_array[3],
+    ];
+
+    $data['prefix'] = $prefix;
+    $data['issueInfo'] = [
+      'issueNumber' => $issueInfo_array[0],
+      'inWork' => $issueInfo_array[1],
+    ];
+
+    $data['language'] = [
+      'languageIsoCode' => strtolower($language_array[0]),
+      'countryIsoCode' => $language_array[1],
+    ];
+
+    $xml_string = function($data = []) use($ref) {
+      $d = [];
+      array_walk($data['pmCode'], function($v,$name) use(&$d){
+        $d[$name] = ($v != '') ? ("{$name}=". '"' . "$v" . '"') : '';
+      });
+      array_walk($data['issueInfo'], function($v,$name) use(&$d){
+        $d[$name] = ($v != '') ? ("{$name}=". '"' . "$v" . '"') : '';
+      });
+      array_walk($data['language'], function($v,$name) use(&$d){
+        $d[$name] = ($v != '') ? ("{$name}=". '"' . "$v" . '"') : '';
+      });
+      
+      $ident = <<<EOD
+        <pm{$ref}Ident>
+          <pmCode {$d['modelIdentCode']} {$d['pmIssuer']} {$d['pmNumber']} {$d['pmVolume']}/>
+          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
+          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
+        </pm{$ref}Ident>
+      EOD;
+
+      if($ref){
+        return 
+        <<<EOL
+        <pm{$ref}>
+          $ident        
+        </pm{$ref}>
+        EOL;
+      } else {
+        return $ident;
+      }
+    };
+
+    $data['xml_string'] = $xml_string($data);
+    $data['prefix'] = $prefix;
+
+    return $data;
+  }
+
+  /**
+   * @return Array
+   */
+  public static function decode_dmlIdent(string $filename, $ref = true)
+  {
+    $prefix = 'DML-';
+    $f = str_replace($prefix, '', $filename); // MALE-K0378-P-2024-00003_001-00.xml
+    $f = preg_replace('/.xml/','',$f);
+
+    $f_array = explode('_', $f);
+    $code = $f_array[0];
+    $issueInfo = $f_array[1];
+
+    $code_array = explode('-', $code);
+    $issueInfo_array = explode('-', $issueInfo);
+
+    $ref = $ref ? 'Ref' : '';
+
+    $data = [];
+    $data['dmlCode'] =  [
+      "modelIdentCode" => $code_array[0],
+      "senderIdent" => $code_array[1],
+      "dmlType" => $code_array[2],
+      "yearOfDataIssue" => $code_array[3],
+      "seqNumber" => $code_array[4],
+    ];
+
+    $data['prefix'] = $prefix;
+    $data['issueInfo'] = [
+      'issueNumber' => $issueInfo_array[0],
+      'inWork' => $issueInfo_array[1],
+    ];
+
+    $xml_string = function($data = []) use($ref) {
+      $d = [];
+      array_walk($data['dmlCode'], function($v,$name) use(&$d){
+        $d[$name] = ($v != '') ? ("{$name}=". '"' . "$v" . '"') : '';
+      });
+      array_walk($data['issueInfo'], function($v,$name) use(&$d){
+        $d[$name] = ($v != '') ? ("{$name}=". '"' . "$v" . '"') : '';
+      });
+      
+      $ident = <<<EOD
+        <dml{$ref}Ident>
+          <dmlCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['dmlType']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
+          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
+        </dml{$ref}Ident>
+      EOD;
+
+      if($ref){
+        return 
+        <<<EOL
+        <dml{$ref}>
+          $ident        
+        </dml{$ref}>
+        EOL;
+      } else {
+        return $ident;
+      }
+    };
+
+    $data['xml_string'] = $xml_string($data);
+    $data['prefix'] = $prefix;
+
+    return $data;
+  }
+
+  /**
+   * $xmlString dmIdent tidak 
+   * @return Array
+   */
+  public static function decode_dmIdent(string $filename, $ref = true)
+  {
+    $prefix = 'DMC-'; // DMC-,
+    $f = str_replace($prefix, '', $filename); // MALE-SNS-Disscode-infoCode,
+    // $f = substr($filename,4); 
+    $f = preg_replace('/.xml/','',$f);
+
+    $f_array = explode('_', $f);
+    $code = $f_array[0];
+    $issueInfo = $f_array[1];
+    $language = $f_array[2];
+
+    $code_array = explode('-', $code);
+    $issueInfo_array = explode('-', $issueInfo);
+    $language_array = explode('-', $language);
+
+    $ref = $ref ? 'Ref' : '';
 
     $data = [];
     $data['dmCode'] =  [
@@ -103,6 +256,25 @@ class Helper
       array_walk($data['language'], function($v,$name) use(&$d){
         $d[$name] = ($v != '') ? ("{$name}=". '"' . "$v" . '"') : '';
       });
+
+      $ident = <<<EOD
+        <dm{$ref}Ident>
+          <dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>
+          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
+          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
+        </dm{$ref}Ident>
+      EOD;
+
+      if($ref){
+        return 
+        <<<EOL
+        <dm{$ref}>
+          $ident        
+        </dm{$ref}>
+        EOL;
+      } else {
+        return $ident;
+      }
       
       return 
       <<<EOL
