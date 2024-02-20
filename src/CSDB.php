@@ -21,6 +21,8 @@ class CSDB
   public static string $processid = '';
   protected static $object_to_export = [];
   public const SCHEMA_PATH = __DIR__ . DIRECTORY_SEPARATOR . "Schema";
+  public static bool $preserveWhiteSpace = false;
+  public static bool $formatOutput = false;
 
   public static function get_object_to_export()
   {
@@ -36,6 +38,9 @@ class CSDB
     }
   }
 
+  /**
+   * $option = ('file'|anything)
+   */
   public static function getSchemaUsed($doc, $option = 'file')
   {
     if (!$doc or !($doc instanceof \DOMDocument)) return '';
@@ -66,28 +71,31 @@ class CSDB
     }
   }
 
-  public static function resolve_securityClassification(\DOMDocument $doc)
+  /**
+   * $return == (number,integer, or text (default else));
+   */
+  public static function resolve_securityClassification(\DOMDocument $doc, $return = 'text')
   {
-    $sc = $doc->getElementsByTagName('security')[0]->getAttribute('securityClassification');
-    switch ($sc) {
-      case '01':
-        return 'unclassified';
-        break;
-      case '02':
-        return 'restricted';
-        break;
-      case '03':
-        return 'confidential';
-        break;
-      case '04':
-        return 'secret';
-        break;
-      case '05':
-        return 'top secret';
-        break;
-      default:
-        return ' ';
-        break;
+    $initial = $doc->documentElement->tagName;
+    if($initial == 'dmodule') $initial = 'dm';
+    $domXpath = new \DOMXpath($doc);
+    $sc = $domXpath->evaluate("string(//{$initial}Status/security/@securityClassification)");
+    // $sc = $doc->getElementsByTagName('security')[0]->getAttribute('securityClassification');
+    if($return == 'number'){
+      return $sc;
+    }
+    elseif($return == 'integer'){
+      return (int) $sc;
+    }
+    else {
+      $a = [
+        '01' => 'unclassified',
+        '02' => 'restricted',
+        '03' => 'confidential',
+        '04' => 'secret',
+        '05' => 'top secret',
+      ];
+      return $a[$sc] ?? '';
     }
   }
 
@@ -150,7 +158,7 @@ class CSDB
       $languange = isset($idents[2]) ? "_" . $idents[2] : '';
     }
 
-    return strtoupper($prefix .$imfCode . $issueInfo ) . $format;
+    return strtoupper($prefix . $imfCode . $issueInfo) . $format;
   }
 
   // nggak dipakai karena fungsi importDocument tidak lagi memakai ini
@@ -216,9 +224,9 @@ class CSDB
         break;
     }
 
-    $message = preg_replace("/file:\S+(?=\/|\\\\)/m",'',$error->message);
+    $message = preg_replace("/file:\S+(?=\/|\\\\)/m", '', $error->message);
     $return .= trim($message) .
-    // $return .= trim($error->message) .
+      // $return .= trim($error->message) .
 
       ". Line: $error->line" .
       ". Column: $error->column";
@@ -247,7 +255,7 @@ class CSDB
   public static function importDocument(mixed $absolute_path = null, $filename = '', string $xml_string = null, string $rootname = '', $tes = false)
   {
     libxml_use_internal_errors(true);
-    $absolute_path = !empty($absolute_path) ? $absolute_path.DIRECTORY_SEPARATOR : '';
+    $absolute_path = !empty($absolute_path) ? $absolute_path . DIRECTORY_SEPARATOR : '';
     if (!empty($absolute_path) or !empty($xml_string)) {
       if (
         !empty($absolute_path) and
@@ -261,6 +269,8 @@ class CSDB
       $mime = file_exists($absolute_path . $filename) ? mime_content_type($absolute_path . $filename) : '';
       if (str_contains($mime, 'text') or $text) {
         $obj = new DOMDocument();
+        $obj->preserveWhiteSpace = self::$preserveWhiteSpace;
+        $obj->formatOutput = self::$formatOutput;
         if ($text) {
           $obj->loadXML(trim($text));
         } else {
@@ -282,10 +292,10 @@ class CSDB
 
         // checking error of libxml_get_errors
         $errors = libxml_get_errors();
-        foreach($errors as $e ){
+        foreach ($errors as $e) {
           self::$processid ? (self::$errors[self::$processid][] = self::display_xml_error($e)) : (self::$errors[] = self::display_xml_error($e));
         }
-        if(!empty($errors)){
+        if (!empty($errors)) {
           return false;
         }
 
@@ -446,8 +456,8 @@ class CSDB
       if ($deleteErrors) {
         self::$errors = array();
       }
-      array_walk($e, function(&$v) {
-        if(is_array($v)){
+      array_walk($e, function (&$v) {
+        if (is_array($v)) {
           return $v = array_unique($v);
         } else {
           return $v;
@@ -839,7 +849,7 @@ class CSDB
     $yearOfDataIssue = $dmlCode->getAttribute('yearOfDataIssue');
     $seqNumber = $dmlCode->getAttribute('seqNumber');
 
-    if(strtolower($dmlType) == 's') ($prefix = 'CSL-');
+    if (strtolower($dmlType) == 's') ($prefix = 'CSL-');
     $name = $prefix .
       $modelIdentCode . "-" .
       $senderIdent . "-" .
@@ -918,10 +928,9 @@ class CSDB
 
   public static function resolve_dmIdent($dmIdent = null, array $idents = null, $prefix = 'DMC-', $format = '.xml')
   {
-
     if (empty($idents)) {
       if (is_array($dmIdent)) {
-        if(empty($dmIdent)) return '';
+        if (empty($dmIdent)) return '';
         $dmIdent = $dmIdent[0];
       }
       $dmCode = self::resolve_dmCode($dmIdent->getElementsByTagName('dmCode')[0], $prefix);
@@ -979,18 +988,18 @@ class CSDB
       $infoEntityIdent = $infoEntityIdent[0];
     }
     $ident = $infoEntityIdent->getAttribute('infoEntityRefIdent');
-    if($prefix){
+    if ($prefix) {
       $ident = str_replace('ICN-', $prefix, $ident);
     }
-    if($format){
-      $ident = preg_replace("/\.\w+$/",$format,$ident);
+    if ($format) {
+      $ident = preg_replace("/\.\w+$/", $format, $ident);
     }
     return $ident;
   }
 
   public static function getApplicability(\DOMDocument $doc, $absolute_path_csdbInput = '')
   {
-    if(!$absolute_path_csdbInput){
+    if (!$absolute_path_csdbInput) {
       $analyzeURI = Helper::analyzeURI($doc->baseURI);
       $absolute_path_csdbInput = $analyzeURI['path'];
     }
@@ -998,7 +1007,7 @@ class CSDB
 
     $domxpath = new DOMXPath($doc);
     $dmRefIdent = $domxpath->evaluate("//identAndStatusSection/descendant::applicCrossRefTableRef/descendant::dmRefIdent")[0];
-    if(!$dmRefIdent){
+    if (!$dmRefIdent) {
       return '';
     }
     $ACTdoc = self::importDocument($absolute_path_csdbInput, self::resolve_dmIdent($dmRefIdent), null, 'dmodule');
@@ -1009,8 +1018,8 @@ class CSDB
     // }
     if (!$ACTdoc) {
       $error = CSDB::get_errors(true, 'file_exists') ?? CSDB::get_errors();
-      $error = array_map((fn($v) => is_array($v) ? ($v = join(", ", $v)) : $v), $error);
-      array_unshift($error, "Error inside ".Helper::analyzeURI($doc->baseURI)['filename']);
+      $error = array_map((fn ($v) => is_array($v) ? ($v = join(", ", $v)) : $v), $error);
+      array_unshift($error, "Error inside " . Helper::analyzeURI($doc->baseURI)['filename']);
       CSDB::setError(__FUNCTION__, implode(", ", $error)); // menghapus error karena mau dicoba import lagi dengan path yang berbeda
       return false;
     }
@@ -1047,7 +1056,7 @@ class CSDB
         case 'displayText':
           $simpleParas = self::get_childrenElement($childApplic);
           $str = [];
-          foreach($simpleParas as $simplePara){
+          foreach ($simpleParas as $simplePara) {
             $str[] = $simplePara->nodeValue;
           }
           // sengaja return index '0' agar disesuaikan outputnya dengan yang child lain (eg: assert)
@@ -1077,10 +1086,10 @@ class CSDB
               // throw new Exception("Error processing applicability inside $filename. For '$applicPropertyIdent' does not contains such $values", 1);
               // dd($test);
               // return [];
-            } 
+            }
             // else {
-              // unset($test[array_key_first($test)]['%STATUS']);
-              // return $test;
+            // unset($test[array_key_first($test)]['%STATUS']);
+            // return $test;
             // }
             return $test;
           }
@@ -1363,20 +1372,20 @@ class CSDB
 
   public static function document($path, string $filename)
   {
-    if(is_array($path)){
+    if (is_array($path)) {
       $path = $path[0];
     }
-    if($path instanceof \DOMDocument){
+    if ($path instanceof \DOMDocument) {
       $path = Helper::analyzeURI($path->baseURI)['path'];
     }
-    if(substr($filename, 0, 3) == 'ICN'){
+    if (substr($filename, 0, 3) == 'ICN') {
       $filename = self::detectIMF($path, $filename);
-    } 
+    }
     CSDB::$processid = 'ignore';
-    $dom = CSDB::importDocument($path."/", $filename);
+    $dom = CSDB::importDocument($path . "/", $filename);
     $errors = CSDB::get_errors(true, 'ignore');
 
-    if($dom){
+    if ($dom) {
       return $dom;
     } else {
       return new DOMDocument();
@@ -1388,46 +1397,46 @@ class CSDB
    */
   public static function detectIMF($path, $icnFilename)
   {
-    $icnFilename_withoutFormat = preg_replace("/.\w+$/",'',$icnFilename);
-    $icnFilename_array = explode("-",$icnFilename_withoutFormat);
-    
+    $icnFilename_withoutFormat = preg_replace("/.\w+$/", '', $icnFilename);
+    $icnFilename_array = explode("-", $icnFilename_withoutFormat);
+
     $imfFilename_array = $icnFilename_array;
     $imfFilename_array[0] = 'IMF';
 
     // mencari dengan issueNumber dan/atau inWork terbesar
-    $searchImf = function($path) use($imfFilename_array) {
+    $searchImf = function ($path) use ($imfFilename_array) {
       $filename = join("-", $imfFilename_array);
 
       $dir = array_diff(scandir($path));
       $collection = [];
-      foreach($dir as $file){
-        if(str_contains($file, $filename)){
+      foreach ($dir as $file) {
+        if (str_contains($file, $filename)) {
           $collection[] = $file;
         }
       }
-      $c = array_map(function($v){
-        $v = preg_replace("/IMF-[\w-]+_/", '',$v);
-        $v = preg_replace("/.xml/", '',$v);
-        $v = explode("-",$v);
+      $c = array_map(function ($v) {
+        $v = preg_replace("/IMF-[\w-]+_/", '', $v);
+        $v = preg_replace("/.xml/", '', $v);
+        $v = explode("-", $v);
         return $v;
       }, $collection);
 
-      if(empty($c)){
+      if (empty($c)) {
         return '';
       }
 
-      $in = array_map((fn($v) => (int)($v[0])), $c);
-      $iw = array_map((fn($v) => (int)($v[1])), $c);
+      $in = array_map((fn ($v) => (int)($v[0])), $c);
+      $iw = array_map((fn ($v) => (int)($v[1])), $c);
 
       $in_max = str_pad(max($in), 3, '0', STR_PAD_LEFT);
       $iw_max = str_pad(max($iw), 2, '0', STR_PAD_LEFT);
 
-      $filterBy = array_filter($c, (fn($v) => $v[0] == $in_max));
-      if(count($filterBy) > 1){
-        $filterBy = array_filter($c, (fn($v) => ($v[0] == $in_max AND $v[1] == $iw_max)));
+      $filterBy = array_filter($c, (fn ($v) => $v[0] == $in_max));
+      if (count($filterBy) > 1) {
+        $filterBy = array_filter($c, (fn ($v) => ($v[0] == $in_max and $v[1] == $iw_max)));
       }
       $issueInfo = join("-", $filterBy[0]);
-      $filename .= "_".$issueInfo.".xml";
+      $filename .= "_" . $issueInfo . ".xml";
       return $filename;
     };
     $filename = $searchImf($path);
@@ -1447,59 +1456,58 @@ class CSDB
    */
   public static function getEntityIdentFromId($doc, string $id, $return = 'string')
   {
-    if(is_array($doc)){
+    if (is_array($doc)) {
       $doc = $doc[0];
     }
     $domXpath = new \DOMXPath($doc);
     $res = $domXpath->evaluate("//*[@id = '{$id}']");
     // evaluasi id secara langsung, return
-    if($res->length > 0){
+    if ($res->length > 0) {
       $infoEntityIdent = $res[0]->getAttribute('infoEntityIdent');
       return $return == 'string' ? $infoEntityIdent : [$infoEntityIdent, ''];
-    } 
-    else {
+    } else {
       $id_array = explode('-', $id); //ex: [gra,001,hot,001] 
 
       // jika ganjil maka return ''. Harusnya genap karena ada dash pada setiap id fig-001-gra-001
-      if(($length_id_array = count($id_array)) % 2){ 
+      if (($length_id_array = count($id_array)) % 2) {
         return '';
       }
 
       // jika > 2 artinya levelled internalRefid="fig-001-gra-001" (cari graphic 1 yang parentnya fig-001);
-      elseif($length_id_array > 2){
-        $descendant_id = [$id_array[$length_id_array-2], $id_array[$length_id_array-1]];
-        unset($id_array[$length_id_array-2]);
-        unset($id_array[$length_id_array-1]);
+      elseif ($length_id_array > 2) {
+        $descendant_id = [$id_array[$length_id_array - 2], $id_array[$length_id_array - 1]];
+        unset($id_array[$length_id_array - 2]);
+        unset($id_array[$length_id_array - 1]);
 
         $try_id = join('-', $id_array);
-        $res = $domXpath->evaluate("//*[@id = '{$try_id}']");        
-        if($res->length > 0){
+        $res = $domXpath->evaluate("//*[@id = '{$try_id}']");
+        if ($res->length > 0) {
           $infoEntityIdent = $res[0]->getAttribute('infoEntityIdent');
-          return $return == 'string' ? ($infoEntityIdent . ','. join('-',$descendant_id)) : [$infoEntityIdent, join('-',$descendant_id)];
+          return $return == 'string' ? ($infoEntityIdent . ',' . join('-', $descendant_id)) : [$infoEntityIdent, join('-', $descendant_id)];
         }
       }
 
       /**
        * jika cara penamaan id pada <graphic> tidak levelled maka xpath = "//descendant::*[@id = 'fig-001'/descendant::*[@id = 'gra-001']]"
        * <graphic id="gra-001" infoEntityIdent="..."/>
-      */
+       */
       $xpath = '/';
-      array_filter($id_array, function($v,$k) use($id_array, &$xpath){
-        if($k % 2){
-          $id_array[$k-1] .= "-{$v}";
-          $xpath .= "/descendant::*[@id = '{$id_array[$k-1]}']";
+      array_filter($id_array, function ($v, $k) use ($id_array, &$xpath) {
+        if ($k % 2) {
+          $id_array[$k - 1] .= "-{$v}";
+          $xpath .= "/descendant::*[@id = '{$id_array[$k - 1]}']";
           unset($id_array[$k]);
         }
-      },ARRAY_FILTER_USE_BOTH); // ex: $id_array = [gra-001,hot-001] 
+      }, ARRAY_FILTER_USE_BOTH); // ex: $id_array = [gra-001,hot-001] 
       $res = $domXpath->evaluate($xpath);
-      if($res->length <= 0){
+      if ($res->length <= 0) {
         return '';
       }
       $infoEntityIdent = $res[0]->getAttribute('infoEntityIdent');
 
       // jika ada $descendant_id artinya levelled id
-      if($return == 'string'){
-        return  isset($descendant_id) ? ($infoEntityIdent . ','. join('-',$descendant_id)) : ($infoEntityIdent);
+      if ($return == 'string') {
+        return  isset($descendant_id) ? ($infoEntityIdent . ',' . join('-', $descendant_id)) : ($infoEntityIdent);
       } else {
         return  isset($descendant_id) ? [$infoEntityIdent, $descendant_id] : [$infoEntityIdent, ''];
       }
@@ -1518,13 +1526,13 @@ class CSDB
     foreach ($dmlEntries as $position => $dmlEntry) {
       $dmlEntryType = $dmlEntry->getAttribute('dmlEntryType');
       $issueType = $dmlEntry->getAttribute('issueType');
-      
-      $initial = str_replace("Ref",'',$dmlEntry->firstElementChild->tagName);
-      $code = call_user_func_array(self::class."::resolve_{$initial}Ident",[$dmlEntry->firstElementChild]);
-      if($name AND (str_contains($name, $code) OR str_contains($code, $name))) $found = true; // untuk ngecek $name, extension filename tidak dipermasalahkan karena dicheck dua arah. Jika filename ICN-...jpeg dicheck terhadap ICN-...png, $found = false;
-      preg_match('/\.\w+$/',$code, $matches);
+
+      $initial = str_replace("Ref", '', $dmlEntry->firstElementChild->tagName);
+      $code = call_user_func_array(self::class . "::resolve_{$initial}Ident", [$dmlEntry->firstElementChild]);
+      if ($name and (str_contains($name, $code) or str_contains($code, $name))) $found = true; // untuk ngecek $name, extension filename tidak dipermasalahkan karena dicheck dua arah. Jika filename ICN-...jpeg dicheck terhadap ICN-...png, $found = false;
+      preg_match('/\.\w+$/', $code, $matches);
       $code_extension = $matches[0] ?? '';
-      $code = str_replace($code_extension,'',$code);
+      $code = str_replace($code_extension, '', $code);
 
       $security = $dmlEntry->getElementsByTagName('security')[0];
       $securityClassification = ($security ? $security->getAttribute('securityClassification') : '');
@@ -1537,13 +1545,13 @@ class CSDB
       $enterpriseName = $responsiblePartnerCompany->firstElementChild->nodeValue;
 
       $remarks = $dmlEntry->getElementsByTagName('remarks')[0];
-      if($remarks){
+      if ($remarks) {
         $simpleParas = $remarks->childNodes;
         $remark = [];
         foreach ($simpleParas as $simplePara) {
           $remark[] = $simplePara->nodeValue;
         }
-        $remark = join(" ",$remark);
+        $remark = join(" ", $remark);
       }
 
       $ret = [
@@ -1566,7 +1574,7 @@ class CSDB
         'remark' => $remark ?? ''
       ];
 
-      if(isset($found) AND $found) return $ret;
+      if (isset($found) and $found) return $ret;
       $entries[] = $ret;
     }
     return $entries;
@@ -1575,20 +1583,65 @@ class CSDB
   public static function commit(\DOMDocument $dom)
   {
     $validated = self::validateRootname($dom);
-    if(!$validated) return false; // error sudah di set di function @validateRootname
+    if (!$validated) return false; // error sudah di set di function @validateRootname
 
     $domxpath = new \DOMXPath($dom);
     $issueInfo = $domxpath->evaluate("//identAndStatusSection/{$validated[3]}Address/{$validated[3]}Ident/issueInfo")[0];
     $inWork = (int)$issueInfo->getAttribute('inWork');
-    if($inWork == 0) {
+    if ($inWork == 0) {
       CSDB::setError('commit', "{$validated[1]} cannot be commited due to the current inWork is '00'.");
       return false;
-    } 
-    if($inWork == 99) ($inWork = 'AA');
+    }
+    if ($inWork == 99) ($inWork = 'AA');
     else ($inWork++);
     $inWork = str_pad($inWork, 2, '0', STR_PAD_LEFT);
     $issueInfo->setAttribute('inWork', $inWork);
     $dom->saveXML();
     return $dom;
+  }
+
+  /**
+   * ICN yang disupport berdasarkan penamaan cagecode
+   * prefix-cagecode-uniqueIdentifier-issueNumber-sc
+   * $attribute adalah 'uniqueIdentifier' atau 'issueNumber'. Jika '', maka latestFile
+   * @return string
+   */
+  public static function getLatestICNFile($path, $cageCode, $attributeStop = '')
+  {
+    $prefix = 'ICN';
+    $dir = array_filter(scandir(storage_path("csdb")), fn ($v) => substr($v, 0, 3) == 'ICN');
+
+    // uniqueIdentifier terbesar
+    $uniqueIdentifier = array_map((fn ($v) => $v = explode("-", $v)[2]), $dir);
+    uasort($uniqueIdentifier, (fn ($a, $b) => ($a == $b ? 0 : (($a < $b) ? 1 : -1)))); // descendant () value terbesar akan di index#0;
+    if(empty($uniqueIdentifier)) return '';
+    $uniqueIdentifier = $uniqueIdentifier[array_key_first($uniqueIdentifier)];
+    $dir = array_filter($dir, fn ($v) => str_contains($v, "{$prefix}-{$cageCode}-{$uniqueIdentifier}"));
+    uasort($dir, function ($a, $b) {
+      $a = preg_replace("/\.\w+$/",'',$a);
+      $b = preg_replace("/\.\w+$/",'',$b); // untuk menghilangkan format (extension) file agar tidak mempengaruhi sortingan
+      if ($a == $b) return 0;
+      return ($a < $b) ? -1 : 1;
+    }); // descendant () value terbesar akan di index#0;
+    if ($attributeStop == 'uniqueIdentifier') {
+      return $dir[array_key_first($dir)];
+    }
+
+    // issueNumber terbesar
+    $issueNumber = array_map((fn ($v) => $v = explode("-", $v)[3]), $dir);
+    uasort($issueNumber, (fn ($a, $b) => ($a == $b ? 0 : (($a < $b) ? 1 : -1)))); // descendant () value terbesar akan di index#0;
+    $issueNumber = $issueNumber[array_key_first($issueNumber)];
+    $dir = array_filter($dir, fn ($v) => str_contains($v, "{$prefix}-{$cageCode}-{$uniqueIdentifier}-{$issueNumber}"));
+    uasort($dir, function ($a, $b) {
+      $a = preg_replace("/-[0-9]{2}\.\w+$/",'',$a);
+      $b = preg_replace("/-[0-9]{2}\.\w+$/",'',$b); // untuk menghilangkan sc dan format (extension) file agar tidak mempengaruhi sortingan
+      if ($a == $b) return 0;
+      return ($a < $b) ? -1 : 1;
+    }); // descendant () value terbesar akan di index#0;
+    if ($attributeStop == 'issueNumber') {
+      return $dir[array_key_first($dir)];
+    }
+    
+    return $dir[array_key_first($dir)];
   }
 }

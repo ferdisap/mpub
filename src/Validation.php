@@ -87,7 +87,12 @@ trait Validation
     }
     @$doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
-    $errors = array_filter($errors, (fn($LibXMLError) => $LibXMLError->level > 2 ? true : false)); // supaya error hanya LIBXML_ERR_FATAL doang
+    // supaya error hanya LIBXML_ERR_FATAL doang
+    // tapi masih ragu. 
+    // Awalnya ini digunakan agar jika dokumen di load by string, tidak akan error dikarenakan xsi:noNamespaceLocation...
+    // tapi jika validate dmlContent tanpa dmlEntry harusnya error tapi tidak karena level 2, 
+    // $errors = array_filter($errors, (fn($LibXMLError) => $LibXMLError->level > 2 ? true : false)); 
+    
     if(!empty($errors)){
       CSDB::setError('validateBySchema', "error during validate by xsi in file ".CSDB::resolve_DocIdent($doc).".");
       foreach ($errors as $err) {
@@ -113,15 +118,21 @@ trait Validation
       return false;
     } else {
       $brexDoc = $brexDoc[0];
-      $brexDoc = CSDB::resolve_dmIdent($brexDoc);
+      $brexDoc_filename = CSDB::resolve_dmIdent($brexDoc);    
       $path = $absolute_path ?? Helper::analyzeURI($doc->baseURI)['path'];
-      $brexDoc = CSDB::importDocument($path."/",$brexDoc,null,'','brexDoc');
+      $brexDoc = CSDB::importDocument($path."/",$brexDoc_filename,null,'','brexDoc');
       if($errors = CSDB::get_errors(true,'file_exists')){
-        CSDB::setError('validateByBrex', "error during validate by brex in file ".CSDB::resolve_DocIdent($doc).".");
-        foreach($errors as $err){
-          CSDB::setError('validateByBrex', $err);
+        // coba apakah brexDoc adalah $doc itu sendiri (jika data modulenya brex yang divalidasi);
+        $docIdent = CSDB::resolve_DocIdent($doc);
+        if($docIdent == $brexDoc_filename){
+          $brexDoc = $doc;
+        } else {
+          CSDB::setError('validateByBrex', "error during validate by brex in file ".CSDB::resolve_DocIdent($doc).".");
+          foreach($errors as $err){
+            CSDB::setError('validateByBrex', $err);
+          }
+          return false;
         }
-        return false;
       }
     }
     
@@ -164,11 +175,16 @@ trait Validation
       if($brDecisionRef->firstElementChild){
         $refs = $brDecisionRef->firstElementChild;
         if($refs->firstElementChild->tagName == 'dmRef'){
-          $dom = CSDB::importDocument($absolute_path."/", CSDB::resolve_dmIdent($refs->firstElementChild));
-          $domXpath = new \DOMXPath($dom);
-          $res = $domXpath->evaluate("//brDecision[@brDecisionIdentNumber = '{$brDecisionIdentNumber}']/ancestor::brPara/descendant::s1000dSchemas/@*[. = 1]");
-          foreach($res as $schema){
-            $allowedSchema[] = str_replace('Xsd', '.xsd', $schema->nodeName);
+          $BRDP_filename = CSDB::resolve_dmIdent($refs->firstElementChild);
+          $dom = CSDB::importDocument($absolute_path."/", $BRDP_filename);
+          if(!$dom){
+            CSDB::setError('validateByBrex', "Document: {$BRDP_filename} is not available, referenced by structuralObjectRule@id='{$id}'.");
+          } else {
+            $domXpath = new \DOMXPath($dom);
+            $res = $domXpath->evaluate("//brDecision[@brDecisionIdentNumber = '{$brDecisionIdentNumber}']/ancestor::brPara/descendant::s1000dSchemas/@*[. = 1]");
+            foreach($res as $schema){
+              $allowedSchema[] = str_replace('Xsd', '.xsd', $schema->nodeName);
+            }
           }
         }
       }
