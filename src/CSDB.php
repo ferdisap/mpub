@@ -74,26 +74,34 @@ class CSDB
   /**
    * $return == (number,integer, or text (default else));
    */
-  public static function resolve_securityClassification(\DOMDocument $doc, $return = 'text')
+  public static function resolve_securityClassification($doc, $return = 'text')
   {
-    $initial = $doc->documentElement->tagName;
-    if($initial == 'dmodule') $initial = 'dm';
-    $domXpath = new \DOMXpath($doc);
-    $sc = $domXpath->evaluate("string(//{$initial}Status/security/@securityClassification)");
-    // $sc = $doc->getElementsByTagName('security')[0]->getAttribute('securityClassification');
-    if($return == 'number'){
+    if(!$doc) return '';
+    if(is_array(($doc))){
+      $doc = $doc[0];
+    }
+    if($doc instanceof \DOMDocument){
+      // $initial = $doc->documentElement->tagName;
+      // if ($initial == 'dmodule') $initial = 'dm';
+      $domXpath = new \DOMXpath($doc);
+      // $sc = $domXpath->evaluate("string(//{$initial}Status/security/@securityClassification)");
+      $sc = $domXpath->evaluate("string(//identAndStatusSection/descendant::security/@securityClassification)");
+    }
+    elseif($doc instanceof \DOMElement){
+      $sc = $doc->getAttribute('securityClassification');
+    }
+
+    if ($return == 'number') {
       return $sc;
-    }
-    elseif($return == 'integer'){
+    } elseif ($return == 'integer') {
       return (int) $sc;
-    }
-    else {
+    } else {
       $a = [
-        '01' => 'unclassified',
-        '02' => 'restricted',
-        '03' => 'confidential',
-        '04' => 'secret',
-        '05' => 'top secret',
+        '01' => 'Unclassified',
+        '02' => 'Restricted',
+        '03' => 'Confidential',
+        '04' => 'Secret',
+        '05' => 'Top Secret',
       ];
       return $a[$sc] ?? '';
     }
@@ -298,7 +306,6 @@ class CSDB
         if (!empty($errors)) {
           return false;
         }
-
         return $obj;
       } else {
         $icn =  new ICNDocument();
@@ -548,7 +555,8 @@ class CSDB
           $childNodes instanceof \DOMElement ? array_push($arr, $childNodes) : null;
           break;
         case '#text':
-          dd($$childNodes, __CLASS__, __LINE__);
+          // dd($$childNodes, __CLASS__, __LINE__);
+          array_push($arr, $childNodes->textContent);
           break;
       }
     }
@@ -614,6 +622,10 @@ class CSDB
     }
   }
 
+
+  /**
+   * depreciated. Diganti oleh Helper::children()
+   */
   public static function get_childrenElement(\DOMElement $element, $excludeElement = '')
   {
     $arr = [];
@@ -702,6 +714,7 @@ class CSDB
   public static function resolve_issueDate($issueDate, $format = "M-d-Y")
   {
     // untuk mengakomodir penggunaan fungsi di XSLT
+    if (empty($issueDate)) return '';
     if (is_array($issueDate)) {
       $issueDate = $issueDate[0];
     }
@@ -731,9 +744,21 @@ class CSDB
     return $txt;
   }
 
-  public static function test($par)
+  // belum support karena element <externalPubTitle> mengandung child DOMText, dan DOMElement (<indexFlag>, <subScript>, dll);
+  public static function resolve_externalPubRefTitle()
   {
-    return $par;
+    return '';
+  }
+
+  public static function resolve_externalPubIssueDate($issueDate, $format = "M-d-Y")
+  {
+    if (empty($issueDate)) return '';
+    if (is_array($issueDate)) {
+      $issueDate = $issueDate[0];
+    }
+    $issueDate_text = $issueDate->textContent;
+    if (!$issueDate_text) return self::resolve_issueDate($issueDate, $format);
+    return $issueDate_text;
   }
 
   public static function resolve_dmTitle($dmTitle, string $child = '')
@@ -997,8 +1022,67 @@ class CSDB
     return $ident;
   }
 
+  /**
+   * resolving applic element
+   * @param DOMElement $doc berupa applic
+   * @param int $useDisplayText 0,1,2. jika satu itu string HARUS pakai display Text. Jika dua itu optional. Artinya jika displayText tidak ada, akan mengambil assert untuk test
+   * @return string
+   */
+  public static function resolve_applic(mixed $applic, bool $keppOneByOne = false, bool $useDisplayName = true ,int $useDisplayText = 2)
+  {
+    if (empty($applic)) return '';
+    if (is_array($applic)) {
+      $applic = $applic[0];
+    }
+
+    $useDisplayText = 0;
+    // untuk displayText ($useDisplayText 1 or 2)
+    if($useDisplayText){
+      if($applic->firstElementChild->tagName === 'displayText'){
+        $displayText = '';
+        foreach($applic->firstElementChild->childNodes as $simplePara){
+          $displayText .= ', ' . $simplePara->textContent;
+        }
+        return rtrim($displayText, ', ');
+      }
+      if($useDisplayText === 1){
+        return '';
+      }
+    }
+
+    // untuk assert
+    $arrayify = Helper::arrayify_applic($applic, $keppOneByOne, $useDisplayName);
+    unset($arrayify['displayText']);
+    $arrayify[array_key_first($arrayify)]['text'] = ltrim($arrayify[array_key_first($arrayify)]['text'], "(");
+    $arrayify[array_key_first($arrayify)]['text'] = rtrim($arrayify[array_key_first($arrayify)]['text'], ")");
+    $text = $arrayify[array_key_first($arrayify)]['text'];
+    // $message = array_filter($arrayify[array_key_first($arrayify)]['children'], fn($c) => $c['%MESSAGE'] ?? false);
+    // output = $message = [
+    //   "%MESSAGE" => "ERROR: 'serialnumber' only contains N001-N004, N006-N010, N012-N015 and does not contains such N011, N016-N020",
+    //   "text" => "",
+    //   "%STATUS" => "fail",
+    //   "%APPLICPROPERTYTYPE" => "prodattr",
+    //   "%APPLICPROPERTYIDENT" => "serialnumber",
+    //   "%APPLICPROPERTYVALUES" => "N001~N004|N006~N020",
+    // ];
+    // output harusnya nanti bisa dibuat/ditambah ke static error CSDB;
+    return $text; // return string "text". eg.: $arrayify = ["evaluate" => ["text" => string, 'andOr' => String, 'children' => array]];
+  }
+
+  /**
+   * ini untuk mendapatkan applicability berdasarkan ID pada applic
+   */
+  public static function resolve_applicRefId()
+  {
+  }
+
+
+  /**
+   * depreciated
+   */
   public static function getApplicability(\DOMDocument $doc, $absolute_path_csdbInput = '')
   {
+
     if (!$absolute_path_csdbInput) {
       $analyzeURI = Helper::analyzeURI($doc->baseURI);
       $absolute_path_csdbInput = $analyzeURI['path'];
@@ -1052,9 +1136,10 @@ class CSDB
     //   ]
     // ]
     $resolve = function ($childApplic, $resolve_fn) use ($CSDB) {
+      // dd($childApplic->parentNode->getAttribute('id'));
       switch ($childApplic->tagName) {
         case 'displayText':
-          $simpleParas = self::get_childrenElement($childApplic);
+          $simpleParas = $childApplic->childNodes;
           $str = [];
           foreach ($simpleParas as $simplePara) {
             $str[] = $simplePara->nodeValue;
@@ -1113,6 +1198,7 @@ class CSDB
               } else {
                 $results = array_merge($res1, $res2);
               }
+              // dd($r);
               foreach ($results as $applicPropertyIdent => $values) {
                 if ($results[$applicPropertyIdent]['%STATUS'] == 'fail') {
                   $xpath = new DOMXPath($evaluate->ownerDocument);
@@ -1177,6 +1263,7 @@ class CSDB
   }
 
   /**
+   * DEPRECIATED. Diganti oleh Helper@test_assert
    * assert harus ada attribute 'applicPropertyIdent', 'applicPropertyType', dan 'applicPropertyValues'
    */
   private function assertTest(\DOMElement $assert)
@@ -1614,12 +1701,12 @@ class CSDB
     // uniqueIdentifier terbesar
     $uniqueIdentifier = array_map((fn ($v) => $v = explode("-", $v)[2]), $dir);
     uasort($uniqueIdentifier, (fn ($a, $b) => ($a == $b ? 0 : (($a < $b) ? 1 : -1)))); // descendant () value terbesar akan di index#0;
-    if(empty($uniqueIdentifier)) return '';
+    if (empty($uniqueIdentifier)) return '';
     $uniqueIdentifier = $uniqueIdentifier[array_key_first($uniqueIdentifier)];
     $dir = array_filter($dir, fn ($v) => str_contains($v, "{$prefix}-{$cageCode}-{$uniqueIdentifier}"));
     uasort($dir, function ($a, $b) {
-      $a = preg_replace("/\.\w+$/",'',$a);
-      $b = preg_replace("/\.\w+$/",'',$b); // untuk menghilangkan format (extension) file agar tidak mempengaruhi sortingan
+      $a = preg_replace("/\.\w+$/", '', $a);
+      $b = preg_replace("/\.\w+$/", '', $b); // untuk menghilangkan format (extension) file agar tidak mempengaruhi sortingan
       if ($a == $b) return 0;
       return ($a < $b) ? -1 : 1;
     }); // descendant () value terbesar akan di index#0;
@@ -1633,15 +1720,15 @@ class CSDB
     $issueNumber = $issueNumber[array_key_first($issueNumber)];
     $dir = array_filter($dir, fn ($v) => str_contains($v, "{$prefix}-{$cageCode}-{$uniqueIdentifier}-{$issueNumber}"));
     uasort($dir, function ($a, $b) {
-      $a = preg_replace("/-[0-9]{2}\.\w+$/",'',$a);
-      $b = preg_replace("/-[0-9]{2}\.\w+$/",'',$b); // untuk menghilangkan sc dan format (extension) file agar tidak mempengaruhi sortingan
+      $a = preg_replace("/-[0-9]{2}\.\w+$/", '', $a);
+      $b = preg_replace("/-[0-9]{2}\.\w+$/", '', $b); // untuk menghilangkan sc dan format (extension) file agar tidak mempengaruhi sortingan
       if ($a == $b) return 0;
       return ($a < $b) ? -1 : 1;
     }); // descendant () value terbesar akan di index#0;
     if ($attributeStop == 'issueNumber') {
       return $dir[array_key_first($dir)];
     }
-    
+
     return $dir[array_key_first($dir)];
   }
 }
