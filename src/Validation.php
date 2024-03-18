@@ -26,6 +26,45 @@ trait Validation
     }
   }
 
+  /**
+   * jika $object type tidak termasuk bagian yang perlu di validasi dmrl, maka dianggap true
+   * if true, return [true, ''];
+   * else, return [false, [$text], 'info/dmrl/entry'];
+   * 'info' ini semacam kode error tapi tidak fatal
+   */
+  public static function validateByDMRL( $dmrlpath = '', $dmrlfilename = '', string $entryFilename, string $type = '')
+  {
+    // ini adalah firstElementChild pof \DOMDocument
+    if (!in_array($type, ['dmodule', 'pm', 'infoEntity', 'comment', 'dml'])) {
+      return [true, ''];
+    }
+    $dmrl_dom = CSDB::importDocument($dmrlpath, $dmrlfilename);
+    if(!$dmrl_dom) return [false, 'No such DMRL', 'dmrl'];
+    if(!CSDB::validate('XSI', $dmrl_dom, 'dml.xsd')){
+      $err = CSDB::get_errors(true, 'validateBySchema');
+      $err[] = "DMRL must be comply to dml.xsd";
+      return [false, join(", ", $err), 'dmrl'];
+    }
+
+    $xpath = new \DOMXPath($dmrl_dom);
+    $dmlEntries = $xpath->evaluate("//dmlEntry");
+    $nominal_idents = array();
+    foreach ($dmlEntries as $key => $dmlEntry) {
+      $ident = str_replace("Ref", '', $dmlEntry->firstElementChild->tagName);
+      if ($dmlEntry->firstElementChild->tagName == 'infoEntityRef') {
+        $nominal_idents[] = $dmlEntry->firstElementChild->getAttribute('infoEntityRefIdent');
+      } else {
+        $nominal_idents[] = call_user_func_array(CSDB::class . "::resolve_{$ident}Ident", [$dmlEntry->getElementsByTagName("{$ident}RefIdent")[0]]);
+      }
+    }
+    $actual_ident = preg_replace("/_\d{3,5}-\d{2}|_[A-Za-z]{2,3}-[A-Z]{2}/", '', $entryFilename); // untuk membersihkan inwork dan issue number pada filename
+    if (!in_array($actual_ident, $nominal_idents)) {
+      $actual_ident = preg_replace('/\.\w+$/', '', $actual_ident);
+      return [false, "{$actual_ident} is not required by the DMRL.", 'entry'];
+    }
+    return [true, ''];
+  }
+
   private static function validateByBrexForNonContext(string $doc, $absolute_path){
     return true;
   }
@@ -35,15 +74,25 @@ trait Validation
     libxml_use_internal_errors(true);
 
     if($validator == ''){
-      $validator = CSDB::getSchemaUsed($doc,'filename');  
+      $validator = CSDB::getSchemaUsed($doc,'filename');
     }
-    $schema = CSDB::importDocument(__DIR__."/Schema\/",$validator,null,'');
+    // $schema = new DOMDocument();
+    // $schema->strictErrorChecking = false;
+    // $schema->load(__DIR__.DIRECTORY_SEPARATOR."Schema".DIRECTORY_SEPARATOR.$validator);
+    // $schema = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."Schema".DIRECTORY_SEPARATOR, $validator,null,'');
+    $schema = CSDB::importDocument(__DIR__.DIRECTORY_SEPARATOR."Schema", $validator,null,'');
     if(!$schema) {
       CSDB::setError('validateBySchema', "schema cannot be identified");
       return false;
     }
-    $doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
+    @$doc->schemaValidateSource($schema->C14N(), LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
+    // supaya error hanya LIBXML_ERR_FATAL doang
+    // tapi masih ragu. 
+    // Awalnya ini digunakan agar jika dokumen di load by string, tidak akan error dikarenakan xsi:noNamespaceLocation...
+    // tapi jika validate dmlContent tanpa dmlEntry harusnya error tapi tidak karena level 2, 
+    // $errors = array_filter($errors, (fn($LibXMLError) => $LibXMLError->level > 2 ? true : false)); 
+    
     if(!empty($errors)){
       CSDB::setError('validateBySchema', "error during validate by xsi in file ".CSDB::resolve_DocIdent($doc).".");
       foreach ($errors as $err) {
@@ -61,27 +110,32 @@ trait Validation
    */
   private static function validateByBrex(\DOMDocument $doc, $validator = null, $absolute_path = null)
   {
-    // dd(CSDB::resolve_dmIdent($doc->getElementsByTagName('dmIdent')[0]));
-    $domXpath = new DOMXPath($doc);
+    $domXpath = new \DOMXPath($doc);
     $brexDoc = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef");
     if($brexDoc->length == 0){
       $docIdent = CSDB::resolve_DocIdent($doc);
-      CSDB::setError('validateByBrex', "element <brexDmRe> cannot found in identAndStatusSection of {$docIdent}");
+      CSDB::setError('validateByBrex', "element brexDmRef cannot found in identAndStatusSection of {$docIdent}");
       return false;
     } else {
       $brexDoc = $brexDoc[0];
-      $brexDoc = CSDB::resolve_dmIdent($brexDoc);
-      $path = !empty($absolute_path) ? $absolute_path : $doc->absolute_path;
-      $brexDoc = CSDB::importDocument($path."/",$brexDoc,null,'','brexDoc');
+      $brexDoc_filename = CSDB::resolve_dmIdent($brexDoc);    
+      $path = $absolute_path ?? Helper::analyzeURI($doc->baseURI)['path'];
+      $brexDoc = CSDB::importDocument($path."/",$brexDoc_filename,null,'','brexDoc');
       if($errors = CSDB::get_errors(true,'file_exists')){
-        CSDB::setError('validateByBrex', "error during validate by brex in file ".CSDB::resolve_DocIdent($doc).".");
-        foreach($errors as $err){
-          CSDB::setError('validateByBrex', $err);
+        // coba apakah brexDoc adalah $doc itu sendiri (jika data modulenya brex yang divalidasi);
+        $docIdent = CSDB::resolve_DocIdent($doc);
+        if($docIdent == $brexDoc_filename){
+          $brexDoc = $doc;
+        } else {
+          CSDB::setError('validateByBrex', "error during validate by brex in file ".CSDB::resolve_DocIdent($doc).".");
+          foreach($errors as $err){
+            CSDB::setError('validateByBrex', $err);
+          }
+          return false;
         }
-        return false;
       }
     }
-
+    
     $schema = CSDB::getSchemaUsed($brexDoc,'filename');
     $domXpath = new DOMXPath($brexDoc);
     $contexRules = $domXpath->evaluate("//contextRules[not(@rulesContext)] | //contextRules[@rulesContext = '{$schema}']");
@@ -90,7 +144,7 @@ trait Validation
       $structureObjectRuleGroup = $contextRule->firstElementChild;
       $structureObjectRules = CSDB::get_childrenElement($structureObjectRuleGroup,'');
       foreach ($structureObjectRules as $structureObjectRule){
-        self::validateByStructureObjectRule($doc, $structureObjectRule);
+        self::validateByStructureObjectRule($doc, $structureObjectRule, $path);
       }
     }
     $errors = CSDB::get_errors(false,'validateByBrex');
@@ -101,18 +155,48 @@ trait Validation
    * php tidak bisa pakai fungsi xpath //applic/child::*\/name(), melainkan local-name(//applic/child::*)
    * hindari objectPath yang bernilai boolean karena jika dari setiap result ada yang true, padahal yang lain false, maka hasilnya true
    */
-  private static function validateByStructureObjectRule(\DOMDocument $doc, \DOMElement $structureObjectRule)
+  private static function validateByStructureObjectRule(\DOMDocument $doc, \DOMElement $structureObjectRule, $absolute_path = '')
   {
     $docIdent = CSDB::resolve_DocIdent($doc);
 
     $id = $structureObjectRule->getAttribute(('id'));
 
-    $brDecisionRef = $structureObjectRule->getElementsByTagName('brDecisionRef'); // DOM Element
+    $brDecisionRefs = $structureObjectRule->getElementsByTagName('brDecisionRef'); // DOM Element
     $brDecisionIdentNumber = array();
-    foreach ($brDecisionRef as $value) {
-      $brDecisionIdentNumber[] = $value->getAttribute('brDecisionIdentNumber');
+    foreach ($brDecisionRefs as $brDecisionRef) {
+      $brDecisionIdentNumber[] = $brDecisionRef->getAttribute('brDecisionIdentNumber');
     }
     $brDecisionIdentNumber = join(", ", $brDecisionIdentNumber);
+    
+    // validasi apakah schema nya termasuk di contextRule atau tidak
+    $allowedSchema = [];
+    foreach ($brDecisionRefs as $brDecisionRef) {
+      $brDecisionIdentNumber = $brDecisionRef->getAttribute('brDecisionIdentNumber');
+      if($brDecisionRef->firstElementChild){
+        $refs = $brDecisionRef->firstElementChild;
+        if($refs->firstElementChild->tagName == 'dmRef'){
+          $BRDP_filename = CSDB::resolve_dmIdent($refs->firstElementChild);
+          $dom = CSDB::importDocument($absolute_path."/", $BRDP_filename);
+          if(!$dom){
+            CSDB::setError('validateByBrex', "Document: {$BRDP_filename} is not available, referenced by structuralObjectRule@id='{$id}'.");
+          } else {
+            $domXpath = new \DOMXPath($dom);
+            $res = $domXpath->evaluate("//brDecision[@brDecisionIdentNumber = '{$brDecisionIdentNumber}']/ancestor::brPara/descendant::s1000dSchemas/@*[. = 1]");
+            foreach($res as $schema){
+              $allowedSchema[] = str_replace('Xsd', '.xsd', $schema->nodeName);
+            }
+          }
+        }
+      }
+    }
+    if(!empty($allowedSchema)){
+      $schmeUsed = CSDB::getSchemaUsed($doc, 'filename');
+      // jika tidak ada di allowable schema, maka tidak perlu di validasi (aman)
+      if(!in_array($schmeUsed, $allowedSchema)){
+        return;
+      }
+    }
+
 
     $objectPath = $structureObjectRule->getElementsByTagName('objectPath')[0]; // DOM Element
     $allowedObjectFlag = $objectPath->getAttribute('allowedObjectFlag');
@@ -134,7 +218,7 @@ trait Validation
     }
     $objectValues = $values;
     unset($values);
-    
+
     // jika objectPath result boolean
     $domXpath = new DOMXPath($doc);
     $results = $domXpath->evaluate($objectPath->nodeValue);
@@ -148,6 +232,10 @@ trait Validation
     elseif(is_bool($results) AND $results == true AND $allowedObjectFlag == 0) {
       CSDB::setError('validateByBrex', "Document: {$docIdent}, the value does not match. id:{$id}, BR number:{$brDecisionIdentNumber}. Object Use: {$objectUse->nodeValue}");
       return;
+    }
+    // jika result bernilai true, tapi sunnah, maka aman
+    elseif(is_bool($results) AND $results == true AND $allowedObjectFlag == 2){
+      return;
     } 
     // jika result bernilai false, maka fail karena harusnya diperbolehkan (harus true)
     elseif(is_bool($results) AND $results == false AND $allowedObjectFlag == 1) {
@@ -156,6 +244,11 @@ trait Validation
     } 
     // jika result bernilai false dan juga tidak diperbolehkan, maka aman
     elseif(is_bool($results) AND $results == false AND $allowedObjectFlag == 0) {
+      return;
+    }
+    // jika result bernilai false, tapi sunnah, fail
+    elseif(is_bool($results) AND $results == false AND $allowedObjectFlag == 2){
+      // harusnya return warning/caution/info saja. Nanti buat CSDB::setInfo()
       return;
     } 
     // jika tidak ada yang ditemukan, berarti aman (tidak perlu di validasi)
@@ -301,21 +394,32 @@ trait Validation
       $csdbIdent = $dom->getElementsByTagName('dmIdent')[0];
       $csdb_filename = CSDB::resolve_dmIdent($csdbIdent);
       $ident = 'dmodule';
+      $initial = 'dm';
     } 
     elseif ($rootname == 'pm'){
       $csdbIdent = $dom->getElementsByTagName('pmIdent')[0];
       $csdb_filename = CSDB::resolve_pmIdent($csdbIdent);
       $ident = 'pm';
+      $initial = 'pm';
     } 
     elseif ($rootname == 'dml'){
       $csdbIdent = $dom->getElementsByTagName('dmlIdent')[0];
       $csdb_filename = CSDB::resolve_dmlIdent($csdbIdent);
       $ident = 'dml';
-    } 
+      $initial = 'dml';
+    }
+    elseif($rootname == 'icnMetadataFile'){
+      $csdbIdent = $dom->getElementsByTagName('imfIdent')[0];
+      $csdb_filename = CSDB::resolve_imfIdent($csdbIdent);
+      $ident = 'icnMetadataFile';
+      $initial = 'imf';
+      // $csdbIdent = $dom->getElementsByTagName('imfCode')[0];
+      // $csdb_filename = "IMF-".$csdbIdent->getAttribute('imfIdentIcn')."_". $csdbIdent->nextElementSibling->getAttribute('issueNumber')."-". $csdbIdent->nextElementSibling->getAttribute('inWork'). '.xml';
+    }
     else {
-      CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM or DM.';
+      CSDB::$errors[__FUNCTION__][] = 'CSDB cannot identified as PM, DM, ICN Meta Data File.';
       return false;
     }
-    return [$csdbIdent, $csdb_filename, $ident];
+    return [$csdbIdent, $csdb_filename, $ident, $initial];
   }
 }

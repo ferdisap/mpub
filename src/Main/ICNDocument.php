@@ -1,17 +1,17 @@
 <?php
 
-namespace Ptdi\Mpub;
+namespace Ptdi\Mpub\Main;
 
-class ICNDocument extends CSDB
+class ICNDocument
 {
   protected array $fileinfo;
   protected string $filename;
   protected string $path;
   
-  public function load($path, $filename)
+  public function load(string $filename)
   {
     $getID3 = new \getID3();
-    $fileinfo = $getID3->analyze($path . DIRECTORY_SEPARATOR . $filename);
+    $fileinfo = $getID3->analyze($filename);
     $this->fileinfo = $fileinfo;
     $this->filename = $filename;
     $this->path = $fileinfo['filepath'];

@@ -26,6 +26,7 @@ brdoc.xsd,
 pm.xsd,
 crew.xsd,
 comrep.xsd,
+icnmetadata.xsd,
 ###
 
 ###
@@ -78,6 +79,7 @@ brex.xsd,
 brdoc.xsd,
 pm.xsd,
 crew.xsd
+icnmetadata.xsd,
 ###
 
 ###
@@ -94,4 +96,5 @@ descript.xsd,
 crew.xsd,
 comrep.xsd,
 pm.xsd,
+icnmetadata.xsd
 ###

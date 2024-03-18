@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<icnMetadataFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Schema/icnmetadata.xsd">
+  <imfIdentAndStatusSection>
+    <imfAddress>
+      <imfIdent>
+        <imfCode imfIdentIcn="0001Z-00011-001-01" />
+        <issueInfo issueNumber="001" inWork="01" />
+      </imfIdent>
+      <imfAddressItems>
+        <icnTitle>3 View Drawing</icnTitle>
+      </imfAddressItems>
+    </imfAddress>
+    <imfStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified/>
+      </qualityAssurance>
+    </imfStatus>
+  </imfIdentAndStatusSection>  
+  <imfContent>
+    <icnVariation>
+      <icnInfoItemGroup>
+        <icnInfoItem icnInfoItemType="iiit51"><simplePara>image/jpeg</simplePara></icnInfoItem>
+      </icnInfoItemGroup>
+      <icnContents>
+        <icnObjectGroup>
+          <icnObject icnObjectIdent="hot-001" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject"/>
+        </icnObjectGroup>
+      </icnContents>
+    </icnVariation>    
+  </imfContent>
+</icnMetadataFile>
