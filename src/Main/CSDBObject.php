@@ -59,7 +59,7 @@ class CSDBObject
    */
   public function isS1000DDoctype()
   {
-    if(($this->document instanceof \DOMDocument) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata'])){
+    if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata'])){
       return true;
     } else {
       return false;
@@ -869,7 +869,6 @@ class CSDBObject
     $xsltproc = new \XSLTProcessor();
     $xsltproc->importStylesheet($xsl);
 
-    // $xsltproc->registerPHPFunctions((function(){})());
     $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => CSDBStatic::class . "::$name", get_class_methods(CSDBStatic::class)))());
     $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => Helper::class . "::$name", get_class_methods(Helper::class)))());
     $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => self::class . "::$name", get_class_methods(self::class)))());
@@ -879,17 +878,43 @@ class CSDBObject
       $xsltproc->setParameter('', $key, $param);
     }
 
-    if ($output === 'html') {
-      $transformed = str_replace("#ln;", '<br/>', $xsltproc->transformToXml($this->document));
-    } else {
-      $transformed = str_replace("#ln;", chr(10), $xsltproc->transformToXml($this->document));
-    }
-    $transformed = str_replace("\n", '', $transformed);
+    $transformed = $xsltproc->transformToXml($this->document);
+    // if ($output === 'html') {
+    //   $transformed = str_replace("#ln;", '<br/>', $xsltproc->transformToXml($this->document));
+    // } else {
+    //   $transformed = str_replace("#ln;", chr(10), $xsltproc->transformToXml($this->document));
+    // }
+    // $transformed = str_replace("\n", '', $transformed);
     $transformed = preg_replace("/\s+/m", ' ', $transformed);
-    $transformed = preg_replace('/xmlns:[\w\-=":\/\\\\._]+/m', '', $transformed); // untuk menghilangkan attribute xmlns
+    // $transformed = preg_replace('/xmlns:[\w\-=":\/\\\\._]+/m', '', $transformed); // untuk menghilangkan attribute xmlns
 
     return $transformed;    
   }
+
+  // public function transform_to_foxml(string $xslFile, array $params = [], string $output = 'html') :string
+  // {
+  //   $xsl = new \DOMDocument();
+  //   if(!$xsl->load($xslFile)){
+  //     return '';
+  //   }
+
+  //   $xsltproc = new \XSLTProcessor();
+  //   $xsltproc->importStylesheet($xsl);
+
+  //   $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => CSDBStatic::class . "::$name", get_class_methods(CSDBStatic::class)))());
+  //   $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => Helper::class . "::$name", get_class_methods(Helper::class)))());
+  //   $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => self::class . "::$name", get_class_methods(self::class)))());
+  //   $xsltproc->registerPHPFunctions();    
+
+  //   foreach ($params as $key => $param) {
+  //     $xsltproc->setParameter('', $key, $param);
+  //   }
+
+  //   $transformed = str_replace("#ln;", chr(10), $xsltproc->transformToXml($this->document));
+  //   $transformed = $xsltproc->transformToXml($this->document);
+  //   return $transformed;    
+  // }
+  
 
   // fungsi transform_HTML // sepertinya di taruh di Main\CSDB class saja 
   // fungsi transfrom_PDF // sepertinya di taruh di Main\CSDB class saja

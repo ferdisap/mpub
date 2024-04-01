@@ -441,15 +441,19 @@ class CSDBStatic
    * minimum value of level is 0 (zero)
    * @return int
    */
-  public static function checkLevel(\DOMElement $element, int $minimum = 0) :int
+  public static function checkLevel(mixed $element, int $minimum = 0) :int
   {
+    if (empty($element)) return -1;
+    if (is_array($element)) {
+      $element = $element[0];
+    }
     $tagName = $element->tagName;
     $level = $minimum;
     while (($parent = $element->parentNode)->nodeName == $tagName) {
       $element = $parent;
       $level += 1;
     }
-    return ($level < 0) ? $minimum : (int) $level;
+    return ($level < 0) ? (int) $minimum : (int) $level;
   }
 
   /**
@@ -889,6 +893,43 @@ class CSDBStatic
     };
     $filename = $searchImf($path);
     return $filename;
+  }
+
+  public static function interpretDimension(string $unit) :string
+  {
+    // <xsl:variable name="units" select="php:function('preg_replace', '/[0-9\.]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>
+    if(!$unit) return '';
+    preg_match('/([0-9\.]+)(.)/', $unit, $matches);
+    $n = $matches[1];
+    $u = $matches[2];
+    if(($n > 0) AND ($n <= 1)){
+      $n = $n*100;
+    }
+    if($u === '*'){
+      $u = '%';
+    }
+    return $n.$u;
+  }
+
+
+  /**
+   * khusus footnote yang marking nya number, bukan asterisk atay alpha
+   */
+  public static $footnotePositionStore = [];
+  public static function next_footnotePosition(string $filename, bool $set = false) :int
+  {
+    $totalIndex = count(self::$footnotePositionStore[$filename]);
+    if($totalIndex === 0) {
+      if($set) self::$footnotePositionStore[$filename][] = 1;
+      return 1;
+    };
+    $no = self::$footnotePositionStore[$filename][$totalIndex-1] + 1;
+    if($set) self::$footnotePositionStore[$filename][] = $no;
+    return $no;
+  }
+  public static function add_footnotePosition(string $filename, int $no) : void
+  {
+    self::$footnotePositionStore[$filename][] = $no;
   }
 
   

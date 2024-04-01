@@ -471,4 +471,49 @@ class Helper
     }
     return $arr;
   }
+
+  /**
+   * sementara ini hanya bisa mencari attribute pada dmCode, dmlCode, pmCode, infoEntityIdent Code
+   */
+  public static function get_attribute_from_filename(string $filename, string $attributeName) :string
+  {
+    $decoded = CSDBStatic::decode_ident($filename);
+    switch ($decoded['prefix']) {
+      case 'DMC-':
+        return $decoded['dmCode'][$attributeName];
+      case 'PMC-':      
+        return $decoded['pmCode'][$attributeName];
+      case 'DML-':      
+        return $decoded['dmlCode'][$attributeName];
+      case 'ICN-':      
+        return $decoded['infoEntityIdent'][$attributeName];
+      default:
+        return '';
+    }
+  }
+
+  protected static $footnoteSymMarkers = ['*', '†', '‡', '§', '¶', '#', '♠', '♥', '◆', '♣'];
+  // protected static $footnoteSymMarkers = ['&#42;', '&#8224;', '&#8225;', '&#167;', '&#182;', '#', '&#9824;', '&#9829;', '&#9830;', '&#9827;'];
+
+  /**
+   * minimum position is 1;
+   * alpha character is limited to a thru z
+   * symbol character is limited to 10 position
+   */
+  public static function get_footnote_mark(int $position, string $markType)
+  {
+    if(!$markType) $markType = 'num';
+    
+    switch ($markType) {
+      case 'num':
+        return (string)$position;
+      case 'alpha':
+        return (string)range('a','z')[$position-1];
+      case 'sym':
+        return (string)self::$footnoteSymMarkers[$position-1];
+      default:
+        return '';
+    }
+    
+  }
 }

@@ -50,6 +50,12 @@ class CSDBValidator{
       CSDBError::setError('', "Extension file of '". $prefix . join("-", $infoEntityIdent). $extension . "' should be exist.");
       return false;
     }
+    if(!(count($infoEntityIdent) === 9 OR count($infoEntityIdent) === 4)){
+      CSDBError::setError('', "Naming file '". $prefix . join("-", $infoEntityIdent). $extension . "' is uncomply with PTDI rule.");
+      return false;
+    }
+    return true;
+    ###### dibawah ini adalah aturan khusus untuk penamaan ICN 47 character ######
     // masukkan validasi seusai aturan penamaan ICN (seperti yang diberikan pak Hendro);
     // masukkan CSDBError jika ada aturan yang tidak dipenuhi
     // sementara ini rule hanya sebatas menggunakan modelIdent base, bukan cagecode base
