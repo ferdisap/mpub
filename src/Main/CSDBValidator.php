@@ -8,11 +8,17 @@ class CSDBValidator{
   protected CSDBObject $validator;
   protected string $validationType = '';
   protected array $params;
+  protected string $storage_path = '';
 
   public function __construct(string $validationType = '', $params = [])
   {
     $this->validationType = $validationType;
     $this->params = $params;
+  }
+
+  public function setStoragePath(string $absolutePath)
+  {
+    $this->storage_path = $absolutePath;
   }
 
   public function validate() :bool
@@ -46,6 +52,10 @@ class CSDBValidator{
    */
   private function usePTDIICNNamingFileRule(array $infoEntityIdent, $prefix = 'ICN-', $extension = '') :bool
   {
+    if(!$this->storage_path){
+      CSDBError::setError('', 'Can not save the icn object.');
+      return false;
+    };
     if(!$extension) {
       CSDBError::setError('', "Extension file of '". $prefix . join("-", $infoEntityIdent). $extension . "' should be exist.");
       return false;
@@ -54,6 +64,22 @@ class CSDBValidator{
       CSDBError::setError('', "Naming file '". $prefix . join("-", $infoEntityIdent). $extension . "' is uncomply with PTDI rule.");
       return false;
     }
+
+    // #1 validasi uniqueIdentifier
+    $f = array_filter(scandir($this->storage_path),fn($filename) => str_contains($filename, $infoEntityIdent['uniqueIdentifier']));
+    $f = array_pop($f);
+    if(!$f) {
+      CSDBError::setError('', "The unique identifier of ICN name is same with {$f}");
+      return false;
+    }
+
+    // #2 validasi securityClassification. Min 1, max 5
+    if(((int)$infoEntityIdent['securityClassification'] < 1) AND ((int)$infoEntityIdent['securityClassification'] > 5))
+    {
+      CSDBError::setError('', "Security Classification value must be 1 through 5");
+      return false;
+    }
+
     return true;
     ###### dibawah ini adalah aturan khusus untuk penamaan ICN 47 character ######
     // masukkan validasi seusai aturan penamaan ICN (seperti yang diberikan pak Hendro);
