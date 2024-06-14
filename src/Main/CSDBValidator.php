@@ -68,7 +68,7 @@ class CSDBValidator{
     // #1 validasi uniqueIdentifier
     $f = array_filter(scandir($this->storage_path),fn($filename) => str_contains($filename, $infoEntityIdent['uniqueIdentifier']));
     $f = array_pop($f);
-    if(!$f) {
+    if($f) {
       CSDBError::setError('', "The unique identifier of ICN name is same with {$f}");
       return false;
     }
