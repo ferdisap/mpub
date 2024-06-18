@@ -4,6 +4,41 @@ namespace Ptdi\Mpub\Main;
 
 class CSDBStatic
 {
+  public static function directory_separator()
+  {
+    return DIRECTORY_SEPARATOR;
+  }
+
+  public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
+  {
+    if(!$ident) return '';
+    if (is_array($ident)) {
+      $ident = $ident[0];
+    }
+    switch ($ident->nodeName) {
+      case 'dmIdent':
+        return self::resolve_dmIdent($ident, $prefix, $format);
+        break;
+      case 'dmRefIdent':
+        return self::resolve_dmIdent($ident, $prefix, $format);
+        break;
+      case 'pmIdent':
+        return self::resolve_pmIdent($ident, $prefix, $format);
+        break;      
+      case 'pmRefIdent':
+        return self::resolve_pmIdent($ident, $prefix, $format);
+        break;      
+      case 'externalPubRefIdent':
+        return self::resolve_externalPubRefIdent($ident, $prefix, $format);
+        break;      
+      case 'dmlIdent':
+        return self::resolve_dmlIdent($ident, $prefix, $format);
+        break;
+      default:
+        # code...
+        break;
+    }
+  }
 
   public static function resolve_dmIdent($dmIdent = null, $prefix = 'DMC-', $format = '.xml')
   {
@@ -829,17 +864,22 @@ class CSDBStatic
     if ($path instanceof \DOMDocument) {
       $path = Helper::analyzeURI($path->baseURI)['path'];
     }
-    if (substr($filename, 0, 3) == 'ICN') {
+    if (substr($filename, 0, 3) === 'ICN') {
       $filename = self::detectIMF($path, $filename);
     }
+    if(!$filename) return new \DOMDocument;
     CSDBError::$processId = 'ignore';
     $CSDBObject = new CSDBObject("5.0");
+    if(!file_exists($path. DIRECTORY_SEPARATOR. $filename)){
+      CSDBError::setError('opendocument', "No such $filename exists.");
+      return new \DOMDocument;
+    }
     $CSDBObject->load($path. DIRECTORY_SEPARATOR . $filename);
     CSDBError::getErrors(true, 'ignore'); // remove error
     if ($CSDBObject->document) {
       return $CSDBObject->document;
     } else {
-      return new \DOMDocument();
+      return new \DOMDocument;
     }
   }
 

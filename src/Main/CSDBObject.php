@@ -878,7 +878,6 @@ class CSDBObject
     foreach ($params as $key => $param) {
       $xsltproc->setParameter('', $key, $param);
     }
-
     $transformed = $xsltproc->transformToXml($this->document);
     // if ($output === 'html') {
     //   $transformed = str_replace("#ln;", '<br/>', $xsltproc->transformToXml($this->document));
