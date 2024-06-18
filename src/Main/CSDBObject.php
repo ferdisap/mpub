@@ -62,6 +62,7 @@ class CSDBObject
     if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata'])){
       return true;
     } else {
+      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 's1000d_doctype', "document must be be S1000D standard type.");
       return false;
     }
   }
