@@ -4,6 +4,91 @@ namespace Ptdi\Mpub\Main;
 
 class CSDBStatic
 {
+  protected static string $PDF_MasterName = '';
+
+  public static function get_PDF_MasterName()
+  {
+    return self::$PDF_MasterName;
+  }
+
+  public static function set_PDF_MasterName(string $text)
+  {
+    self::$PDF_MasterName = $text;
+  }
+
+  
+  /**
+   * [
+   *  'id-000' => [ 
+   *    'text' => 'lorem ipsum',
+   *    'parent' => '',
+   *  ],
+   *  'id-001' => [
+   *    'text' => 'lorem ipsum 2',
+   *    'parent' => 'id-001'
+   *  ]
+   * ]
+   */
+  protected static array $bookmarks = [];
+
+  public static function fillBookmark(string $destination, string $text, string $parent = '')
+  {
+   self::$bookmarks[$destination] = [
+    'text' => $text,
+    'parent' => $parent,
+   ];
+  }
+
+  /**
+   * @return \DOMDocument
+   */
+  public static function transformBookmark_to_xml()
+  {
+    // dump(self::$bookmarks);
+    if(empty(self::$bookmarks)) return '';
+    $dom = new \DOMDocument;
+    $bookmarkTree_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree');
+    $dom->appendChild($bookmarkTree_el);
+
+    $randomNS = hash('md2',rand(0,10000));
+    $randomNS = "aaa" . substr($randomNS, 0,10);
+    // $randomNS = 'randomNS123';
+    // $randomNS = 'c8ed21db4f';
+    // dd('aaa', $randomNS);
+    
+    while(!empty(self::$bookmarks)){
+      $keyfirst = array_key_first(self::$bookmarks);
+      
+      $parent = self::$bookmarks[$keyfirst]['parent'];
+
+      $bookmark_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark');
+      $bookmark_el->setAttributeNS("$randomNS", "$randomNS:id", $keyfirst);
+      $bookmarkTitle_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-title');
+      $bookmark_el->setAttribute('internal-destination', $keyfirst);
+      $bookmarkTitle_el->textContent = self::$bookmarks[$keyfirst]['text'];
+
+      $bookmark_el->appendChild($bookmarkTitle_el);
+      $bookmarkTree_el->appendChild($bookmark_el);
+      
+      if($parent){
+        $domxpath = new \DOMXpath($dom);
+        $domxpath->registerNamespace('fo','http://www.w3.org/1999/XSL/Format');
+        $domxpath->registerNamespace("randomNS","randomNS");
+        $xpath_string = "//fo:bookmark[@$randomNS:id = '$parent']";
+        $e = $domxpath->query($xpath_string)[0];
+        if($e){
+          $e->appendChild($bookmark_el);
+        }
+      }
+      else {
+        $dom->appendChild($bookmarkTree_el);
+      }
+      unset(self::$bookmarks[$keyfirst]);
+    }
+    return $dom;
+  }
+
+
   public static function directory_separator()
   {
     return DIRECTORY_SEPARATOR;
@@ -33,6 +118,25 @@ class CSDBStatic
         break;      
       case 'dmlIdent':
         return self::resolve_dmlIdent($ident, $prefix, $format);
+        break;
+      default:
+        # code...
+        break;
+    }
+  }
+
+  public static function resolve_title($title = null, $child = null)
+  {
+    if(!$title) return '';
+    if (is_array($title)) {
+      $title = $title[0];
+    }
+    switch ($title->nodeName) {
+      case 'dmTitle':
+        return self::resolve_dmTitle($title, $child);
+        break;
+      case 'pmTitle':
+        return self::resolve_pmTitle($title);
         break;
       default:
         # code...
@@ -276,11 +380,16 @@ class CSDBStatic
       $externalPubRefIdent = $externalPubRefIdent[0];
     }
 
-    $externalPubCode = isset($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]) ? 'Dummy Ext Pub Code' : null;
-    $externalPubTitle = isset($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]) ? 'Dummy Ext Pub Title' : null;
-    $externalPubIssueInfo = isset($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]) ? 'Dummy Ext Pub Issue Info' : null;
+    // $externalPubCode = isset($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]) ? 'Dummy Ext Pub Code' : null;
+    // $externalPubTitle = isset($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]) ? 'Dummy Ext Pub Title' : null;
+    // $externalPubIssueInfo = isset($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]) ? 'Dummy Ext Pub Issue Info' : null;
+    $externalPubCode = ($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]);
+    $externalPubTitle = ($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]);
+    $externalPubIssueInfo = ($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]);
 
-    return $externalPubCode ? $externalPubCode . "_" . ($externalPubTitle ? $externalPubTitle . "_" . ($externalPubIssueInfo ?? ''
+    return $externalPubCode ? $externalPubCode->textContent . 
+    ($externalPubTitle ? "_" . $externalPubTitle->textContent . 
+    ($externalPubIssueInfo ? "_" . $externalPubIssueInfo->textContent : ''
     ) : ''
     ) : '';
   }
@@ -310,7 +419,7 @@ class CSDBStatic
     return $pmTitle->nodeValue . ($shortPmTitle ? " - " . $shortPmTitle->nodeValue : '');
   }
 
-  public static function resolve_dmTitle($dmTitle, string $child = '')
+  public static function resolve_dmTitle($dmTitle, $child = '')
   {
     if (empty($dmTitle)) return '';
     // untuk mengakomodir penggunaan fungsi di XSLT
@@ -473,6 +582,7 @@ class CSDBStatic
   }
 
   /**
+   * depreciated. diganti checkLevelByPrefix
    * minimum value of level is 0 (zero)
    * @return int
    */
@@ -489,6 +599,11 @@ class CSDBStatic
       $level += 1;
     }
     return ($level < 0) ? (int) $minimum : (int) $level;
+  }
+
+  public static function checkLevelByPrefix(string $prefix = '')
+  {
+   return count(explode('.',$prefix));
   }
 
   /**
@@ -868,6 +983,7 @@ class CSDBStatic
       $filename = self::detectIMF($path, $filename);
     }
     if(!$filename) return new \DOMDocument;
+    
     CSDBError::$processId = 'ignore';
     $CSDBObject = new CSDBObject("5.0");
     if(!file_exists($path. DIRECTORY_SEPARATOR. $filename)){
