@@ -2,6 +2,8 @@
 
 namespace Ptdi\Mpub\Main;
 
+use function GuzzleHttp\choose_handler;
+
 class CSDBStatic
 {
   protected static string $PDF_MasterName = '';
@@ -373,25 +375,30 @@ class CSDBStatic
     return $issueDate_text;
   }
 
-  public static function resolve_externalPubRefIdent($externalPubRefIdent)
+  public static function resolve_externalPubRefIdent($externalPubRefIdent, $codingScheme = '')
   {
     if (empty($externalPubRefIdent)) return '';
     if (is_array($externalPubRefIdent)) {
       $externalPubRefIdent = $externalPubRefIdent[0];
     }
 
-    // $externalPubCode = isset($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]) ? 'Dummy Ext Pub Code' : null;
-    // $externalPubTitle = isset($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]) ? 'Dummy Ext Pub Title' : null;
-    // $externalPubIssueInfo = isset($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]) ? 'Dummy Ext Pub Issue Info' : null;
     $externalPubCode = ($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]);
     $externalPubTitle = ($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]);
     $externalPubIssueInfo = ($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]);
 
-    return $externalPubCode ? $externalPubCode->textContent . 
+    $ident =  $externalPubCode ? $externalPubCode->textContent . 
     ($externalPubTitle ? "_" . $externalPubTitle->textContent . 
     ($externalPubIssueInfo ? "_" . $externalPubIssueInfo->textContent : ''
     ) : ''
     ) : '';
+
+    $extension = '';
+    switch($codingScheme){
+      case 'PDF':
+        $extension = '.pdf';
+        break;
+    }
+    return $ident . $extension;
   }
 
   public static function resolve_languange($languange = null)
