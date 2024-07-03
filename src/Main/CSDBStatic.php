@@ -18,6 +18,24 @@ class CSDBStatic
     self::$PDF_MasterName = $text;
   }
 
+  /**
+   * digunakan agar tidak ada multiple masterName di xsl fo layout
+   */
+  public static array $masterName = [];
+
+  /**
+   * digunakan sekalian untuk check apakah masterName sudah di tambahkan ke layout atau belum
+   */
+  public static function add_masterName(string $name)
+  {
+    if(!in_array($name, self::$masterName, true)){
+      self::$masterName[] = $name;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   
   /**
    * [
