@@ -6,6 +6,10 @@ use function GuzzleHttp\choose_handler;
 
 class CSDBStatic
 {
+  /**
+   * what masterName (@pmType) used currently of transformatting
+   * mungkin nanti dipindahkan ke class CSDBObject saja
+   */
   protected static string $PDF_MasterName = '';
 
   public static function get_PDF_MasterName()
@@ -21,7 +25,7 @@ class CSDBStatic
   /**
    * digunakan agar tidak ada multiple masterName di xsl fo layout
    */
-  public static array $masterName = [];
+  protected static array $masterName = [];
 
   /**
    * digunakan sekalian untuk check apakah masterName sudah di tambahkan ke layout atau belum

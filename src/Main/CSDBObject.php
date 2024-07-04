@@ -29,7 +29,17 @@ class CSDBObject
   protected \DOMDocument $CCTdoc;
   protected \DOMDocument $PCTdoc;
 
+  /**
+   * sejauh ini pmEntryTitle digunakan di header PDF
+   */
   protected string $pmEntryTitle = '';
+  
+  /**
+   * what entryType (@pmEntryType) used currently of transformatting
+   * digunakan maintPlanning (scheduleXsd) karena table-table nya beda style. Mungkin akan digunakan di schema lainnya nanti
+   * value string sebaiknya bukan berupa S1000D standard attribute value, melainkan sudah di interpretasikan, misal pmt01 adalah 'TP' atau 'Title Page'
+   */
+  protected string $pmEntryType = '';
 
   /**
    * @param string $filename include absolute path
@@ -944,5 +954,15 @@ class CSDBObject
   public function get_pmEntryTitle()
   {
     return $this->pmEntryTitle;
+  }
+
+  public function get_pmEntryType()
+  {
+    return $this->pmEntryType;
+  }
+
+  public function set_pmEntryType(string $text)
+  {
+    $this->pmEntryType = $text;
   }
 }
