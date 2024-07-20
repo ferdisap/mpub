@@ -3,8 +3,10 @@
 namespace Ptdi\Mpub\Main;
 
 use DOMDocument;
+use Serializable;
 
-class CSDBObject
+class CSDBObject 
+// implements Serializable
 {
 
   protected string $version = "5.0";
@@ -13,12 +15,26 @@ class CSDBObject
   public bool $formatOutput = false;
 
   protected string $filename = '';
+
+  /**
+   * depreciated. Ini bisa diganti dengan mudah oleh doctype setiap document XML
+   */
   protected string $initial = '';
+
   protected string $path = '';
   protected array $breakDownURI = [];
 
   public bool $XSIValidationResult = false;
   public bool $BREXValidationResult = false;
+
+  /**
+   * dipakai di CsdbServiceController untuk transform
+   * dipakai di setiap model, khususnya comment untuk createXML
+   * nanti diubah mungkin berbeda antara pdf dan html meskupun harusnya SAMA. 
+   * Nanti ConfigXML mungkin tidak diperlukan jika fitur BREX sudah siap sepenuhnya.
+   * Soalnya Brex terdiri dari banyak config
+   */
+  protected \DOMDocument $ConfigXML;
 
   /**
    *  bisa berupa getID3 array or \DOMDocument
@@ -52,6 +68,12 @@ class CSDBObject
     $this->PCTdoc = new DOMDocument();
   }
 
+  public function setConfigXML($filename)
+  {
+    $this->ConfigXML = new DOMDOcument();
+    $this->ConfigXML->load($filename);
+  }
+
   public function __get($props)
   {
     if ($props === 'filename') {
@@ -71,12 +93,712 @@ class CSDBObject
    */
   public function isS1000DDoctype()
   {
-    if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata'])){
+    if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata', 'ddn', 'comment'])){
       return true;
     } else {
       CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 's1000d_doctype', "document must be be S1000D standard type.");
       return false;
     }
+  }
+
+  /**
+   * awalnya digunakan untuk membuat DML
+   * harus set property $path dulu 
+   * @return void
+   */
+  public function createDML(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], array $otherOptions = []) :void
+  {
+    $this->document = new DOMDocument('1.0', 'UTF-8');
+    $this->document->preserveWhiteSpace = $this->preserveWhiteSpace;
+    $this->document->formatOutput = $this->formatOutput;
+    $identAndStatusSetion = $this->create_dml_identAndStatusSection($modelIdentCode, $originator, $dmlType, $securityClassification, $brexDmRef, $remarks, $otherOptions);
+    $dmlString = <<<EOL
+    <!DOCTYPE dml []>
+    <dml>
+      $identAndStatusSetion
+      <dmlContent>
+      </dmlContent>
+    </dml>
+    EOL;
+    $this->document->loadXML($dmlString);
+    $this->document->documentElement->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:noNamespaceSchemaLocation', 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/dml.xsd');
+  }
+
+  public function createCOM($params = [])
+  {
+    $this->document = new DOMDocument('1.0', 'UTF-8');
+    $this->document->preserveWhiteSpace = $this->preserveWhiteSpace;
+    $this->document->formatOutput = $this->formatOutput;
+
+    $identAndStatusSetion = $this->create_com_identAndStatusSetion($params);
+    $commentConcent = $this->create_com_content($params);
+    $comString = <<<EOL
+    <!DOCTYPE comment[]>
+    <comment>
+      $identAndStatusSetion
+      $commentConcent
+    </comment>
+    EOL;
+    $this->document->loadXML($comString);
+    $this->document->documentElement->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:noNamespaceSchemaLocation', 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/comment.xsd');
+  }
+
+  public function createDDN($params = [])
+  {
+    $this->document = new DOMDocument('1.0', 'UTF-8');
+    $this->document->preserveWhiteSpace = $this->preserveWhiteSpace;
+    $this->document->formatOutput = $this->formatOutput;
+    $identAndStatusSection = $this->create_ddn_identAndStatusSection($params);
+    $ddnContent = $this->create_ddn_content($params);
+    $ddnString = <<<EOL
+    <!DOCTYPE ddn[]>
+    <ddn>{$identAndStatusSection}{$ddnContent}</ddn>
+    EOL;
+    $this->document->loadXML($ddnString);
+    $this->document->documentElement->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:noNamespaceSchemaLocation', 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/ddn.xsd');
+  }
+
+  /**
+   * element yang belum di aplikasikan: ddnStatus/controlAuthorityGroup, ddnStatus/dataRestriction, security/@commericalClassification, security/@caveat, security/@derivativeClassification
+   * @param Array key yang wajib: 'modelIdentCode, senderIdent, receiverIdent 
+   * brexDmRef, securityClassification, authorization,
+   * dispatchTo_enterpriseName, dispatchTo_lastName, dispatchTo_country, dispatchTo_city, 
+   * dispatchFrom_enterpriseName, dispatchFrom_lastName, dispatchFrom_country, dispatchFrom_city'
+   */
+  private function create_ddn_identAndStatusSection(Array $params)
+  {
+    $modelIdentCode = $params['modelIdentCode'];
+    $senderIdent = strtoupper($params['senderIdent']);
+    $receiverIdent = strtoupper($params['receiverIdent']);
+    $year = date('Y');
+    $month = date('m');
+    $day = date('d');
+    $seqNumber = function ($path) use ($modelIdentCode, $senderIdent, $receiverIdent, $year) {
+      $dir = scandir($path);
+      $collection = [];
+      foreach ($dir as $file) {
+        if (str_contains($file, strtoupper("DDN-{$modelIdentCode}-{$senderIdent}-{$receiverIdent}-{$year}"))) {
+          $collection[] = $file;
+        }
+      }
+      if (!empty($collection)) {
+        rsort($collection, SORT_STRING);
+        $c = array_map(function ($v) {
+          $v = str_replace(".xml", '', $v);
+          $v = explode("-", $v);
+          return $v;
+        }, $collection);
+        $max_seqNumber = $c[0][5];
+        $max_seqNumber++;
+        $max_seqNumber = str_pad($max_seqNumber, 5, '0', STR_PAD_LEFT);
+      }
+      return $max_seqNumber ?? str_pad(1, 5, '0', STR_PAD_LEFT);
+    };
+    $seqNumber = strtoupper($seqNumber($this->path));
+
+    // ddnStatus
+    $securityClassification = $params['securityClassification'];
+    $authorization = $params['authorization'];
+    $brexDmRef = CSDBStatic::decode_dmIdent($params['brexDmRef']);
+    $brexDmRef_learnCode = ($brexDmRef['dmCode']['learnCode'] == '') ? '' : 'learnCode=' . '"' . $brexDmRef['dmCode']['learnCode'] . '"';
+    $brexDmRef_learnEventCode = ($brexDmRef['dmCode']['learnEventCode'] == '') ? '' : 'learnEventCode=' . '"' . $brexDmRef['dmCode']['learnEventCode'] . '"';
+    $remarks = array_map((fn ($v) => $v ? "<simplePara>{$v}</simplePara>" : ''), $params['remarks'] ?? []);
+    $remarks = join("", $remarks);
+    $remarks = (empty($remarks)) ? '' :
+    <<<EOD
+    <remarks>{$remarks}</remarks>
+    EOD;
+
+    // dispatchTo
+    $dispatchTo_enterpriseName = $params['dispatchTo_enterpriseName'];
+    $dispatchTo_division = $params['dispatchTo_division'] ? "<division>{$params['dispatchTo_division']}</division>" : '';
+    $dispatchTo_enterpriseUnit = $params['dispatchTo_enterpriseUnit'] ? "<enterpriseUnit>{$params['dispatchTo_enterpriseUnit']}</enterpriseUnit>" : '';
+    $dispatchTo_lastName = $params['dispatchTo_lastName'];
+    $dispatchTo_firstName = $params['dispatchTo_firstName'] ? "<firstName>{$params['dispatchTo_firstName']}</firstName>" : '';
+    $dispatchTo_jobTitle = $params['dispatchTo_jobTitle'] ? "<jobTitle>{$params['dispatchTo_jobTitle']}</jobTitle>" : '';
+
+    $dispatchTo_department = $params["dispatchTo_department"] ? "<department>{$params['dispatchTo_department']}</department>" : '';
+    $dispatchTo_street = $params["dispatchTo_street"] ? "<street>{$params['dispatchTo_street']}</street>" : '';
+    $dispatchTo_postOfficeBox = $params["dispatchTo_postOfficeBox"] ? "<postOfficeBox>{$params['dispatchTo_postOfficeBox']}</postOfficeBox>" : '';
+    $dispatchTo_postalZipCode = $params["dispatchTo_postalZipCode"] ? "<postalZipCode>{$params['dispatchTo_postalZipCode']}</postalZipCode>" : '';
+    $dispatchTo_city = $params['dispatchTo_city'];
+    $dispatchTo_country = $params['dispatchTo_country'];
+    $dispatchTo_postalZipCode = $params["dispatchTo_postalZipCode"] ? "<postalZipCode>{$params['dispatchTo_postalZipCode']}</postalZipCode>" : '';
+    $dispatchTo_state = $params["dispatchTo_state"] ? "<state>{$params['dispatchTo_state']}</state>" : '';
+    $dispatchTo_province = $params["dispatchTo_province"] ? "<province>{$params['dispatchTo_province']}</province>" : '';
+    $dispatchTo_building = $params["dispatchTo_building"] ? "<building>{$params['dispatchTo_building']}</building>" : '';
+    $dispatchTo_room = $params["dispatchTo_room"] ? "<room>{$params['dispatchTo_room']}</room>" : '';
+    $dispatchTo_phoneNumber = '';
+    if(!empty($params['dispatchTo_phoneNumber'])){
+      foreach($params['dispatchTo_phoneNumber'] as $no){
+        $dispatchTo_phoneNumber .= <<<EOL
+        <phoneNumber>{$no}</phoneNumber>
+        EOL;
+      }
+    }
+    $dispatchTo_faxNumber = '';
+    if(!empty($params["dispatchTo_faxNumber"])){
+      foreach($params["dispatchTo_faxNumber"] as $no){
+        $dispatchTo_faxNumber .= <<<EOL
+        <faxNumber>{$no}</faxNumber>
+        EOL;
+      }
+    }
+    $dispatchTo_email = '';
+    if(!empty($params["dispatchTo_email"])){
+      foreach($params["dispatchTo_email"] as $no){
+        $dispatchTo_email .= <<<EOL
+        <email>{$no}</email>
+        EOL;
+      }
+    }
+    $dispatchTo_internet = '';
+    if(!empty($params["dispatchTo_internet"])){
+      foreach($params["dispatchTo_internet"] as $no){
+        $dispatchTo_internet .= <<<EOL
+        <internet>{$no}</internet>
+        EOL;
+      }
+    }
+    $dispatchTo_SITA = $params["dispatchTo_SITA"] ? "<SITA>{$params['dispatchTo_SITA']}</SITA>" : '';
+
+    // dispatchFrom
+    $dispatchFrom_enterpriseName = $params['dispatchFrom_enterpriseName'];
+    $dispatchFrom_division = $params['dispatchFrom_division'] ? "<division>{$params['dispatchFrom_division']}</division>" : '';
+    $dispatchFrom_enterpriseUnit = $params['dispatchFrom_enterpriseUnit'] ? "<enterpriseUnit>{$params['dispatchFrom_enterpriseUnit']}</enterpriseUnit>" : '';
+    $dispatchFrom_lastName = $params['dispatchFrom_lastName'];
+    $dispatchFrom_firstName = $params['dispatchFrom_firstName'] ? "<firstName>{$params['dispatchFrom_firstName']}</firstName>" : '';
+    $dispatchFrom_jobTitle = $params['dispatchFrom_jobTitle'] ? "<jobTitle>{$params['dispatchFrom_jobTitle']}</jobTitle>" : '';
+
+    $dispatchFrom_department = $params["dispatchFrom_department"] ? "<department>{$params['dispatchFrom_department']}</department>" : '';
+    $dispatchFrom_street = $params["dispatchFrom_street"] ? "<street>{$params['dispatchFrom_street']}</street>" : '';
+    $dispatchFrom_postOfficeBox = $params["dispatchFrom_postOfficeBox"] ? "<postOfficeBox>{$params['dispatchFrom_postOfficeBox']}</postOfficeBox>" : '';
+    $dispatchFrom_postalZipCode = $params["dispatchFrom_postalZipCode"] ? "<postalZipCode>{$params['dispatchFrom_postalZipCode']}</postalZipCode>" : '';
+    $dispatchFrom_city = $params['dispatchFrom_city'];
+    $dispatchFrom_country = $params['dispatchFrom_country'];
+    $dispatchFrom_postalZipCode = $params["dispatchFrom_postalZipCode"] ? "<postalZipCode>{$params['dispatchFrom_postalZipCode']}</postalZipCode>" : '';
+    $dispatchFrom_state = $params["dispatchFrom_state"] ? "<state>{$params['dispatchFrom_state']}</state>" : '';
+    $dispatchFrom_province = $params["dispatchFrom_province"] ? "<province>{$params['dispatchFrom_province']}</province>" : '';
+    $dispatchFrom_building = $params["dispatchFrom_building"] ? "<building>{$params['dispatchFrom_building']}</building>" : '';
+    $dispatchFrom_room = $params["dispatchFrom_room"] ? "<room>{$params['dispatchFrom_room']}</room>" : '';
+    $dispatchFrom_phoneNumber = '';
+    if(!empty($params['dispatchFrom_phoneNumber'])){
+      foreach($params['dispatchFrom_phoneNumber'] as $no){
+        $dispatchFrom_phoneNumber .= <<<EOL
+        <phoneNumber>{$no}</phoneNumber>
+        EOL;
+      }
+    }
+    $dispatchFrom_faxNumber = '';
+    if(!empty($params["dispatchFrom_faxNumber"])){
+      foreach($params["dispatchFrom_faxNumber"] as $no){
+        $dispatchFrom_faxNumber .= <<<EOL
+        <faxNumber>{$no}</faxNumber>
+        EOL;
+      }
+    }
+    $dispatchFrom_email = '';
+    if(!empty($params["dispatchFrom_email"])){
+      foreach($params["dispatchFrom_email"] as $no){
+        $dispatchFrom_email .= <<<EOL
+        <email>{$no}</email>
+        EOL;
+      }
+    }
+    $dispatchFrom_internet = '';
+    if(!empty($params["dispatchFrom_internet"])){
+      foreach($params["dispatchFrom_internet"] as $no){
+        $dispatchFrom_internet .= <<<EOL
+        <internet>{$no}</internet>
+        EOL;
+      }
+    }
+    $dispatchFrom_SITA = $params["dispatchFrom_SITA"] ? "<SITA>{$params['dispatchFrom_SITA']}</SITA>" : '';
+
+    $identAndStatusSection = <<<DDN
+    <identAndStatusSection>
+      <ddnAddress>
+        <ddnIdent>
+          <ddnCode modelIdentCode="{$modelIdentCode}" senderIdent="{$senderIdent}" receiverIdent="{$receiverIdent}" yearOfDataIssue="{$year}" seqNumber="{$seqNumber}" />
+        </ddnIdent>
+        <ddnAddressItems>
+          <issueDate year="{$year}" month="{$month}" day="{$day}"/>
+          <dispatchTo>
+            <dispatchAddress>
+              <enterprise>
+                <enterpriseName>{$dispatchTo_enterpriseName}</enterpriseName>
+                {$dispatchTo_division}
+                {$dispatchTo_enterpriseUnit}
+              </enterprise>
+              <dispatchPerson>
+                <lastName>{$dispatchTo_lastName}</lastName>
+                {$dispatchTo_firstName}
+                {$dispatchTo_jobTitle}
+              </dispatchPerson>
+              <address>
+                {$dispatchTo_department}
+                {$dispatchTo_street}
+                {$dispatchTo_postOfficeBox}
+                {$dispatchTo_postalZipCode}
+                <city>{$dispatchTo_city}</city>
+                <country>{$dispatchTo_country}</country>
+                {$dispatchTo_state}
+                {$dispatchTo_province}
+                {$dispatchTo_building}
+                {$dispatchTo_room}
+                {$dispatchTo_phoneNumber}
+                {$dispatchTo_faxNumber}
+                {$dispatchTo_email}
+                {$dispatchTo_internet}
+                {$dispatchTo_SITA}
+              </address>
+            </dispatchAddress>
+          </dispatchTo>
+          <dispatchFrom>
+            <dispatchAddress>
+              <enterprise>
+                <enterpriseName>{$dispatchFrom_enterpriseName}</enterpriseName>
+                {$dispatchFrom_division}
+                {$dispatchFrom_enterpriseUnit}
+              </enterprise>
+              <dispatchPerson>
+                <lastName>{$dispatchFrom_lastName}</lastName>
+                {$dispatchFrom_firstName}
+                {$dispatchFrom_jobTitle}
+              </dispatchPerson>
+              <address>
+                {$dispatchFrom_department}
+                {$dispatchFrom_street}
+                {$dispatchFrom_postOfficeBox}
+                {$dispatchFrom_postalZipCode}
+                <city>{$dispatchFrom_city}</city>
+                <country>{$dispatchFrom_country}</country>
+                {$dispatchFrom_state}
+                {$dispatchFrom_province}
+                {$dispatchFrom_building}
+                {$dispatchFrom_room}
+                {$dispatchFrom_phoneNumber}
+                {$dispatchFrom_faxNumber}
+                {$dispatchFrom_email}
+                {$dispatchFrom_internet}
+                {$dispatchFrom_SITA}
+              </address>
+            </dispatchAddress>
+          </dispatchFrom>
+        </ddnAddressItems>
+      </ddnAddress>
+      <ddnStatus>
+        <security securityClassification="{$securityClassification}"/>
+        <authorization>{$authorization}</authorization>
+        <brexDmRef>
+          <dmRef>
+          <dmRefIdent>
+            <dmCode assyCode="{$brexDmRef['dmCode']['assyCode']}" disassyCode="{$brexDmRef['dmCode']['disassyCode']}" disassyCodeVariant="{$brexDmRef['dmCode']['disassyCodeVariant']}" infoCode="{$brexDmRef['dmCode']['infoCode']}" infoCodeVariant="{$brexDmRef['dmCode']['infoCodeVariant']}" itemLocationCode="{$brexDmRef['dmCode']['itemLocationCode']}" modelIdentCode="{$brexDmRef['dmCode']['modelIdentCode']}" subSubSystemCode="{$brexDmRef['dmCode']['subSubSystemCode']}" subSystemCode="{$brexDmRef['dmCode']['subSystemCode']}" systemCode="{$brexDmRef['dmCode']['systemCode']}" systemDiffCode="{$brexDmRef['dmCode']['systemDiffCode']}" 
+              {$brexDmRef_learnCode} {$brexDmRef_learnEventCode}/>
+            <issueInfo inWork="{$brexDmRef['issueInfo']['inWork']}" issueNumber="{$brexDmRef['issueInfo']['issueNumber']}"/>
+            <language countryIsoCode="{$brexDmRef['language']['countryIsoCode']}" languageIsoCode="{$brexDmRef['language']['languageIsoCode']}"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      {$remarks}        
+      </ddnStatus>
+    </identAndStatusSection>
+    DDN;
+    return $identAndStatusSection;
+  }
+
+  /**
+   * @param Array element yang sunnah: deliveryListItems[]
+   * belum mengaplikasikan element ddnContent/mediaIdent
+   */
+  private function create_ddn_content(Array $params)
+  {
+    $content = "<ddnContent>";
+    if(!empty($params['deliveryListItemsFilename'])){
+      $content .= '<deliveryList>';
+      foreach($params['deliveryListItemsFilename'] as $filename){
+        $content .= <<<CNT
+        <deliveryListItem>
+          <dispatchFileName>{$filename}</dispatchFileName>
+        </deliveryListItem>
+        CNT;
+      }
+      $content .= '</deliveryList>';
+    }
+    $content .= "</ddnContent>";
+    return $content;
+  }
+
+  /**
+   * tidak support seqNumber yang ada letter nya 
+   * element security belum bisa mengcover @commercialSecurityAttGroup dan @derivativeClassificationRefId
+   * jika ingin menaruh <dmlRef> pada <dmlStatus>, maka gunakan otherOptions = ['dmlRef' = ['DML...', 'DML...]];
+   * @return string identAndStatusSection
+   */
+  private function create_dml_identAndStatusSection(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = [])
+  {
+    $year = date('Y');
+    $dmlCode = [strtolower($dmlType) == 's' ? 'CSL' : 'DML', $modelIdentCode, $originator, $dmlType, $year, ''];
+    $dmlCode = strtoupper(join('-', $dmlCode)); // DML-MALE-0001Z-P-2024-
+    $seqNumber = function ($path) use ($dmlCode) {
+      $dir = scandir($path);
+      $collection = [];
+      foreach ($dir as $file) {
+        if (str_contains($file, $dmlCode)) {
+          $collection[] = $file;
+        }
+      }
+      $c = array_map(function ($v) {
+        $v = preg_replace("/_.+/", '', $v); // menghilangkan issueInfo dan languange yang menempel di filename
+        $v = explode("-", $v);
+        return $v;
+      }, $collection);
+      if (!empty($c)) {
+        $max_seqNumber = $c[0][5];
+        // foreach ini harusnya tidak perlukan lagi, cukup lakukan rsort($collection, SORT_STRING);
+        foreach ($c as $dmlCode_array) {
+          if ((int)$max_seqNumber < (int)$dmlCode_array[5]) {
+            $max_seqNumber = $dmlCode_array[5];
+          }
+        }
+        $max_seqNumber = str_pad(((int)$max_seqNumber) + 1, 5, '0', STR_PAD_LEFT);
+      }
+      return $max_seqNumber ?? str_pad(1, 5, '0', STR_PAD_LEFT);
+      // inWork number pasti 01 jika buat BARU DML
+      // $c = array_map(function($v){
+      //   $v = preg_replace("/DML-[\w-]+_/", '',$v);
+      //   $v = preg_replace("/.xml/", '',$v);
+      //   $v = explode("-",$v);
+      //   return $v;
+      // }, $collection);
+      // $iw_max = str_pad(max($iw) + 1, 2, '0', STR_PAD_LEFT);
+      // if(!empty($c)){
+      //   $iw = array_map((fn($v) => (int)($v[1])), $c);
+      //   $iw_max = str_pad(max($iw) + 1, 2, '0', STR_PAD_LEFT);
+      // }
+      // return [$max_seqNumber ?? '00001', $iw_max ?? '01'];
+    };
+    $modelIdentCode = strtoupper($modelIdentCode);
+    $originator = strtoupper($originator);
+    $dmlType = strtolower($dmlType);
+    $seqNumber = strtoupper($seqNumber($this->path));
+    $inWork = '01';
+    $day = date('d');
+    $month = date('m');
+
+    $brexDmRef = CSDBStatic::decode_dmIdent($brexDmRef);
+
+    $remarks = array_map((fn ($v) => "<simplePara>{$v}</simplePara>"), $remarks);
+    $remarks = join("", $remarks);
+    $remarks = (empty($remarks)) ? '' :
+      <<<EOD
+    <remarks>{$remarks}</remarks>
+    EOD;
+
+    $learnCode = ($brexDmRef['dmCode']['learnCode'] == '') ? '' : 'learnCode=' . '"' . $brexDmRef['dmCode']['learnCode'] . '"';
+    $learnEventCode = ($brexDmRef['dmCode']['learnEventCode'] == '') ? '' : 'learnEventCode=' . '"' . $brexDmRef['dmCode']['learnEventCode'] . '"';
+
+    $dmlRef = '';
+    if (isset($otherOptions['dmlRef']) and is_array($otherOptions['dmlRef'])) {
+      $dmlRef = array_map(function ($filename) {
+        $filename = CSDBStatic::decode_dmlIdent($filename);
+        return $filename = $filename['xml_string'];
+      }, $otherOptions['dmlRef']);
+      $dmlRef = join("", $dmlRef);
+    }
+
+    $identAndStatusSection = <<<EOL
+      <identAndStatusSection>
+        <dmlAddress>
+          <dmlIdent>
+            <dmlCode dmlType="{$dmlType}" modelIdentCode="{$modelIdentCode}" senderIdent="{$originator}" seqNumber="{$seqNumber}" yearOfDataIssue="{$year}"></dmlCode>
+            <issueInfo inWork="{$inWork}" issueNumber="000"></issueInfo>
+          </dmlIdent>
+          <dmlAddressItems>
+            <issueDate day="{$day}" month="{$month}" year="{$year}"></issueDate>
+          </dmlAddressItems>
+        </dmlAddress>
+        <dmlStatus>
+          <security securityClassification="{$securityClassification}"></security>
+          {$dmlRef}
+          <brexDmRef>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode assyCode="{$brexDmRef['dmCode']['assyCode']}" disassyCode="{$brexDmRef['dmCode']['disassyCode']}" disassyCodeVariant="{$brexDmRef['dmCode']['disassyCodeVariant']}" infoCode="{$brexDmRef['dmCode']['infoCode']}" infoCodeVariant="{$brexDmRef['dmCode']['infoCodeVariant']}" itemLocationCode="{$brexDmRef['dmCode']['itemLocationCode']}" modelIdentCode="{$brexDmRef['dmCode']['modelIdentCode']}" subSubSystemCode="{$brexDmRef['dmCode']['subSubSystemCode']}" subSystemCode="{$brexDmRef['dmCode']['subSystemCode']}" systemCode="{$brexDmRef['dmCode']['systemCode']}" systemDiffCode="{$brexDmRef['dmCode']['systemDiffCode']}" 
+                  {$learnCode} {$learnEventCode}/>
+                <issueInfo inWork="{$brexDmRef['issueInfo']['inWork']}" issueNumber="{$brexDmRef['issueInfo']['issueNumber']}"/>
+                <language countryIsoCode="{$brexDmRef['language']['countryIsoCode']}" languageIsoCode="{$brexDmRef['language']['languageIsoCode']}"/>
+              </dmRefIdent>
+            </dmRef>
+          </brexDmRef>
+          {$remarks}
+        </dmlStatus>
+      </identAndStatusSection>
+    EOL;
+
+    return $identAndStatusSection;    
+  }
+
+  /**
+   * jika commentType = Q, seqNumber 2digit terakhir adalah 'xxx00', else ++ dan 3digit pertama 
+   * element yang belum diaplikasikan: commentStatus/controlAuthorityGroup, commentStatus/dataRestriction, security/@commericalClassification, security/@caveat, security/@derivativeClassification
+   * @param Array key yang wajib: 'modelIdentCode, senderIdent, commentType, languageIsoCode, countryIsoCode, brexDmRef, enterpriseName, lastName, country, city, 
+   * 'securityClassification, commentPriorityCode, responseType'
+   */
+  private function create_com_identAndStatusSetion(Array $params)
+  {
+    $modelIdentCode = $params['modelIdentCode'];
+    $senderIdent = strtoupper($params['senderIdent']);
+    $year = date('Y');
+    $seqNumberRef = strtolower($params['seqNumberRef']) ?? '';
+    $commentType = strtolower($params['commentType']);
+    $seqNumber = function($path) use($modelIdentCode,$senderIdent,$year,$seqNumberRef,$commentType){
+      $dir = scandir($path);
+      $collection = [];
+      foreach ($dir as $file) {
+        if(!($seqNumberRef)){
+          // dd(join('-',['COM',$modelIdentCode,$senderIdent, $commentType, $year]));
+          if (str_contains($file, strtoupper(join('-',['COM',$modelIdentCode,$senderIdent, $commentType,$year])))) {
+            $collection[] = $file;
+          }
+        } else {
+          if (str_contains($file, strtoupper(join('-',['COM',$modelIdentCode,$senderIdent, $commentType,$year,$seqNumberRef])))) {
+            $collection[] = $file;
+          }
+        }
+      }
+      if (!empty($collection)) {
+        rsort($collection, SORT_STRING);
+        $c = array_map(function ($v) {
+          $v = preg_replace("/_.+/", '', $v); // menghilangkan languange yang menempel di filename
+          $v = str_replace(".xml", '', $v);
+          $v = explode("-", $v);
+          return $v;
+        }, $collection);
+        $max_seqNumber = $c[0][5];
+        $threeDigitFirst = substr($max_seqNumber,0,3);
+        $twoDigitLast = substr($max_seqNumber,-2,2);        
+        if(!$seqNumberRef AND strtoupper($commentType) === 'Q'){
+          $threeDigitFirst++;
+          $twoDigitLast = '00';
+        } elseif($seqNumberRef AND strtoupper($commentType) != 'Q'){
+          $threeDigitFirst = substr($seqNumberRef,0,3);
+          $comRef = array_filter($collection, function($v) use($modelIdentCode,$senderIdent,$year,$seqNumberRef,$commentType, $threeDigitFirst){
+            $r = strtoupper(join('-',['COM',$modelIdentCode,$senderIdent,'(Q|I)',$year,$threeDigitFirst]));
+            $r = ("/{$r}.+/");
+            preg_match($r, $v,$r);
+            if(!empty($r)) return true;
+          });
+          $comRef = str_replace(".xml",'',$comRef[0]);
+          $twoDigitLast = substr($comRef,-2,2);
+          $twoDigitLast++;
+        } else {
+          return rand(0,99999);
+        }
+        $threeDigitFirst = str_pad($threeDigitFirst, 3, '0', STR_PAD_LEFT);
+        $twoDigitLast = str_pad($twoDigitLast, 2, '0', STR_PAD_LEFT);
+        return $threeDigitFirst . $twoDigitLast;
+      }
+      return "00100"; // nomor baru pertamakali
+    };
+    $seqNumber = strtoupper($seqNumber($this->path));
+    $brexDmRef = CSDBStatic::decode_dmIdent($params['brexDmRef']);
+    $remarks = array_map((fn ($v) => "<simplePara>{$v}</simplePara>"), $params['remarks'] ?? []);
+    $remarks = join("", $remarks);
+    $remarks = (empty($remarks)) ? '' :
+      <<<EOD
+    <remarks>{$remarks}</remarks>
+    EOD;
+    $languageIsoCode = strtolower($params['languageIsoCode']);
+    $countryIsoCode = strtoupper($params['countryIsoCode']);
+    $commentTitle = $params['commentTitle'];
+    $day = date('d');
+    $month = date('m');
+
+    // enterprise
+    $enterpriseName = $params['enterpriseName'];
+    $division = $params['division'] ?? '';
+    $enterpriseUnit = $params['enterpriseUnit'] ?? '';
+
+    // dispatchPerson
+    $lastName = $params['lastName'];
+    $firstName = $params['firstName'] ?? '';
+    $jobTitle = $params['jobTitle'] ?? '';
+
+    // address
+    $department = $params["department"] ?? '';
+    $street = $params["street"] ?? '';
+    $postOfficeBox = $params["postOfficeBox"] ?? '';
+    $postalZipCode = $params["postalZipCode"] ?? '';
+    $city = $params["city"];
+    $country = $params["country"];
+    $state = $params["state"] ?? '';
+    $province = $params["province"] ?? '';
+    $building = $params["building"] ?? '';
+    $room = $params["room"] ?? '';
+    $phoneNumber = '';
+    if(!empty($params["phoneNumber"])){
+      foreach($params["phoneNumber"] as $no){
+        $phoneNumber .= <<<EOL
+        <phoneNumber>{$no}</phoneNumber>
+        EOL;
+      }
+    }
+    $faxNumber = '';
+    if(!empty($params["faxNumber"])){
+      foreach($params["faxNumber"] as $no){
+        $faxNumber .= <<<EOL
+        <faxNumber>{$no}</faxNumber>
+        EOL;
+      }
+    }
+    $email = '';
+    if(!empty($params["email"])){
+      foreach($params["email"] as $no){
+        $email .= <<<EOL
+        <email>{$no}</email>
+        EOL;
+      }
+    }
+    $internet = '';
+    if(!empty($params["internet"])){
+      foreach($params["internet"] as $no){
+        $internet .= <<<EOL
+        <internet>{$no}</internet>
+        EOL;
+      }
+    }
+    $SITA = $params["SITA"] ?? '';
+
+    // commentStatus
+    $securityClassification = $params['securityClassification'];
+    $domXpath = new \DOMXpath($this->ConfigXML);
+    if(strtolower(substr($params['commentPriorityCode'],0-2)) === 'cp' AND strlen($params['commentPriorityCode']) === 4){
+      $cpc = $params['commentPriorityCode'];
+      $commentPriorityCode = $domXpath->evaluate("string(//commentPriority[@code = '{$cpc}'])");
+      $commentPriorityCode = $commentPriorityCode ? $commentPriorityCode : $cpc;
+    } else {
+      $commentPriorityCode = $params['commentPriorityCode'];
+    }
+    if(strtolower(substr($params['responseType'],0-2)) === 'rt' AND strlen($params['responseType']) === 4){
+      $crt = $params['responseType'];
+      $responseType = $domXpath->evaluate("string(//commentResponse[@type = '{$crt}'])");
+      $responseType = $responseType ? $responseType : $crt;
+    } else {
+      $responseType = $params['responseType'];
+    }
+    $commentResponse = '';
+    if($responseType){
+      $commentResponse = <<<EOD
+      <commentResponse responseType="{$responseType}"/>
+      EOD;
+    }
+    $commentRefsContent = '';
+    if(empty($params['commentRefs'])) $commentRefsContent = "<noReferences/>";
+    else {
+      sort($params['commentRefs']);
+      $commentRefsArray = [];
+      foreach($params['commentRefs'] as $ref){
+        if($ref){
+          $ident = CSDBStatic::decode_ident($ref);
+          if($ident === 'DMC-') $commentRefsArray['dmRefGroup'] = $ident['xml_string'];
+          elseif($ident === 'PMC-') $commentRefsArray['pmRefGroup'] = $ident['xml_string'];
+          elseif($ident === 'DML-') $commentRefsArray['dmlRefGroup'] = $ident['xml_string'];
+          elseif($ident === 'DDN-') $commentRefsArray['ddnRefGroup'] = $ident['xml_string'];
+        }
+      }
+      foreach($commentRefsArray as $groupName => $ref){
+        $commentRefsContent = "<{$groupName}>{$ref}</{$groupName}>";
+      }
+    }
+    $commentRefs = <<<EOF
+    <commentRefs>{$commentRefsContent}</commentRefs>
+    EOF;
+
+    // brexDmRef
+    $brexDmRef_learnCode = ($brexDmRef['dmCode']['learnCode'] == '') ? '' : 'learnCode=' . '"' . $brexDmRef['dmCode']['learnCode'] . '"';
+    $brexDmRef_learnEventCode = ($brexDmRef['dmCode']['learnEventCode'] == '') ? '' : 'learnEventCode=' . '"' . $brexDmRef['dmCode']['learnEventCode'] . '"';
+
+    $identAndStatusSection = <<<EOL
+    <identAndStatusSection>
+      <commentAddress>
+        <commentIdent>
+          <commentCode modelIdentCode="{$modelIdentCode}" senderIdent="{$senderIdent}" yearOfDataIssue="{$year}" seqNumber="{$seqNumber}" commentType="{$commentType}"/>
+          <language languageIsoCode="{$languageIsoCode}" countryIsoCode="{$countryIsoCode}"/>
+        </commentIdent>
+        <commentAddressItems>
+          <commentTitle>{$commentTitle}</commentTitle>
+          <issueDate day="{$day}" month="{$month}" year="{$year}" />
+          <commentOriginator>
+            <dispatchAddress>
+              <enterprise>
+                <enterpriseName>{$enterpriseName}</enterpriseName>
+                <division>{$division}</division>
+                <enterpriseUnit>{$enterpriseUnit}</enterpriseUnit>
+              </enterprise>
+              <dispatchPerson>
+                <lastName>{$lastName}</lastName>
+                <firstName>{$firstName}</firstName>
+                <jobTitle>{$jobTitle}</jobTitle>
+              </dispatchPerson>
+              <address>
+                <department>{$department}</department>
+                <street>{$street}</street>
+                <postOfficeBox>{$postOfficeBox}</postOfficeBox>
+                <postalZipCode>{$postalZipCode}</postalZipCode>
+                <city>{$city}</city>
+                <country>{$country}</country>
+                <state>{$state}</state>
+                <province>{$province}</province>
+                <building>{$building}</building>
+                <room>{$room}</room>
+                {$phoneNumber}
+                {$faxNumber}
+                {$email}
+                {$internet}
+                <SITA>{$SITA}</SITA>
+              </address>
+            </dispatchAddress>
+          </commentOriginator>
+        </commentAddressItems>
+      </commentAddress>
+      <commentStatus>
+        <security securityClassification="{$securityClassification}"/>
+        <commentPriority commentPriorityCode="{$commentPriorityCode}"/>
+        {$commentResponse}
+        {$commentRefs}
+        <brexDmRef>
+            <dmRef>
+              <dmRefIdent>
+                <dmCode assyCode="{$brexDmRef['dmCode']['assyCode']}" disassyCode="{$brexDmRef['dmCode']['disassyCode']}" disassyCodeVariant="{$brexDmRef['dmCode']['disassyCodeVariant']}" infoCode="{$brexDmRef['dmCode']['infoCode']}" infoCodeVariant="{$brexDmRef['dmCode']['infoCodeVariant']}" itemLocationCode="{$brexDmRef['dmCode']['itemLocationCode']}" modelIdentCode="{$brexDmRef['dmCode']['modelIdentCode']}" subSubSystemCode="{$brexDmRef['dmCode']['subSubSystemCode']}" subSystemCode="{$brexDmRef['dmCode']['subSystemCode']}" systemCode="{$brexDmRef['dmCode']['systemCode']}" systemDiffCode="{$brexDmRef['dmCode']['systemDiffCode']}" 
+                  {$brexDmRef_learnCode} {$brexDmRef_learnEventCode}/>
+                <issueInfo inWork="{$brexDmRef['issueInfo']['inWork']}" issueNumber="{$brexDmRef['issueInfo']['issueNumber']}"/>
+                <language countryIsoCode="{$brexDmRef['language']['countryIsoCode']}" languageIsoCode="{$brexDmRef['language']['languageIsoCode']}"/>
+              </dmRefIdent>
+            </dmRef>
+          </brexDmRef>
+        {$remarks}
+      </commentStatus>
+    </identAndStatusSection>
+    EOL;
+    return $identAndStatusSection;
+  }
+
+  /**
+   * masih belum mengaplikasikan attachment untuk comment
+   */
+  private function create_com_content(Array $params)
+  {
+    $simpleParas = '';
+    foreach($params['commentContentSimplePara'] as $simplePara){
+      $simpleParas .= <<<EOA
+      <simplePara>{$simplePara}</simplePara>
+      EOA;
+    }
+    return <<<EOD
+    <commentContent>{$simpleParas}</commentContent>
+    EOD;
+    // selanjutnya buat attachment.
   }
 
   /**
@@ -87,7 +809,7 @@ class CSDBObject
   public function load(string $filename = '')
   {
     libxml_use_internal_errors(true);
-    $mime = file_exists($filename) ? mime_content_type($filename) : '';
+    $mime = file_exists($filename) ? mime_content_type($filename) : 'undefined';
     if (str_contains($mime, 'text')) {
       $dom = new \DOMDocument('1.0');
       $dom->preserveWhiteSpace = $this->preserveWhiteSpace;
@@ -100,7 +822,12 @@ class CSDBObject
       if(!$dom->documentElement) return false;
       $this->document = $dom;
       return true;
-    } else {
+    } 
+    elseif($mime === 'undefined'){
+      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'load', "Undefined mime content type or file doesn't exist");
+      return false;
+    }
+    else {
       $this->document = new ICNDocument();
       if($this->document->load($filename)) return true;
       return false;
@@ -180,12 +907,17 @@ class CSDBObject
         $docIdent = call_user_func(CSDBStatic::class . "::resolve_" . $initial . "Ident", [$ident[0]]); //  argument#0 domElement / array, argument#1 prefix, argument#2 format
       }
       return $this->filename = $docIdent;
-    } else {
+    } 
+    elseif ($this->document instanceof ICNDocument) {
       return $this->filename = $this->document['filename'];
+    }
+    else {
+      return $this->filename = '';
     }
   }
 
   /**
+   * DEPRECIATED. Karena $inital juga depreciated
    * get and set Initial
    * @return string
    */
@@ -193,7 +925,8 @@ class CSDBObject
   {
     if ($this->document instanceof \DOMDocument) {
       $initial = $this->document->doctype->nodeName;
-      $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnmetadata' ? 'imf' : $initial);
+      // $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnmetadata' ? 'imf' : $initial);
+      $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnMetadataFile' ? 'imf' : $initial);
       return $this->initial = $initial;
     }
   }
@@ -210,16 +943,26 @@ class CSDBObject
     return $this->path = $this->breakDownURI['path'];
   }
 
+  /**
+   * awalnya dibuat untuk create DML
+   */
+  public function setPath(string $path) :void
+  {
+    $this->path = $path;
+  }
+
   public function getSC($return = 'text'): string
   {
-    if ($this->document instanceof \DOMDocument) {
-      $domXpath = new \DOMXpath($this->document);
-      $sc = $domXpath->evaluate("string(//identAndStatusSection/descendant::security/@securityClassification)");
-    } elseif ($this->document instanceof \DOMElement) {
-      $sc = $this->document->getAttribute('securityClassification');
-    } else {
-      return '';
-    }
+    // if ($this->document instanceof \DOMDocument) {
+    //   $domXpath = new \DOMXpath($this->document);
+    //   $sc = $domXpath->evaluate("string(//identAndStatusSection/descendant::security/@securityClassification)");
+    // } elseif ($this->document instanceof \DOMElement) {
+    //   $sc = $this->document->getAttribute('securityClassification');
+    // } else {
+    //   return '';
+    // }
+    $domXpath = new \DOMXpath($this->document);
+    $sc = $domXpath->evaluate("string(//identAndStatusSection/descendant::security/@securityClassification)");
 
     if ($return === 'number') {
       return $sc;
@@ -235,6 +978,25 @@ class CSDBObject
       ];
       return $a[$sc] ?? '';
     }
+  }
+
+  public function getQA(int $index = null, $qa= null) :string
+  {
+    if(!$qa){
+      $domXpath = new \DOMXpath($this->document);
+      if($index) $qa = $domXpath->evaluate("//identAndStatusSection/descendant::qualityAssurance/*[position() = '{$index}']")[0];
+      else $qa = $domXpath->evaluate("//identAndStatusSection/descendant::qualityAssurance/*[last()]")[0];
+    }
+    if($qa){
+      if($qa->tagName === 'unverified') return 'unverified';
+      elseif($qa->tagName === 'firstVerification') {
+        return 'First Verification - ' . $qa->getAttribute('verificationType');
+      }
+      elseif($qa->tagName === 'secondVerification') {
+        return 'Second Verification - ' . $qa->getAttribute('verificationType');
+      }
+    }
+    return '';
   }
 
   public function getTitle($child = ''): string
@@ -259,6 +1021,9 @@ class CSDBObject
     return $title;
   }
 
+  /**
+   * DEPRECIATED
+   */
   public function getStatus($child = ''): string
   {
     switch ($child) {
@@ -288,19 +1053,55 @@ class CSDBObject
     }
   }
 
+  /**
+   * saat membuat BREX dm, tidak bisa getBrexDm karena yang dibuat adalah BREX.
+   * Soalnya saat pembuatan,inWork tidak 00 padahal kalau mau nulis brexDmRef, harusnya brexDmRef tidak boleh inWork non-00 (tidak resmi release)
+   * @return self
+   */
   public function getBrexDm() :self
   {
     if(!($this->document instanceof \DOMDocument) OR !$this->document->doctype){
       return new CSDBObject("5.0");
     }
     $domXpath = new \DOMXPath($this->document);
-    $brexDmRef = $domXpath->evaluate("//identAndStatusSection/{$this->initial}Status/brexDmRef")[0];
+    $brexDmRef = $domXpath->evaluate("//identAndStatusSection/descendant::brexDmRef")[0];
     $brexDmRef = CSDBStatic::resolve_dmIdent($brexDmRef);
     if(!$brexDmRef) return new CSDBObject("5.0");
     
     $BREXObject = new CSDBObject("5.0");
     $BREXObject->load($this->path . DIRECTORY_SEPARATOR . $brexDmRef);
     return $BREXObject;
+  }
+
+  /**
+   * @return string
+   */
+  public function getRemarks(mixed $remarks)
+  {
+    if(!$remarks){
+      $domXpath = new \DOMXPath($this->document);
+      $remarks = $domXpath->evaluate("//identAndStatusSection/descendant::remarks")[0];
+    }
+    $str = '';
+    if($remarks){
+      $simpleParas = $remarks->getElementsByTagName('simplePara');
+      foreach($simpleParas as $p){
+        $str .= ' \n\r ' . $p->nodeValue;  
+      }
+    }
+    return $str;
+    
+  }
+
+  /**
+   * awalnya dibuat untuk fungsi CSDBObject@getBrexDm, class ini
+   * @return bool
+   */
+  public function isBrex() :bool
+  {
+    $decode = CSDBStatic::decode_dmIdent($this->filename);
+    if($decode['dmCode']['infoCode'] === '022') return true;
+    return false;
   }
 
   /**
@@ -831,8 +1632,7 @@ class CSDBObject
   public function commit() :bool
   {
     if(!$this->document) return false;
-    $initial = $this->document->doctype;
-    $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnmetadata' ? "imf" : '');
+    $initial = $this->getInitial();
     $domxpath = new \DOMXPath($this->document);
     $issueInfo = $domxpath->evaluate("//identAndStatusSection/{$initial}Address/{$initial}Ident/issueInfo")[0];
     $inWork = (int)$issueInfo->getAttribute('inWork');
@@ -844,6 +1644,15 @@ class CSDBObject
     else ($inWork++);
     $inWork = str_pad($inWork, 2, '0', STR_PAD_LEFT);
     $issueInfo->setAttribute('inWork', $inWork);
+
+    if($ident = $domxpath->evaluate("identAndStatusSection/{$initial}Address/{$initial}Ident") AND !empty($ident[0])){
+      $new_filename = call_user_func(
+        CSDBStatic::class . "::resolve_" . $initial . "Ident", 
+        $ident[0]
+      );
+      $this->filename = $new_filename;
+    } else return false;
+
     return true;
   }
 
@@ -890,8 +1699,8 @@ class CSDBObject
     foreach ($params as $key => $param) {
       $xsltproc->setParameter('', $key, $param);
     }
+    $xsltproc->setParameter('', 'ConfigXML_uri', $this->ConfigXML->baseURI);
     $transformed = $xsltproc->transformToDoc($this->document);
-    // dd($transformed);
     if(!$transformed) return '';
     $bookmarkTree_el = $transformed->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree')[0];
     
@@ -901,13 +1710,21 @@ class CSDBObject
       $imported = $bookmarkTree_el->ownerDocument->importNode($new_bookmarks, true);
       $bookmarkTree_el->replaceWith($imported);
     } else {
-      $bookmarkTree_el->remove();
+      $bookmarkTree_el ? $bookmarkTree_el->remove() : null;
     }
     
     $transformed->preserveWhiteSpace = false;
-    $transformed = $transformed->saveXML();
+    $transformed = $transformed->saveXML(null,LIBXML_NOXMLDECL);
     $transformed = preg_replace("/\s+/m", ' ', $transformed);
     return $transformed;    
+  }
+
+  /**
+   * Nanti dipikirkan apakah cukup pakai BREX atau BREX nya perlu di transform ke ConfigXML.
+   */
+  public function translateS1000DAttributeCodeToValue()
+  {
+    
   }
 
   // public function transform_to_foxml(string $xslFile, array $params = [], string $output = 'html') :string
@@ -965,4 +1782,5 @@ class CSDBObject
   {
     $this->pmEntryType = $text;
   }
+  
 }

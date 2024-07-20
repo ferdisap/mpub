@@ -143,6 +143,21 @@ class CSDBStatic
       case 'dmlIdent':
         return self::resolve_dmlIdent($ident, $prefix, $format);
         break;
+      case 'dmlRefIdent':
+        return self::resolve_dmlIdent($ident, $prefix, $format);
+        break;
+      case 'ddnIdent':
+        return self::resolve_ddnIdent($ident, $prefix, $format);
+        break;
+      case 'ddnRefIdent':
+        return self::resolve_ddnIdent($ident, $prefix, $format);
+        break;
+      case 'commentIdent':
+        return self::resolve_ddnIdent($ident, $prefix, $format);
+        break;
+      case 'commentRefIdent':
+        return self::resolve_commentIdent($ident, $prefix, $format);
+        break;
       default:
         # code...
         break;
@@ -203,6 +218,27 @@ class CSDBStatic
     $dmlCode = self::resolve_dmlCode($dmlIdent->getElementsByTagName('dmlCode')[0], $prefix);
     $issueInfo = ($if = self::resolve_issueInfo($dmlIdent->getElementsByTagName('issueInfo')[0])) ? "_" . $if : '';
     return strtoupper($dmlCode . $issueInfo) . $format;
+  }
+
+  public static function resolve_commentIdent($commentIdent = null, $prefix = 'COM-', $format = '.xml')
+  {
+    if (empty($commentIdent)) return '';
+    if (is_array($commentIdent)) {
+      $commentIdent = $commentIdent[0];
+    }
+    $commentCode = self::resolve_commentCode($commentIdent->getElementsByTagName('commentCode')[0], $prefix);
+    $languange = ($lg = self::resolve_languange($commentIdent->getElementsByTagName('language')[0])) ? "_" . $lg : '';;
+    return strtoupper($commentCode . $languange) . $format;
+  }
+
+  public static function resolve_ddnIdent($ddnIdent = null, $prefix = 'DDN-', $format = '.xml')
+  {
+    if (empty($ddnIdent)) return '';
+    if (is_array($ddnIdent)) {
+      $ddnIdent = $ddnIdent[0];
+    }
+    $ddnCode = self::resolve_ddnCode($ddnIdent->getElementsByTagName('ddnCode')[0], $prefix);
+    return strtoupper($ddnCode) . $format;
   }
 
   public static function resolve_infoEntityIdent($infoEntityIdent = null, $prefix = '', $format = '')
@@ -304,6 +340,52 @@ class CSDBStatic
       $modelIdentCode . "-" .
       $senderIdent . "-" .
       $dmlType . "-" .
+      $yearOfDataIssue . "-" .
+      $seqNumber;
+
+    return strtoupper($name);
+  }
+  
+  public static function resolve_commentCode($commentCode, string $prefix = 'COM-')
+  {
+    if (empty($commentCode)) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($commentCode)) {
+      $commentCode = $commentCode[0];
+    }
+    $modelIdentCode = $commentCode->getAttribute('modelIdentCode');
+    $senderIdent = $commentCode->getAttribute('senderIdent');
+    $yearOfDataIssue = $commentCode->getAttribute('yearOfDataIssue');
+    $seqNumber = $commentCode->getAttribute('seqNumber');
+    $commentType = $commentCode->getAttribute('commentType');
+
+    $name = $prefix .
+      $modelIdentCode . "-" .
+      $senderIdent . "-" .
+      $commentType . "-" .
+      $yearOfDataIssue . "-" .
+      $seqNumber;
+
+    return strtoupper($name);
+  }
+
+  public static function resolve_ddnCode($commentCode, string $prefix = 'DDN-')
+  {
+    if (empty($commentCode)) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($commentCode)) {
+      $commentCode = $commentCode[0];
+    }
+    $modelIdentCode = $commentCode->getAttribute('modelIdentCode');
+    $senderIdent = $commentCode->getAttribute('senderIdent');
+    $receiverIdent = $commentCode->getAttribute('receiverIdent');
+    $yearOfDataIssue = $commentCode->getAttribute('yearOfDataIssue');
+    $seqNumber = $commentCode->getAttribute('seqNumber');
+
+    $name = $prefix .
+      $modelIdentCode . "-" .
+      $senderIdent . "-" .
+      $receiverIdent . "-" .
       $yearOfDataIssue . "-" .
       $seqNumber;
 
@@ -694,10 +776,8 @@ class CSDBStatic
       case 'ICN-':
         return self::decode_infoEntityIdent($filename, $ref);
         break;
-      default:
-        return  '';
-        break;
     }
+    return array();
   }
   
   /**
@@ -824,6 +904,138 @@ class CSDBStatic
     return $data;
   }
 
+  /**
+   * @return Array
+   */
+  public static function decode_commentIdent(string $filename, $ref = true) :array
+  {
+    $prefix = 'COM-';
+    $f = str_replace($prefix, '', $filename);
+    $f = preg_replace('/.xml/', '', $f);
+
+    $f_array = explode('_', $f);
+    $code = $f_array[0];
+    // $issueInfo = $f_array[1] ?? '';
+    $language = $f_array[1] ?? '';
+
+    $code_array = explode('-', $code);
+    // $issueInfo_array = explode('-', $issueInfo);
+    $language_array = explode('-', $language);
+
+    $ref = $ref ? 'Ref' : '';
+
+    $data = [];
+    $data['commentCode'] =  [
+      "modelIdentCode" => $code_array[0],
+      "senderIdent" => $code_array[1],
+      "yearOfDataIssue" => $code_array[2],
+      "seqNumber" => $code_array[3],
+      "commentType" => $code_array[4],
+    ];
+
+    $data['prefix'] = $prefix;
+    $data['language'] = [
+      'languageIsoCode' => strtolower($language_array[0] ?? ''),
+      'countryIsoCode' => $language_array[1] ?? '',
+    ];
+
+    $xml_string = function ($data = []) use ($ref) {
+      $d = [];
+      array_walk($data['commentCode'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+      array_walk($data['language'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+
+      $ident = <<<EOD
+        <comment{$ref}Ident>
+          <commentCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['receiverIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
+          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
+        </comment{$ref}Ident>
+      EOD;
+
+      if ($ref) {
+        return<<<EOL
+        <comment{$ref}>
+          $ident        
+        </comment{$ref}>
+        EOL;
+      } else {
+        return $ident;
+      }
+    };
+
+    $data['xml_string'] = $xml_string($data);
+    $data['prefix'] = $prefix;
+
+    return $data;
+  }
+  /**
+   * @return Array
+   */
+  public static function decode_ddnIdent(string $filename, $ref = true) :array
+  {
+    $prefix = 'DDN-';
+    // $f = str_replace($prefix, '', $filename);
+    // $f = preg_replace('/.xml/', '', $f);
+    $code = str_replace($prefix, '', $filename);
+    $code = preg_replace('/.xml/', '', $code);
+
+    // $f_array = explode('_', $f);
+    // $code = $f_array[0];
+    // $issueInfo = $f_array[1] ?? '';
+    // $code = $f;
+
+    $code_array = explode('-', $code);
+    // $issueInfo_array = explode('-', $issueInfo);
+
+    $ref = $ref ? 'Ref' : '';
+
+    $data = [];
+    $data['ddnCode'] =  [
+      "modelIdentCode" => $code_array[0],
+      "senderIdent" => $code_array[1],
+      "receiverIdent" => strtolower($code_array[2]),
+      "yearOfDataIssue" => $code_array[3],
+      "seqNumber" => $code_array[4],
+    ];
+
+    $data['prefix'] = $prefix;
+    // $data['issueInfo'] = [
+    //   'issueNumber' => $issueInfo_array[0] ?? '',
+    //   'inWork' => $issueInfo_array[1] ?? '',
+    // ];
+
+    $xml_string = function ($data = []) use ($ref) {
+      $d = [];
+      array_walk($data['ddnCode'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+
+      $ident = <<<EOD
+        <ddn{$ref}Ident>
+          <ddnCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['receiverIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
+        </ddn{$ref}Ident>
+      EOD;
+
+      if ($ref) {
+        return
+          <<<EOL
+        <ddn{$ref}>
+          $ident        
+        </ddn{$ref}>
+        EOL;
+      } else {
+        return $ident;
+      }
+    };
+
+    $data['xml_string'] = $xml_string($data);
+    $data['prefix'] = $prefix;
+
+    return $data;
+  }
   /**
    * @return Array
    */
@@ -1117,5 +1329,52 @@ class CSDBStatic
     self::$footnotePositionStore[$filename][] = $no;
   }
 
-  
+  /**
+   * DEPRECIATED (barudibuat tapi depreciated karena sudah ada fungsi decode_dmIdent)
+   * awalnya diapakai di CSDBObject create_dml_identAndStatusSection
+   * ini berbeda dengan fungsi decode_... karena decode_... outputnya ada xmlString
+   * @return array contain attribute in dmCode,issueInfo,language
+   */
+  public static function explode_dm(string $filename)
+  {
+    $filename = strtoupper($filename);
+    $filename = preg_replace('/.XML|DMC-/', '', $filename);
+    $filenameIdent_array = explode('_', $filename);
+    $dmCode = $filenameIdent_array[0];
+    $issueInfo = $filenameIdent_array[1];
+    $language = $filenameIdent_array[2];
+
+    $dmCode_array = explode('-', $dmCode);
+    $issueInfo_array = explode('-', $issueInfo);
+    $language_array = explode('-', $language);
+
+    $ret = [
+      "modelIdentCode" => $dmCode_array[0],
+      "systemDiffCode" => $dmCode_array[1],
+      "systemCode" => $dmCode_array[2],
+      "subSystemCode" => $dmCode_array[3][0],
+      "subSubSystemCode" => $dmCode_array[3][1],
+      "assyCode" => $dmCode_array[4],
+      "disassyCode" => substr($dmCode_array[5], 0, 2),
+      "disassyCodeVariant" => substr($dmCode_array[5], 2),
+      "infoCode" => substr($dmCode_array[6], 0, 3),
+      "infoCodeVariant" => substr($dmCode_array[6], 3),
+      "itemLocationCode" => $dmCode_array[7],
+    ];
+    if (isset($dmCode_array[8])) {
+      $ret['learnCode'] = strtoupper(substr($dmCode_array[8], 0, 3));
+      $ret['learnEventCode'] = strtoupper(substr($dmCode_array[8], 4));
+    } else {
+      $ret['learnCode'] = '';
+      $ret['learnEventCode'] = '';
+    }
+
+    $ret['issueNumber'] = $issueInfo_array[0];
+    $ret['inWork'] = $issueInfo_array[1];
+
+    $ret['languageIsoCode'] = strtolower($language_array[0]);
+    $ret['countryIsoCode'] = $language_array[1];
+
+    return $ret;
+  }  
 }

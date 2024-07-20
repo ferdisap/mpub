@@ -5,65 +5,68 @@ namespace Ptdi\Mpub\Main;
 class Helper
 {
   /**
+   * DEPRECIATED
    * Fungsi ini akan menscan semua (nested) CSDB Object referenced
    * @return Array
    */
-  public static function scanObjectRef(\DOMDocument $doc)
-  {
-    $doc_name = CSDB::resolve_DocIdent($doc);
-    $an = self::analyzeURI($doc->baseURI);
+  // public static function scanObjectRef(\DOMDocument $doc)
+  // {
+  //   $doc_name = CSDB::resolve_DocIdent($doc);
+  //   $an = self::analyzeURI($doc->baseURI);
 
-    $scan = function ($base_doc) use ($an) {
-      $docXpath = new \DOMXPath($base_doc);
-      $xpath = '//dmlRef | //dmRef | //pmRef | //infoEntityRef';
-      $res = $docXpath->evaluate($xpath);
-      // dd($res->length);
-      $found = [];
-      $unfound = [];
-      foreach ($res as $k => $r) {
-        $tagName = str_replace('Ref', 'Ident', $r->tagName);
-        $name = call_user_func_array(CSDB::class . "::resolve_{$tagName}", [$r]);
-        $uri = $an['path'] . DIRECTORY_SEPARATOR . $name;
-        if (file_exists($uri)) {
-          $found[] = $name;
-        } else {
-          $unfound[] = $name;
-        }
-      }
-      return [$found, $unfound];
-    };
-    $scanResult = $scan($doc);
-    $found_name = $scanResult[0];
-    $unfound_name = $scanResult[1];
+  //   $scan = function ($base_doc) use ($an) {
+  //     $docXpath = new \DOMXPath($base_doc);
+  //     $xpath = '//dmlRef | //dmRef | //pmRef | //infoEntityRef';
+  //     $res = $docXpath->evaluate($xpath);
+  //     // dd($res->length);
+  //     $found = [];
+  //     $unfound = [];
+  //     foreach ($res as $k => $r) {
+  //       $tagName = str_replace('Ref', 'Ident', $r->tagName);
+  //       $name = call_user_func_array(CSDB::class . "::resolve_{$tagName}", [$r]);
+  //       $uri = $an['path'] . DIRECTORY_SEPARATOR . $name;
+  //       if (file_exists($uri)) {
+  //         $found[] = $name;
+  //       } else {
+  //         $unfound[] = $name;
+  //       }
+  //     }
+  //     return [$found, $unfound];
+  //   };
+  //   $scanResult = $scan($doc);
+  //   $found_name = $scanResult[0];
+  //   $unfound_name = $scanResult[1];
 
-    // #1. scan taip hasil temuan document ($doc)
-    $loop = 0;
-    while (isset($found_name[$loop]) and ($found_doc = (CSDB::importDocument($an['path'], $found_name[$loop])))) {
-      $scanResult = $scan($found_doc);
-      $found_name = array_merge($scanResult[0], $found_name);
-      $unfound_name = array_merge($scanResult[1], $unfound_name);
+  //   // #1. scan taip hasil temuan document ($doc)
+  //   $loop = 0;
+  //   while (isset($found_name[$loop]) and ($found_doc = (CSDB::importDocument($an['path'], $found_name[$loop])))) {
+  //     $scanResult = $scan($found_doc);
+  //     $found_name = array_merge($scanResult[0], $found_name);
+  //     $unfound_name = array_merge($scanResult[1], $unfound_name);
 
-      $found_name = array_unique($found_name);
-      $unfound_name = array_unique($unfound_name);
-      $loop++;
-    }
+  //     $found_name = array_unique($found_name);
+  //     $unfound_name = array_unique($unfound_name);
+  //     $loop++;
+  //   }
 
-    // #2. tambahkan dokumen base di index ke 0;
-    array_unshift($found_name, $doc_name);
+  //   // #2. tambahkan dokumen base di index ke 0;
+  //   array_unshift($found_name, $doc_name);
 
-    return [
-      'found' => $found_name,
-      'unfound' => $unfound_name,
-    ];
-  }
+  //   return [
+  //     'found' => $found_name,
+  //     'unfound' => $unfound_name,
+  //   ];
+  // }
 
   
   /**
+   * uri harus berupa filename 
    * @return Array
    */
   public static function analyzeURI(string $uri) :array
   {
-    preg_match_all('/(^[a-z]+:[\/\\\\\\\\]{1,3})|(.+(?=[\/\\\\]))|([^\/^\\\\]+$)/', $uri, $matches, PREG_UNMATCHED_AS_NULL, 0); // 3 elements
+    $regex = '/(^[a-z]+:[\/\\\\\\\\]{1,3})|(.+(?=[\/\\\\]))|([^\/^\\\\]+$)/';
+    preg_match_all($regex, $uri, $matches, PREG_UNMATCHED_AS_NULL, 0); // 3 elements
 
     $protocol = array_values(array_filter($matches[1], fn ($v) => $v));
     $path = array_values(array_filter($matches[2], fn ($v) => $v));
@@ -83,6 +86,7 @@ class Helper
   
 
   /**
+   * DEPRECIATED, diganti oleh explodeSearchKeyAndValue
    * separator adalah '::'.
    * @param mixed $key is string or null
    * @return Array
@@ -90,7 +94,7 @@ class Helper
   public static function explodeSearchKey(mixed $key) :array
   {
     $m = [];
-    preg_match_all("/[\w]+::[\s\S]*?(?=\s\w+::|$)/m", $key, $matches, PREG_SET_ORDER, 0);
+    preg_match_all("/[\w]+::[\s\S]*?(?=\s\w+::|$)/", $key, $matches, PREG_SET_ORDER, 0);
     $pull = function (&$arr, $fn) use (&$m) {
       foreach ($arr as $k => $v) {
         if (is_array($v)) {
@@ -104,6 +108,35 @@ class Helper
     };
     $pull($matches, $pull); // $matches akan empty, $m akan berisi
     return !empty($m) ? $m : [$key];
+  }
+
+  public static function explodeSearchKeyAndValue(mixed $key) :array
+  {
+    $m = [];
+    preg_match_all("/[\w]+::[\s\S]*?(?=\s\w+::|$)/", $key, $matches, PREG_SET_ORDER, 0);
+    $pull = function (&$arr, $fn) use (&$m) {
+      foreach ($arr as $k => $v) {
+        if (is_array($v)) {
+          $fn($v, $fn);
+        } else {
+          $xplode = explode("::", $v);
+          $key = strtolower($xplode[0]);
+          $key = !isset($m[$key]) ? $key : $key . "___" . rand(0,99999); // untuk menghindari column yang sama, see artisan route Controller@generateWhereRawQueryString
+          $m[$key] = self::exploreSearchValue($xplode[1]);
+        }
+        unset($arr[$k]);
+      }
+    };
+    $pull($matches, $pull); // $matches akan empty, $m akan berisi
+    return !empty($m) ? $m : [$key];
+  }
+
+  public static function exploreSearchValue(string $value) : array
+  {
+    $m = explode(",", $value);
+    $m = array_filter($m, fn($v) => $v !== '') ;
+    $m = array_values($m);
+    return $m;
   }
 
   /**
@@ -513,7 +546,12 @@ class Helper
         return (string)self::$footnoteSymMarkers[$position-1];
       default:
         return '';
-    }
-    
+    }    
+  }
+
+  public static function isJsonString(string $string)
+  {
+    json_decode($string);
+    return json_last_error() === JSON_ERROR_NONE;
   }
 }

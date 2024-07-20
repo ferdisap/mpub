@@ -64,21 +64,25 @@ class CSDBValidator{
       CSDBError::setError('', "Naming file '". $prefix . join("-", $infoEntityIdent). $extension . "' is uncomply with PTDI rule.");
       return false;
     }
+    return true;
+
+    // tidak ada validasi uniqueIdentifier disini, melainkan jika perlu, harus dilakukan di laravel controller
+    // securityClassification tidak perlu di validasi karena itu belum fix cara penamaan di PTDI
 
     // #1 validasi uniqueIdentifier
-    $f = array_filter(scandir($this->storage_path),fn($filename) => str_contains($filename, $infoEntityIdent['uniqueIdentifier']));
-    $f = array_pop($f);
-    if($f) {
-      CSDBError::setError('', "The unique identifier of ICN name is same with {$f}");
-      return false;
-    }
+    // $f = array_filter(scandir($this->storage_path),fn($filename) => str_contains($filename, $infoEntityIdent['uniqueIdentifier']));
+    // $f = array_pop($f);
+    // if($f) {
+    //   CSDBError::setError('', "The unique identifier of ICN name is same with {$f}");
+    //   return false;
+    // }
 
     // #2 validasi securityClassification. Min 1, max 5
-    if(((int)$infoEntityIdent['securityClassification'] < 1) AND ((int)$infoEntityIdent['securityClassification'] > 5))
-    {
-      CSDBError::setError('', "Security Classification value must be 1 through 5");
-      return false;
-    }
+    // if(((int)$infoEntityIdent['securityClassification'] < 1) AND ((int)$infoEntityIdent['securityClassification'] > 5))
+    // {
+    //   CSDBError::setError('', "Security Classification value must be 1 through 5");
+    //   return false;
+    // }
 
     return true;
     ###### dibawah ini adalah aturan khusus untuk penamaan ICN 47 character ######
