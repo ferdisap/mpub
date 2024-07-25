@@ -1699,7 +1699,9 @@ class CSDBObject
     foreach ($params as $key => $param) {
       $xsltproc->setParameter('', $key, $param);
     }
+    // dd($xsl);
     $xsltproc->setParameter('', 'ConfigXML_uri', $this->ConfigXML->baseURI);
+    // dd($this->document);
     $transformed = $xsltproc->transformToDoc($this->document);
     if(!$transformed) return '';
     $bookmarkTree_el = $transformed->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree')[0];
