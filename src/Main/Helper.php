@@ -115,28 +115,41 @@ class Helper
    */
   public static function explodeSearchKeyAndValue(mixed $key, string $defaultKey = '', Array $casting = []) :array
   {
-    $m = [];
+    // $m = [];
     // preg_match_all("/[\w]+::[\s\S]*?(?=\s\w+::|$)/", $key, $matches, PREG_SET_ORDER, 0); // kalau ini tidak akan capture yang column nya tidak ada, eg: "DMC-MALE-A-15-30-07-00A-028A-A_000-02_EN-EN.xml typeonly::DMC,PMC,ICN" tidak akan capture "DMC-MALE-A-15-30-07-00A-028A-A_000-02_EN-EN.xml"
-    preg_match_all("/([\w]+::)?[\s\S]*?(?=\s\w+::|$)/", $key, $matches,  PREG_SET_ORDER, 0);
-    $matches = array_values(array_filter($matches, fn($v) => $v[0] !== ''));
-    $pull = function (&$arr, $fn) use (&$m, $defaultKey) {
-      foreach ($arr as $k => $v) {
-        if (is_array($v)) {
-          $fn($v, $fn);
-        } else {
-          $xplode = explode("::", $v);
-          if(count($xplode) === 1){
-            array_unshift($xplode, $defaultKey);
-          }
-          $key = strtolower($xplode[0]);
-          $key = !isset($m[$key]) ? $key : $key . "___" . rand(0,99999); // untuk menghindari column yang sama, see artisan route Controller@generateWhereRawQueryString
-          $key = trim($key);
-          $m[$key] = self::exploreSearchValue($xplode[1]);
-        }
-        unset($arr[$k]);
-      }
-    };
-    $pull($matches, $pull); // $matches akan empty, $m akan berisi
+    // preg_match_all("/([\w]+::)?[\s\S]*?(?=\s\w+::|$)/", $key, $matches,  PREG_SET_ORDER, 0);
+    // $key = "DMC-MALE-A-15-30-07-00A-028A-A_000-02_EN-EN.xml typeonly::DMC,PMC,ICN";
+    // $key = "DMC-MALE-A-15-30-07-00A-028A-A_000-02_EN-EN.xmltypeonly::DMC,PMC,ICN";
+    // $key = "";
+    preg_match_all("/([\w]+::)?([\S]+)/", $key, $m,  PREG_SET_ORDER, 0); // [[0]=matches, [1]=column, [2]=value]
+    // dd($matches);
+    // $matches = array_values(array_filter($matches, fn($v) => $v[0] !== ''));
+    // $pull = function (&$arr, $fn) use (&$m, $defaultKey) {
+    //   foreach ($arr as $k => $v) {
+    //     if (is_array($v)) {
+    //       $fn($v, $fn);
+    //     } else {
+    //       $xplode = explode("::", $v);
+    //       if(count($xplode) === 1){
+    //         array_unshift($xplode, $defaultKey);
+    //       }
+    //       $key = strtolower($xplode[0]);
+    //       $key = !isset($m[$key]) ? $key : $key . "___" . rand(0,99999); // untuk menghindari column yang sama, see artisan route Controller@generateWhereRawQueryString
+    //       $key = trim($key);
+    //       $m[$key] = self::exploreSearchValue($xplode[1]);
+    //     }
+    //     unset($arr[$k]);
+    //   }
+    // };
+    // $pull($matches, $pull); // $matches akan empty, $m akan berisi
+    $length = count($m);
+    for ($i=0; $i < $length; $i++) { 
+      $key = str_replace("::","",($m[$i][1] ? $m[$i][1] : $defaultKey));
+      $key = !isset($m[$key]) ? $key : $key . "___" . rand(0,99999); // untuk menghindari column yang sama, see artisan route Controller@generateWhereRawQueryString
+      $value = self::exploreSearchValue($m[$i][2]);
+      $m[$key] = $value;
+      unset($m[$i]);
+    }
 
     // casting
     $ret = (!empty($m) ? $m : [$key]);
@@ -145,6 +158,7 @@ class Helper
         if(!(isset($ret[$new]))) $ret[$new] = $ret[$old];
       }
     }
+
     return $ret;
   }
 
