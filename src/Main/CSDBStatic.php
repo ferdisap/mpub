@@ -32,7 +32,7 @@ class CSDBStatic
    */
   public static function add_masterName(string $name)
   {
-    if(!in_array($name, self::$masterName, true)){
+    if (!in_array($name, self::$masterName, true)) {
       self::$masterName[] = $name;
       return true;
     } else {
@@ -40,7 +40,7 @@ class CSDBStatic
     }
   }
 
-  
+
   /**
    * [
    *  'id-000' => [ 
@@ -57,10 +57,10 @@ class CSDBStatic
 
   public static function fillBookmark(string $destination, string $text, string $parent = '')
   {
-   self::$bookmarks[$destination] = [
-    'text' => $text,
-    'parent' => $parent,
-   ];
+    self::$bookmarks[$destination] = [
+      'text' => $text,
+      'parent' => $parent,
+    ];
   }
 
   /**
@@ -69,20 +69,20 @@ class CSDBStatic
   public static function transformBookmark_to_xml()
   {
     // dump(self::$bookmarks);
-    if(empty(self::$bookmarks)) return '';
+    if (empty(self::$bookmarks)) return '';
     $dom = new \DOMDocument;
     $bookmarkTree_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree');
     $dom->appendChild($bookmarkTree_el);
 
-    $randomNS = hash('md2',rand(0,10000));
-    $randomNS = "aaa" . substr($randomNS, 0,10);
+    $randomNS = hash('md2', rand(0, 10000));
+    $randomNS = "aaa" . substr($randomNS, 0, 10);
     // $randomNS = 'randomNS123';
     // $randomNS = 'c8ed21db4f';
     // dd('aaa', $randomNS);
-    
-    while(!empty(self::$bookmarks)){
+
+    while (!empty(self::$bookmarks)) {
       $keyfirst = array_key_first(self::$bookmarks);
-      
+
       $parent = self::$bookmarks[$keyfirst]['parent'];
 
       $bookmark_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark');
@@ -93,18 +93,17 @@ class CSDBStatic
 
       $bookmark_el->appendChild($bookmarkTitle_el);
       $bookmarkTree_el->appendChild($bookmark_el);
-      
-      if($parent){
+
+      if ($parent) {
         $domxpath = new \DOMXpath($dom);
-        $domxpath->registerNamespace('fo','http://www.w3.org/1999/XSL/Format');
-        $domxpath->registerNamespace("randomNS","randomNS");
+        $domxpath->registerNamespace('fo', 'http://www.w3.org/1999/XSL/Format');
+        $domxpath->registerNamespace("randomNS", "randomNS");
         $xpath_string = "//fo:bookmark[@$randomNS:id = '$parent']";
         $e = $domxpath->query($xpath_string)[0];
-        if($e){
+        if ($e) {
           $e->appendChild($bookmark_el);
         }
-      }
-      else {
+      } else {
         $dom->appendChild($bookmarkTree_el);
       }
       unset(self::$bookmarks[$keyfirst]);
@@ -120,7 +119,7 @@ class CSDBStatic
 
   public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
   {
-    if(!$ident) return '';
+    if (!$ident) return '';
     if (is_array($ident)) {
       $ident = $ident[0];
     }
@@ -133,13 +132,13 @@ class CSDBStatic
         break;
       case 'pmIdent':
         return self::resolve_pmIdent($ident, $prefix, $format);
-        break;      
+        break;
       case 'pmRefIdent':
         return self::resolve_pmIdent($ident, $prefix, $format);
-        break;      
+        break;
       case 'externalPubRefIdent':
         return self::resolve_externalPubRefIdent($ident, $prefix, $format);
-        break;      
+        break;
       case 'dmlIdent':
         return self::resolve_dmlIdent($ident, $prefix, $format);
         break;
@@ -166,7 +165,7 @@ class CSDBStatic
 
   public static function resolve_title($title = null, $child = null)
   {
-    if(!$title) return '';
+    if (!$title) return '';
     if (is_array($title)) {
       $title = $title[0];
     }
@@ -345,7 +344,7 @@ class CSDBStatic
 
     return strtoupper($name);
   }
-  
+
   public static function resolve_commentCode($commentCode, string $prefix = 'COM-')
   {
     if (empty($commentCode)) return '';
@@ -490,14 +489,14 @@ class CSDBStatic
     $externalPubTitle = ($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]);
     $externalPubIssueInfo = ($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]);
 
-    $ident =  $externalPubCode ? $externalPubCode->textContent . 
-    ($externalPubTitle ? "_" . $externalPubTitle->textContent . 
-    ($externalPubIssueInfo ? "_" . $externalPubIssueInfo->textContent : ''
-    ) : ''
-    ) : '';
+    $ident =  $externalPubCode ? $externalPubCode->textContent .
+      ($externalPubTitle ? "_" . $externalPubTitle->textContent .
+        ($externalPubIssueInfo ? "_" . $externalPubIssueInfo->textContent : ''
+        ) : ''
+      ) : '';
 
     $extension = '';
-    switch($codingScheme){
+    switch ($codingScheme) {
       case 'PDF':
         $extension = '.pdf';
         break;
@@ -671,7 +670,7 @@ class CSDBStatic
   /**
    * @return \DOMElement
    */
-  public static function parse_language(string $name) :\DOMElement
+  public static function parse_language(string $name): \DOMElement
   {
     $doc = new \DOMDocument();
     $doc->loadXML("<language/>");
@@ -697,7 +696,7 @@ class CSDBStatic
    * minimum value of level is 0 (zero)
    * @return int
    */
-  public static function checkLevel(mixed $element, int $minimum = 0) :int
+  public static function checkLevel(mixed $element, int $minimum = 0): int
   {
     if (empty($element)) return -1;
     if (is_array($element)) {
@@ -714,14 +713,14 @@ class CSDBStatic
 
   public static function checkLevelByPrefix(string $prefix = '')
   {
-   return count(explode('.',$prefix));
+    return count(explode('.', $prefix));
   }
 
   /**
    * checking index by sibling
    * @return int
    */
-  public static function checkIndex(\DOMElement $element, int $minimum = 0) :int
+  public static function checkIndex(\DOMElement $element, int $minimum = 0): int
   {
     $tagName = $element->tagName;
     $parent = $element->parentNode;
@@ -740,7 +739,7 @@ class CSDBStatic
   /**
    * @return int
    */
-  public static function getPrefixNum(\DOMElement $element, $minimum = 0) :string
+  public static function getPrefixNum(\DOMElement $element, $minimum = 0): string
   {
     $tagName = $element->tagName;
     $index = self::checkIndex($element) + $minimum;
@@ -779,11 +778,11 @@ class CSDBStatic
     }
     return array();
   }
-  
+
   /**
    * @return Array
    */
-  public static function decode_infoEntityIdent(string $filename) :array
+  public static function decode_infoEntityIdent(string $filename): array
   {
     $prefix = 'ICN-';
     if (substr($filename, 0, 4) === 'ICN-') {
@@ -830,7 +829,7 @@ class CSDBStatic
   /**
    * @return Array
    */
-  public static function decode_pmIdent(string $filename, $ref = true) :array
+  public static function decode_pmIdent(string $filename, $ref = true): array
   {
     $prefix = 'PMC-';
     $f = str_replace($prefix, '', $filename); // MALE-K0378-A0001-00_000-01_EN-EN.xml
@@ -907,7 +906,7 @@ class CSDBStatic
   /**
    * @return Array
    */
-  public static function decode_commentIdent(string $filename, $ref = true) :array
+  public static function decode_commentIdent(string $filename, $ref = true): array
   {
     $prefix = 'COM-';
     $f = str_replace($prefix, '', $filename);
@@ -956,7 +955,7 @@ class CSDBStatic
       EOD;
 
       if ($ref) {
-        return<<<EOL
+        return <<<EOL
         <comment{$ref}>
           $ident        
         </comment{$ref}>
@@ -974,7 +973,7 @@ class CSDBStatic
   /**
    * @return Array
    */
-  public static function decode_ddnIdent(string $filename, $ref = true) :array
+  public static function decode_ddnIdent(string $filename, $ref = true): array
   {
     $prefix = 'DDN-';
     // $f = str_replace($prefix, '', $filename);
@@ -1039,7 +1038,7 @@ class CSDBStatic
   /**
    * @return Array
    */
-  public static function decode_dmlIdent(string $filename, $ref = true) :array
+  public static function decode_dmlIdent(string $filename, $ref = true): array
   {
     $prefix = 'DML-';
     $f = str_replace($prefix, '', $filename); // MALE-K0378-P-2024-00003_001-00.xml
@@ -1107,7 +1106,7 @@ class CSDBStatic
    * $xmlString dmIdent tidak 
    * @return Array
    */
-  public static function decode_dmIdent(string $filename, $ref = true) :array
+  public static function decode_dmIdent(string $filename, $ref = true): array
   {
     $prefix = 'DMC-'; // DMC-,
     $f = str_replace($prefix, '', $filename); // MALE-SNS-Disscode-infoCode,
@@ -1212,7 +1211,7 @@ class CSDBStatic
   /**
    * @return \DOMDocument
    */
-  public static function document($path, string $filename) :\DOMDocument
+  public static function document($path, string $filename): \DOMDocument
   {
     if (is_array($path)) {
       $path = $path[0];
@@ -1223,15 +1222,15 @@ class CSDBStatic
     if (substr($filename, 0, 3) === 'ICN') {
       $filename = self::detectIMF($path, $filename);
     }
-    if(!$filename) return new \DOMDocument;
-    
+    if (!$filename) return new \DOMDocument;
+
     CSDBError::$processId = 'ignore';
     $CSDBObject = new CSDBObject("5.0");
-    if(!file_exists($path. DIRECTORY_SEPARATOR. $filename)){
+    if (!file_exists($path . DIRECTORY_SEPARATOR . $filename)) {
       CSDBError::setError('opendocument', "No such $filename exists.");
       return new \DOMDocument;
     }
-    $CSDBObject->load($path. DIRECTORY_SEPARATOR . $filename);
+    $CSDBObject->load($path . DIRECTORY_SEPARATOR . $filename);
     CSDBError::getErrors(true, 'ignore'); // remove error
     if ($CSDBObject->document) {
       return $CSDBObject->document;
@@ -1244,7 +1243,7 @@ class CSDBStatic
    * search IMF file by using latest issueNumber and inWork number
    * @return string filename IMF
    */
-  public static function detectIMF(string $path, string $icnFilename) :string
+  public static function detectIMF(string $path, string $icnFilename): string
   {
     $icnFilename_withoutFormat = preg_replace("/.\w+$/", '', $icnFilename);
     $icnFilename_array = explode("-", $icnFilename_withoutFormat);
@@ -1282,7 +1281,7 @@ class CSDBStatic
 
       $filterBy = array_filter($c, (fn ($v) => $v[0] == $in_max));
       if (count($filterBy) > 1) {
-        $filterBy = array_filter($c, (fn ($v) => ($v[0] == $in_max AND $v[1] == $iw_max)));
+        $filterBy = array_filter($c, (fn ($v) => ($v[0] == $in_max and $v[1] == $iw_max)));
       }
       $issueInfo = join("-", $filterBy[0]);
       $filename .= "_" . $issueInfo . ".xml";
@@ -1292,20 +1291,20 @@ class CSDBStatic
     return $filename;
   }
 
-  public static function interpretDimension(string $unit) :string
+  public static function interpretDimension(string $unit): string
   {
     // <xsl:variable name="units" select="php:function('preg_replace', '/[0-9\.]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>
-    if(!$unit) return '';
+    if (!$unit) return '';
     preg_match('/([0-9\.]+)(.)/', $unit, $matches);
     $n = $matches[1];
     $u = $matches[2];
-    if(($n > 0) AND ($n <= 1)){
-      $n = $n*100;
+    if (($n > 0) and ($n <= 1)) {
+      $n = $n * 100;
     }
-    if($u === '*'){
+    if ($u === '*') {
       $u = '%';
     }
-    return $n.$u;
+    return $n . $u;
   }
 
 
@@ -1313,18 +1312,18 @@ class CSDBStatic
    * khusus footnote yang marking nya number, bukan asterisk atay alpha
    */
   public static $footnotePositionStore = [];
-  public static function next_footnotePosition(string $filename, bool $set = false) :int
+  public static function next_footnotePosition(string $filename, bool $set = false): int
   {
     $totalIndex = count(self::$footnotePositionStore[$filename]);
-    if($totalIndex === 0) {
-      if($set) self::$footnotePositionStore[$filename][] = 1;
+    if ($totalIndex === 0) {
+      if ($set) self::$footnotePositionStore[$filename][] = 1;
       return 1;
     };
-    $no = self::$footnotePositionStore[$filename][$totalIndex-1] + 1;
-    if($set) self::$footnotePositionStore[$filename][] = $no;
+    $no = self::$footnotePositionStore[$filename][$totalIndex - 1] + 1;
+    if ($set) self::$footnotePositionStore[$filename][] = $no;
     return $no;
   }
-  public static function add_footnotePosition(string $filename, int $no) : void
+  public static function add_footnotePosition(string $filename, int $no): void
   {
     self::$footnotePositionStore[$filename][] = $no;
   }
@@ -1376,5 +1375,128 @@ class CSDBStatic
     $ret['countryIsoCode'] = $language_array[1];
 
     return $ret;
-  }  
+  }
+
+  public static function tes($v){
+    (self::handle_xmlElementNode($v[0],$a));
+    return (json_encode($a));
+  }
+
+  public static function xml_to_json(\DOMDocument $DOMDocument)
+  {
+    $arr = [];
+    $childNodes = $DOMDocument->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElement
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::handle_xmlElementNode($childNodes[$i], $arr[]);
+      }
+      // jika ada child DOMDoctype
+      elseif ($childNodes[$i]->nodeType === XML_DOCUMENT_TYPE_NODE) {
+        self::handle_xmlDoctypeNode($childNodes[$i], $arr[]);
+      }
+      $i++;
+    }
+    return json_encode($arr);
+  }
+  private static function handle_xmlDoctypeNode(\DOMDocumentType $DOMDoctype, &$v)
+  {
+    $name = $DOMDoctype->name;
+    $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '[\s\S]+\]\>)([\s\S]+)/m';
+    $str = ($DOMDoctype->parentNode->saveXML());
+    $doctypeString = preg_replace($re, '${2}', $str);
+    $v['DOCTYPE'] = [
+      'name' => $DOMDoctype->nodeName,
+      "systemId" => $DOMDoctype->systemId,
+      "publicId" => $DOMDoctype->publicId,
+      'string' => $doctypeString
+    ];
+  }
+  private static function handle_xmlElementNode($DOMElement, &$v)
+  {
+    $arr = [];
+    if ($DOMElement->hasAttributes()) {
+      foreach ($DOMElement->attributes as $attr) {
+        self::handle_xmlAttributeNode($attr, $arr[]);
+      }
+    }
+    $childNodes = $DOMElement->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElemen
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::handle_xmlElementNode($childNodes[$i], $arr[]);
+      }
+      // jika ada child DOMText
+      elseif ($childNodes[$i]->nodeType === XML_TEXT_NODE) {
+        self::handle_xmlTextNode($childNodes[$i], $arr[]);
+      }
+      $i++;
+    }
+    $v = [$DOMElement->nodeName => $arr];
+  }
+  private static function handle_xmlAttributeNode($DOMAttr, &$v)
+  {
+    $v = ['@' . $DOMAttr->nodeName => $DOMAttr->nodeValue];
+  }
+  private static function handle_xmlTextNode($DOMText, &$v)
+  {
+    if ($DOMText->nodeValue) {
+      $v = trim($DOMText->nodeValue);
+    }
+  }
+  public static function json_to_xml(mixed $value, mixed $parentNode = null)
+  {
+    // dd($value);
+    if (!$parentNode) $parentNode = new \DOMDocument();
+    $arr = is_array($value) ? $value : (is_numeric($value) ? null : json_decode($value, true)); // json juga bisa di decode berdasarkan numeric value
+    
+    // jika array list (element xml), biasanya yang elemen pertama ada pada array list, karena saat transform to json, fungsi akan membaca doctype sebagai child document, jadi membuatnya menjadi array list
+    if ($arr && array_is_list($arr)) {
+      foreach ($arr as $node) {
+
+        // asumsi parentNode adalah \DOMElement atau \DOMDocument
+        $name = array_key_first($node);
+        if ($name === 'DOCTYPE') {
+          $str = <<<EOL
+          <?xml version="1.0" encoding="UTF-8"?>
+          EOL;
+          $str .= $node[$name]['string']. '<'. $node[$name]['name'] .'/>'; // harus disertakan root elementnya atau error
+          $parentNode->loadXML($str);
+          $parentNode->firstElementChild->remove(); // di remove agar nanti tidak double
+        } else {
+          $DOMElement = $parentNode->ownerDocument ? $parentNode->ownerDocument->createElement($name) : $parentNode->createElement($name);
+          $parentNode->appendChild($DOMElement);
+          foreach ($node[$name] as $value) {
+            self::json_to_xml($value, $DOMElement);
+          }
+        }
+      }
+    }
+    // bisa DOMATTR atau DOMElement. Kalau attritbute tandanya $key nya diprefix simbol '@' 
+    elseif ($arr) {
+      foreach ($arr as $name => $node) {
+        $type = substr($name, 0, 1) === '@' ? 'DOMAttr' : 'DOMElement'; // disini jika ingin membuat DOMDoctype
+        if ($type === 'DOMAttr') {
+          // asumsi parentNode adalah \DOMElement
+          $parentNode->setAttribute(substr($name, 1), $node); // dibuang '@' nya
+        } else {
+          $DOMElement = $parentNode->ownerDocument ? $parentNode->ownerDocument->createElement($name) : $parentNode->createElement($name);
+          $parentNode->appendChild($DOMElement);
+          // handling nodeValue
+          foreach ($node as $value) {
+            self::json_to_xml($value, $DOMElement);
+          }
+        }
+      }
+    }
+    // jika DOMText
+    elseif (is_string($value) || is_numeric($value)) {
+      // asumsi parentNode adalah \DOMElement
+      $textNode = $parentNode->ownerDocument->createTextNode($value);
+      $parentNode->appendChild($textNode);
+    }
+    return $parentNode;
+  }
 }

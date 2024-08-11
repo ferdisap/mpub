@@ -106,20 +106,21 @@ class CSDBObject
    * harus set property $path dulu 
    * @return void
    */
-  public function createDML(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], array $otherOptions = []) :void
+  public function createDML($params = []) :void
+  // public function createDML(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], array $otherOptions = []) :void
   {
     $this->document = new DOMDocument('1.0', 'UTF-8');
     $this->document->preserveWhiteSpace = $this->preserveWhiteSpace;
     $this->document->formatOutput = $this->formatOutput;
-    $identAndStatusSetion = $this->create_dml_identAndStatusSection($modelIdentCode, $originator, $dmlType, $securityClassification, $brexDmRef, $remarks, $otherOptions);
+    $identAndStatusSetion = $this->create_dml_identAndStatusSection($params);
     $dmlString = <<<EOL
     <!DOCTYPE dml []>
     <dml>
       $identAndStatusSetion
-      <dmlContent>
-      </dmlContent>
+      <dmlContent></dmlContent>
     </dml>
     EOL;
+    // $dmlString = preg_replace("/\n|\s{2,}/m",'',$dmlString); // sudah tidak ada \n walaupun code ini tidak dijalankan
     $this->document->loadXML($dmlString);
     $this->document->documentElement->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:noNamespaceSchemaLocation', 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/dml.xsd');
   }
@@ -139,6 +140,7 @@ class CSDBObject
       $commentConcent
     </comment>
     EOL;
+    // $comString = preg_replace("/\n|\s{2,}/m",'',$comString); // sudah tidak ada \n walaupun code ini tidak dijalankan
     $this->document->loadXML($comString);
     $this->document->documentElement->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:noNamespaceSchemaLocation', 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/comment.xsd');
   }
@@ -435,7 +437,58 @@ class CSDBObject
    * jika ingin menaruh <dmlRef> pada <dmlStatus>, maka gunakan otherOptions = ['dmlRef' = ['DML...', 'DML...]];
    * @return string identAndStatusSection
    */
-  private function create_dml_identAndStatusSection(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = [])
+  // private function create_dml_identAndStatusSection(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = [])
+  private function create_dml_identAndStatusSection(Array $params)
+  // string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = []
+  {
+    $modelIdentCode = $params['modelIdentCode'];
+    $yearOfDataIssue = $params['yearOfDataIssue'];
+    $dmlType = strtolower($params['dmlType']);
+    $originator = $params['originator'];
+    $securityClassification = $params['securityClassification'];
+    $seqNumber = $params['seqNumber'];
+    
+    $inWork = $params['inWork'] ?? '01';
+    $day = $params['day'] ?? date('d');
+    $month = $params['month'] ?? date('m');
+
+    $remarks = array_map((fn ($v) => "<simplePara>{$v}</simplePara>"), $params['remarks']);
+    $remarks = join("", $remarks);
+    $remarks = (empty($remarks)) ? '' : "<remarks>{$remarks}</remarks>";
+
+    $brexDmRef = CSDBStatic::decode_dmIdent($params['brexDmRef'])['xml_string'];
+    $dmlRef = '';
+    if (isset($params['dmlRef']) and is_array($params['dmlRef'])) {
+      $dmlRef = array_map(function ($filename) {
+        $filename = CSDBStatic::decode_dmlIdent($filename);
+        return $filename = $filename['xml_string'];
+      }, $params['dmlRef']);
+      $dmlRef = join("", $dmlRef);
+    }
+
+    $identAndStatusSection = <<<EOL
+      <identAndStatusSection>
+        <dmlAddress>
+          <dmlIdent>
+            <dmlCode dmlType="{$dmlType}" modelIdentCode="{$modelIdentCode}" senderIdent="{$originator}" seqNumber="{$seqNumber}" yearOfDataIssue="{$yearOfDataIssue}"></dmlCode>
+            <issueInfo inWork="{$inWork}" issueNumber="000"></issueInfo>
+          </dmlIdent>
+          <dmlAddressItems>
+            <issueDate day="{$day}" month="{$month}" year="{$yearOfDataIssue}"></issueDate>
+          </dmlAddressItems>
+        </dmlAddress>
+        <dmlStatus>
+          <security securityClassification="{$securityClassification}"/>
+          {$dmlRef}
+          <brexDmRef>{$brexDmRef}</brexDmRef>
+          {$remarks}
+        </dmlStatus>
+      </identAndStatusSection>
+    EOL;
+
+    return $identAndStatusSection;    
+  }
+  private function create_dml_identAndStatusSection_xx(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = [])
   {
     $year = date('Y');
     $dmlCode = [strtolower($dmlType) == 's' ? 'CSL' : 'DML', $modelIdentCode, $originator, $dmlType, $year, ''];
@@ -546,6 +599,155 @@ class CSDBObject
    * 'securityClassification, commentPriorityCode, responseType'
    */
   private function create_com_identAndStatusSetion(Array $params)
+  {
+    // ident
+    $modelIdentCode = $params['modelIdentCode'];
+    $senderIdent = strtoupper($params['senderIdent']);
+    $seqNumber = strtoupper($params['seqNumber']);
+    $commentType = strtolower($params['commentType']);
+    $yearOfDataIssue = $params['yearOfDataIssue'];
+    $languageIsoCode = strtolower($params['languageIsoCode']);
+    $countryIsoCode = strtoupper($params['countryIsoCode']);
+
+    // address    
+    $commentTitle = $params['commentTitle'];
+    $enterpriseName = $params['enterpriseName'];
+    $division = $params['division'] ?? '';
+    $enterpriseUnit = $params['enterpriseUnit'] ?? '';    
+    $lastName = $params['lastName'];
+    $firstName = $params['firstName'] ?? '';
+    $jobTitle = $params['jobTitle'] ?? '';
+
+    $department = $params["department"] ?? '';
+    $street = $params["street"] ?? '';
+    $postOfficeBox = $params["postOfficeBox"] ?? '';
+    $postalZipCode = $params["postalZipCode"] ?? '';
+    $city = $params["city"];
+    $country = $params["country"];
+    $state = $params["state"] ?? '';
+    $province = $params["province"] ?? '';
+    $building = $params["building"] ?? '';
+    $room = $params["room"] ?? '';
+    $phoneNumber = '';
+    if(!empty($params["phoneNumber"])){
+      foreach($params["phoneNumber"] as $no){
+        $phoneNumber .= "<phoneNumber>{$no}</phoneNumber>";
+      }
+    }
+    $faxNumber = '';
+    if(!empty($params["faxNumber"])){
+      foreach($params["faxNumber"] as $no){
+        $faxNumber .= "<faxNumber>{$no}</faxNumber>";
+      }
+    }
+    $email = '';
+    if(!empty($params["email"])){
+      foreach($params["email"] as $no){
+        $email .= "<email>{$no}</email>";
+      }
+    }
+    $internet = '';
+    if(!empty($params["internet"])){
+      foreach($params["internet"] as $no){
+        $internet .= "<internet>{$no}</internet>";
+      }
+    }
+    $SITA = $params["SITA"] ?? '';
+
+    $remarks = array_map((fn ($v) => "<simplePara>{$v}</simplePara>"), $params['remarks'] ?? []);
+    $remarks = join("", $remarks);
+    $remarks = (empty($remarks)) ? '' :
+      <<<EOD
+    <remarks>{$remarks}</remarks>
+    EOD;
+    $day = date('d');
+    $month = date('m');
+
+    // commentStatus
+    $securityClassification = $params['securityClassification'];
+    $commentPriorityCode = $params['commentPriorityCode'];
+    $responseType = $params['responseType'];
+    $commentResponse = '';
+    if($responseType) $commentResponse = '<commentResponse responseType="'.$params['responseType'].'"/>';
+    $commentRefsContent = '';
+    if(empty($params['commentRefs'])) $commentRefsContent = "<noReferences/>";
+    else {
+      $commentRefsArray = [];
+      foreach($params['commentRefs'] as $ref){
+        if($ref){
+          $ident = CSDBStatic::decode_ident($ref);
+          switch ($ident['prefix']) {
+            case 'DMC-': $commentRefsArray['dmRefGroup'] = $ident['xml_string']; break;
+            case 'PMC-': $commentRefsArray['pmRefGroup'] = $ident['xml_string']; break;
+            case 'DML-': $commentRefsArray['dmlRefGroup'] = $ident['xml_string']; break;
+            case 'DDN-': $commentRefsArray['ddnRefGroup'] = $ident['xml_string']; break;
+          }
+        }
+      }
+      foreach($commentRefsArray as $groupName => $ref){
+        $commentRefsContent = "<{$groupName}>{$ref}</{$groupName}>";
+      }
+    }
+    $commentRefs = "<commentRefs>{$commentRefsContent}</commentRefs>";
+
+    $brexDmRef = CSDBStatic::decode_dmIdent($params['brexDmRef'])['xml_string'];
+
+    $identAndStatusSection = <<<EOL
+    <identAndStatusSection>
+      <commentAddress>
+        <commentIdent>
+          <commentCode modelIdentCode="{$modelIdentCode}" senderIdent="{$senderIdent}" yearOfDataIssue="{$yearOfDataIssue}" seqNumber="{$seqNumber}" commentType="{$commentType}"/>
+          <language languageIsoCode="{$languageIsoCode}" countryIsoCode="{$countryIsoCode}"/>
+        </commentIdent>
+        <commentAddressItems>
+          <commentTitle>{$commentTitle}</commentTitle>
+          <issueDate day="{$day}" month="{$month}" year="{$yearOfDataIssue}" />
+          <commentOriginator>
+            <dispatchAddress>
+              <enterprise>
+                <enterpriseName>{$enterpriseName}</enterpriseName>
+                <division>{$division}</division>
+                <enterpriseUnit>{$enterpriseUnit}</enterpriseUnit>
+              </enterprise>
+              <dispatchPerson>
+                <lastName>{$lastName}</lastName>
+                <firstName>{$firstName}</firstName>
+                <jobTitle>{$jobTitle}</jobTitle>
+              </dispatchPerson>
+              <address>
+                <department>{$department}</department>
+                <street>{$street}</street>
+                <postOfficeBox>{$postOfficeBox}</postOfficeBox>
+                <postalZipCode>{$postalZipCode}</postalZipCode>
+                <city>{$city}</city>
+                <country>{$country}</country>
+                <state>{$state}</state>
+                <province>{$province}</province>
+                <building>{$building}</building>
+                <room>{$room}</room>
+                {$phoneNumber}
+                {$faxNumber}
+                {$email}
+                {$internet}
+                <SITA>{$SITA}</SITA>
+              </address>
+            </dispatchAddress>
+          </commentOriginator>
+        </commentAddressItems>
+      </commentAddress>
+      <commentStatus>
+        <security securityClassification="{$securityClassification}"/>
+        <commentPriority commentPriorityCode="{$commentPriorityCode}"/>
+        {$commentResponse}
+        {$commentRefs}
+        <brexDmRef>{$brexDmRef}</brexDmRef>
+        {$remarks}
+      </commentStatus>
+    </identAndStatusSection>
+    EOL;
+    return $identAndStatusSection;
+  }
+  private function create_com_identAndStatusSetion_xx(Array $params)
   {
     $modelIdentCode = $params['modelIdentCode'];
     $senderIdent = strtoupper($params['senderIdent']);
@@ -791,13 +993,9 @@ class CSDBObject
   {
     $simpleParas = '';
     foreach($params['commentContentSimplePara'] as $simplePara){
-      $simpleParas .= <<<EOA
-      <simplePara>{$simplePara}</simplePara>
-      EOA;
+      $simpleParas .= "<simplePara>{$simplePara}</simplePara>";
     }
-    return <<<EOD
-    <commentContent>{$simpleParas}</commentContent>
-    EOD;
+    return "<commentContent>{$simpleParas}</commentContent>";
     // selanjutnya buat attachment.
   }
 
