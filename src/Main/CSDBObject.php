@@ -169,6 +169,215 @@ class CSDBObject
    */
   private function create_ddn_identAndStatusSection(Array $params)
   {
+    $modelIdentCode = strtoupper($params['modelIdentCode']);
+    $senderIdent = strtoupper($params['senderIdent']);
+    $receiverIdent = strtoupper($params['receiverIdent']);
+    $year = date('Y');
+    $month = date('m');
+    $day = date('d');
+    $seqNumber = strtoupper($params['seqNumber']);
+
+    // ddnStatus
+    $securityClassification = $params['securityClassification'];
+    $authorization = $params['authorization'];
+    $brexDmRef = CSDBStatic::decode_dmIdent($params['brexDmRef'])['xml_string'];
+    $remarks = array_map((fn ($v) => $v ? "<simplePara>{$v}</simplePara>" : ''), $params['remarks'] ?? []);
+    $remarks = join("", $remarks);
+    $remarks = (empty($remarks)) ? '' :
+    <<<EOD
+    <remarks>{$remarks}</remarks>
+    EOD;
+
+    // dispatchTo
+    $dispatchTo_enterpriseName = $params['dispatchTo_enterpriseName'];
+    $dispatchTo_division = $params['dispatchTo_division'] ? "<division>{$params['dispatchTo_division']}</division>" : '';
+    $dispatchTo_enterpriseUnit = $params['dispatchTo_enterpriseUnit'] ? "<enterpriseUnit>{$params['dispatchTo_enterpriseUnit']}</enterpriseUnit>" : '';
+    $dispatchTo_lastName = $params['dispatchTo_lastName'];
+    $dispatchTo_firstName = $params['dispatchTo_firstName'] ? "<firstName>{$params['dispatchTo_firstName']}</firstName>" : '';
+    $dispatchTo_jobTitle = $params['dispatchTo_jobTitle'] ? "<jobTitle>{$params['dispatchTo_jobTitle']}</jobTitle>" : '';
+
+    $dispatchTo_department = $params["dispatchTo_department"] ? "<department>{$params['dispatchTo_department']}</department>" : '';
+    $dispatchTo_street = $params["dispatchTo_street"] ? "<street>{$params['dispatchTo_street']}</street>" : '';
+    $dispatchTo_postOfficeBox = $params["dispatchTo_postOfficeBox"] ? "<postOfficeBox>{$params['dispatchTo_postOfficeBox']}</postOfficeBox>" : '';
+    $dispatchTo_postalZipCode = $params["dispatchTo_postalZipCode"] ? "<postalZipCode>{$params['dispatchTo_postalZipCode']}</postalZipCode>" : '';
+    $dispatchTo_city = $params['dispatchTo_city'];
+    $dispatchTo_country = $params['dispatchTo_country'];
+    $dispatchTo_postalZipCode = $params["dispatchTo_postalZipCode"] ? "<postalZipCode>{$params['dispatchTo_postalZipCode']}</postalZipCode>" : '';
+    $dispatchTo_state = $params["dispatchTo_state"] ? "<state>{$params['dispatchTo_state']}</state>" : '';
+    $dispatchTo_province = $params["dispatchTo_province"] ? "<province>{$params['dispatchTo_province']}</province>" : '';
+    $dispatchTo_building = $params["dispatchTo_building"] ? "<building>{$params['dispatchTo_building']}</building>" : '';
+    $dispatchTo_room = $params["dispatchTo_room"] ? "<room>{$params['dispatchTo_room']}</room>" : '';
+    $dispatchTo_phoneNumber = '';
+    if(!empty($params['dispatchTo_phoneNumber'])){
+      foreach($params['dispatchTo_phoneNumber'] as $no){
+        $dispatchTo_phoneNumber .= <<<EOL
+        <phoneNumber>{$no}</phoneNumber>
+        EOL;
+      }
+    }
+    $dispatchTo_faxNumber = '';
+    if(!empty($params["dispatchTo_faxNumber"])){
+      foreach($params["dispatchTo_faxNumber"] as $no){
+        $dispatchTo_faxNumber .= <<<EOL
+        <faxNumber>{$no}</faxNumber>
+        EOL;
+      }
+    }
+    $dispatchTo_email = '';
+    if(!empty($params["dispatchTo_email"])){
+      foreach($params["dispatchTo_email"] as $no){
+        $dispatchTo_email .= <<<EOL
+        <email>{$no}</email>
+        EOL;
+      }
+    }
+    $dispatchTo_internet = '';
+    if(!empty($params["dispatchTo_internet"])){
+      foreach($params["dispatchTo_internet"] as $no){
+        $dispatchTo_internet .= <<<EOL
+        <internet>{$no}</internet>
+        EOL;
+      }
+    }
+    $dispatchTo_SITA = $params["dispatchTo_SITA"] ? "<SITA>{$params['dispatchTo_SITA']}</SITA>" : '';
+
+    // dispatchFrom
+    $dispatchFrom_enterpriseName = $params['dispatchFrom_enterpriseName'];
+    $dispatchFrom_division = $params['dispatchFrom_division'] ? "<division>{$params['dispatchFrom_division']}</division>" : '';
+    $dispatchFrom_enterpriseUnit = $params['dispatchFrom_enterpriseUnit'] ? "<enterpriseUnit>{$params['dispatchFrom_enterpriseUnit']}</enterpriseUnit>" : '';
+    $dispatchFrom_lastName = $params['dispatchFrom_lastName'];
+    $dispatchFrom_firstName = $params['dispatchFrom_firstName'] ? "<firstName>{$params['dispatchFrom_firstName']}</firstName>" : '';
+    $dispatchFrom_jobTitle = $params['dispatchFrom_jobTitle'] ? "<jobTitle>{$params['dispatchFrom_jobTitle']}</jobTitle>" : '';
+
+    $dispatchFrom_department = $params["dispatchFrom_department"] ? "<department>{$params['dispatchFrom_department']}</department>" : '';
+    $dispatchFrom_street = $params["dispatchFrom_street"] ? "<street>{$params['dispatchFrom_street']}</street>" : '';
+    $dispatchFrom_postOfficeBox = $params["dispatchFrom_postOfficeBox"] ? "<postOfficeBox>{$params['dispatchFrom_postOfficeBox']}</postOfficeBox>" : '';
+    $dispatchFrom_postalZipCode = $params["dispatchFrom_postalZipCode"] ? "<postalZipCode>{$params['dispatchFrom_postalZipCode']}</postalZipCode>" : '';
+    $dispatchFrom_city = $params['dispatchFrom_city'];
+    $dispatchFrom_country = $params['dispatchFrom_country'];
+    $dispatchFrom_postalZipCode = $params["dispatchFrom_postalZipCode"] ? "<postalZipCode>{$params['dispatchFrom_postalZipCode']}</postalZipCode>" : '';
+    $dispatchFrom_state = $params["dispatchFrom_state"] ? "<state>{$params['dispatchFrom_state']}</state>" : '';
+    $dispatchFrom_province = $params["dispatchFrom_province"] ? "<province>{$params['dispatchFrom_province']}</province>" : '';
+    $dispatchFrom_building = $params["dispatchFrom_building"] ? "<building>{$params['dispatchFrom_building']}</building>" : '';
+    $dispatchFrom_room = $params["dispatchFrom_room"] ? "<room>{$params['dispatchFrom_room']}</room>" : '';
+    $dispatchFrom_phoneNumber = '';
+    if(!empty($params['dispatchFrom_phoneNumber'])){
+      foreach($params['dispatchFrom_phoneNumber'] as $no){
+        $dispatchFrom_phoneNumber .= <<<EOL
+        <phoneNumber>{$no}</phoneNumber>
+        EOL;
+      }
+    }
+    $dispatchFrom_faxNumber = '';
+    if(!empty($params["dispatchFrom_faxNumber"])){
+      foreach($params["dispatchFrom_faxNumber"] as $no){
+        $dispatchFrom_faxNumber .= <<<EOL
+        <faxNumber>{$no}</faxNumber>
+        EOL;
+      }
+    }
+    $dispatchFrom_email = '';
+    if(!empty($params["dispatchFrom_email"])){
+      foreach($params["dispatchFrom_email"] as $no){
+        $dispatchFrom_email .= <<<EOL
+        <email>{$no}</email>
+        EOL;
+      }
+    }
+    $dispatchFrom_internet = '';
+    if(!empty($params["dispatchFrom_internet"])){
+      foreach($params["dispatchFrom_internet"] as $no){
+        $dispatchFrom_internet .= <<<EOL
+        <internet>{$no}</internet>
+        EOL;
+      }
+    }
+    $dispatchFrom_SITA = $params["dispatchFrom_SITA"] ? "<SITA>{$params['dispatchFrom_SITA']}</SITA>" : '';
+
+    $identAndStatusSection = <<<DDN
+    <identAndStatusSection>
+      <ddnAddress>
+        <ddnIdent>
+          <ddnCode modelIdentCode="{$modelIdentCode}" senderIdent="{$senderIdent}" receiverIdent="{$receiverIdent}" yearOfDataIssue="{$year}" seqNumber="{$seqNumber}" />
+        </ddnIdent>
+        <ddnAddressItems>
+          <issueDate year="{$year}" month="{$month}" day="{$day}"/>
+          <dispatchTo>
+            <dispatchAddress>
+              <enterprise>
+                <enterpriseName>{$dispatchTo_enterpriseName}</enterpriseName>
+                {$dispatchTo_division}
+                {$dispatchTo_enterpriseUnit}
+              </enterprise>
+              <dispatchPerson>
+                <lastName>{$dispatchTo_lastName}</lastName>
+                {$dispatchTo_firstName}
+                {$dispatchTo_jobTitle}
+              </dispatchPerson>
+              <address>
+                {$dispatchTo_department}
+                {$dispatchTo_street}
+                {$dispatchTo_postOfficeBox}
+                {$dispatchTo_postalZipCode}
+                <city>{$dispatchTo_city}</city>
+                <country>{$dispatchTo_country}</country>
+                {$dispatchTo_state}
+                {$dispatchTo_province}
+                {$dispatchTo_building}
+                {$dispatchTo_room}
+                {$dispatchTo_phoneNumber}
+                {$dispatchTo_faxNumber}
+                {$dispatchTo_email}
+                {$dispatchTo_internet}
+                {$dispatchTo_SITA}
+              </address>
+            </dispatchAddress>
+          </dispatchTo>
+          <dispatchFrom>
+            <dispatchAddress>
+              <enterprise>
+                <enterpriseName>{$dispatchFrom_enterpriseName}</enterpriseName>
+                {$dispatchFrom_division}
+                {$dispatchFrom_enterpriseUnit}
+              </enterprise>
+              <dispatchPerson>
+                <lastName>{$dispatchFrom_lastName}</lastName>
+                {$dispatchFrom_firstName}
+                {$dispatchFrom_jobTitle}
+              </dispatchPerson>
+              <address>
+                {$dispatchFrom_department}
+                {$dispatchFrom_street}
+                {$dispatchFrom_postOfficeBox}
+                {$dispatchFrom_postalZipCode}
+                <city>{$dispatchFrom_city}</city>
+                <country>{$dispatchFrom_country}</country>
+                {$dispatchFrom_state}
+                {$dispatchFrom_province}
+                {$dispatchFrom_building}
+                {$dispatchFrom_room}
+                {$dispatchFrom_phoneNumber}
+                {$dispatchFrom_faxNumber}
+                {$dispatchFrom_email}
+                {$dispatchFrom_internet}
+                {$dispatchFrom_SITA}
+              </address>
+            </dispatchAddress>
+          </dispatchFrom>
+        </ddnAddressItems>
+      </ddnAddress>
+      <ddnStatus>
+        <security securityClassification="{$securityClassification}"/>
+        <authorization>{$authorization}</authorization>
+        <brexDmRef>{$brexDmRef}</brexDmRef>
+      {$remarks}        
+      </ddnStatus>
+    </identAndStatusSection>
+    DDN;
+    return $identAndStatusSection;
+  }
+  private function create_ddn_identAndStatusSection_xx(Array $params)
+  {
     $modelIdentCode = $params['modelIdentCode'];
     $senderIdent = strtoupper($params['senderIdent']);
     $receiverIdent = strtoupper($params['receiverIdent']);
@@ -747,245 +956,7 @@ class CSDBObject
     EOL;
     return $identAndStatusSection;
   }
-  private function create_com_identAndStatusSetion_xx(Array $params)
-  {
-    $modelIdentCode = $params['modelIdentCode'];
-    $senderIdent = strtoupper($params['senderIdent']);
-    $year = date('Y');
-    $seqNumberRef = strtolower($params['seqNumberRef']) ?? '';
-    $commentType = strtolower($params['commentType']);
-    $seqNumber = function($path) use($modelIdentCode,$senderIdent,$year,$seqNumberRef,$commentType){
-      $dir = scandir($path);
-      $collection = [];
-      foreach ($dir as $file) {
-        if(!($seqNumberRef)){
-          // dd(join('-',['COM',$modelIdentCode,$senderIdent, $commentType, $year]));
-          if (str_contains($file, strtoupper(join('-',['COM',$modelIdentCode,$senderIdent, $commentType,$year])))) {
-            $collection[] = $file;
-          }
-        } else {
-          if (str_contains($file, strtoupper(join('-',['COM',$modelIdentCode,$senderIdent, $commentType,$year,$seqNumberRef])))) {
-            $collection[] = $file;
-          }
-        }
-      }
-      if (!empty($collection)) {
-        rsort($collection, SORT_STRING);
-        $c = array_map(function ($v) {
-          $v = preg_replace("/_.+/", '', $v); // menghilangkan languange yang menempel di filename
-          $v = str_replace(".xml", '', $v);
-          $v = explode("-", $v);
-          return $v;
-        }, $collection);
-        $max_seqNumber = $c[0][5];
-        $threeDigitFirst = substr($max_seqNumber,0,3);
-        $twoDigitLast = substr($max_seqNumber,-2,2);        
-        if(!$seqNumberRef AND strtoupper($commentType) === 'Q'){
-          $threeDigitFirst++;
-          $twoDigitLast = '00';
-        } elseif($seqNumberRef AND strtoupper($commentType) != 'Q'){
-          $threeDigitFirst = substr($seqNumberRef,0,3);
-          $comRef = array_filter($collection, function($v) use($modelIdentCode,$senderIdent,$year,$seqNumberRef,$commentType, $threeDigitFirst){
-            $r = strtoupper(join('-',['COM',$modelIdentCode,$senderIdent,'(Q|I)',$year,$threeDigitFirst]));
-            $r = ("/{$r}.+/");
-            preg_match($r, $v,$r);
-            if(!empty($r)) return true;
-          });
-          $comRef = str_replace(".xml",'',$comRef[0]);
-          $twoDigitLast = substr($comRef,-2,2);
-          $twoDigitLast++;
-        } else {
-          return rand(0,99999);
-        }
-        $threeDigitFirst = str_pad($threeDigitFirst, 3, '0', STR_PAD_LEFT);
-        $twoDigitLast = str_pad($twoDigitLast, 2, '0', STR_PAD_LEFT);
-        return $threeDigitFirst . $twoDigitLast;
-      }
-      return "00100"; // nomor baru pertamakali
-    };
-    $seqNumber = strtoupper($seqNumber($this->path));
-    $brexDmRef = CSDBStatic::decode_dmIdent($params['brexDmRef']);
-    $remarks = array_map((fn ($v) => "<simplePara>{$v}</simplePara>"), $params['remarks'] ?? []);
-    $remarks = join("", $remarks);
-    $remarks = (empty($remarks)) ? '' :
-      <<<EOD
-    <remarks>{$remarks}</remarks>
-    EOD;
-    $languageIsoCode = strtolower($params['languageIsoCode']);
-    $countryIsoCode = strtoupper($params['countryIsoCode']);
-    $commentTitle = $params['commentTitle'];
-    $day = date('d');
-    $month = date('m');
-
-    // enterprise
-    $enterpriseName = $params['enterpriseName'];
-    $division = $params['division'] ?? '';
-    $enterpriseUnit = $params['enterpriseUnit'] ?? '';
-
-    // dispatchPerson
-    $lastName = $params['lastName'];
-    $firstName = $params['firstName'] ?? '';
-    $jobTitle = $params['jobTitle'] ?? '';
-
-    // address
-    $department = $params["department"] ?? '';
-    $street = $params["street"] ?? '';
-    $postOfficeBox = $params["postOfficeBox"] ?? '';
-    $postalZipCode = $params["postalZipCode"] ?? '';
-    $city = $params["city"];
-    $country = $params["country"];
-    $state = $params["state"] ?? '';
-    $province = $params["province"] ?? '';
-    $building = $params["building"] ?? '';
-    $room = $params["room"] ?? '';
-    $phoneNumber = '';
-    if(!empty($params["phoneNumber"])){
-      foreach($params["phoneNumber"] as $no){
-        $phoneNumber .= <<<EOL
-        <phoneNumber>{$no}</phoneNumber>
-        EOL;
-      }
-    }
-    $faxNumber = '';
-    if(!empty($params["faxNumber"])){
-      foreach($params["faxNumber"] as $no){
-        $faxNumber .= <<<EOL
-        <faxNumber>{$no}</faxNumber>
-        EOL;
-      }
-    }
-    $email = '';
-    if(!empty($params["email"])){
-      foreach($params["email"] as $no){
-        $email .= <<<EOL
-        <email>{$no}</email>
-        EOL;
-      }
-    }
-    $internet = '';
-    if(!empty($params["internet"])){
-      foreach($params["internet"] as $no){
-        $internet .= <<<EOL
-        <internet>{$no}</internet>
-        EOL;
-      }
-    }
-    $SITA = $params["SITA"] ?? '';
-
-    // commentStatus
-    $securityClassification = $params['securityClassification'];
-    $domXpath = new \DOMXpath($this->ConfigXML);
-    if(strtolower(substr($params['commentPriorityCode'],0-2)) === 'cp' AND strlen($params['commentPriorityCode']) === 4){
-      $cpc = $params['commentPriorityCode'];
-      $commentPriorityCode = $domXpath->evaluate("string(//commentPriority[@code = '{$cpc}'])");
-      $commentPriorityCode = $commentPriorityCode ? $commentPriorityCode : $cpc;
-    } else {
-      $commentPriorityCode = $params['commentPriorityCode'];
-    }
-    if(strtolower(substr($params['responseType'],0-2)) === 'rt' AND strlen($params['responseType']) === 4){
-      $crt = $params['responseType'];
-      $responseType = $domXpath->evaluate("string(//commentResponse[@type = '{$crt}'])");
-      $responseType = $responseType ? $responseType : $crt;
-    } else {
-      $responseType = $params['responseType'];
-    }
-    $commentResponse = '';
-    if($responseType){
-      $commentResponse = <<<EOD
-      <commentResponse responseType="{$responseType}"/>
-      EOD;
-    }
-    $commentRefsContent = '';
-    if(empty($params['commentRefs'])) $commentRefsContent = "<noReferences/>";
-    else {
-      sort($params['commentRefs']);
-      $commentRefsArray = [];
-      foreach($params['commentRefs'] as $ref){
-        if($ref){
-          $ident = CSDBStatic::decode_ident($ref);
-          if($ident === 'DMC-') $commentRefsArray['dmRefGroup'] = $ident['xml_string'];
-          elseif($ident === 'PMC-') $commentRefsArray['pmRefGroup'] = $ident['xml_string'];
-          elseif($ident === 'DML-') $commentRefsArray['dmlRefGroup'] = $ident['xml_string'];
-          elseif($ident === 'DDN-') $commentRefsArray['ddnRefGroup'] = $ident['xml_string'];
-        }
-      }
-      foreach($commentRefsArray as $groupName => $ref){
-        $commentRefsContent = "<{$groupName}>{$ref}</{$groupName}>";
-      }
-    }
-    $commentRefs = <<<EOF
-    <commentRefs>{$commentRefsContent}</commentRefs>
-    EOF;
-
-    // brexDmRef
-    $brexDmRef_learnCode = ($brexDmRef['dmCode']['learnCode'] == '') ? '' : 'learnCode=' . '"' . $brexDmRef['dmCode']['learnCode'] . '"';
-    $brexDmRef_learnEventCode = ($brexDmRef['dmCode']['learnEventCode'] == '') ? '' : 'learnEventCode=' . '"' . $brexDmRef['dmCode']['learnEventCode'] . '"';
-
-    $identAndStatusSection = <<<EOL
-    <identAndStatusSection>
-      <commentAddress>
-        <commentIdent>
-          <commentCode modelIdentCode="{$modelIdentCode}" senderIdent="{$senderIdent}" yearOfDataIssue="{$year}" seqNumber="{$seqNumber}" commentType="{$commentType}"/>
-          <language languageIsoCode="{$languageIsoCode}" countryIsoCode="{$countryIsoCode}"/>
-        </commentIdent>
-        <commentAddressItems>
-          <commentTitle>{$commentTitle}</commentTitle>
-          <issueDate day="{$day}" month="{$month}" year="{$year}" />
-          <commentOriginator>
-            <dispatchAddress>
-              <enterprise>
-                <enterpriseName>{$enterpriseName}</enterpriseName>
-                <division>{$division}</division>
-                <enterpriseUnit>{$enterpriseUnit}</enterpriseUnit>
-              </enterprise>
-              <dispatchPerson>
-                <lastName>{$lastName}</lastName>
-                <firstName>{$firstName}</firstName>
-                <jobTitle>{$jobTitle}</jobTitle>
-              </dispatchPerson>
-              <address>
-                <department>{$department}</department>
-                <street>{$street}</street>
-                <postOfficeBox>{$postOfficeBox}</postOfficeBox>
-                <postalZipCode>{$postalZipCode}</postalZipCode>
-                <city>{$city}</city>
-                <country>{$country}</country>
-                <state>{$state}</state>
-                <province>{$province}</province>
-                <building>{$building}</building>
-                <room>{$room}</room>
-                {$phoneNumber}
-                {$faxNumber}
-                {$email}
-                {$internet}
-                <SITA>{$SITA}</SITA>
-              </address>
-            </dispatchAddress>
-          </commentOriginator>
-        </commentAddressItems>
-      </commentAddress>
-      <commentStatus>
-        <security securityClassification="{$securityClassification}"/>
-        <commentPriority commentPriorityCode="{$commentPriorityCode}"/>
-        {$commentResponse}
-        {$commentRefs}
-        <brexDmRef>
-            <dmRef>
-              <dmRefIdent>
-                <dmCode assyCode="{$brexDmRef['dmCode']['assyCode']}" disassyCode="{$brexDmRef['dmCode']['disassyCode']}" disassyCodeVariant="{$brexDmRef['dmCode']['disassyCodeVariant']}" infoCode="{$brexDmRef['dmCode']['infoCode']}" infoCodeVariant="{$brexDmRef['dmCode']['infoCodeVariant']}" itemLocationCode="{$brexDmRef['dmCode']['itemLocationCode']}" modelIdentCode="{$brexDmRef['dmCode']['modelIdentCode']}" subSubSystemCode="{$brexDmRef['dmCode']['subSubSystemCode']}" subSystemCode="{$brexDmRef['dmCode']['subSystemCode']}" systemCode="{$brexDmRef['dmCode']['systemCode']}" systemDiffCode="{$brexDmRef['dmCode']['systemDiffCode']}" 
-                  {$brexDmRef_learnCode} {$brexDmRef_learnEventCode}/>
-                <issueInfo inWork="{$brexDmRef['issueInfo']['inWork']}" issueNumber="{$brexDmRef['issueInfo']['issueNumber']}"/>
-                <language countryIsoCode="{$brexDmRef['language']['countryIsoCode']}" languageIsoCode="{$brexDmRef['language']['languageIsoCode']}"/>
-              </dmRefIdent>
-            </dmRef>
-          </brexDmRef>
-        {$remarks}
-      </commentStatus>
-    </identAndStatusSection>
-    EOL;
-    return $identAndStatusSection;
-  }
-
+  
   /**
    * masih belum mengaplikasikan attachment untuk comment
    */
@@ -1284,9 +1255,10 @@ class CSDBObject
     if($remarks){
       $simpleParas = $remarks->getElementsByTagName('simplePara');
       foreach($simpleParas as $p){
-        $str .= ' \n\r ' . $p->nodeValue;  
+        $str .= '\n' . $p->nodeValue;  
       }
     }
+    $str = trim($str,"\n");
     return $str;
     
   }
@@ -1300,6 +1272,22 @@ class CSDBObject
     $decode = CSDBStatic::decode_dmIdent($this->filename);
     if($decode['dmCode']['infoCode'] === '022') return true;
     return false;
+  }
+
+  public function query($xpath = '')
+  {
+    if(!($this->document instanceof \DOMDocument)) return '';
+    if(!($xpath)) return '';
+    $domXpath = new \DOMXpath($this->document);
+    return [...$domXpath->query($xpath)];
+  }
+
+  public function evaluate($xpath = '')
+  {
+    if(!($this->document instanceof \DOMDocument)) return '';
+    if(!($xpath)) return '';
+    $domXpath = new \DOMXpath($this->document);
+    return $domXpath->evaluate($xpath);
   }
 
   /**

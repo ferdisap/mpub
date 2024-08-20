@@ -117,7 +117,8 @@ class CSDBStatic
     return DIRECTORY_SEPARATOR;
   }
 
-  public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
+  // public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
+  public static function resolve_ident($ident = null, $prefix = null, $format = '.xml')
   {
     if (!$ident) return '';
     if (is_array($ident)) {
@@ -125,37 +126,37 @@ class CSDBStatic
     }
     switch ($ident->nodeName) {
       case 'dmIdent':
-        return self::resolve_dmIdent($ident, $prefix, $format);
+        return self::resolve_dmIdent($ident, $prefix ?? 'DMC-', $format);
         break;
       case 'dmRefIdent':
-        return self::resolve_dmIdent($ident, $prefix, $format);
+        return self::resolve_dmIdent($ident, $prefix ?? 'DMC-', $format);
         break;
       case 'pmIdent':
-        return self::resolve_pmIdent($ident, $prefix, $format);
+        return self::resolve_pmIdent($ident, $prefix ?? 'PMC-', $format);
         break;
       case 'pmRefIdent':
-        return self::resolve_pmIdent($ident, $prefix, $format);
+        return self::resolve_pmIdent($ident, $prefix ?? 'PMC-', $format);
         break;
       case 'externalPubRefIdent':
         return self::resolve_externalPubRefIdent($ident, $prefix, $format);
         break;
       case 'dmlIdent':
-        return self::resolve_dmlIdent($ident, $prefix, $format);
+        return self::resolve_dmlIdent($ident, $prefix ?? 'DML-', $format);
         break;
       case 'dmlRefIdent':
-        return self::resolve_dmlIdent($ident, $prefix, $format);
+        return self::resolve_dmlIdent($ident, $prefix ?? 'DML-', $format);
         break;
       case 'ddnIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
+        return self::resolve_ddnIdent($ident, $prefix ?? 'DDN-', $format);
         break;
       case 'ddnRefIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
+        return self::resolve_ddnIdent($ident, $prefix ?? 'DDN-', $format);
         break;
       case 'commentIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
+        return self::resolve_ddnIdent($ident, $prefix ?? 'COM-', $format);
         break;
       case 'commentRefIdent':
-        return self::resolve_commentIdent($ident, $prefix, $format);
+        return self::resolve_commentIdent($ident, $prefix ?? 'COM-', $format);
         break;
       default:
         # code...
@@ -927,9 +928,9 @@ class CSDBStatic
     $data['commentCode'] =  [
       "modelIdentCode" => $code_array[0],
       "senderIdent" => $code_array[1],
-      "yearOfDataIssue" => $code_array[2],
-      "seqNumber" => $code_array[3],
-      "commentType" => $code_array[4],
+      "commentType" => $code_array[2],
+      "yearOfDataIssue" => $code_array[3],
+      "seqNumber" => $code_array[4],
     ];
 
     $data['prefix'] = $prefix;
@@ -949,7 +950,7 @@ class CSDBStatic
 
       $ident = <<<EOD
         <comment{$ref}Ident>
-          <commentCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['receiverIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
+          <commentCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} {$d['commentType']}/>
           <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
         </comment{$ref}Ident>
       EOD;
@@ -1378,9 +1379,65 @@ class CSDBStatic
   }
 
   public static function tes($v){
-    (self::handle_xmlElementNode($v[0],$a));
+    (self::decode_element($v[0],$a));
     return (json_encode($a));
   }
+  public static function simple_xml_to_json(\DOMDocument $DOMDocument){
+    $arr = [];
+    $childNodes = $DOMDocument->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElement
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::simple_decode_element($childNodes[$i], $arr);
+      }
+      $i++;
+    }
+    return json_encode($arr);
+  }
+
+  public static function simple_decode_element($DOMElement, &$v){
+    $arr = [];
+    if ($DOMElement->hasAttributes()) {
+      foreach ($DOMElement->attributes as $attr) {
+        self::simple_decode_attribute($attr, $arr);
+      }
+    }
+    $childNodes = $DOMElement->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElemen
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::simple_decode_element($childNodes[$i], $arr);
+      }
+      // jika ada child DOMText
+      elseif ($childNodes[$i]->nodeType === XML_TEXT_NODE) {
+        $arr[] = self::decode_text($childNodes[$i]);
+      }
+      $i++;
+    }
+    if(array_is_list($arr) && count($arr) <= 1) $arr = join("",$arr);
+    else {
+      $keys = array_keys($arr);
+      foreach($keys as $k){
+        if(is_array($arr[$k]) && array_is_list($arr[$k]) && count($arr[$k]) <= 1) $arr[$k] = join("",$arr[$k]);
+      }
+    }
+    $v[$DOMElement->nodeName] = $arr;  
+  }
+  
+  private static function simple_decode_attribute($DOMAttr, &$v)
+  {
+    $v['at_' . $DOMAttr->nodeName] = $DOMAttr->nodeValue;
+  }
+
+  // private static function textToJson($DOMText, &$v)
+  // {
+  //   $nodeValue = trim($DOMText->nodeValue);
+  //   if ($nodeValue) {
+  //     $v[] = $nodeValue;
+  //   }
+  // }
 
   public static function xml_to_json(\DOMDocument $DOMDocument)
   {
@@ -1390,17 +1447,17 @@ class CSDBStatic
     while (isset($childNodes[$i])) {
       // jika ada child DOMElement
       if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
-        self::handle_xmlElementNode($childNodes[$i], $arr[]);
+        self::decode_element($childNodes[$i], $arr[]);
       }
       // jika ada child DOMDoctype
       elseif ($childNodes[$i]->nodeType === XML_DOCUMENT_TYPE_NODE) {
-        self::handle_xmlDoctypeNode($childNodes[$i], $arr[]);
+        self::decode_doctype($childNodes[$i], $arr[]);
       }
       $i++;
     }
     return json_encode($arr);
   }
-  private static function handle_xmlDoctypeNode(\DOMDocumentType $DOMDoctype, &$v)
+  private static function decode_doctype(\DOMDocumentType $DOMDoctype, &$v)
   {
     $name = $DOMDoctype->name;
     $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '[\s\S]+\]\>)([\s\S]+)/m';
@@ -1413,12 +1470,12 @@ class CSDBStatic
       'string' => $doctypeString
     ];
   }
-  private static function handle_xmlElementNode($DOMElement, &$v)
+  public static function decode_element($DOMElement, &$v)
   {
     $arr = [];
     if ($DOMElement->hasAttributes()) {
       foreach ($DOMElement->attributes as $attr) {
-        self::handle_xmlAttributeNode($attr, $arr[]);
+        self::decode_attribute($attr, $arr[]);
       }
     }
     $childNodes = $DOMElement->childNodes;
@@ -1426,24 +1483,25 @@ class CSDBStatic
     while (isset($childNodes[$i])) {
       // jika ada child DOMElemen
       if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
-        self::handle_xmlElementNode($childNodes[$i], $arr[]);
+        self::decode_element($childNodes[$i], $arr[]);
       }
       // jika ada child DOMText
       elseif ($childNodes[$i]->nodeType === XML_TEXT_NODE) {
-        self::handle_xmlTextNode($childNodes[$i], $arr[]);
+        if($text = self::decode_text($childNodes[$i])) $arr[] = $text;
       }
       $i++;
     }
     $v = [$DOMElement->nodeName => $arr];
   }
-  private static function handle_xmlAttributeNode($DOMAttr, &$v)
+  private static function decode_attribute($DOMAttr, &$v)
   {
-    $v = ['@' . $DOMAttr->nodeName => $DOMAttr->nodeValue];
+    $v = ['at_' . $DOMAttr->nodeName => $DOMAttr->nodeValue];
   }
-  private static function handle_xmlTextNode($DOMText, &$v)
+  private static function decode_text($DOMText)
   {
-    if ($DOMText->nodeValue) {
-      $v = trim($DOMText->nodeValue);
+    $nodeValue = trim($DOMText->nodeValue);
+    if ($nodeValue) {
+      return preg_replace("/\n|\r|\n\r|\s+/m"," ",$nodeValue);
     }
   }
   public static function json_to_xml(mixed $value, mixed $parentNode = null)
@@ -1474,13 +1532,13 @@ class CSDBStatic
         }
       }
     }
-    // bisa DOMATTR atau DOMElement. Kalau attritbute tandanya $key nya diprefix simbol '@' 
+    // bisa DOMATTR atau DOMElement. Kalau attritbute tandanya $key nya diprefix simbol 'at_' 
     elseif ($arr) {
       foreach ($arr as $name => $node) {
-        $type = substr($name, 0, 1) === '@' ? 'DOMAttr' : 'DOMElement'; // disini jika ingin membuat DOMDoctype
+        $type = substr($name, 0, 3) === 'at_' ? 'DOMAttr' : 'DOMElement'; // disini jika ingin membuat DOMDoctype
         if ($type === 'DOMAttr') {
           // asumsi parentNode adalah \DOMElement
-          $parentNode->setAttribute(substr($name, 1), $node); // dibuang '@' nya
+          $parentNode->setAttribute(substr($name, 1), $node); // dibuang 'at_' nya
         } else {
           $DOMElement = $parentNode->ownerDocument ? $parentNode->ownerDocument->createElement($name) : $parentNode->createElement($name);
           $parentNode->appendChild($DOMElement);
