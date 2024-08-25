@@ -118,45 +118,44 @@ class CSDBStatic
   }
 
   // public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
-  public static function resolve_ident($ident = null, $prefix = null, $format = '.xml')
+  public static function resolve_ident($ident = null, $prefix = '', $format = '.xml')
   {
     if (!$ident) return '';
     if (is_array($ident)) {
       $ident = $ident[0];
     }
+    
+    // dd($ident->nodeName);
     switch ($ident->nodeName) {
-      case 'dmIdent':
-        return self::resolve_dmIdent($ident, $prefix ?? 'DMC-', $format);
-        break;
-      case 'dmRefIdent':
-        return self::resolve_dmIdent($ident, $prefix ?? 'DMC-', $format);
+      case 'dmIdent'||'dmRef'||'dmRefIdent':
+        return self::resolve_dmIdent($ident, $prefix, $format);
         break;
       case 'pmIdent':
-        return self::resolve_pmIdent($ident, $prefix ?? 'PMC-', $format);
+        return self::resolve_pmIdent($ident, $prefix, $format);
         break;
       case 'pmRefIdent':
-        return self::resolve_pmIdent($ident, $prefix ?? 'PMC-', $format);
+        return self::resolve_pmIdent($ident, $prefix, $format);
         break;
       case 'externalPubRefIdent':
         return self::resolve_externalPubRefIdent($ident, $prefix, $format);
         break;
       case 'dmlIdent':
-        return self::resolve_dmlIdent($ident, $prefix ?? 'DML-', $format);
+        return self::resolve_dmlIdent($ident, $prefix, $format);
         break;
       case 'dmlRefIdent':
-        return self::resolve_dmlIdent($ident, $prefix ?? 'DML-', $format);
+        return self::resolve_dmlIdent($ident, $prefix, $format);
         break;
       case 'ddnIdent':
-        return self::resolve_ddnIdent($ident, $prefix ?? 'DDN-', $format);
+        return self::resolve_ddnIdent($ident, $prefix, $format);
         break;
       case 'ddnRefIdent':
-        return self::resolve_ddnIdent($ident, $prefix ?? 'DDN-', $format);
+        return self::resolve_ddnIdent($ident, $prefix, $format);
         break;
       case 'commentIdent':
-        return self::resolve_ddnIdent($ident, $prefix ?? 'COM-', $format);
+        return self::resolve_ddnIdent($ident, $prefix, $format);
         break;
       case 'commentRefIdent':
-        return self::resolve_commentIdent($ident, $prefix ?? 'COM-', $format);
+        return self::resolve_commentIdent($ident, $prefix, $format);
         break;
       default:
         # code...
@@ -335,7 +334,6 @@ class CSDBStatic
     $yearOfDataIssue = $dmlCode->getAttribute('yearOfDataIssue');
     $seqNumber = $dmlCode->getAttribute('seqNumber');
 
-    if (strtolower($dmlType) == 's') ($prefix = 'CSL-');
     $name = $prefix .
       $modelIdentCode . "-" .
       $senderIdent . "-" .
@@ -878,24 +876,16 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <pm{$ref}Ident>
-          <pmCode {$d['modelIdentCode']} {$d['pmIssuer']} {$d['pmNumber']} {$d['pmVolume']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-        </pm{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return
-          <<<EOL
-        <pm{$ref}>
-          $ident        
-        </pm{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<pm{$ref}Ident><pmCode {$d['modelIdentCode']} {$d['pmIssuer']} {$d['pmNumber']} {$d['pmVolume']}/>";
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= "<issueInfo {$d['issueNumber']} {$d['inWork']}/>";
       }
+      if($d['languageIsoCode'] && $d['countryIsoCode']){
+        $ident .= "<language {$d['languageIsoCode']} {$d['countryIsoCode']}/>";
+      }
+      $ident .= "</pm{$ref}Ident>";
+
+      return $ref ? "<pm{$ref}>$ident</pm{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -948,22 +938,13 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <comment{$ref}Ident>
-          <commentCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} {$d['commentType']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-        </comment{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return <<<EOL
-        <comment{$ref}>
-          $ident        
-        </comment{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<comment{$ref}Ident><commentCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} {$d['commentType']}/>";
+      if($d['languageIsoCode'] && $d['countryIsoCode']){
+        $ident .= "<language {$d['languageIsoCode']} {$d['countryIsoCode']}/>";
       }
+      $ident .= "</comment{$ref}Ident>";
+
+      return $ref ? "<comment{$ref}>$ident</comment{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -1019,16 +1000,7 @@ class CSDBStatic
         </ddn{$ref}Ident>
       EOD;
 
-      if ($ref) {
-        return
-          <<<EOL
-        <ddn{$ref}>
-          $ident        
-        </ddn{$ref}>
-        EOL;
-      } else {
-        return $ident;
-      }
+      return $ref ? "<ddn{$ref}>$ident</ddn{$ref}>": $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -1078,23 +1050,13 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <dml{$ref}Ident>
-          <dmlCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['dmlType']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-        </dml{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return
-          <<<EOL
-        <dml{$ref}>
-          $ident        
-        </dml{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<dml{$ref}Ident><dmlCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['dmlType']} {$d['yearOfDataIssue']} {$d['seqNumber']} />";
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= "<issueInfo {$d['issueNumber']} {$d['inWork']}/>";
       }
+      $ident .= " </dml{$ref}Ident>";
+
+      return $ref ? "<dml{$ref}>$ident</dml{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -1172,35 +1134,17 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <dm{$ref}Ident>
-          <dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-        </dm{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return
-          <<<EOL
-        <dm{$ref}>
-          $ident        
-        </dm{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<dm{$ref}Ident><dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>";
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= "<issueInfo {$d['issueNumber']} {$d['inWork']}/>";
+      }
+      if($d['languageIsoCode'] && $d['countryIsoCode']){
+        $ident .= "<language {$d['languageIsoCode']} {$d['countryIsoCode']}/>";
       }
 
-      return
-        <<<EOL
-      <dm{$ref}>
-        <dm{$ref}Ident>
-          <dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-        </dm{$ref}Ident>
-      </dm{$ref}>
-      EOL;
+      $ident .=  "</dm{$ref}Ident>";
+
+      return $ref ? "<dm{$ref}>$ident</dm{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);

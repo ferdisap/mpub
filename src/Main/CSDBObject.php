@@ -107,7 +107,6 @@ class CSDBObject
    * @return void
    */
   public function createDML($params = []) :void
-  // public function createDML(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], array $otherOptions = []) :void
   {
     $this->document = new DOMDocument('1.0', 'UTF-8');
     $this->document->preserveWhiteSpace = $this->preserveWhiteSpace;
@@ -646,9 +645,7 @@ class CSDBObject
    * jika ingin menaruh <dmlRef> pada <dmlStatus>, maka gunakan otherOptions = ['dmlRef' = ['DML...', 'DML...]];
    * @return string identAndStatusSection
    */
-  // private function create_dml_identAndStatusSection(string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = [])
   private function create_dml_identAndStatusSection(Array $params)
-  // string $modelIdentCode, string $originator, string $dmlType, string $securityClassification, string $brexDmRef, array $remarks = [], $otherOptions = []
   {
     $modelIdentCode = $params['modelIdentCode'];
     $yearOfDataIssue = $params['yearOfDataIssue'];
@@ -1245,21 +1242,32 @@ class CSDBObject
   /**
    * @return string
    */
-  public function getRemarks(mixed $remarks)
+  public function getRemarks(mixed $remarks, $output = 'string')
   {
     if(!$remarks){
       $domXpath = new \DOMXPath($this->document);
       $remarks = $domXpath->evaluate("//identAndStatusSection/descendant::remarks")[0];
     }
-    $str = '';
-    if($remarks){
-      $simpleParas = $remarks->getElementsByTagName('simplePara');
-      foreach($simpleParas as $p){
-        $str .= '\n' . $p->nodeValue;  
+    if($output === 'string'){
+      $str = '';
+      if($remarks){
+        $simpleParas = $remarks->getElementsByTagName('simplePara');
+        foreach($simpleParas as $p){
+          $str .= '\n' . $p->nodeValue;  
+        }
       }
+      $str = trim($str,"\\n");
+      return $str;
+    } else {
+      $str = [];
+      if($remarks){
+        $simpleParas = $remarks->getElementsByTagName('simplePara');
+        foreach($simpleParas as $p){
+          $str[] = $p->nodeValue;  
+        }
+      }
+      return $str;
     }
-    $str = trim($str,"\n");
-    return $str;
     
   }
 

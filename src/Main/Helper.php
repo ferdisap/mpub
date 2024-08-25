@@ -97,6 +97,8 @@ class Helper
     $keywords = is_array($keyword) ? $keyword : self::explodeSearchKeyAndValue($keyword);
     if (empty($keywords)) return [];
 
+    // dd($keywords);
+
     // jika $keyword tidak ada column namenya, maka akan mengambil seluruh column name database
     // contoh $request->sc = "Senchou";. Kita tidak tahu 'Senchou' ini dicari di column mana, jadi cari di semua column di database
     // $table = $table ? $table : ($this->model instanceof Builder ? $this->model->getModel()->getTable() : $this->model->getTable());
@@ -396,6 +398,7 @@ class Helper
       unset($m[$i]);
     }
 
+    
     // casting
     $ret = (!empty($m) ? $m : ($key ? [$key] : []));
     if (!empty($casting)) {
@@ -403,6 +406,15 @@ class Helper
         if (!(isset($ret[$new]))) $ret[$new] = $ret[$old];
       }
       unset($ret[$old]);
+    } else {
+      // yang tidak ada key nya akan digabung ke key sebelumnya
+      $keys = array_keys($ret);
+      foreach ($keys as $i => $key) {
+        if(!$key && $ret[$keys[$i-1]]){
+          $ret[$keys[$i-1]] = array_merge($ret[$keys[$i-1]],$ret[$key]);
+          unset($ret[$key]);
+        }
+      }
     }
     return $ret;
   }
