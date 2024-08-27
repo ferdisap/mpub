@@ -21,13 +21,12 @@ class ICNDocument
   {
     switch ($option) {
       case '':
-        return (file_get_contents($this->fileinfo['filepath']. DIRECTORY_SEPARATOR. $this->filename));
+        return (file_get_contents($this->filename));
         break;
       case 'base64':
-        return base64_encode((file_get_contents($this->fileinfo['filepath']. DIRECTORY_SEPARATOR. $this->filename)));
+        return base64_encode($this->filename);
         break;
       case 'SplFileInfo':
-        // return = new \SplFileInfo($this->getFileinfo()['filepath'] . "/". $doc->getFilename());
         return new \SplFileInfo($this->path . "/". $this->filename);      
       default:
         # code...

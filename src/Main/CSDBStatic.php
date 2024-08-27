@@ -2,8 +2,185 @@
 
 namespace Ptdi\Mpub\Main;
 
+use function GuzzleHttp\choose_handler;
+
 class CSDBStatic
 {
+  /**
+   * what masterName (@pmType) used currently of transformatting
+   * mungkin nanti dipindahkan ke class CSDBObject saja
+   */
+  protected static string $PDF_MasterName = '';
+
+  public static function get_PDF_MasterName()
+  {
+    return self::$PDF_MasterName;
+  }
+
+  public static function set_PDF_MasterName(string $text)
+  {
+    self::$PDF_MasterName = $text;
+  }
+
+  /**
+   * digunakan agar tidak ada multiple masterName di xsl fo layout
+   */
+  protected static array $masterName = [];
+
+  /**
+   * digunakan sekalian untuk check apakah masterName sudah di tambahkan ke layout atau belum
+   */
+  public static function add_masterName(string $name)
+  {
+    if (!in_array($name, self::$masterName, true)) {
+      self::$masterName[] = $name;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  /**
+   * [
+   *  'id-000' => [ 
+   *    'text' => 'lorem ipsum',
+   *    'parent' => '',
+   *  ],
+   *  'id-001' => [
+   *    'text' => 'lorem ipsum 2',
+   *    'parent' => 'id-001'
+   *  ]
+   * ]
+   */
+  protected static array $bookmarks = [];
+
+  public static function fillBookmark(string $destination, string $text, string $parent = '')
+  {
+    self::$bookmarks[$destination] = [
+      'text' => $text,
+      'parent' => $parent,
+    ];
+  }
+
+  /**
+   * @return \DOMDocument
+   */
+  public static function transformBookmark_to_xml()
+  {
+    // dump(self::$bookmarks);
+    if (empty(self::$bookmarks)) return '';
+    $dom = new \DOMDocument;
+    $bookmarkTree_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree');
+    $dom->appendChild($bookmarkTree_el);
+
+    $randomNS = hash('md2', rand(0, 10000));
+    $randomNS = "aaa" . substr($randomNS, 0, 10);
+    // $randomNS = 'randomNS123';
+    // $randomNS = 'c8ed21db4f';
+    // dd('aaa', $randomNS);
+
+    while (!empty(self::$bookmarks)) {
+      $keyfirst = array_key_first(self::$bookmarks);
+
+      $parent = self::$bookmarks[$keyfirst]['parent'];
+
+      $bookmark_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark');
+      $bookmark_el->setAttributeNS("$randomNS", "$randomNS:id", $keyfirst);
+      $bookmarkTitle_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-title');
+      $bookmark_el->setAttribute('internal-destination', $keyfirst);
+      $bookmarkTitle_el->textContent = self::$bookmarks[$keyfirst]['text'];
+
+      $bookmark_el->appendChild($bookmarkTitle_el);
+      $bookmarkTree_el->appendChild($bookmark_el);
+
+      if ($parent) {
+        $domxpath = new \DOMXpath($dom);
+        $domxpath->registerNamespace('fo', 'http://www.w3.org/1999/XSL/Format');
+        $domxpath->registerNamespace("randomNS", "randomNS");
+        $xpath_string = "//fo:bookmark[@$randomNS:id = '$parent']";
+        $e = $domxpath->query($xpath_string)[0];
+        if ($e) {
+          $e->appendChild($bookmark_el);
+        }
+      } else {
+        $dom->appendChild($bookmarkTree_el);
+      }
+      unset(self::$bookmarks[$keyfirst]);
+    }
+    return $dom;
+  }
+
+
+  public static function directory_separator()
+  {
+    return DIRECTORY_SEPARATOR;
+  }
+
+  // public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
+  public static function resolve_ident($ident = null, $prefix = '', $format = '.xml')
+  {
+    if (!$ident) return '';
+    if (is_array($ident)) {
+      $ident = $ident[0];
+    }
+    
+    // dd($ident->nodeName);
+    switch ($ident->nodeName) {
+      case 'dmIdent'||'dmRef'||'dmRefIdent':
+        return self::resolve_dmIdent($ident, $prefix, $format);
+        break;
+      case 'pmIdent':
+        return self::resolve_pmIdent($ident, $prefix, $format);
+        break;
+      case 'pmRefIdent':
+        return self::resolve_pmIdent($ident, $prefix, $format);
+        break;
+      case 'externalPubRefIdent':
+        return self::resolve_externalPubRefIdent($ident, $prefix, $format);
+        break;
+      case 'dmlIdent':
+        return self::resolve_dmlIdent($ident, $prefix, $format);
+        break;
+      case 'dmlRefIdent':
+        return self::resolve_dmlIdent($ident, $prefix, $format);
+        break;
+      case 'ddnIdent':
+        return self::resolve_ddnIdent($ident, $prefix, $format);
+        break;
+      case 'ddnRefIdent':
+        return self::resolve_ddnIdent($ident, $prefix, $format);
+        break;
+      case 'commentIdent':
+        return self::resolve_ddnIdent($ident, $prefix, $format);
+        break;
+      case 'commentRefIdent':
+        return self::resolve_commentIdent($ident, $prefix, $format);
+        break;
+      default:
+        # code...
+        break;
+    }
+  }
+
+  public static function resolve_title($title = null, $child = null)
+  {
+    if (!$title) return '';
+    if (is_array($title)) {
+      $title = $title[0];
+    }
+    switch ($title->nodeName) {
+      case 'dmTitle':
+        return self::resolve_dmTitle($title, $child);
+        break;
+      case 'pmTitle':
+        return self::resolve_pmTitle($title);
+        break;
+      default:
+        # code...
+        break;
+    }
+  }
 
   public static function resolve_dmIdent($dmIdent = null, $prefix = 'DMC-', $format = '.xml')
   {
@@ -40,6 +217,27 @@ class CSDBStatic
     $dmlCode = self::resolve_dmlCode($dmlIdent->getElementsByTagName('dmlCode')[0], $prefix);
     $issueInfo = ($if = self::resolve_issueInfo($dmlIdent->getElementsByTagName('issueInfo')[0])) ? "_" . $if : '';
     return strtoupper($dmlCode . $issueInfo) . $format;
+  }
+
+  public static function resolve_commentIdent($commentIdent = null, $prefix = 'COM-', $format = '.xml')
+  {
+    if (empty($commentIdent)) return '';
+    if (is_array($commentIdent)) {
+      $commentIdent = $commentIdent[0];
+    }
+    $commentCode = self::resolve_commentCode($commentIdent->getElementsByTagName('commentCode')[0], $prefix);
+    $languange = ($lg = self::resolve_languange($commentIdent->getElementsByTagName('language')[0])) ? "_" . $lg : '';;
+    return strtoupper($commentCode . $languange) . $format;
+  }
+
+  public static function resolve_ddnIdent($ddnIdent = null, $prefix = 'DDN-', $format = '.xml')
+  {
+    if (empty($ddnIdent)) return '';
+    if (is_array($ddnIdent)) {
+      $ddnIdent = $ddnIdent[0];
+    }
+    $ddnCode = self::resolve_ddnCode($ddnIdent->getElementsByTagName('ddnCode')[0], $prefix);
+    return strtoupper($ddnCode) . $format;
   }
 
   public static function resolve_infoEntityIdent($infoEntityIdent = null, $prefix = '', $format = '')
@@ -136,11 +334,56 @@ class CSDBStatic
     $yearOfDataIssue = $dmlCode->getAttribute('yearOfDataIssue');
     $seqNumber = $dmlCode->getAttribute('seqNumber');
 
-    if (strtolower($dmlType) == 's') ($prefix = 'CSL-');
     $name = $prefix .
       $modelIdentCode . "-" .
       $senderIdent . "-" .
       $dmlType . "-" .
+      $yearOfDataIssue . "-" .
+      $seqNumber;
+
+    return strtoupper($name);
+  }
+
+  public static function resolve_commentCode($commentCode, string $prefix = 'COM-')
+  {
+    if (empty($commentCode)) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($commentCode)) {
+      $commentCode = $commentCode[0];
+    }
+    $modelIdentCode = $commentCode->getAttribute('modelIdentCode');
+    $senderIdent = $commentCode->getAttribute('senderIdent');
+    $yearOfDataIssue = $commentCode->getAttribute('yearOfDataIssue');
+    $seqNumber = $commentCode->getAttribute('seqNumber');
+    $commentType = $commentCode->getAttribute('commentType');
+
+    $name = $prefix .
+      $modelIdentCode . "-" .
+      $senderIdent . "-" .
+      $commentType . "-" .
+      $yearOfDataIssue . "-" .
+      $seqNumber;
+
+    return strtoupper($name);
+  }
+
+  public static function resolve_ddnCode($commentCode, string $prefix = 'DDN-')
+  {
+    if (empty($commentCode)) return '';
+    // untuk mengakomodir penggunaan fungsi di XSLT
+    if (is_array($commentCode)) {
+      $commentCode = $commentCode[0];
+    }
+    $modelIdentCode = $commentCode->getAttribute('modelIdentCode');
+    $senderIdent = $commentCode->getAttribute('senderIdent');
+    $receiverIdent = $commentCode->getAttribute('receiverIdent');
+    $yearOfDataIssue = $commentCode->getAttribute('yearOfDataIssue');
+    $seqNumber = $commentCode->getAttribute('seqNumber');
+
+    $name = $prefix .
+      $modelIdentCode . "-" .
+      $senderIdent . "-" .
+      $receiverIdent . "-" .
       $yearOfDataIssue . "-" .
       $seqNumber;
 
@@ -234,20 +477,30 @@ class CSDBStatic
     return $issueDate_text;
   }
 
-  public static function resolve_externalPubRefIdent($externalPubRefIdent)
+  public static function resolve_externalPubRefIdent($externalPubRefIdent, $codingScheme = '')
   {
     if (empty($externalPubRefIdent)) return '';
     if (is_array($externalPubRefIdent)) {
       $externalPubRefIdent = $externalPubRefIdent[0];
     }
 
-    $externalPubCode = isset($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]) ? 'Dummy Ext Pub Code' : null;
-    $externalPubTitle = isset($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]) ? 'Dummy Ext Pub Title' : null;
-    $externalPubIssueInfo = isset($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]) ? 'Dummy Ext Pub Issue Info' : null;
+    $externalPubCode = ($externalPubRefIdent->getElementsByTagName('externalPubCode')[0]);
+    $externalPubTitle = ($externalPubRefIdent->getElementsByTagName('externalPubTitle')[0]);
+    $externalPubIssueInfo = ($externalPubRefIdent->getElementsByTagName('externalPubIssueInfo')[0]);
 
-    return $externalPubCode ? $externalPubCode . "_" . ($externalPubTitle ? $externalPubTitle . "_" . ($externalPubIssueInfo ?? ''
-    ) : ''
-    ) : '';
+    $ident =  $externalPubCode ? $externalPubCode->textContent .
+      ($externalPubTitle ? "_" . $externalPubTitle->textContent .
+        ($externalPubIssueInfo ? "_" . $externalPubIssueInfo->textContent : ''
+        ) : ''
+      ) : '';
+
+    $extension = '';
+    switch ($codingScheme) {
+      case 'PDF':
+        $extension = '.pdf';
+        break;
+    }
+    return $ident . $extension;
   }
 
   public static function resolve_languange($languange = null)
@@ -275,7 +528,7 @@ class CSDBStatic
     return $pmTitle->nodeValue . ($shortPmTitle ? " - " . $shortPmTitle->nodeValue : '');
   }
 
-  public static function resolve_dmTitle($dmTitle, string $child = '')
+  public static function resolve_dmTitle($dmTitle, $child = '')
   {
     if (empty($dmTitle)) return '';
     // untuk mengakomodir penggunaan fungsi di XSLT
@@ -416,7 +669,7 @@ class CSDBStatic
   /**
    * @return \DOMElement
    */
-  public static function parse_language(string $name) :\DOMElement
+  public static function parse_language(string $name): \DOMElement
   {
     $doc = new \DOMDocument();
     $doc->loadXML("<language/>");
@@ -438,25 +691,35 @@ class CSDBStatic
   }
 
   /**
+   * depreciated. diganti checkLevelByPrefix
    * minimum value of level is 0 (zero)
    * @return int
    */
-  public static function checkLevel(\DOMElement $element, int $minimum = 0) :int
+  public static function checkLevel(mixed $element, int $minimum = 0): int
   {
+    if (empty($element)) return -1;
+    if (is_array($element)) {
+      $element = $element[0];
+    }
     $tagName = $element->tagName;
     $level = $minimum;
     while (($parent = $element->parentNode)->nodeName == $tagName) {
       $element = $parent;
       $level += 1;
     }
-    return ($level < 0) ? $minimum : (int) $level;
+    return ($level < 0) ? (int) $minimum : (int) $level;
+  }
+
+  public static function checkLevelByPrefix(string $prefix = '')
+  {
+    return count(explode('.', $prefix));
   }
 
   /**
    * checking index by sibling
    * @return int
    */
-  public static function checkIndex(\DOMElement $element, int $minimum = 0) :int
+  public static function checkIndex(\DOMElement $element, int $minimum = 0): int
   {
     $tagName = $element->tagName;
     $parent = $element->parentNode;
@@ -475,7 +738,7 @@ class CSDBStatic
   /**
    * @return int
    */
-  public static function getPrefixNum(\DOMElement $element, $minimum = 0) :string
+  public static function getPrefixNum(\DOMElement $element, $minimum = 0): string
   {
     $tagName = $element->tagName;
     $index = self::checkIndex($element) + $minimum;
@@ -511,16 +774,14 @@ class CSDBStatic
       case 'ICN-':
         return self::decode_infoEntityIdent($filename, $ref);
         break;
-      default:
-        return  '';
-        break;
     }
+    return array();
   }
-  
+
   /**
    * @return Array
    */
-  public static function decode_infoEntityIdent(string $filename) :array
+  public static function decode_infoEntityIdent(string $filename): array
   {
     $prefix = 'ICN-';
     if (substr($filename, 0, 4) === 'ICN-') {
@@ -567,7 +828,7 @@ class CSDBStatic
   /**
    * @return Array
    */
-  public static function decode_pmIdent(string $filename, $ref = true) :array
+  public static function decode_pmIdent(string $filename, $ref = true): array
   {
     $prefix = 'PMC-';
     $f = str_replace($prefix, '', $filename); // MALE-K0378-A0001-00_000-01_EN-EN.xml
@@ -615,24 +876,16 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <pm{$ref}Ident>
-          <pmCode {$d['modelIdentCode']} {$d['pmIssuer']} {$d['pmNumber']} {$d['pmVolume']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-        </pm{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return
-          <<<EOL
-        <pm{$ref}>
-          $ident        
-        </pm{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<pm{$ref}Ident><pmCode {$d['modelIdentCode']} {$d['pmIssuer']} {$d['pmNumber']} {$d['pmVolume']}/>";
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= "<issueInfo {$d['issueNumber']} {$d['inWork']}/>";
       }
+      if($d['languageIsoCode'] && $d['countryIsoCode']){
+        $ident .= "<language {$d['languageIsoCode']} {$d['countryIsoCode']}/>";
+      }
+      $ident .= "</pm{$ref}Ident>";
+
+      return $ref ? "<pm{$ref}>$ident</pm{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -644,7 +897,121 @@ class CSDBStatic
   /**
    * @return Array
    */
-  public static function decode_dmlIdent(string $filename, $ref = true) :array
+  public static function decode_commentIdent(string $filename, $ref = true): array
+  {
+    $prefix = 'COM-';
+    $f = str_replace($prefix, '', $filename);
+    $f = preg_replace('/.xml/', '', $f);
+
+    $f_array = explode('_', $f);
+    $code = $f_array[0];
+    // $issueInfo = $f_array[1] ?? '';
+    $language = $f_array[1] ?? '';
+
+    $code_array = explode('-', $code);
+    // $issueInfo_array = explode('-', $issueInfo);
+    $language_array = explode('-', $language);
+
+    $ref = $ref ? 'Ref' : '';
+
+    $data = [];
+    $data['commentCode'] =  [
+      "modelIdentCode" => $code_array[0],
+      "senderIdent" => $code_array[1],
+      "commentType" => $code_array[2],
+      "yearOfDataIssue" => $code_array[3],
+      "seqNumber" => $code_array[4],
+    ];
+
+    $data['prefix'] = $prefix;
+    $data['language'] = [
+      'languageIsoCode' => strtolower($language_array[0] ?? ''),
+      'countryIsoCode' => $language_array[1] ?? '',
+    ];
+
+    $xml_string = function ($data = []) use ($ref) {
+      $d = [];
+      array_walk($data['commentCode'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+      array_walk($data['language'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+
+      $ident = "<comment{$ref}Ident><commentCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} {$d['commentType']}/>";
+      if($d['languageIsoCode'] && $d['countryIsoCode']){
+        $ident .= "<language {$d['languageIsoCode']} {$d['countryIsoCode']}/>";
+      }
+      $ident .= "</comment{$ref}Ident>";
+
+      return $ref ? "<comment{$ref}>$ident</comment{$ref}>" : $ident;
+    };
+
+    $data['xml_string'] = $xml_string($data);
+    $data['prefix'] = $prefix;
+
+    return $data;
+  }
+  /**
+   * @return Array
+   */
+  public static function decode_ddnIdent(string $filename, $ref = true): array
+  {
+    $prefix = 'DDN-';
+    // $f = str_replace($prefix, '', $filename);
+    // $f = preg_replace('/.xml/', '', $f);
+    $code = str_replace($prefix, '', $filename);
+    $code = preg_replace('/.xml/', '', $code);
+
+    // $f_array = explode('_', $f);
+    // $code = $f_array[0];
+    // $issueInfo = $f_array[1] ?? '';
+    // $code = $f;
+
+    $code_array = explode('-', $code);
+    // $issueInfo_array = explode('-', $issueInfo);
+
+    $ref = $ref ? 'Ref' : '';
+
+    $data = [];
+    $data['ddnCode'] =  [
+      "modelIdentCode" => $code_array[0],
+      "senderIdent" => $code_array[1],
+      "receiverIdent" => strtolower($code_array[2]),
+      "yearOfDataIssue" => $code_array[3],
+      "seqNumber" => $code_array[4],
+    ];
+
+    $data['prefix'] = $prefix;
+    // $data['issueInfo'] = [
+    //   'issueNumber' => $issueInfo_array[0] ?? '',
+    //   'inWork' => $issueInfo_array[1] ?? '',
+    // ];
+
+    $xml_string = function ($data = []) use ($ref) {
+      $d = [];
+      array_walk($data['ddnCode'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+
+      $ident = <<<EOD
+        <ddn{$ref}Ident>
+          <ddnCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['receiverIdent']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
+        </ddn{$ref}Ident>
+      EOD;
+
+      return $ref ? "<ddn{$ref}>$ident</ddn{$ref}>": $ident;
+    };
+
+    $data['xml_string'] = $xml_string($data);
+    $data['prefix'] = $prefix;
+
+    return $data;
+  }
+  /**
+   * @return Array
+   */
+  public static function decode_dmlIdent(string $filename, $ref = true): array
   {
     $prefix = 'DML-';
     $f = str_replace($prefix, '', $filename); // MALE-K0378-P-2024-00003_001-00.xml
@@ -683,23 +1050,13 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <dml{$ref}Ident>
-          <dmlCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['dmlType']} {$d['yearOfDataIssue']} {$d['seqNumber']} />
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-        </dml{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return
-          <<<EOL
-        <dml{$ref}>
-          $ident        
-        </dml{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<dml{$ref}Ident><dmlCode {$d['modelIdentCode']} {$d['senderIdent']} {$d['dmlType']} {$d['yearOfDataIssue']} {$d['seqNumber']} />";
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= "<issueInfo {$d['issueNumber']} {$d['inWork']}/>";
       }
+      $ident .= " </dml{$ref}Ident>";
+
+      return $ref ? "<dml{$ref}>$ident</dml{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -712,7 +1069,7 @@ class CSDBStatic
    * $xmlString dmIdent tidak 
    * @return Array
    */
-  public static function decode_dmIdent(string $filename, $ref = true) :array
+  public static function decode_dmIdent(string $filename, $ref = true): array
   {
     $prefix = 'DMC-'; // DMC-,
     $f = str_replace($prefix, '', $filename); // MALE-SNS-Disscode-infoCode,
@@ -777,35 +1134,17 @@ class CSDBStatic
         $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
       });
 
-      $ident = <<<EOD
-        <dm{$ref}Ident>
-          <dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-        </dm{$ref}Ident>
-      EOD;
-
-      if ($ref) {
-        return
-          <<<EOL
-        <dm{$ref}>
-          $ident        
-        </dm{$ref}>
-        EOL;
-      } else {
-        return $ident;
+      $ident = "<dm{$ref}Ident><dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>";
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= "<issueInfo {$d['issueNumber']} {$d['inWork']}/>";
+      }
+      if($d['languageIsoCode'] && $d['countryIsoCode']){
+        $ident .= "<language {$d['languageIsoCode']} {$d['countryIsoCode']}/>";
       }
 
-      return
-        <<<EOL
-      <dm{$ref}>
-        <dm{$ref}Ident>
-          <dmCode {$d['modelIdentCode']} {$d['systemDiffCode']} {$d['systemCode']} {$d['subSystemCode']} {$d['subSubSystemCode']} {$d['assyCode']} {$d['disassyCode']} {$d['disassyCodeVariant']} {$d['infoCode']} {$d['infoCodeVariant']} {$d['itemLocationCode']} {$d['learnCode']} {$d['learnEventCode']}/>
-          <issueInfo {$d['issueNumber']} {$d['inWork']}/>
-          <language {$d['languageIsoCode']} {$d['countryIsoCode']}/>
-        </dm{$ref}Ident>
-      </dm{$ref}>
-      EOL;
+      $ident .=  "</dm{$ref}Ident>";
+
+      return $ref ? "<dm{$ref}>$ident</dm{$ref}>" : $ident;
     };
 
     $data['xml_string'] = $xml_string($data);
@@ -817,7 +1156,7 @@ class CSDBStatic
   /**
    * @return \DOMDocument
    */
-  public static function document($path, string $filename) :\DOMDocument
+  public static function document($path, string $filename): \DOMDocument
   {
     if (is_array($path)) {
       $path = $path[0];
@@ -825,17 +1164,23 @@ class CSDBStatic
     if ($path instanceof \DOMDocument) {
       $path = Helper::analyzeURI($path->baseURI)['path'];
     }
-    if (substr($filename, 0, 3) == 'ICN') {
+    if (substr($filename, 0, 3) === 'ICN') {
       $filename = self::detectIMF($path, $filename);
     }
+    if (!$filename) return new \DOMDocument;
+
     CSDBError::$processId = 'ignore';
     $CSDBObject = new CSDBObject("5.0");
-    $CSDBObject->load($path. DIRECTORY_SEPARATOR . $filename);
+    if (!file_exists($path . DIRECTORY_SEPARATOR . $filename)) {
+      CSDBError::setError('opendocument', "No such $filename exists.");
+      return new \DOMDocument;
+    }
+    $CSDBObject->load($path . DIRECTORY_SEPARATOR . $filename);
     CSDBError::getErrors(true, 'ignore'); // remove error
     if ($CSDBObject->document) {
       return $CSDBObject->document;
     } else {
-      return new \DOMDocument();
+      return new \DOMDocument;
     }
   }
 
@@ -843,7 +1188,7 @@ class CSDBStatic
    * search IMF file by using latest issueNumber and inWork number
    * @return string filename IMF
    */
-  public static function detectIMF(string $path, string $icnFilename) :string
+  public static function detectIMF(string $path, string $icnFilename): string
   {
     $icnFilename_withoutFormat = preg_replace("/.\w+$/", '', $icnFilename);
     $icnFilename_array = explode("-", $icnFilename_withoutFormat);
@@ -881,7 +1226,7 @@ class CSDBStatic
 
       $filterBy = array_filter($c, (fn ($v) => $v[0] == $in_max));
       if (count($filterBy) > 1) {
-        $filterBy = array_filter($c, (fn ($v) => ($v[0] == $in_max AND $v[1] == $iw_max)));
+        $filterBy = array_filter($c, (fn ($v) => ($v[0] == $in_max and $v[1] == $iw_max)));
       }
       $issueInfo = join("-", $filterBy[0]);
       $filename .= "_" . $issueInfo . ".xml";
@@ -891,5 +1236,269 @@ class CSDBStatic
     return $filename;
   }
 
+  public static function interpretDimension(string $unit): string
+  {
+    // <xsl:variable name="units" select="php:function('preg_replace', '/[0-9\.]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>
+    if (!$unit) return '';
+    preg_match('/([0-9\.]+)(.)/', $unit, $matches);
+    $n = $matches[1];
+    $u = $matches[2];
+    if (($n > 0) and ($n <= 1)) {
+      $n = $n * 100;
+    }
+    if ($u === '*') {
+      $u = '%';
+    }
+    return $n . $u;
+  }
+
+
+  /**
+   * khusus footnote yang marking nya number, bukan asterisk atay alpha
+   */
+  public static $footnotePositionStore = [];
+  public static function next_footnotePosition(string $filename, bool $set = false): int
+  {
+    $totalIndex = count(self::$footnotePositionStore[$filename]);
+    if ($totalIndex === 0) {
+      if ($set) self::$footnotePositionStore[$filename][] = 1;
+      return 1;
+    };
+    $no = self::$footnotePositionStore[$filename][$totalIndex - 1] + 1;
+    if ($set) self::$footnotePositionStore[$filename][] = $no;
+    return $no;
+  }
+  public static function add_footnotePosition(string $filename, int $no): void
+  {
+    self::$footnotePositionStore[$filename][] = $no;
+  }
+
+  /**
+   * DEPRECIATED (barudibuat tapi depreciated karena sudah ada fungsi decode_dmIdent)
+   * awalnya diapakai di CSDBObject create_dml_identAndStatusSection
+   * ini berbeda dengan fungsi decode_... karena decode_... outputnya ada xmlString
+   * @return array contain attribute in dmCode,issueInfo,language
+   */
+  public static function explode_dm(string $filename)
+  {
+    $filename = strtoupper($filename);
+    $filename = preg_replace('/.XML|DMC-/', '', $filename);
+    $filenameIdent_array = explode('_', $filename);
+    $dmCode = $filenameIdent_array[0];
+    $issueInfo = $filenameIdent_array[1];
+    $language = $filenameIdent_array[2];
+
+    $dmCode_array = explode('-', $dmCode);
+    $issueInfo_array = explode('-', $issueInfo);
+    $language_array = explode('-', $language);
+
+    $ret = [
+      "modelIdentCode" => $dmCode_array[0],
+      "systemDiffCode" => $dmCode_array[1],
+      "systemCode" => $dmCode_array[2],
+      "subSystemCode" => $dmCode_array[3][0],
+      "subSubSystemCode" => $dmCode_array[3][1],
+      "assyCode" => $dmCode_array[4],
+      "disassyCode" => substr($dmCode_array[5], 0, 2),
+      "disassyCodeVariant" => substr($dmCode_array[5], 2),
+      "infoCode" => substr($dmCode_array[6], 0, 3),
+      "infoCodeVariant" => substr($dmCode_array[6], 3),
+      "itemLocationCode" => $dmCode_array[7],
+    ];
+    if (isset($dmCode_array[8])) {
+      $ret['learnCode'] = strtoupper(substr($dmCode_array[8], 0, 3));
+      $ret['learnEventCode'] = strtoupper(substr($dmCode_array[8], 4));
+    } else {
+      $ret['learnCode'] = '';
+      $ret['learnEventCode'] = '';
+    }
+
+    $ret['issueNumber'] = $issueInfo_array[0];
+    $ret['inWork'] = $issueInfo_array[1];
+
+    $ret['languageIsoCode'] = strtolower($language_array[0]);
+    $ret['countryIsoCode'] = $language_array[1];
+
+    return $ret;
+  }
+
+  public static function tes($v){
+    (self::decode_element($v[0],$a));
+    return (json_encode($a));
+  }
+  public static function simple_xml_to_json(\DOMDocument $DOMDocument){
+    $arr = [];
+    $childNodes = $DOMDocument->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElement
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::simple_decode_element($childNodes[$i], $arr);
+      }
+      $i++;
+    }
+    return json_encode($arr);
+  }
+
+  public static function simple_decode_element($DOMElement, &$v){
+    $arr = [];
+    if ($DOMElement->hasAttributes()) {
+      foreach ($DOMElement->attributes as $attr) {
+        self::simple_decode_attribute($attr, $arr);
+      }
+    }
+    $childNodes = $DOMElement->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElemen
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::simple_decode_element($childNodes[$i], $arr);
+      }
+      // jika ada child DOMText
+      elseif ($childNodes[$i]->nodeType === XML_TEXT_NODE) {
+        $arr[] = self::decode_text($childNodes[$i]);
+      }
+      $i++;
+    }
+    if(array_is_list($arr) && count($arr) <= 1) $arr = join("",$arr);
+    else {
+      $keys = array_keys($arr);
+      foreach($keys as $k){
+        if(is_array($arr[$k]) && array_is_list($arr[$k]) && count($arr[$k]) <= 1) $arr[$k] = join("",$arr[$k]);
+      }
+    }
+    $v[$DOMElement->nodeName] = $arr;  
+  }
   
+  private static function simple_decode_attribute($DOMAttr, &$v)
+  {
+    $v['at_' . $DOMAttr->nodeName] = $DOMAttr->nodeValue;
+  }
+
+  // private static function textToJson($DOMText, &$v)
+  // {
+  //   $nodeValue = trim($DOMText->nodeValue);
+  //   if ($nodeValue) {
+  //     $v[] = $nodeValue;
+  //   }
+  // }
+
+  public static function xml_to_json(\DOMDocument $DOMDocument)
+  {
+    $arr = [];
+    $childNodes = $DOMDocument->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElement
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::decode_element($childNodes[$i], $arr[]);
+      }
+      // jika ada child DOMDoctype
+      elseif ($childNodes[$i]->nodeType === XML_DOCUMENT_TYPE_NODE) {
+        self::decode_doctype($childNodes[$i], $arr[]);
+      }
+      $i++;
+    }
+    return json_encode($arr);
+  }
+  private static function decode_doctype(\DOMDocumentType $DOMDoctype, &$v)
+  {
+    $name = $DOMDoctype->name;
+    $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '[\s\S]+\]\>)([\s\S]+)/m';
+    $str = ($DOMDoctype->parentNode->saveXML());
+    $doctypeString = preg_replace($re, '${2}', $str);
+    $v['DOCTYPE'] = [
+      'name' => $DOMDoctype->nodeName,
+      "systemId" => $DOMDoctype->systemId,
+      "publicId" => $DOMDoctype->publicId,
+      'string' => $doctypeString
+    ];
+  }
+  public static function decode_element($DOMElement, &$v)
+  {
+    $arr = [];
+    if ($DOMElement->hasAttributes()) {
+      foreach ($DOMElement->attributes as $attr) {
+        self::decode_attribute($attr, $arr[]);
+      }
+    }
+    $childNodes = $DOMElement->childNodes;
+    $i = 0;
+    while (isset($childNodes[$i])) {
+      // jika ada child DOMElemen
+      if ($childNodes[$i]->nodeType === XML_ELEMENT_NODE) {
+        self::decode_element($childNodes[$i], $arr[]);
+      }
+      // jika ada child DOMText
+      elseif ($childNodes[$i]->nodeType === XML_TEXT_NODE) {
+        if($text = self::decode_text($childNodes[$i])) $arr[] = $text;
+      }
+      $i++;
+    }
+    $v = [$DOMElement->nodeName => $arr];
+  }
+  private static function decode_attribute($DOMAttr, &$v)
+  {
+    $v = ['at_' . $DOMAttr->nodeName => $DOMAttr->nodeValue];
+  }
+  private static function decode_text($DOMText)
+  {
+    $nodeValue = trim($DOMText->nodeValue);
+    if ($nodeValue) {
+      return preg_replace("/\n|\r|\n\r|\s+/m"," ",$nodeValue);
+    }
+  }
+  public static function json_to_xml(mixed $value, mixed $parentNode = null)
+  {
+    // dd($value);
+    if (!$parentNode) $parentNode = new \DOMDocument();
+    $arr = is_array($value) ? $value : (is_numeric($value) ? null : json_decode($value, true)); // json juga bisa di decode berdasarkan numeric value
+    
+    // jika array list (element xml), biasanya yang elemen pertama ada pada array list, karena saat transform to json, fungsi akan membaca doctype sebagai child document, jadi membuatnya menjadi array list
+    if ($arr && array_is_list($arr)) {
+      foreach ($arr as $node) {
+
+        // asumsi parentNode adalah \DOMElement atau \DOMDocument
+        $name = array_key_first($node);
+        if ($name === 'DOCTYPE') {
+          $str = <<<EOL
+          <?xml version="1.0" encoding="UTF-8"?>
+          EOL;
+          $str .= $node[$name]['string']. '<'. $node[$name]['name'] .'/>'; // harus disertakan root elementnya atau error
+          $parentNode->loadXML($str);
+          $parentNode->firstElementChild->remove(); // di remove agar nanti tidak double
+        } else {
+          $DOMElement = $parentNode->ownerDocument ? $parentNode->ownerDocument->createElement($name) : $parentNode->createElement($name);
+          $parentNode->appendChild($DOMElement);
+          foreach ($node[$name] as $value) {
+            self::json_to_xml($value, $DOMElement);
+          }
+        }
+      }
+    }
+    // bisa DOMATTR atau DOMElement. Kalau attritbute tandanya $key nya diprefix simbol 'at_' 
+    elseif ($arr) {
+      foreach ($arr as $name => $node) {
+        $type = substr($name, 0, 3) === 'at_' ? 'DOMAttr' : 'DOMElement'; // disini jika ingin membuat DOMDoctype
+        if ($type === 'DOMAttr') {
+          // asumsi parentNode adalah \DOMElement
+          $parentNode->setAttribute(substr($name, 1), $node); // dibuang 'at_' nya
+        } else {
+          $DOMElement = $parentNode->ownerDocument ? $parentNode->ownerDocument->createElement($name) : $parentNode->createElement($name);
+          $parentNode->appendChild($DOMElement);
+          // handling nodeValue
+          foreach ($node as $value) {
+            self::json_to_xml($value, $DOMElement);
+          }
+        }
+      }
+    }
+    // jika DOMText
+    elseif (is_string($value) || is_numeric($value)) {
+      // asumsi parentNode adalah \DOMElement
+      $textNode = $parentNode->ownerDocument->createTextNode($value);
+      $parentNode->appendChild($textNode);
+    }
+    return $parentNode;
+  }
 }
