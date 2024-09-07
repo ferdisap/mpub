@@ -45,4 +45,13 @@ class ICNDocument
   public function getFilename(){
     return $this->filename;
   }
+  
+  public function isExist(){
+    return file_exists($this->path . "/". $this->filename);
+  }
+
+  public function getURI()
+  {
+    return $this->path . "/". $this->filename;
+  }
 }

@@ -3,9 +3,10 @@
 namespace Ptdi\Mpub\Main;
 
 use DOMDocument;
+use JsonSerializable;
 use Serializable;
 
-class CSDBObject 
+class CSDBObject implements JsonSerializable
 // implements Serializable
 {
 
@@ -24,8 +25,8 @@ class CSDBObject
   protected string $path = '';
   protected array $breakDownURI = [];
 
-  public bool $XSIValidationResult = false;
-  public bool $BREXValidationResult = false;
+  public bool $XSIValidationResult = false; // sepertinya ini deprecated saja karena ga dipakai
+  public bool $BREXValidationResult = false; // sepertinya ini deprecated saja karena ga dipakai
 
   /**
    * dipakai di CsdbServiceController untuk transform
@@ -974,12 +975,17 @@ class CSDBObject
    */
   public function load(string $filename = '')
   {
+    // $doc->preserveWhiteSpace = false;
+    // $doc->formatOutput = true;
+
     libxml_use_internal_errors(true);
     $mime = file_exists($filename) ? mime_content_type($filename) : 'undefined';
     if (str_contains($mime, 'text')) {
       $dom = new \DOMDocument('1.0');
-      $dom->preserveWhiteSpace = $this->preserveWhiteSpace;
-      $dom->formatOutput = $this->formatOutput;
+      // $dom->preserveWhiteSpace = $this->preserveWhiteSpace;
+      $dom->preserveWhiteSpace = false;
+      // $dom->formatOutput = $this->formatOutput;
+      $dom->formatOutput = true;
       @$dom->load($filename, LIBXML_PARSEHUGE);
       $errors = libxml_get_errors();
       foreach ($errors as $e) {
@@ -1977,6 +1983,16 @@ class CSDBObject
   public function set_pmEntryType(string $text)
   {
     $this->pmEntryType = $text;
+  }
+
+  /**
+   * return URI of document
+   */
+  public function jsonSerialize(): mixed
+  {
+    return ["URI"=>(($this->document instanceof \DOMDocument) && $this->document->baseURI ? $this->document->baseURI : (
+      ($this->document instanceof ICNDocument) && $this->document->filename ? $this->document->getURI() : ([])
+    ))];
   }
   
 }

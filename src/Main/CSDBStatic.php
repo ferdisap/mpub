@@ -74,19 +74,12 @@ class CSDBStatic
     $bookmarkTree_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree');
     $dom->appendChild($bookmarkTree_el);
 
-    $randomNS = hash('md2', rand(0, 10000));
-    $randomNS = "aaa" . substr($randomNS, 0, 10);
-    // $randomNS = 'randomNS123';
-    // $randomNS = 'c8ed21db4f';
-    // dd('aaa', $randomNS);
-
     while (!empty(self::$bookmarks)) {
       $keyfirst = array_key_first(self::$bookmarks);
 
       $parent = self::$bookmarks[$keyfirst]['parent'];
 
       $bookmark_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark');
-      $bookmark_el->setAttributeNS("$randomNS", "$randomNS:id", $keyfirst);
       $bookmarkTitle_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-title');
       $bookmark_el->setAttribute('internal-destination', $keyfirst);
       $bookmarkTitle_el->textContent = self::$bookmarks[$keyfirst]['text'];
@@ -97,8 +90,7 @@ class CSDBStatic
       if ($parent) {
         $domxpath = new \DOMXpath($dom);
         $domxpath->registerNamespace('fo', 'http://www.w3.org/1999/XSL/Format');
-        $domxpath->registerNamespace("randomNS", "randomNS");
-        $xpath_string = "//fo:bookmark[@$randomNS:id = '$parent']";
+        $xpath_string = "//fo:bookmark[@id = '$parent']";
         $e = $domxpath->query($xpath_string)[0];
         if ($e) {
           $e->appendChild($bookmark_el);
@@ -117,7 +109,6 @@ class CSDBStatic
     return DIRECTORY_SEPARATOR;
   }
 
-  // public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
   public static function resolve_ident($ident = null, $prefix = '', $format = '.xml')
   {
     if (!$ident) return '';
@@ -125,41 +116,13 @@ class CSDBStatic
       $ident = $ident[0];
     }
     
-    // dd($ident->nodeName);
     switch ($ident->nodeName) {
-      case 'dmIdent'||'dmRef'||'dmRefIdent':
-        return self::resolve_dmIdent($ident, $prefix, $format);
-        break;
-      case 'pmIdent':
-        return self::resolve_pmIdent($ident, $prefix, $format);
-        break;
-      case 'pmRefIdent':
-        return self::resolve_pmIdent($ident, $prefix, $format);
-        break;
-      case 'externalPubRefIdent':
-        return self::resolve_externalPubRefIdent($ident, $prefix, $format);
-        break;
-      case 'dmlIdent':
-        return self::resolve_dmlIdent($ident, $prefix, $format);
-        break;
-      case 'dmlRefIdent':
-        return self::resolve_dmlIdent($ident, $prefix, $format);
-        break;
-      case 'ddnIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
-        break;
-      case 'ddnRefIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
-        break;
-      case 'commentIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
-        break;
-      case 'commentRefIdent':
-        return self::resolve_commentIdent($ident, $prefix, $format);
-        break;
-      default:
-        # code...
-        break;
+      case 'dmIdent'||'dmRef'||'dmRefIdent': return self::resolve_dmIdent($ident, $prefix, $format);
+      case 'pmIdent'||'pmRef'||'pmRefIdent': return self::resolve_pmIdent($ident, $prefix, $format);
+      case 'externalPubRefIdent': return self::resolve_externalPubRefIdent($ident, $prefix, $format);
+      case 'dmlIdent'||'dmlRef'||'dmlRefIdent': return self::resolve_dmlIdent($ident, $prefix, $format);
+      case 'ddnIdent'||'ddnRef'||'ddnRefIdent': return self::resolve_ddnIdent($ident, $prefix, $format);
+      case 'commentIdent'||'commentRef'||'commentRefIdent': return self::resolve_ddnIdent($ident, $prefix, $format);
     }
   }
 
