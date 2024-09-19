@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:noNamespaceSchemaLocation="../mpub/src/Schema/dml.xsd" 
-xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
-xmlns:dc="http://www.purl.org/dc/elements/1.1/" 
-xmlns:xlink="http://www.w3.org/1999/xlink">
-
-</dmodule>

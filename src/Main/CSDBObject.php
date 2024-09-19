@@ -4,6 +4,7 @@ namespace Ptdi\Mpub\Main;
 
 use DOMDocument;
 use JsonSerializable;
+use Ptdi\Mpub\Fop\Pdf;
 use Serializable;
 
 class CSDBObject implements JsonSerializable
@@ -1985,14 +1986,20 @@ class CSDBObject implements JsonSerializable
     $this->pmEntryType = $text;
   }
 
+  public function toPdf(string $input, string $output):bool
+  {
+    $pdf = new Pdf($input,$output);
+    return $pdf->create();
+  }
+
   /**
    * return URI of document
    */
-  public function jsonSerialize(): mixed
-  {
-    return ["URI"=>(($this->document instanceof \DOMDocument) && $this->document->baseURI ? $this->document->baseURI : (
-      ($this->document instanceof ICNDocument) && $this->document->filename ? $this->document->getURI() : ([])
-    ))];
-  }
+  // public function jsonSerialize(): mixed
+  // {
+  //   return ["URI"=>(($this->document instanceof \DOMDocument) && $this->document->baseURI ? $this->document->baseURI : (
+  //     ($this->document instanceof ICNDocument) && $this->document->filename ? $this->document->getURI() : ([])
+  //   ))];
+  // }
   
 }

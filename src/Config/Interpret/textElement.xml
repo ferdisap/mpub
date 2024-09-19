@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="emphasisType" value="em01">
+    <interpretation use="extension">bold</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em02">
+    <interpretation use="extension">italic</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em03">
+    <interpretation use="extension">underline</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em05">
+    <interpretation use="extension">strikethrough</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em06">
+    <interpretation use="extension">underline-bold</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em07">
+    <interpretation use="extension">underline-italic</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em08">
+    <interpretation use="extension">bold-italic</interpretation>
+  </attr>
+  <attr name="emphasisType" value="em09">
+    <interpretation use="extension">bold-italic-underline</interpretation>
+  </attr>
+</root>

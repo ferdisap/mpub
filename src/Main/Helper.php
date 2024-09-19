@@ -882,7 +882,7 @@ class Helper
       }
       if ($start and $end) {
         $l = strlen($start);
-        if($l !== strlen((int)$start)){
+        if ($l !== strlen((int)$start)) {
           try {
             str_increment($start);
             str_decrement($start); // agar jumlah digit / strlen nya sama
@@ -890,7 +890,7 @@ class Helper
             $start++;
             $start--;
           }
-          while($start <= $end){
+          while ($start <= $end) {
             // $values_generated[] = $start;
             $values_generated[] = str_pad($start, $l, '0', STR_PAD_LEFT);
             $start++;
@@ -905,5 +905,42 @@ class Helper
       }
     }
     return $values_generated;
+  }
+
+  /**
+   * ending is relativePath + '/'
+   * digunakan di Fop\Pdf
+   */
+  public static function getRelativePath(string $from, string $to): string
+  {
+    // some compatibility fixes for Windows paths
+    $from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
+    $to   = is_dir($to)   ? rtrim($to, '\/') . '/'   : $to;
+    $from = str_replace('\\', '/', $from);
+    $to   = str_replace('\\', '/', $to);
+
+    $from     = explode('/', $from);
+    $to       = explode('/', $to);
+    $relPath  = $to;
+
+    foreach ($from as $depth => $dir) {
+      // find first non-matching dir
+      if ($dir === $to[$depth]) {
+        // ignore this directory
+        array_shift($relPath);
+      } else {
+        // get number of remaining dirs to $from
+        $remaining = count($from) - $depth;
+        if ($remaining > 1) {
+          // add traversals up to first matching dir
+          $padLength = (count($relPath) + $remaining - 1) * -1;
+          $relPath = array_pad($relPath, $padLength, '..');
+          break;
+        } else {
+          $relPath[0] = './' . $relPath[0];
+        }
+      }
+    }
+    return implode('/', $relPath);
   }
 }

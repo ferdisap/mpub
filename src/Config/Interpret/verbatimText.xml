@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="verbatimStyle" value="vs51">
+    <interpretation use="extension">monospace</interpretation>
+  </attr>
+  <attr name="verbatimStyle" value="vs52">
+    <interpretation use="extension">calibri</interpretation>
+  </attr>
+</root>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="sourceTypeCode" value="stc51">
+    <interpretation use="abbreviation">MSG-3</interpretation>
+  </attr>
+  <attr name="sourceTypeCode" value="stc52">
+    <interpretation use="abbreviation">ZAP</interpretation>
+  </attr>
+  <attr name="sourceTypeCode" value="stc53">
+    <interpretation use="abbreviation">CMR</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th01">
+    <interpretation use="abbreviation">FH</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th02">
+    <interpretation use="abbreviation">FC</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th03">
+    <interpretation use="extension">Months</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th04">
+    <interpretation use="extension">Weeks</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th05">
+    <interpretation use="extension">Years</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th06">
+    <interpretation use="extension">Days</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th07">
+    <interpretation use="extension">Supersonic Cycles</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th08">
+    <interpretation use="extension">Pressure Cycles</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th09">
+    <interpretation use="extension">Engine Cycles</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th10">
+    <interpretation use="extension">Engine Change</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th11">
+    <interpretation use="extension">Shop Visits</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th12">
+    <interpretation use="extension">APU Change</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th13">
+    <interpretation use="extension">Landing Gear Change</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th14">
+    <interpretation use="extension">Wheel Change</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th15">
+    <interpretation use="extension">Engine Start</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th16">
+    <interpretation use="extension">APU Hours</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th17">
+    <interpretation use="abbreviation">EH</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th18">
+    <interpretation use="abbreviation">ETH</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th19">
+    <interpretation use="extension">Landings</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th20">
+    <interpretation use="extension">Operating Cycles</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th21">
+    <interpretation use="extension">Operating hours</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th22">
+    <interpretation use="extension">Supersonic hours</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th23">
+    <interpretation use="extension">A</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th24">
+    <interpretation use="extension">B</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th25">
+    <interpretation use="extension">C</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th26">
+    <interpretation use="extension">D</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th27">
+    <interpretation use="extension">Daily</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th28">
+    <interpretation use="extension">E</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th29">
+    <interpretation use="extension">Overnight</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th30">
+    <interpretation use="extension">Preflight</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th31">
+    <interpretation use="extension">Routine</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th32">
+    <interpretation use="extension">Structural C Check</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th33">
+    <interpretation use="extension">Service Check</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th34">
+    <interpretation use="extension">Transit</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th35">
+    <interpretation use="extension">Kilometers</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th36">
+    <interpretation use="extension">cubic meter</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th37">
+    <interpretation use="extension">l</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th38">
+    <interpretation use="extension">shots</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th39">
+    <interpretation use="extension">shots</interpretation>
+  </attr>
+  <attr name="thresholdUnitOfMeasure" value="th51">
+    <interpretation use="extension">-Z-</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd01">
+    <interpretation use="abbreviation">DET</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd02">
+    <interpretation use="abbreviation">DS</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd03">
+    <interpretation use="abbreviation">FC</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd04">
+    <interpretation use="abbreviation">GVI</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd05">
+    <interpretation use="abbreviation">LU</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd06">
+    <interpretation use="abbreviation">OP</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd07">
+    <interpretation use="abbreviation">RS</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd08">
+    <interpretation use="abbreviation">SV</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd09">
+    <interpretation use="abbreviation">IN</interpretation>
+  </attr>
+  <attr name="taskCode" value="taskcd10">
+    <interpretation use="abbreviation">SDI</interpretation>
+  </attr>
+</root>

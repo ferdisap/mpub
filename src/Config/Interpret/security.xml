@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="securityClassification" value="01">
+    <interpretation use="extension">unclassified</interpretation>
+  </attr>
+  <attr name="securityClassification" value="02">
+    <interpretation use="extension">restricted</interpretation>
+  </attr>
+  <attr name="securityClassification" value="03">
+    <interpretation use="extension">confidential</interpretation>
+  </attr>
+  <attr name="securityClassification" value="04">
+    <interpretation use="extension">secret</interpretation>
+  </attr>
+  <attr name="securityClassification" value="05">
+    <interpretation use="extension">top secret</interpretation>
+  </attr>
+</root>

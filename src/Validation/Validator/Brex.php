@@ -38,6 +38,11 @@ class Brex implements GeneralValidationInterface, JsonSerializable
     if ($this->validator->isReady() && $this->validatee->isReady()) $this->isReady = true;
   }
 
+  public function isReady():bool
+  {
+    return $this->isReady;
+  }
+
   public function validate()
   {
     if ($this->isReady) {

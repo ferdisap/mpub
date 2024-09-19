@@ -1,0 +1,512 @@
+<config>
+  <output>
+    <method type="html">
+      <path product-name="*">html/Main.xsl</path>
+      <pathCache></pathCache>
+    </method>
+    <method type="pdf">
+      <path product-name="CN235">pdf/CN235/Main.xsl</path>
+      <path product-name="CN235-220M">pdf/CN235/Main.xsl</path>
+      <path product-name="MALE">pdf/MALE/Main.xsl</path>
+      <pathCache>pdf/transformed/</pathCache>
+    </method>
+    <layout master-name="default-A4L" length-unit="cm" area-unit="pt" width="29.7" height="21" default-font-size="11" cgmark-offset="0.5cm" start-indent="1.5" orientation="land">
+      <simple-page-master>
+        <master-name_for_odd>odd</master-name_for_odd>
+        <margin-top_for_odd>3</margin-top_for_odd>
+        <margin-bottom_for_odd>1.5</margin-bottom_for_odd>
+        <margin-left_for_odd>2</margin-left_for_odd>
+        <margin-right_for_odd>1</margin-right_for_odd>
+        <margin-top_for_odd_body>0</margin-top_for_odd_body>
+        <margin-bottom_for_odd_body>0</margin-bottom_for_odd_body>
+        <margin-left_for_odd_body>1</margin-left_for_odd_body>
+        <margin-right_for_odd_body>1</margin-right_for_odd_body>
+        <extent_for_odd_header>0.5</extent_for_odd_header>
+        <extent_for_odd_footer>-1.5</extent_for_odd_footer>
+
+        <master-name_for_even>even</master-name_for_even>
+        <margin-top_for_even>1.5</margin-top_for_even>
+        <margin-bottom_for_even>3</margin-bottom_for_even>
+        <margin-left_for_even>2</margin-left_for_even>
+        <margin-right_for_even>1</margin-right_for_even>
+        <margin-top_for_even_body>0</margin-top_for_even_body>
+        <margin-bottom_for_even_body>0</margin-bottom_for_even_body>
+        <margin-left_for_even_body>1</margin-left_for_even_body>
+        <margin-right_for_even_body>1</margin-right_for_even_body>
+        <extent_for_even_header>0.5</extent_for_even_header>
+        <extent_for_even_footer>-1.5</extent_for_even_footer>
+
+        <master-name_for_leftBlank>left-blank</master-name_for_leftBlank>
+        <margin-top_for_leftBlank>1</margin-top_for_leftBlank>
+        <margin-bottom_for_leftBlank>1</margin-bottom_for_leftBlank>
+        <margin-left_for_leftBlank>1.5</margin-left_for_leftBlank>
+        <margin-right_for_leftBlank>3</margin-right_for_leftBlank>
+        <margin-top_for_leftBlank_body>1.5</margin-top_for_leftBlank_body>
+        <margin-bottom_for_leftBlank_body>2</margin-bottom_for_leftBlank_body>
+        <margin-left_for_leftBlank_body>0</margin-left_for_leftBlank_body>
+        <margin-right_for_leftBlank_body>0</margin-right_for_leftBlank_body>
+        <extent_for_leftBlank_header>1.5</extent_for_leftBlank_header>
+        <extent_for_leftBlank_footer>2</extent_for_leftBlank_footer>
+
+        <region-name_for_body>body</region-name_for_body>
+        <region-name_for_bodyLeftBlank>left_blank</region-name_for_bodyLeftBlank>
+        <region-name_for_headerOdd>header-odd</region-name_for_headerOdd>
+        <region-name_for_footerOdd>footer-odd</region-name_for_footerOdd>
+        <region-name_for_headerEven>header-even</region-name_for_headerEven>
+        <region-name_for_footerEven>footer-even</region-name_for_footerEven>
+        <region-name_for_headerLeftBlank>header-left_blank</region-name_for_headerLeftBlank>
+        <region-name_for_footerLeftBlank>footer-left_blank</region-name_for_footerLeftBlank>
+      </simple-page-master>
+    </layout>
+    <layout master-name="default-A4" length-unit="cm" area-unit="pt" width="21" height="29.7" default-font-size="11" cgmark-offset="2cm" start-indent="1.5" orientation="port">
+      <simple-page-master>
+        <master-name_for_odd>odd</master-name_for_odd>
+        <margin-top_for_odd>1</margin-top_for_odd>
+        <margin-bottom_for_odd>1</margin-bottom_for_odd>
+        <margin-left_for_odd>3</margin-left_for_odd>
+        <margin-right_for_odd>1.5</margin-right_for_odd>
+        <margin-top_for_odd_body>1.5</margin-top_for_odd_body>
+        <margin-bottom_for_odd_body>1.7</margin-bottom_for_odd_body>
+        <margin-left_for_odd_body>0</margin-left_for_odd_body>
+        <margin-right_for_odd_body>0</margin-right_for_odd_body>
+        <extent_for_odd_header>1.5</extent_for_odd_header>
+        <extent_for_odd_footer>1.5</extent_for_odd_footer>
+
+        <master-name_for_even>even</master-name_for_even>
+        <margin-top_for_even>1</margin-top_for_even>
+        <margin-bottom_for_even>1</margin-bottom_for_even>
+        <margin-left_for_even>1.5</margin-left_for_even>
+        <margin-right_for_even>3</margin-right_for_even>
+        <margin-top_for_even_body>1.5</margin-top_for_even_body>
+        <margin-bottom_for_even_body>1.7</margin-bottom_for_even_body>
+        <margin-left_for_even_body>0</margin-left_for_even_body>
+        <margin-right_for_even_body>0</margin-right_for_even_body>
+        <extent_for_even_header>1.5</extent_for_even_header>
+        <extent_for_even_footer>1.5</extent_for_even_footer>
+
+        <master-name_for_leftBlank>left-blank</master-name_for_leftBlank>
+        <margin-top_for_leftBlank>1</margin-top_for_leftBlank>
+        <margin-bottom_for_leftBlank>1</margin-bottom_for_leftBlank>
+        <margin-left_for_leftBlank>1.5</margin-left_for_leftBlank>
+        <margin-right_for_leftBlank>3</margin-right_for_leftBlank>
+        <margin-top_for_leftBlank_body>1.5</margin-top_for_leftBlank_body>
+        <margin-bottom_for_leftBlank_body>2</margin-bottom_for_leftBlank_body>
+        <margin-left_for_leftBlank_body>0</margin-left_for_leftBlank_body>
+        <margin-right_for_leftBlank_body>0</margin-right_for_leftBlank_body>
+        <extent_for_leftBlank_header>1.5</extent_for_leftBlank_header>
+        <extent_for_leftBlank_footer>2</extent_for_leftBlank_footer>
+
+        <region-name_for_body>body</region-name_for_body>
+        <region-name_for_bodyLeftBlank>left_blank</region-name_for_bodyLeftBlank>
+        <region-name_for_headerOdd>header-odd</region-name_for_headerOdd>
+        <region-name_for_footerOdd>footer-odd</region-name_for_footerOdd>
+        <region-name_for_headerEven>header-even</region-name_for_headerEven>
+        <region-name_for_footerEven>footer-even</region-name_for_footerEven>
+        <region-name_for_headerLeftBlank>header-left_blank</region-name_for_headerLeftBlank>
+        <region-name_for_footerLeftBlank>footer-left_blank</region-name_for_footerLeftBlank>
+      </simple-page-master>
+    </layout>
+    <layout master-name="default-pm" length-unit="cm" area-unit="pt" width="21" height="29.7" default-font-size="11" cgmark-offset="2cm" start-indent="1.5" orientation="port">
+      <simple-page-master>
+        <master-name_for_odd>oddA4</master-name_for_odd>
+        <margin-top_for_odd>1</margin-top_for_odd>
+        <margin-bottom_for_odd>1</margin-bottom_for_odd>
+        <margin-left_for_odd>3</margin-left_for_odd>
+        <margin-right_for_odd>1.5</margin-right_for_odd>
+        <margin-top_for_odd_body>1.5</margin-top_for_odd_body>
+        <margin-bottom_for_odd_body>1.7</margin-bottom_for_odd_body>
+        <margin-left_for_odd_body>0</margin-left_for_odd_body>
+        <margin-right_for_odd_body>0</margin-right_for_odd_body>
+        <extent_for_odd_header>1.5</extent_for_odd_header>
+        <extent_for_odd_footer>1.5</extent_for_odd_footer>
+
+        <master-name_for_even>evenA4</master-name_for_even>
+        <margin-top_for_even>1</margin-top_for_even>
+        <margin-bottom_for_even>1</margin-bottom_for_even>
+        <margin-left_for_even>1.5</margin-left_for_even>
+        <margin-right_for_even>3</margin-right_for_even>
+        <margin-top_for_even_body>1.5</margin-top_for_even_body>
+        <margin-bottom_for_even_body>1.7</margin-bottom_for_even_body>
+        <margin-left_for_even_body>0</margin-left_for_even_body>
+        <margin-right_for_even_body>0</margin-right_for_even_body>
+        <extent_for_even_header>1.5</extent_for_even_header>
+        <extent_for_even_footer>1.5</extent_for_even_footer>
+
+        <master-name_for_leftBlank>left-blankA4</master-name_for_leftBlank>
+        <margin-top_for_leftBlank>1</margin-top_for_leftBlank>
+        <margin-bottom_for_leftBlank>1</margin-bottom_for_leftBlank>
+        <margin-left_for_leftBlank>1.5</margin-left_for_leftBlank>
+        <margin-right_for_leftBlank>3</margin-right_for_leftBlank>
+        <margin-top_for_leftBlank_body>1.5</margin-top_for_leftBlank_body>
+        <margin-bottom_for_leftBlank_body>2</margin-bottom_for_leftBlank_body>
+        <margin-left_for_leftBlank_body>0</margin-left_for_leftBlank_body>
+        <margin-right_for_leftBlank_body>0</margin-right_for_leftBlank_body>
+        <extent_for_leftBlank_header>1.5</extent_for_leftBlank_header>
+        <extent_for_leftBlank_footer>2</extent_for_leftBlank_footer>
+
+        <region-name_for_body>body</region-name_for_body>
+        <region-name_for_bodyLeftBlank>left_blank</region-name_for_bodyLeftBlank>
+        <region-name_for_headerOdd>header-odd</region-name_for_headerOdd>
+        <region-name_for_footerOdd>footer-odd</region-name_for_footerOdd>
+        <region-name_for_headerEven>header-even</region-name_for_headerEven>
+        <region-name_for_footerEven>footer-even</region-name_for_footerEven>
+        <region-name_for_headerLeftBlank>header-left_blank</region-name_for_headerLeftBlank>
+        <region-name_for_footerLeftBlank>footer-left_blank</region-name_for_footerLeftBlank>
+      </simple-page-master>
+    </layout>
+    <layout master-name="poh" length-unit="cm" area-unit="pt" width="14.8" height="21" default-font-size="10" cgmark-offset="2cm" start-indent="1.5" orientation="port">
+      <simple-page-master>
+        <master-name_for_odd>oddA5_poh</master-name_for_odd>
+        <margin-top_for_odd>1</margin-top_for_odd>
+        <margin-bottom_for_odd>1</margin-bottom_for_odd>
+        <margin-left_for_odd>2</margin-left_for_odd>
+        <margin-right_for_odd>1</margin-right_for_odd>
+        <margin-top_for_odd_body>1.5</margin-top_for_odd_body>
+        <margin-bottom_for_odd_body>1.2</margin-bottom_for_odd_body>
+        <margin-left_for_odd_body>0</margin-left_for_odd_body>
+        <margin-right_for_odd_body>0</margin-right_for_odd_body>
+        <extent_for_odd_header>1.2</extent_for_odd_header>
+        <extent_for_odd_footer>1.2</extent_for_odd_footer>
+
+        <master-name_for_even>evenA4_poh</master-name_for_even>
+        <margin-top_for_even>1</margin-top_for_even>
+        <margin-bottom_for_even>1</margin-bottom_for_even>
+        <margin-left_for_even>1</margin-left_for_even>
+        <margin-right_for_even>2</margin-right_for_even>
+        <margin-top_for_even_body>1.5</margin-top_for_even_body>
+        <margin-bottom_for_even_body>1.2</margin-bottom_for_even_body>
+        <margin-left_for_even_body>0</margin-left_for_even_body>
+        <margin-right_for_even_body>0</margin-right_for_even_body>
+        <extent_for_even_header>1.2</extent_for_even_header>
+        <extent_for_even_footer>1.2</extent_for_even_footer>
+
+        <master-name_for_leftBlank>left-blankA4_poh</master-name_for_leftBlank>
+        <margin-top_for_leftBlank>1</margin-top_for_leftBlank>
+        <margin-bottom_for_leftBlank>1</margin-bottom_for_leftBlank>
+        <margin-left_for_leftBlank>1</margin-left_for_leftBlank>
+        <margin-right_for_leftBlank>2</margin-right_for_leftBlank>
+        <margin-top_for_leftBlank_body>1.2</margin-top_for_leftBlank_body>
+        <margin-bottom_for_leftBlank_body>1.2</margin-bottom_for_leftBlank_body>
+        <margin-left_for_leftBlank_body>0</margin-left_for_leftBlank_body>
+        <margin-right_for_leftBlank_body>0</margin-right_for_leftBlank_body>
+        <extent_for_leftBlank_header>1.2</extent_for_leftBlank_header>
+        <extent_for_leftBlank_footer>1.2</extent_for_leftBlank_footer>
+
+        <region-name_for_body>body</region-name_for_body>
+        <region-name_for_bodyLeftBlank>left_blank</region-name_for_bodyLeftBlank>
+        <region-name_for_headerOdd>header-odd</region-name_for_headerOdd>
+        <region-name_for_footerOdd>footer-odd</region-name_for_footerOdd>
+        <region-name_for_headerEven>header-even</region-name_for_headerEven>
+        <region-name_for_footerEven>footer-even</region-name_for_footerEven>
+        <region-name_for_headerLeftBlank>header-left_blank</region-name_for_headerLeftBlank>
+        <region-name_for_footerLeftBlank>footer-left_blank</region-name_for_footerLeftBlank>
+      </simple-page-master>
+    </layout>
+    <layout master-name="maintPlanning" length-unit="cm" area-unit="pt" width="29.7" height="21" default-font-size="11" cgmark-offset="0.5cm" start-indent="1.5" orientation="land">
+      <simple-page-master>
+        <master-name_for_odd>odd</master-name_for_odd>
+        <margin-top_for_odd>3</margin-top_for_odd>
+        <margin-bottom_for_odd>1.5</margin-bottom_for_odd>
+        <margin-left_for_odd>2</margin-left_for_odd>
+        <margin-right_for_odd>1</margin-right_for_odd>
+        <margin-top_for_odd_body>0</margin-top_for_odd_body>
+        <margin-bottom_for_odd_body>0</margin-bottom_for_odd_body>
+        <margin-left_for_odd_body>1</margin-left_for_odd_body>
+        <margin-right_for_odd_body>1</margin-right_for_odd_body>
+        <extent_for_odd_header>0.5</extent_for_odd_header>
+        <extent_for_odd_footer>-1.5</extent_for_odd_footer>
+
+        <master-name_for_even>even</master-name_for_even>
+        <margin-top_for_even>1.5</margin-top_for_even>
+        <margin-bottom_for_even>3</margin-bottom_for_even>
+        <margin-left_for_even>2</margin-left_for_even>
+        <margin-right_for_even>1</margin-right_for_even>
+        <margin-top_for_even_body>0</margin-top_for_even_body>
+        <margin-bottom_for_even_body>0</margin-bottom_for_even_body>
+        <margin-left_for_even_body>1</margin-left_for_even_body>
+        <margin-right_for_even_body>1</margin-right_for_even_body>
+        <extent_for_even_header>0.5</extent_for_even_header>
+        <extent_for_even_footer>-1.5</extent_for_even_footer>
+
+        <master-name_for_leftBlank>left-blank</master-name_for_leftBlank>
+        <margin-top_for_leftBlank>1.5</margin-top_for_leftBlank>
+        <margin-bottom_for_leftBlank>3</margin-bottom_for_leftBlank>
+        <margin-left_for_leftBlank>2</margin-left_for_leftBlank>
+        <margin-right_for_leftBlank>1</margin-right_for_leftBlank>
+        <margin-top_for_leftBlank_body>0</margin-top_for_leftBlank_body>
+        <margin-bottom_for_leftBlank_body>1</margin-bottom_for_leftBlank_body>
+        <margin-left_for_leftBlank_body>1</margin-left_for_leftBlank_body>
+        <margin-right_for_leftBlank_body>1</margin-right_for_leftBlank_body>
+        <extent_for_leftBlank_header>0.5</extent_for_leftBlank_header>
+        <extent_for_leftBlank_footer>-1.5</extent_for_leftBlank_footer>
+
+        <region-name_for_body>body</region-name_for_body>
+        <region-name_for_bodyLeftBlank>left_blank-maintPlanning</region-name_for_bodyLeftBlank>
+        <region-name_for_headerOdd>header-odd-maintPlanning</region-name_for_headerOdd>
+        <region-name_for_footerOdd>footer-odd-maintPlanning</region-name_for_footerOdd>
+        <region-name_for_headerEven>header-even-maintPlanning</region-name_for_headerEven>
+        <region-name_for_footerEven>footer-even-maintPlanning</region-name_for_footerEven>
+        <region-name_for_headerLeftBlank>header-left_blank-maintPlanning</region-name_for_headerLeftBlank>
+        <region-name_for_footerLeftBlank>footer-left_blank-maintPlanning</region-name_for_footerLeftBlank>
+      </simple-page-master>
+    </layout>
+  </output>
+  <colors mode="hex">
+    <color name="amber" code="#ffc107"/>
+    <color name="black" code="#00000"/>
+    <color name="green" code="#14a339"/>
+    <color name="grey" code="#808080"/>
+    <color name="red" code="#ff0000"/>
+    <color name="white" code="#ffffff"/>
+    <color name="white" code="#ffff00"/>
+  </colors>
+  <security>
+    <securityClassification code="01">UNCLASSIFIED</securityClassification>
+    <securityClassification code="02">RESTRICTED</securityClassification>
+    <securityClassification code="03">CONFIDENTIAL</securityClassification>
+    <securityClassification code="04">SECRET</securityClassification>
+    <securityClassification code="05">TOP SECRET</securityClassification>
+    <commercialClassification code="cc51">FOOBAR CC</commercialClassification>
+    <caveat code="cv51">FOO CAVEAT</caveat>
+    <derivativeClassification>
+      <action code="ai01">Classified On</action>
+      <action code="ai02">Declasify On</action>
+      <action code="ai03">Downgrande On</action>
+      <action code="ai04">Upgrade On</action>
+      <action code="ai05">Downgrade SC to 03</action>
+      <action code="ai06">Downgrade SC to 04</action>
+      <action code="ai07">Downgrade SC to 05</action>
+      <action code="ai08">Upgrade SC to 03</action>
+      <action code="ai09">Upgrade SC to 04</action>
+      <action code="ai10">Upgrade SC to 05</action>
+    </derivativeClassification>
+  </security>
+  <textElemGroup>
+    <emphasis type="em01">bold</emphasis>
+    <emphasis type="em02">italic</emphasis>
+    <emphasis type="em03">underline</emphasis>
+    <emphasis type="em05">strikethrough</emphasis>
+    <emphasis type="em06">underline-bold</emphasis>
+    <emphasis type="em07">underline-italic</emphasis>
+    <emphasis type="em08">bold-italic</emphasis>
+    <emphasis type="em09">bold-italic-underline</emphasis>
+    <crewMember type="cm01">All</crewMember>
+    <crewMember type="cm02">Pilot</crewMember>
+    <crewMember type="cm03">Co-Pilot</crewMember>
+    <crewMember type="cm04">Navigator</crewMember>
+    <crewMember type="cm05">Engineer</crewMember>
+    <crewMember type="cm06">Ground Crew</crewMember>
+    <crewMember type="cm07">Load Master</crewMember>
+    <crewMember type="cm08">Cabin Spv.</crewMember>
+    <crewMember type="cm51">CM1</crewMember>
+    <crewMember type="cm52">CM2</crewMember>
+    <crewMember type="cm53">CM3</crewMember>
+    <crewMember type="cm54">Pil1</crewMember>
+    <crewMember type="cm55">Pil2</crewMember>
+    <crewMember type="cm56">Pil3</crewMember>
+    <crewMember type="cm57">Pil4</crewMember>
+    <crewMember type="cm58">MO</crewMember>
+    <crewMember type="cm59">LM</crewMember>
+    <crewMember type="cm60">T</crewMember>
+    <crewStepCondition type="csc01">Equipment is installed or available</crewStepCondition>
+    <crewStepCondition type="csc02">A detailed procedure for the step is located in the performance section of the condensed checklists</crewStepCondition>
+    <crewStepCondition type="csc03">Performance of the step is mandatory for all through-flights used for combat/tactical operations</crewStepCondition>
+    <crewStepCondition type="csc04">A step that is mandatory for night flights</crewStepCondition>
+    <crewStepCondition type="csc05">A task or step required by the operator's manual</crewStepCondition>
+    <skillType type="st01">AIRPL</skillType>
+    <skillType type="st02">ELEC</skillType>
+    <skillType type="st03">AVION</skillType>
+    <skillType type="st04">ENGIN</skillType>
+    <skillLevelCode type="sk01">Basic</skillLevelCode>
+    <skillLevelCode type="sk02">Intermediate</skillLevelCode>
+    <skillLevelCode type="sk03">Advanced</skillLevelCode>
+    <caption type="co01" background-color="green" color="black"/>
+    <caption type="co02" background-color="amber" color="black"/>
+    <caption type="co03" background-color="yellow" color="black"/>
+    <caption type="co04" background-color="red" color="black"/>
+    <caption type="co07" background-color="white" color="black"/>
+    <caption type="co08" background-color="grey" color="black"/>
+    <caption type="co62" background-color="yellow" color="white"/>
+    <caption type="co66" background-color="red" color="black"/>
+    <caption type="co67" background-color="red" color="white"/>
+    <caption type="co81" background-color="black" color="yellow"/>
+    <caption type="co82" background-color="black" color="white"/>
+    <caption type="co83" background-color="black" color="red"/>
+    <caption type="co84" background-color="black" color="green"/>
+    <caption type="co85" background-color="black" color="amber"/>
+    <quantity type="qty51">Panel CB CN235</quantity>
+    <internalRef type="irtt01">figure</internalRef>
+    <internalRef type="irtt02">table</internalRef>
+    <internalRef type="irtt03">multimedia</internalRef>
+    <internalRef type="irtt04">supply</internalRef>
+    <internalRef type="irtt05">support Equipment</internalRef>
+    <internalRef type="irtt06">spare</internalRef>
+    <internalRef type="irtt07">para</internalRef>
+    <internalRef type="irtt08">step</internalRef>
+    <internalRef type="irtt09"></internalRef>
+    <internalRef type="irtt10">multimedia</internalRef>
+    <internalRef type="irtt11">zone</internalRef>
+    <internalRef type="irtt14">work area</internalRef>
+    <internalRef type="irtt15">SB</internalRef>
+    <internalRef type="irtt16">access</internalRef>
+    <verbatimText type="vs51">monospace</verbatimText>
+    <verbatimText type="vs52">calibri</verbatimText>
+  </textElemGroup>
+
+  <controlAuthorityGroup>
+    <controlAuthority type="cat01">AD</controlAuthority>    
+    <controlAuthority type="cat02">AMOC</controlAuthority>    
+    <controlAuthority type="cat03">AWL</controlAuthority>    
+    <controlAuthority type="cat04">CATIII</controlAuthority>    
+    <controlAuthority type="cat05">CDCCL</controlAuthority>    
+    <controlAuthority type="cat06">CMR</controlAuthority>    
+    <controlAuthority type="cat07">ETOPS</controlAuthority>    
+    <controlAuthority type="cat08">EWIS</controlAuthority>    
+    <controlAuthority type="cat09">LOI</controlAuthority>    
+    <controlAuthority type="cat10">RII</controlAuthority>    
+    <controlAuthority type="cat51">DGCA</controlAuthority>    
+  </controlAuthorityGroup>
+
+  <frontMatterGroup>
+    <frontMatter type="fm01">leop</frontMatter>
+    <frontMatter type="fm02">leodm</frontMatter>
+    <frontMatter type="fm03">highlights</frontMatter>
+    <frontMatter type="fm04">highlights and updating instruction</frontMatter>
+    <frontMatter type="fm05">publication list data modules</frontMatter>
+    <frontMatter type="fm06">loi</frontMatter>
+    <frontMatter type="fm07">loa</frontMatter>
+    <frontMatter type="fm08">lot</frontMatter>
+    <frontMatter type="fm09">los</frontMatter>
+    <frontMatter type="fm10">tsr</frontMatter>
+    <frontMatter type="fm11">lom</frontMatter>
+    <frontMatter type="fm12">loasd</frontMatter>
+    <frontMatter type="fm13">low</frontMatter>
+    <frontMatter type="fm14">loc</frontMatter>
+    <frontMatter type="fm15">lose</frontMatter>
+    <frontMatter type="fm16">losu</frontMatter>
+    <frontMatter type="fm17">losp</frontMatter>
+    <frontMatter type="fm18">lov</frontMatter>
+  </frontMatterGroup>
+
+  <!-- pt digunakan untuk page master -->
+  <pmGroup>
+    <pt type="pt01">cmm</pt>
+    <pt type="pt02">ipd</pt>
+    <pt type="pt03">sb</pt>
+    <pt type="pt51">poh</pt>
+    <pt type="pt52">maintPlanning</pt>
+    <pmt type="pmt01">TP</pmt>
+    <pmt type="pmt02">CONF</pmt>
+    <pmt type="pmt03">COPY</pmt>
+    <pmt type="pmt04">ADMIN</pmt>
+    <pmt type="pmt05">SAFE</pmt>
+    <pmt type="pmt06">LOEDM</pmt>
+    <pmt type="pmt07">CR</pmt>
+    <pmt type="pmt08">HIGH</pmt>
+    <pmt type="pmt09">LOA</pmt>
+    <pmt type="pmt10">LOT</pmt>
+    <pmt type="pmt11">LOS</pmt>
+    <pmt type="pmt12">TSR</pmt>
+    <pmt type="pmt13">TOC</pmt>
+    <pmt type="pmt14">LOI</pmt>
+    <pmt type="pmt15">LOTBL</pmt>
+    <pmt type="pmt16">LOASD</pmt>
+    <pmt type="pmt17">LOSUP</pmt>
+    <pmt type="pmt18">LOSE</pmt>
+    <pmt type="pmt19">LOSU</pmt>
+    <pmt type="pmt20">LOSP</pmt>
+    <pmt type="pmt21">INTRO</pmt>
+    <pmt type="pmt22">FUNC</pmt>
+    <pmt type="pmt23">DESC</pmt>
+    <pmt type="pmt24">SCHEM</pmt>
+    <pmt type="pmt25">MAINT</pmt>
+    <pmt type="pmt26">RI</pmt>
+    <pmt type="pmt27">TS</pmt>
+    <pmt type="pmt28">SERVC</pmt>
+    <pmt type="pmt29">TEST</pmt>
+    <pmt type="pmt30">DIS</pmt>
+    <pmt type="pmt31">REP</pmt>
+    <pmt type="pmt32">ASSY</pmt>
+    <pmt type="pmt33">STORE</pmt>
+    <pmt type="pmt34">IPD</pmt>
+    <pmt type="pmt51">Structure Inspection Program</pmt> <!-- seperti AMM CHP5 CN235 chapter 05-20-20 -->
+    <pmt type="pmt52">System And Powerplant Inspection Program</pmt> <!-- seperti AMM CHP5 CN235 chapter 05-20-10 -->
+    <pmt type="pmt53">Zonal Inspection Program</pmt> <!-- seperti AMM CHP5 CN235 chapter 05-20-30 -->
+    <pmt type="pmt54">Time Limit Program</pmt> <!-- seperti AMM CHP5 CN235 chapter 05-10-10 -->
+  </pmGroup>
+
+  <maintenance>
+    <source type="stc51">MSG-3</source>
+    <source type="stc52">ZAP</source>
+    <source type="stc53">CMR</source>
+    <threshold uom="th01">FH</threshold>
+    <threshold uom="th02">FC</threshold>
+    <threshold uom="th03">Months</threshold>
+    <threshold uom="th04">Weeks</threshold>
+    <threshold uom="th05">Years</threshold>
+    <threshold uom="th06">Days</threshold>
+    <threshold uom="th07">Supersonic Cycles</threshold>
+    <threshold uom="th08">Pressure Cycles</threshold>
+    <threshold uom="th09">Engine Cycles</threshold>
+    <threshold uom="th10">Engine Change</threshold>
+    <threshold uom="th11">Shop Visits</threshold>
+    <threshold uom="th12">APU Change</threshold>
+    <threshold uom="th13">Landing Gear Change</threshold>
+    <threshold uom="th14">Wheel Change</threshold>
+    <threshold uom="th15">Engine Start</threshold>
+    <threshold uom="th16">APU Hours</threshold>
+    <threshold uom="th17">EH</threshold>
+    <threshold uom="th18">ETH</threshold>
+    <threshold uom="th19">Landings</threshold>
+    <threshold uom="th20">Operating Cycles</threshold>
+    <threshold uom="th21">Operating hours</threshold>
+    <threshold uom="th22">Supersonic hours</threshold>
+    <threshold uom="th23">A</threshold>
+    <threshold uom="th24">B</threshold>
+    <threshold uom="th25">C</threshold>
+    <threshold uom="th26">D</threshold>
+    <threshold uom="th27">Daily</threshold>
+    <threshold uom="th28">E</threshold>
+    <threshold uom="th29">Overnight</threshold>
+    <threshold uom="th30">Preflight</threshold>
+    <threshold uom="th31">Routine</threshold>
+    <threshold uom="th32">Structural C Check</threshold>
+    <threshold uom="th33">Service Check</threshold>
+    <threshold uom="th34">Transit</threshold>
+    <threshold uom="th35">Kilometers</threshold>
+    <threshold uom="th36">cubic meter</threshold>
+    <threshold uom="th37">l</threshold>
+    <threshold uom="th38">shots</threshold>
+    <threshold uom="th39">shots</threshold>
+    <threshold uom="th51">-Z-</threshold>
+    <task code="taskcd01">DET</task>
+    <task code="taskcd02">DS</task>
+    <task code="taskcd03">FC</task>
+    <task code="taskcd04">GVI</task>
+    <task code="taskcd05">LU</task>
+    <task code="taskcd06">OP</task>
+    <task code="taskcd07">RS</task>
+    <task code="taskcd08">SV</task>
+    <task code="taskcd09">IN</task>
+    <task code="taskcd10">SDI</task>
+  </maintenance>
+  
+  <!-- 
+    sejauh ini belum digunakan. 
+    Niatnya nanti pada maintPanning descendant::manufactureCode, bisa di interpretasikan ke nama perusahaan 
+  -->
+  <company>
+    <companyCode code="0001Z">PT. Dirgantara Indonesia</companyCode>
+  </company>
+  
+  <!-- dipakai di CSDBObject -->
+  <comment>
+    <commentPriority code="cp01">Routine</commentPriority>
+    <commentPriority code="cp02">Emergency</commentPriority>
+    <commentPriority code="cp03">Safety critical</commentPriority>
+    <commentResponse type="rt01">Accepted</commentResponse>
+    <commentResponse type="rt02">Pending</commentResponse>
+    <commentResponse type="rt03">Partly accepted</commentResponse>
+    <commentResponse type="rt04">Rejected</commentResponse>
+  </comment>
+</config>

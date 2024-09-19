@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="crewMemberType" value="cm01">
+    <interpretation use="extension">All</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm02">
+    <interpretation use="extension">Pilot</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm03">
+    <interpretation use="extension">Co-Pilot</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm04">
+    <interpretation use="extension">Navigator</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm05">
+    <interpretation use="extension">Engineer</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm06">
+    <interpretation use="extension">Ground Crew</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm07">
+    <interpretation use="extension">Load Master</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm08">
+    <interpretation use="extension">Cabin Spv.</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm51">
+    <interpretation use="extension">CM1</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm52">
+    <interpretation use="extension">CM2</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm53">
+    <interpretation use="extension">CM3</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm54">
+    <interpretation use="extension">Pil1</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm55">
+    <interpretation use="extension">Pil2</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm56">
+    <interpretation use="extension">Pil3</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm57">
+    <interpretation use="extension">Pil4</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm58">
+    <interpretation use="extension">MO</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm59">
+    <interpretation use="extension">LM</interpretation>
+  </attr>
+  <attr name="crewMemberType" value="cm60">
+    <interpretation use="extension">T</interpretation>
+  </attr>
+</root>

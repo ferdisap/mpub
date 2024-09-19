@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="controlAuthorityType" value="cat01">
+    <interpretation use="abbreviation">AD</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat02">
+    <interpretation use="abbreviation">AMOC</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat03">
+    <interpretation use="abbreviation">AWL</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat04">
+    <interpretation use="abbreviation">CATIII</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat05">
+    <interpretation use="abbreviation">CDCCL</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat06">
+    <interpretation use="abbreviation">CMR</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat07">
+    <interpretation use="abbreviation">ETOPS</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat08">
+    <interpretation use="abbreviation">EWIS</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat09">
+    <interpretation use="abbreviation">LOI</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat10">
+    <interpretation use="abbreviation">RII</interpretation>
+  </attr>
+  <attr name="controlAuthorityType" value="cat51">
+    <interpretation use="abbreviation">DGCA</interpretation>
+  </attr>
+</root>
