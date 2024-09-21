@@ -2,19 +2,19 @@
 <root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
   <attr name="pmType" value="pt01">
-    <interpretation use="extension">cmm</interpretation>
+    <interpretation use="abbreviation">cmm</interpretation>
   </attr>
   <attr name="pmType" value="pt02">
-    <interpretation use="extension">ipd</interpretation>
+    <interpretation use="abbreviation">ipd</interpretation>
   </attr>
   <attr name="pmType" value="pt03">
-    <interpretation use="extension">sb</interpretation>
+    <interpretation use="abbreviation">sb</interpretation>
   </attr>
   <attr name="pmType" value="pt51">
-    <interpretation use="extension">poh</interpretation>
+    <interpretation use="abbreviation">poh</interpretation>
   </attr>
   <attr name="pmType" value="pt52">
-    <interpretation use="extension">maintPlanning</interpretation>
+    <interpretation use="abbreviation">maintPlanning</interpretation>
   </attr>
   <attr name="pmEntryType" value="pmt01">
     <interpretation use="abbreviation">TP</interpretation>

@@ -1,5 +1,7 @@
 <?php
 
+// run >>> ./vendor/bin/phpunit ./tests/BrexTest.php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;

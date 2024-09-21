@@ -26,33 +26,33 @@
     <interpretation use="extension">Cabin Spv.</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm51">
-    <interpretation use="extension">CM1</interpretation>
+    <interpretation use="abbreviation">CM1</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm52">
-    <interpretation use="extension">CM2</interpretation>
+    <interpretation use="abbreviation">CM2</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm53">
-    <interpretation use="extension">CM3</interpretation>
+    <interpretation use="abbreviation">CM3</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm54">
-    <interpretation use="extension">Pil1</interpretation>
+    <interpretation use="abbreviation">Pil1</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm55">
-    <interpretation use="extension">Pil2</interpretation>
+    <interpretation use="abbreviation">Pil2</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm56">
-    <interpretation use="extension">Pil3</interpretation>
+    <interpretation use="abbreviation">Pil3</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm57">
-    <interpretation use="extension">Pil4</interpretation>
+    <interpretation use="abbreviation">Pil4</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm58">
-    <interpretation use="extension">MO</interpretation>
+    <interpretation use="abbreviation">MO</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm59">
-    <interpretation use="extension">LM</interpretation>
+    <interpretation use="abbreviation">LM</interpretation>
   </attr>
   <attr name="crewMemberType" value="cm60">
-    <interpretation use="extension">T</interpretation>
+    <interpretation use="abbreviation">T</interpretation>
   </attr>
 </root>

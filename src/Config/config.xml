@@ -5,7 +5,9 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../assets/schemas/config.xsd">
   <output>
     <method type="pdf">
-      <path product-name="*">./main.xsl</path>
+      <path product-name="*">../Transformer/xsl/pdf/CN235/Main.xsl</path>
+      <path product-name="CN235">../Transformer/xsl/pdf/CN235/Main.xsl</path>
+      <path product-name="assets">../Transformer/xsl/pdf/assets</path>
     </method>
     <method type="html">
       <path product-name="*">./index.xsl</path>

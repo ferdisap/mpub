@@ -1,27 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="color" value="co00">
+    <interpretation use="default">None</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="none" />
+      <style key="color" value="none" />
+    </interpretation>
+  </attr>
   <attr name="color" value="co01">
     <interpretation use="code">#14a339</interpretation>
+    <interpretation use="default">Green</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#14a339" />
+      <style key="color" value="#ffffff" />
+    </interpretation>
   </attr>
   <attr name="color" value="co02">
     <interpretation use="code">#ffc107</interpretation>
+    <interpretation use="default">Amber</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#ffc107" />
+      <style key="color" value="#ffffff" />
+    </interpretation>
   </attr>
   <attr name="color" value="co03">
     <interpretation use="code">#ffff00</interpretation>
+    <interpretation use="default">Yellow</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#ffff00" />
+      <style key="color" value="#ffffff" />
+    </interpretation>
   </attr>
   <attr name="color" value="co04">
     <interpretation use="code">#ff0000</interpretation>
+    <interpretation use="default">Red</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#ff0000" />
+      <style key="color" value="#ffffff" />
+    </interpretation>
   </attr>
   <attr name="color" value="co07">
     <interpretation use="code">#ffffff</interpretation>
+    <interpretation use="default">White</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#ffffff" />
+      <style key="color" value="#000000" />
+    </interpretation>
   </attr>
   <attr name="color" value="co08">
     <interpretation use="code">#808080</interpretation>
+    <interpretation use="default">Grey</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#808080" />
+      <style key="color" value="#ffffff" />
+    </interpretation>
   </attr>
   <attr name="color" value="co09">
     <interpretation use="code">#ffffff00</interpretation>
+    <interpretation use="default">Clear</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#ffffff00" />
+      <style key="color" value="#000000" />
+    </interpretation>
   </attr>
-  <attr name="color" value="co09">
-    <interpretation use="code">#00000</interpretation>
+  <attr name="color" value="co10">
+    <interpretation use="code">#000000</interpretation>
+    <interpretation use="default">Black</interpretation>
+    <interpretation use="css">
+      <style key="background-color" value="#000000" />
+      <style key="color" value="#ffffff" />
+    </interpretation>
+  </attr>
+
+  <!-- configurable value below -->
+  <attr name="color" value="co62">
+    <interpretation use="css">
+      <style key="background-color" value="yellow"/>
+      <style key="color" value="white"/>      
+    </interpretation>
+  </attr>
+  <attr name="color" value="co66">
+    <interpretation use="css">
+      <style key="background-color" value="red"/>
+      <style key="color" value="black"/>
+    </interpretation>
+  </attr>
+  <attr name="color" value="co67">
+    <interpretation use="css">
+      <style key="background-color" value="red"/>
+      <style key="color" value="white"/>
+    </interpretation>
+  </attr>
+  <attr name="color" value="co81">
+    <interpretation use="css">
+      <style key="background-color" value="black"/>
+      <style key="color" value="yellow"/>
+    </interpretation>
+  </attr>
+  <attr name="color" value="co82">
+    <interpretation use="css">
+      <style key="background-color" value="black"/>
+      <style key="color" value="white"/>
+    </interpretation>
+  </attr>
+  <attr name="color" value="co83">
+    <interpretation use="css">
+      <style key="background-color" value="black"/>
+      <style key="color" value="red"/>
+    </interpretation>
+  </attr>
+  <attr name="color" value="co84">
+    <interpretation use="css">
+      <style key="background-color" value="black"/>
+      <style key="color" value="green"/>
+    </interpretation>
+  </attr>
+  <attr name="color" value="co85">
+    <interpretation use="css">
+      <style key="background-color" value="black"/>
+      <style key="color" value="amber"/>
+    </interpretation>
   </attr>
 </root>

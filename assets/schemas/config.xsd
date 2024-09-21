@@ -100,7 +100,7 @@
   </xs:simpleType>
   <xs:complexType name="methodElemType">
     <xs:sequence>
-      <xs:element name="path" type="pathElemType"/>
+      <xs:element name="path" type="pathElemType" maxOccurs="unbounded" minOccurs="1"/>
     </xs:sequence>
     <xs:attribute ref="type" use="required"/>
   </xs:complexType>

@@ -7,27 +7,42 @@ use function GuzzleHttp\choose_handler;
 class CSDBStatic
 {
   /**
+   * @deprecated
+   * diganti/dipindahkan ke class Transformer/Pdf
+   * 
    * what masterName (@pmType) used currently of transformatting
    * mungkin nanti dipindahkan ke class CSDBObject saja
    */
   protected static string $PDF_MasterName = '';
 
+  /**
+   * @deprecated
+   * diganti/dipindahkan ke class Transformer/Pdf
+   */
   public static function get_PDF_MasterName()
   {
     return self::$PDF_MasterName;
   }
 
+  /**
+   * @deprecated
+   * diganti/dipindahkan ke class Transformer/Pdf
+   */
   public static function set_PDF_MasterName(string $text)
   {
     self::$PDF_MasterName = $text;
   }
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * digunakan agar tidak ada multiple masterName di xsl fo layout
    */
   protected static array $masterName = [];
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * digunakan sekalian untuk check apakah masterName sudah di tambahkan ke layout atau belum
    */
   public static function add_masterName(string $name)
@@ -42,6 +57,8 @@ class CSDBStatic
 
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * [
    *  'id-000' => [ 
    *    'text' => 'lorem ipsum',
@@ -55,6 +72,10 @@ class CSDBStatic
    */
   protected static array $bookmarks = [];
 
+  /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
+   */
   public static function fillBookmark(string $destination, string $text, string $parent = '')
   {
     self::$bookmarks[$destination] = [
@@ -64,6 +85,7 @@ class CSDBStatic
   }
 
   /**
+   * @deprecated dipindah ke Transformer\Pdf
    * @return \DOMDocument
    */
   public static function transformBookmark_to_xml()
@@ -654,7 +676,7 @@ class CSDBStatic
   }
 
   /**
-   * depreciated. diganti checkLevelByPrefix
+   * @deprecated diganti checkLevelByPrefix
    * minimum value of level is 0 (zero)
    * @return int
    */
@@ -673,12 +695,16 @@ class CSDBStatic
     return ($level < 0) ? (int) $minimum : (int) $level;
   }
 
+  /**
+   * @deprecated dipindah ke Transformator class
+   */
   public static function checkLevelByPrefix(string $prefix = '')
   {
     return count(explode('.', $prefix));
   }
 
   /**
+   * @deprecated dipindah ke Transformator class
    * checking index by sibling
    * @return int
    */
@@ -699,6 +725,7 @@ class CSDBStatic
   }
 
   /**
+   * @deprecated dipindah ke Transformator class
    * @return int
    */
   public static function getPrefixNum(\DOMElement $element, $minimum = 0): string
@@ -1199,6 +1226,9 @@ class CSDBStatic
     return $filename;
   }
 
+  /**
+   * @deprecated dipindah ke Transformator class
+   */
   public static function interpretDimension(string $unit): string
   {
     // <xsl:variable name="units" select="php:function('preg_replace', '/[0-9\.]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>

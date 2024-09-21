@@ -24,10 +24,12 @@
   </xs:complexType>
   <xs:element name="style" type="styleElemType"/>
   <xs:complexType name="styleElemType">
-    <xs:sequence>
+    <!-- <xs:sequence>
       <xs:element name="key"/>
       <xs:element name="value"/>
-    </xs:sequence>
+    </xs:sequence> -->
+    <xs:attribute name="key" use="required" type="xs:string"/>
+    <xs:attribute name="value" use="required" type="xs:string"/>
   </xs:complexType>
   <xs:attribute name="use" type="useAttType"/>
   <xs:simpleType name="useAttType">
