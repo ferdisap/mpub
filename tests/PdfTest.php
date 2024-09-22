@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-// use Ptdi\Mpub\Fop\Pdf;
 use PHPUnit\Framework\TestCase;
 use Ptdi\Mpub\Main\CSDBObject;
 use Ptdi\Mpub\Transformer\Pdf;
