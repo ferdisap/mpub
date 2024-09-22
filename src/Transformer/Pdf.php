@@ -31,6 +31,11 @@ class Pdf extends Transformator
   protected string $pmEntryType = '';
 
   /**
+   * sejauh ini pmEntryTitle digunakan di header PDF
+   */
+  protected string $pmEntryTitle = '';
+
+  /**
    * [
    *  'id-000' => [ 
    *    'text' => 'lorem ipsum',
@@ -50,7 +55,20 @@ class Pdf extends Transformator
    */
   public function __construct(public string $input, public string $output)
   {
-    $this->isReady = file_exists($input);
+    if(!file_exists($input)){
+      if(!($i = realpath($input))){
+        if(!($i = realpath(__DIR__.'/'.$input))){
+          $this->isReady = false;
+        } else {
+          $this->input = $i;
+          $this->isReady = true;
+        }
+      } else {
+        $this->input = $i;
+        $this->isReady = true;
+      }
+    };
+    $this->isReady = true;
   }
 
   /**
@@ -61,16 +79,19 @@ class Pdf extends Transformator
   {
     if (!$this->isReady) return false;
 
+    $wd = getcwd();
+    chdir(__DIR__ . "/../Fop");
+
     $input = Helper::getRelativePath(__DIR__, $this->input);
     $output = Helper::getRelativePath(__DIR__, $this->output);
     $config = isset($this->config) && file_exists($this->config) ? Helper::getRelativePath(__DIR__, $this->config) : 'conf/fop.xconf';
 
     $is_OS_Windows = PHP_OS === 'WINNT' || PHP_OS === 'Windows' || PHP_OS === 'WIN32';
     $command = ($is_OS_Windows ? "fop" : './fop') . " -c $config -fo $input -pdf $output";
-    chdir(__DIR__ . "/../Fop");
     shell_exec($command);
 
-    return file_exists($output);
+    chdir($wd);
+    return file_exists($this->output);
   }
 
   public function get_PDF_MasterName()
@@ -145,7 +166,7 @@ class Pdf extends Transformator
     $sourceDoc->load($source);
     $xsltproc = parent::makeProcessor($params);
 
-    unlink($this->output);
+    if(file_exists($this->output)) unlink($this->output);
     $create = $xsltproc->transformToUri($sourceDoc, $this->output) && file_exists($this->output);
 
     // fill bookmark
@@ -205,5 +226,15 @@ class Pdf extends Transformator
       unset($this->bookmarks[$keyfirst]);
     }
     return $dom;
+  }
+
+  public CSDBObject $CSDBObject;
+
+  public function CSDBObject(string $method)
+  {
+    $arg_list = func_get_args();
+    unset($arg_list[0]);
+    $arg_list = array_values($arg_list);    
+    return call_user_func_array(array($this->CSDBObject, $method), $arg_list);
   }
 }

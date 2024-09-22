@@ -14,6 +14,17 @@ class Transformator
   public string $configurableValues; // uri xml
   public string $csdb_path; // absolute path
 
+  // public mixed $CSDBObject;
+
+  public static function config_uri()
+  {
+    return str_replace(' ', '%20', 'file:/'.str_replace("\\","/",realpath(__DIR__.'/../Config/config.xml'))); // sama dengan baseURI DOMDocument
+  }
+  public static function configurableValues_uri()
+  {
+    return str_replace(' ', '%20', 'file:/'.str_replace("\\","/",realpath(__DIR__.'/../Config/configurableValues.xml'))); // sama dengan baseURI DOMDocument
+  }
+
   /**
    * @param string $source
    * input file berupa uri main.xsl file
@@ -35,14 +46,15 @@ class Transformator
     $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => self::class . "::$name", get_class_methods(self::class)))());
     $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => get_class($this) . "::$name", get_class_methods(get_class($this))))());
     $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => CSDBObject::class . "::$name", get_class_methods(CSDBObject::class)))());
+    // $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => $this->CSDBObject::class . "::$name", get_class_methods($this->CSDBObject::class)))());
     $xsltproc->registerPHPFunctions();
 
     foreach ($params as $key => $param) {
       $xsltproc->setParameter('', $key, $param);
     }
 
-    $xsltproc->setParameter('', 'config_uri', $this->config);
-    $xsltproc->setParameter('', 'configurableValues_uri', $this->configurableValues);
+    $xsltproc->setParameter('', 'config_uri', str_replace("\\","/",$this->config));
+    $xsltproc->setParameter('', 'configurableValues_uri', str_replace("\\", '/',$this->configurableValues));
     $xsltproc->setParameter('', 'csdb_path', $this->csdb_path ?? './');
 
     return $xsltproc;

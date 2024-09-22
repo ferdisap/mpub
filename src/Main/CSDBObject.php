@@ -6,6 +6,7 @@ use DOMDocument;
 use JsonSerializable;
 // use Ptdi\Mpub\Fop\Pdf;
 use Ptdi\Mpub\Transformer\Pdf as TransformerPdf;
+use Ptdi\Mpub\Transformer\Transformator;
 use Serializable;
 
 // class CSDBObject implements JsonSerializable
@@ -1307,6 +1308,11 @@ class CSDBObject
     return $domXpath->evaluate($xpath);
   }
 
+  public function tes()
+  {
+    return 'tes';
+  }
+
   /**
    * resolving applic element
    * @param DOMElement $doc berupa applic
@@ -1930,15 +1936,31 @@ class CSDBObject
    * @param array $params is associative array where is inclusion for XSL processor
    * @return string
    */
-  public function transform_to_fo(string $inputFile, string $outputFile, array $params = []) :string
+  public function transform_to_fo(string $inputFile, string $outputFile) :string
   {
     $pdf = new TransformerPdf(
       input: $inputFile,
       output: $outputFile
     ); 
-    $pdf->config = str_replace("\\",'/',__DIR__)."/../../src/Config/config.xml";
-    $pdf->configurableValues = str_replace("\\",'/',__DIR__)."/../../src/Config/configurableValues.xml";
+    $pdf->config = Transformator::config_uri();
+    $pdf->configurableValues = Transformator::configurableValues_uri();
+    $pdf->CSDBObject = $this;
     $create = $pdf->createFo($this->document->baseURI);
+    return $create ? $outputFile : '';
+  }
+
+  /**
+   * @param string $inputFile is absolute path of fo file
+   * @param string $outputFile is uri for pdf
+   * @return string
+   */
+  public function transform_to_pdf(string $inputFile, string $outputFile) :string
+  {
+    $pdf = new TransformerPdf(
+      input: $inputFile,
+      output: $outputFile
+    );
+    $create = $pdf->create();
     return $create ? $outputFile : '';
   }
 

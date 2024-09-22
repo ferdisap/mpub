@@ -1247,9 +1247,14 @@ class CSDBStatic
 
 
   /**
+   * @deprecated, tidak dipakai lagi karena sudah pakai FOP
    * khusus footnote yang marking nya number, bukan asterisk atay alpha
    */
   public static $footnotePositionStore = [];
+
+  /**
+   * @deprecated, tidak dipakai lagi karena sudah pakai FOP
+   */
   public static function next_footnotePosition(string $filename, bool $set = false): int
   {
     $totalIndex = count(self::$footnotePositionStore[$filename]);
@@ -1261,6 +1266,10 @@ class CSDBStatic
     if ($set) self::$footnotePositionStore[$filename][] = $no;
     return $no;
   }
+
+  /**
+   * @deprecated, tidak dipakai lagi karena sudah pakai FOP
+   */
   public static function add_footnotePosition(string $filename, int $no): void
   {
     self::$footnotePositionStore[$filename][] = $no;
@@ -1315,10 +1324,6 @@ class CSDBStatic
     return $ret;
   }
 
-  public static function tes($v){
-    (self::decode_element($v[0],$a));
-    return (json_encode($a));
-  }
   public static function simple_xml_to_json(\DOMDocument $DOMDocument){
     $arr = [];
     $childNodes = $DOMDocument->childNodes;

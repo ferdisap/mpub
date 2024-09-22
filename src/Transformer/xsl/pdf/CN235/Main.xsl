@@ -119,8 +119,6 @@
   <xsl:template match="/">
     <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::set_PDF_MasterName', $masterName)"/>
     <fo:root font-family="Arial">
-      <!-- <xsl:value-of select="$masterName"/> -->
-      <!-- <xsl:call-template name="get_PDF_MasterName"/> -->
       <xsl:call-template name="setPageMaster">
         <xsl:with-param name="masterName" select="$masterName" />
       </xsl:call-template>

@@ -99,7 +99,7 @@
       <xsl:call-template name="add_controlAuthority" />
       <xsl:text>(</xsl:text>
       <xsl:value-of select="."/>
-      <xsl:tex>)</xsl:tex>
+      <xsl:text>)</xsl:text>
       <xsl:call-template name="cgmark_end"/>
     </fo:block>
   </xsl:template>

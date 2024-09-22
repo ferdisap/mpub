@@ -19,7 +19,7 @@
   </xsl:template>
 
   <xsl:template name="getPmEntryTitle">
-    <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::get_pmEntryTitle')"/>
+    <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::get_pmEntryTitle')"/>
   </xsl:template>
 
   <!-- ada lagi template get_applicability, tapi dugnakan untuk content, bukan header/footer -->
@@ -27,10 +27,10 @@
     <xsl:param name="entry"/>
     <xsl:choose>
       <xsl:when test="$entry">
-        <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', $entry//identAndStatusSection/dmStatus/applic)"/>
+        <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::CSDBObject', 'getApplicability', $entry//identAndStatusSection/dmStatus/applic)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //identAndStatusSection/dmStatus/applic)"/>
+        <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::CSDBObject', 'getApplicability', //identAndStatusSection/dmStatus/applic)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

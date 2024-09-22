@@ -12,10 +12,7 @@
       test="$id">
       <fo:block text-align="left" font-size="8pt">
         <xsl:value-of select="$prefix" />
-        <xsl:value-of
-          select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //applic[@id = $id])" />
-        <!-- <xsl:value-of
-          select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //@id[. = $id])" /> -->
+        <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::CSDBObject','getApplicability', //applic[@id = $id])" />
       </fo:block>
     </xsl:if>
   </xsl:template>
@@ -28,7 +25,7 @@
       <fo:inline text-align="left" font-size="8pt">
         <xsl:value-of select="$prefix" />
         <xsl:value-of
-          select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //@id[. = $id])" />
+          select="php:function('Ptdi\Mpub\Transformer\Pdf::CSDBObject','getApplicability', //@id[. = $id])" />
       </fo:inline>
     </xsl:if>
   </xsl:template>
@@ -39,26 +36,15 @@
       select="boolean(1)" />
     <xsl:param name="useDisplayText" select="number(2)" />
     <xsl:param name="applic"/>
-    <!-- <xsl:param name="document"/> -->
     <xsl:variable name="applicRefId"><xsl:value-of select="@applicRefId" /></xsl:variable>
     <xsl:choose>
       <xsl:when test="$applic">
-        <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', $applic, $keepOneByOne, $useDisplayName, $useDisplayText)" />
+        <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::CSDBObject','getApplicability', $applic, $keepOneByOne, $useDisplayName, $useDisplayText)" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //applic[@id = $applicRefId], $keepOneByOne, $useDisplayName, $useDisplayText)" />
+        <xsl:value-of select="php:function('Ptdi\Mpub\Transformer\Pdf::CSDBObject','getApplicability', //applic[@id = $applicRefId], $keepOneByOne, $useDisplayName, $useDisplayText)" />
       </xsl:otherwise>
     </xsl:choose>
-    
-    <!-- <xsl:choose>
-      <xsl:when test="$document">
-        <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', $document//applic[@id = $applicRefId], $keepOneByOne, $useDisplayName, $useDisplayText)" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //applic[@id = $applicRefId], $keepOneByOne, $useDisplayName, $useDisplayText)" />
-      </xsl:otherwise>
-    </xsl:choose> -->
-    <!-- <xsl:value-of select="php:function('Ptdi\Mpub\Main\CSDBObject::getApplicability', //applic[@id = $applicRefId], $keepOneByOne, $useDisplayName, $useDisplayText)" /> -->
   </xsl:template>
 
 </xsl:transform>
