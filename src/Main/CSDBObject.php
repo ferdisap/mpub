@@ -1308,11 +1308,6 @@ class CSDBObject
     return $domXpath->evaluate($xpath);
   }
 
-  public function tes()
-  {
-    return 'tes';
-  }
-
   /**
    * resolving applic element
    * @param DOMElement $doc berupa applic
@@ -1321,44 +1316,12 @@ class CSDBObject
    */
   public function getApplicability(mixed $applic, bool $keppOneByOne = false, bool $useDisplayName = true ,int $useDisplayText = 2) :string
   {
-    if (empty($applic)) return '';
-    if (is_array($applic)) {
-      $applic = $applic[0];
-    }
-    if($useDisplayText){
-      if($applic->firstElementChild->tagName === 'displayText'){
-        $displayText = '';
-        foreach($applic->firstElementChild->childNodes as $simplePara){
-          $displayText .= ', ' . $simplePara->textContent;
-        }
-        return ltrim($displayText, ', ');
-      }
-      if($useDisplayText === 1){
-        return '';
-      }
-    }
-
-    // untuk assert
-    $arrayify = $this->arrayify_applic($applic, $keppOneByOne, $useDisplayName);
-    unset($arrayify['displayText']);
-    $arrayify[array_key_first($arrayify)]['text'] = ltrim($arrayify[array_key_first($arrayify)]['text'], "(");
-    $arrayify[array_key_first($arrayify)]['text'] = rtrim($arrayify[array_key_first($arrayify)]['text'], ")");
-    $text = $arrayify[array_key_first($arrayify)]['text'];
-    // $message = array_filter($arrayify[array_key_first($arrayify)]['children'], fn($c) => $c['%MESSAGE'] ?? false);
-    // output = $message = [
-    //   "%MESSAGE" => "ERROR: 'serialnumber' only contains N001-N004, N006-N010, N012-N015 and does not contains such N011, N016-N020",
-    //   "text" => "",
-    //   "%STATUS" => "fail",
-    //   "%APPLICPROPERTYTYPE" => "prodattr",
-    //   "%APPLICPROPERTYIDENT" => "serialnumber",
-    //   "%APPLICPROPERTYVALUES" => "N001~N004|N006~N020",
-    // ];
-    // output harusnya nanti bisa dibuat/ditambah ke static error CSDB;
-    // dd($text);
-    return $text; // return string "text". eg.: $arrayify = ["evaluate" => ["text" => string, 'andOr' => String, 'children' => array]];
+    $Applicability = new Applicability($this->document->baseURI);
+    return $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * @return array
    */
   private function arrayify_applic(\DOMElement $applic, $keepOneByOne = false, $useDisplayName = true) :array
@@ -1386,6 +1349,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * @return array containing ['text' => String, ...]
    */
   private function resolve_childApplic(\DOMElement $child, $keepOneByOne, $useDisplayName)
@@ -1412,6 +1376,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * saat ini, $PCT doc masih useless
    * kalau test fail, key 'text' akan di isi oleh <assert> text content dan status menjadi 'success'. Sehingga saat di <evaluate> akan true;
    * @param bool $keepOneByOne 
@@ -1649,6 +1614,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * DEPRECIATED. Dipindah ke ./Main/Helper class
    * @return array ['text' => string, 'andOr' => String, 'children' => array contain evaluated child]
    */
