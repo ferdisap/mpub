@@ -6,4 +6,5 @@ interface GeneralValidationInterface
 {
   public function validate();
   public function result();
+  public function isReady();
 }

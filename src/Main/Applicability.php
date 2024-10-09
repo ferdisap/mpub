@@ -8,6 +8,7 @@ class Applicability
   protected \DOMDocument $ACTdoc;
   protected \DOMDocument $CCTdoc;
   protected \DOMDocument $PCTdoc;
+  public CSDBError $error;
 
   public function __construct(string $docUri)
   {
@@ -16,6 +17,7 @@ class Applicability
     $this->PCTdoc = new \DOMDocument();
     $this->document = new \DOMDocument();
     $this->document->load($docUri);
+    $this->error = new CSDBError();
   }
 
   public function get(mixed $applic, bool $keppOneByOne = false, bool $useDisplayName = true, int $useDisplayText = 2): string
@@ -140,7 +142,7 @@ class Applicability
     $crossRefTable = ($applicPropertyType === 'prodattr') ? $this->ACTdoc : $this->CCTdoc;
     if (!$crossRefTable->documentElement) {
       $message = ($applicPropertyType === 'prodattr' ? "ACT " : "CCT") . "document is not available in CSDB,";
-      CSDBError::setError('getApplicability', $message);
+      $this->error->set('getApplicability', [$message]);
       return ['text' => ''];
     }
 

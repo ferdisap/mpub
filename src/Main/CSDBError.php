@@ -1,12 +1,62 @@
 <?php 
 
 namespace Ptdi\Mpub\Main;
+use Countable;
 
-class CSDBError {
+class CSDBError implements Countable{
   
-  public static string $processId = '';
-  protected static array $errors = array();
+  ########### NEW CODE below ###########
+  // new code dibuat agar tidak static
+  protected array $collection = [];
+  public function set(string $id, array $errors)
+  {
+    $this->collection[$id] = $errors;
+  }
+  public function append($id, mixed $value)
+  {
+    if(is_array($this->collection[$id])){
+      $this->collection[$id][] = $value;
+    }
+  }
+  public function get(string $id = '', bool $delete = true)
+  {
+    if ($id && $this->collection[$id]) {
+      $e = $this->collection[$id];
+      if($delete) unset($this->collection[$id]);
+      return $e;
+    }
+    elseif($id && !($this->collection[$id])) return null;
+    elseif(!($id)){
+      $e = $this->collection;
+      array_walk($e, function (&$v) {
+        if (is_array($v)) return $v = array_unique($v);
+        else return $v;
+      });
+      return $e;
+    }
+  }
 
+  #[\ReturnTypeWillChange]
+  public function count() 
+  {
+    return count($this->collection);
+  }
+
+
+  ########### OLD CODE below ###########
+  // semua old code akan di deprecated, kecuali display_xml_error;
+
+  /**
+   * @deprecated
+   */
+  public static string $processId = '';
+  /**
+   * @deprecated
+   */
+  protected static array $errors = array();  
+  /**
+   * @deprecated
+   */
   public static function setError($processId = '', string $message)
   {
     if($processId){
@@ -19,8 +69,8 @@ class CSDBError {
       self::$errors[] = $message;
     }
   }
-
   /**
+   * @deprecated
    * @return array
    */
   public static function getErrors(bool $deleteErrors = true, string $processId = '')
@@ -49,6 +99,9 @@ class CSDBError {
     }
   }
 
+  /**
+   * @return string
+   */
   public static function display_xml_error($error)
   {
     $return = '--- ';

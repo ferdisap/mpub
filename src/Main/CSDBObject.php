@@ -13,7 +13,6 @@ use Serializable;
 class CSDBObject
 // implements Serializable
 {
-
   protected string $version = "5.0";
 
   public bool $preserveWhiteSpace = false;
@@ -22,17 +21,24 @@ class CSDBObject
   protected string $filename = '';
 
   /**
-   * depreciated. Ini bisa diganti dengan mudah oleh doctype setiap document XML
+   * @deprecated. Ini bisa diganti dengan mudah oleh doctype setiap document XML
    */
   protected string $initial = '';
 
   protected string $path = '';
   protected array $breakDownURI = [];
 
+  /**
+   * @deprecated, karnea akan Validation sudah ada class nya sendiri
+   */
   public bool $XSIValidationResult = false; // sepertinya ini deprecated saja karena ga dipakai
+  /**
+   * @deprecated, karnea akan Validation sudah ada class nya sendiri
+   */
   public bool $BREXValidationResult = false; // sepertinya ini deprecated saja karena ga dipakai
 
   /**
+   * @deprecated, karnea akan transformation sudah ada class nya sendiri
    * dipakai di CsdbServiceController untuk transform
    * dipakai di setiap model, khususnya comment untuk createXML
    * nanti diubah mungkin berbeda antara pdf dan html meskupun harusnya SAMA. 
@@ -46,21 +52,37 @@ class CSDBObject
    */
   protected mixed $document = null;
 
+  /**
+   * @deprecated, karnea akan applicability sudah ada class nya sendiri
+   */
   protected \DOMDocument $ACTdoc;
+  /**
+   * @deprecated, karnea akan applicability sudah ada class nya sendiri
+   */
   protected \DOMDocument $CCTdoc;
+  /**
+   * @deprecated, karnea akan applicability sudah ada class nya sendiri
+   */
   protected \DOMDocument $PCTdoc;
 
   /**
+   * @deprecated, karnea akan transformation sudah ada class nya sendiri
    * sejauh ini pmEntryTitle digunakan di header PDF
    */
   protected string $pmEntryTitle = '';
   
   /**
+   * @deprecated, karnea akan transformation sudah ada class nya sendiri
    * what entryType (@pmEntryType) used currently of transformatting
    * digunakan maintPlanning (scheduleXsd) karena table-table nya beda style. Mungkin akan digunakan di schema lainnya nanti
    * value string sebaiknya bukan berupa S1000D standard attribute value, melainkan sudah di interpretasikan, misal pmt01 adalah 'TP' atau 'Title Page'
    */
   protected string $pmEntryType = '';
+
+  /**
+   * CSDBError
+   */
+  public CSDBError $error;
 
   /**
    * @param string $filename include absolute path
@@ -71,6 +93,7 @@ class CSDBObject
     $this->ACTdoc = new DOMDocument();
     $this->CCTdoc = new DOMDocument();
     $this->PCTdoc = new DOMDocument();
+    $this->error = new CSDBError();
   }
 
   public function setConfigXML($filename)
@@ -101,7 +124,7 @@ class CSDBObject
     if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata', 'ddn', 'comment'])){
       return true;
     } else {
-      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 's1000d_doctype', "document must be be S1000D standard type.");
+      $this->error->set('s1000d_doctype', ['document must be be S1000D standard type.']);
       return false;
     }
   }
@@ -992,15 +1015,18 @@ class CSDBObject
       $dom->formatOutput = true;
       @$dom->load($filename, LIBXML_PARSEHUGE);
       $errors = libxml_get_errors();
-      foreach ($errors as $e) {
-        CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'file_exist', CSDBError::display_xml_error($e));
+      if(count($errors)){
+        $this->error->set('file_exist', []);
+        foreach ($errors as $e) {
+          $this->error->append('file_exist', CSDBError::display_xml_error($e));
+        }
       }
       if(!$dom->documentElement) return false;
       $this->document = $dom;
       return true;
     } 
     elseif($mime === 'undefined'){
-      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'load', "Undefined mime content type or file doesn't exist");
+      $this->error->set('load', ["Undefined mime content type or file doesn't exist."]);
       return false;
     }
     else {
@@ -1019,8 +1045,11 @@ class CSDBObject
     $dom->formatOutput = $this->formatOutput;
     @$dom->loadXML($text, LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
-    foreach ($errors as $e) {
-      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'file_exist', CSDBError::display_xml_error($e));
+    if(count($errors)){
+      $this->error->set('file_exist', []);
+      foreach ($errors as $e) {
+        $this->error->append('file_exist', CSDBError::display_xml_error($e));
+      }
     }
     if(!$dom->documentElement) return false;
     $this->document = $dom;
@@ -1093,6 +1122,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated
    * DEPRECIATED. Karena $inital juga depreciated
    * get and set Initial
    * @return string
@@ -1198,7 +1228,7 @@ class CSDBObject
   }
 
   /**
-   * DEPRECIATED
+   * @deprecated
    */
   public function getStatus($child = ''): string
   {
@@ -1317,7 +1347,9 @@ class CSDBObject
   public function getApplicability(mixed $applic, bool $keppOneByOne = false, bool $useDisplayName = true ,int $useDisplayText = 2) :string
   {
     $Applicability = new Applicability($this->document->baseURI);
-    return $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
+    $result = $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
+    if(count($Applicability->error)) $this->error->set('applicability', $Applicability->error->get());
+    return $result;
   }
 
   /**
@@ -1802,6 +1834,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated
    * @return bool
    */
   public function commit() :bool
@@ -1832,6 +1865,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated, transformation sudah ada class nya sendiri
    * helper function untuk crew.xsl
    * ini tidak bisa di pindah karena bukan static method
    * * sepertinya bisa dijadikan static, sehingga fungsinya lebih baik ditaruh di CsdbModel saja
@@ -1842,6 +1876,7 @@ class CSDBObject
   }
 
   /**
+   * @deprecated, transformation sudah ada class nya sendiri
    * helper function untuk crew.xsl
    * ini tidak bisa di pindah karena bukan static method
    * sepertinya bisa dijadikan static, sehingga fungsinya lebih baik ditaruh di CsdbModel saja
@@ -1852,7 +1887,7 @@ class CSDBObject
   }
 
   /**
-   * @deprecated
+   * @deprecated, transformation sudah ada class nya sendiri
    * @param string $xslFile is absolute path of xsl file
    * @param array $params is associative array where is inclusion for XSL processor
    * @param string $output is 'html', 'pdf'
@@ -1933,10 +1968,10 @@ class CSDBObject
   /**
    * Nanti dipikirkan apakah cukup pakai BREX atau BREX nya perlu di transform ke ConfigXML.
    */
-  public function translateS1000DAttributeCodeToValue()
-  {
+  // public function translateS1000DAttributeCodeToValue()
+  // {
     
-  }
+  // }
 
   // public function transform_to_foxml(string $xslFile, array $params = [], string $output = 'html') :string
   // {

@@ -54,8 +54,8 @@
         </displayText> -->
         <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr"
           applicPropertyValues="MALE" /> -->
-        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr"
-          applicPropertyValues="N001~N005" />
+          <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr"
+          applicPropertyValues="N001~N005|N012~N014" />
       </applic>$brexFilenames <brexDmRef>
         <dmRef>
           <dmRefIdent>
