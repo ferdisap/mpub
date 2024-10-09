@@ -82,7 +82,7 @@ class CSDBObject
   /**
    * CSDBError
    */
-  public CSDBError $error;
+  public CSDBError $errors;
 
   /**
    * @param string $filename include absolute path
@@ -93,7 +93,7 @@ class CSDBObject
     $this->ACTdoc = new DOMDocument();
     $this->CCTdoc = new DOMDocument();
     $this->PCTdoc = new DOMDocument();
-    $this->error = new CSDBError();
+    $this->errors = new CSDBError();
   }
 
   public function setConfigXML($filename)
@@ -124,7 +124,7 @@ class CSDBObject
     if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata', 'ddn', 'comment'])){
       return true;
     } else {
-      $this->error->set('s1000d_doctype', ['document must be be S1000D standard type.']);
+      $this->errors->set('s1000d_doctype', ['document must be be S1000D standard type.']);
       return false;
     }
   }
@@ -1016,9 +1016,9 @@ class CSDBObject
       @$dom->load($filename, LIBXML_PARSEHUGE);
       $errors = libxml_get_errors();
       if(count($errors)){
-        $this->error->set('file_exist', []);
+        $this->errors->set('file_exist', []);
         foreach ($errors as $e) {
-          $this->error->append('file_exist', CSDBError::display_xml_error($e));
+          $this->errors->append('file_exist', CSDBError::display_xml_error($e));
         }
       }
       if(!$dom->documentElement) return false;
@@ -1026,7 +1026,7 @@ class CSDBObject
       return true;
     } 
     elseif($mime === 'undefined'){
-      $this->error->set('load', ["Undefined mime content type or file doesn't exist."]);
+      $this->errors->set('load', ["Undefined mime content type or file doesn't exist."]);
       return false;
     }
     else {
@@ -1046,9 +1046,9 @@ class CSDBObject
     @$dom->loadXML($text, LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
     if(count($errors)){
-      $this->error->set('file_exist', []);
+      $this->errors->set('file_exist', []);
       foreach ($errors as $e) {
-        $this->error->append('file_exist', CSDBError::display_xml_error($e));
+        $this->errors->append('file_exist', CSDBError::display_xml_error($e));
       }
     }
     if(!$dom->documentElement) return false;
@@ -1348,7 +1348,7 @@ class CSDBObject
   {
     $Applicability = new Applicability($this->document->baseURI);
     $result = $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
-    if(count($Applicability->error)) $this->error->set('applicability', $Applicability->error->get());
+    if(count($Applicability->error)) $this->errors->set('applicability', $Applicability->error->get());
     return $result;
   }
 

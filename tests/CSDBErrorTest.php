@@ -27,8 +27,8 @@ final class CSDBErrorTest extends TestCase
   public function testGetError() :void
   {
     self::$e->append('foo', 'baz');
-    $error1 = self::$e->get('');
-    $error11 = self::$e->get('foo');
+    $error1 = self::$e->get('',false);
+    $error11 = self::$e->get('foo',false);
 
     CSDBError::$processId = 'foo';
     CSDBError::setError('foo','bar');
@@ -38,10 +38,25 @@ final class CSDBErrorTest extends TestCase
 
     $this->assertEquals($error2, $error1);
     $this->assertEquals($error22, $error11);
+  }
 
-    $str = 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/descript.xsd';
-    // var_dump(substr($str,0,5));
-    // var_dump(substr($str,10,-1));
-    var_dump(substr($str,-4));
+  public function testErrorConcatToTechpubResponse() :void
+  {
+    self::$e->set('abc', ['def','ghi']);
+    $error = ['error' => self::$e->get('',false)];
+    $expected = <<<EOL
+    {
+      "error": {
+        "foo": ["bar", "baz"],
+        "abc": ["def","ghi"]
+      }
+    }
+    EOL;
+    $expectedArray = json_decode($expected,true);
+    // $expectedJson = json_encode($expectedArray);
+    // var_dump($expectedArray);
+    // var_dump($expectedArray['error']['foo']);
+    // var_dump($error); 
+    $this->assertEquals($error, $expectedArray); // OK
   }
 }
