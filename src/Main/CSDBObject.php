@@ -21,7 +21,7 @@ class CSDBObject
   protected string $filename = '';
 
   /**
-   * @deprecated. Ini bisa diganti dengan mudah oleh doctype setiap document XML
+   * biasanya kan di setiap document ada dmRef, pmRef. Nah {dm}Ref dm nya adalah initial
    */
   protected string $initial = '';
 
@@ -1122,17 +1122,16 @@ class CSDBObject
   }
 
   /**
-   * @deprecated
-   * DEPRECIATED. Karena $inital juga depreciated
-   * get and set Initial
+   * biasanya kan di setiap document ada dmRef, pmRef. Nah {dm}Ref dm nya adalah initial
+   * get and set Initial.
    * @return string
    */
   public function getInitial() :string
   {
     if ($this->document instanceof \DOMDocument) {
-      $initial = $this->document->doctype->nodeName;
-      // $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnmetadata' ? 'imf' : $initial);
-      $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnMetadataFile' ? 'imf' : $initial);
+      if($this->document->doctype) $initial = $this->document->doctype->nodeName;
+      else $initial = $this->document->documentElement->nodeName;
+      $initial = $initial === 'dmodule' ? 'dm' : (($initial === 'icnMetadataFile' || $initial === 'icnmetadata' ) ? 'imf' : $initial);
       return $this->initial = $initial;
     }
   }
@@ -1348,7 +1347,7 @@ class CSDBObject
   {
     $Applicability = new Applicability($this->document->baseURI);
     $result = $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
-    if(count($Applicability->error)) $this->errors->set('applicability', $Applicability->error->get());
+    if(count($Applicability->errors)) $this->errors->set('applicability', $Applicability->error->get());
     return $result;
   }
 
