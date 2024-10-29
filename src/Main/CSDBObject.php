@@ -1347,7 +1347,7 @@ class CSDBObject
   {
     $Applicability = new Applicability($this->document->baseURI);
     $result = $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
-    if(count($Applicability->errors)) $this->errors->set('applicability', $Applicability->error->get());
+    if(count($Applicability->errors)) $this->errors->set('applicability', $Applicability->errors->get());
     return $result;
   }
 

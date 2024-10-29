@@ -137,15 +137,13 @@ class CSDBStatic
     if (is_array($ident)) {
       $ident = $ident[0];
     }
-    
-    switch ($ident->nodeName) {
-      case 'dmIdent'||'dmRef'||'dmRefIdent': return self::resolve_dmIdent($ident, $prefix, $format);
-      case 'pmIdent'||'pmRef'||'pmRefIdent': return self::resolve_pmIdent($ident, $prefix, $format);
-      case 'externalPubRefIdent': return self::resolve_externalPubRefIdent($ident, $prefix, $format);
-      case 'dmlIdent'||'dmlRef'||'dmlRefIdent': return self::resolve_dmlIdent($ident, $prefix, $format);
-      case 'ddnIdent'||'ddnRef'||'ddnRefIdent': return self::resolve_ddnIdent($ident, $prefix, $format);
-      case 'commentIdent'||'commentRef'||'commentRefIdent': return self::resolve_ddnIdent($ident, $prefix, $format);
-    }
+    $nodeName = $ident->nodeName;
+    if($nodeName === 'dmIdent'||$nodeName === 'dmRef'|| $nodeName === 'dmRefIdent') return self::resolve_dmIdent($ident, $prefix === 'auto' ? 'DMC-' : '', $format);
+    else if($nodeName === 'pmIdent'||$nodeName === 'pmRef'|| $nodeName === 'pmRefIdent') return self::resolve_pmIdent($ident, $prefix === 'auto' ? 'PMC-' : '', $format);
+    else if($nodeName === 'externalPubRefIdent') return self::resolve_externalPubRefIdent($ident, $prefix);
+    else if($nodeName === 'dmlIdent'||$nodeName === 'dmlRef'|| $nodeName === 'dmlRefIdent') return self::resolve_dmlIdent($ident, $prefix === 'auto' ? 'DML-' : '', $format);
+    else if($nodeName === 'ddnIdent'||$nodeName === 'ddnRef'|| $nodeName === 'ddnRefIdent') return self::resolve_ddnIdent($ident, $prefix === 'auto' ? 'DDN-' : '', $format);
+    else if($nodeName === 'commentIdent'||$nodeName === 'commentRef'|| $nodeName === 'commentRefIdent') return self::resolve_commentIdent($ident, $prefix === 'auto' ? 'COM-' : '', $format);
   }
 
   public static function resolve_title($title = null, $child = null)
@@ -752,6 +750,9 @@ class CSDBStatic
   {
     $prefix = substr($filename, 0, 4);
     switch ($prefix) {
+      case 'DDN-':
+        return self::decode_ddnIdent($filename, $ref);
+        break;
       case 'DMC-':
         return self::decode_dmIdent($filename, $ref);
         break;

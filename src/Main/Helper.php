@@ -386,6 +386,17 @@ class Helper
   /**
    * $casting mustbe assoc array [$old => $new]; Kalau pada dasarnya sudah ada $new, maka tidak akan di merger atau di replace. Setiap yang sudah di casting akan di hapus dari dasar (return array nya)
    * $casting key adalah column dataabse
+   * 
+   * * CONTOH:
+   * $request ?sc=DMC-...
+   * $keywords = Helper::explodeSearchKeyAndValue($request->get('sc'), 'filename');
+   * default key adalah filename
+   * 
+   * CONTOH:
+   * $request ?sc=path::csdb/amm
+   * $keywords = Helper::explodeSearchKeyAndValue($request->get('sc'), 'filename');
+   * default key adalah filename, namun diset menajdi path   * 
+   * 
    * @return Array
    */
   public static function explodeSearchKeyAndValue(mixed $key, string $defaultKey = '', array $casting = []): array
