@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dmodule [
+  <!ENTITY ICN-0001Z-00010-001-01 SYSTEM "ICN-0001Z-00010-001-01.jpg" NDATA jpg>
+  <!ENTITY ICN-0001Z-00002-001-00 SYSTEM "ICN-0001Z-00002-001-00.png" NDATA png>
+  <!ENTITY ICN-0001Z-00007-001-05 SYSTEM "ICN-0001Z-00007-001-05.jpg" NDATA jpg>
+  <!ENTITY IMF-0001Z-00007-001-01_001-01 SYSTEM "IMF-0001Z-00007-001-01_001-01.xml" NDATA xml>
+  <!NOTATION jpg PUBLIC "-//W3C//NOTATION Portable Network Graphics//EN" >
+  <!NOTATION png PUBLIC "-//W3C//NOTATION Portable Network Graphics//EN" >
+  <!NOTATION xml PUBLIC "-//W3C//NOTATION Portable Network Graphics//EN" >
+]>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.s1000d.org/S1000D_5-0/xml_schema_flat/descript.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="16" subSystemCode="0"
+          subSubSystemCode="0" assyCode="01" disassyCode="00" disassyCodeVariant="A" infoCode="018"
+          infoCodeVariant="A" itemLocationCode="A" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2023" month="10" day="31" />
+        <dmTitle>
+          <techName>Preface</techName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany
+        enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator
+        enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0"
+              subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic
+        id="appl-001">
+        <!-- <displayText>
+          <simplePara>MALE</simplePara>
+        </displayText> -->
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr"
+          applicPropertyValues="MALE" /> -->
+        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr"
+          applicPropertyValues="N001~N005|N012~N014" />
+      </applic><brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="S1000D" systemDiffCode="G" systemCode="04" subSystemCode="1"
+              subSubSystemCode="0" assyCode="0301" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="US" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified/>
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>Contents</title>
+        <!-- <para>This document contains the information required to be furnished to end-user to obtain
+          the flight safe and consist of 6 sections. Those sections provide approved information.</para> -->
+        <figure id="fig-0001">
+          <title>Tes figure</title>
+          <!-- <graphic id="fig-0001-gra-0001" infoEntityIdent="ICN-0001Z-00007-001-05"></graphic> -->
+          <!-- <graphic infoEntityIdent="IMF-0001Z-00007-001-01_001-01"></graphic> -->
+          <graphic id="fig-0001-gra-0001" infoEntityIdent="IMF-0001Z-00007-001-01_001-01"></graphic>
+        </figure>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>

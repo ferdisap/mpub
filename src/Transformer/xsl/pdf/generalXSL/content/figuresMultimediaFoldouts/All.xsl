@@ -11,7 +11,7 @@
     <fo:inline>
       <xsl:call-template name="add_applicability"/>
       <xsl:call-template name="add_controlAuthority"/>
-      <fo:external-graphic src="url('{unparsed-entity-uri(@infoEntityIdent)}')" content-width="scale-to-fit" max-width="100%">
+      <fo:external-graphic src="url('file:/{unparsed-entity-uri(@infoEntityIdent)}')" content-width="scale-to-fit" max-width="100%">
         <xsl:call-template name="style-icn"/>
       </fo:external-graphic>
     </fo:inline>
@@ -26,6 +26,7 @@
       <xsl:call-template name="add_security"/>
       <xsl:apply-templates select="graphic"/>
       <xsl:apply-templates select="legend"/>
+      <xsl:apply-templates select="tesgraphic"/>
       <!-- tidak diperlukan lagi karena sudah dilakukan di elemen graphic
       <xsl:apply-templates select="title">
         <xsl:with-param name="prefix">Fig <xsl:number level="any"/><xsl:text>&#160;&#160;</xsl:text></xsl:with-param>
@@ -45,10 +46,8 @@
           <xsl:call-template name="add_security"/>
         </fo:block>
       </xsl:if>
-      <fo:external-graphic src="url('{unparsed-entity-uri(@infoEntityIdent)}')" content-width="scale-to-fit" max-width="100%" max-height="90%">
-        <xsl:call-template name="style-icn"/>
-      </fo:external-graphic>
-      <fo:block text-align="right" font-size="8pt" margin-bottom="6pt"><xsl:value-of select="@infoEntityIdent"/></fo:block>
+      <xsl:call-template name="extGraph"/>
+      <fo:block text-align="right" font-size="8pt" margin-bottom="6pt"><xsl:value-of select="php:function('preg_replace', '/IMF([\-a-zA-Z0-9]+)_.+/','ICN$1',string(@infoEntityIdent))"/></fo:block>
       <xsl:if test="parent::*/title">
         <fo:block margin-top="3pt">
           <xsl:call-template name="captionGraphic"/>
@@ -69,12 +68,26 @@
           <xsl:call-template name="add_security"/>
         </fo:block>
       </xsl:if>
-      <fo:external-graphic src="url('{unparsed-entity-uri(@infoEntityIdent)}')" content-width="scale-to-fit" max-width="100%" max-height="90%">
-        <xsl:call-template name="style-icn"/>
-      </fo:external-graphic>
+      <xsl:call-template name="extGraph"/>
       <fo:block text-align="right" font-size="8pt" margin-bottom="6pt"><xsl:value-of select="@infoEntityIdent"/></fo:block>
       <xsl:call-template name="cgmark_end"/>
     </fo:block>
+  </xsl:template>
+
+  <xsl:template name="extGraph">
+    <xsl:choose>
+      <xsl:when test="substring(@infoEntityIdent,1,3) = 'IMF'">
+        <xsl:variable name="icnUri" select="php:function('Ptdi\Mpub\Transformer\Transformator::resolveIcnUriByImf', string(unparsed-entity-uri(@infoEntityIdent)))"/>
+        <fo:external-graphic src="url('file:/{$icnUri}')" content-width="scale-to-fit" max-width="100%" max-height="90%">
+          <xsl:call-template name="style-icn"/>
+        </fo:external-graphic>
+      </xsl:when>
+      <xsl:otherwise>
+        <fo:external-graphic src="url('file:/{unparsed-entity-uri(@infoEntityIdent)}')" content-width="scale-to-fit" max-width="100%" max-height="90%">
+          <xsl:call-template name="style-icn"/>
+        </fo:external-graphic>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- dipanggil juga di internalRef -->

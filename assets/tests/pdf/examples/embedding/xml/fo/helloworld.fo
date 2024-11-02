@@ -25,6 +25,10 @@
   <fo:page-sequence master-reference="simpleA4">
     <fo:flow flow-name="xsl-region-body">
       <fo:block>Hello World!</fo:block>
+      <fo:block>
+        <fo:external-graphic src="url('file:/D:/application/php-app/mpub/assets/tests/ICN-0001Z-00007-001-05.jpg')"/>
+      </fo:block>
+      <fo:block>url('file:/D:/application/php-app/mpub/assets/tests/ICN-0001Z-00007-001-05.jpg')</fo:block>
     </fo:flow>
   </fo:page-sequence>
 </fo:root>

@@ -7,6 +7,7 @@
   <xsl:output method="xml" />
   
   <xsl:param name="filename"/>
+  <!-- <xsl:param name="base_uri"/> -->
   <xsl:param name="config_uri"/>
   <xsl:param name="configurableValues_uri"/>
   <xsl:param name="csdb_path"/>

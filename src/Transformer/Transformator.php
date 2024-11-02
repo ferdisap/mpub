@@ -28,7 +28,7 @@ class Transformator
   /**
    * @param string $source
    * input file berupa uri main.xsl file
-   * @return bool
+   * @return \XSLTProcessor
    */
   // public function createFo(array $params, array $fn = []): string
   // public function createFo(string $source, array $params = []): bool
@@ -53,6 +53,7 @@ class Transformator
       $xsltproc->setParameter('', $key, $param);
     }
 
+    // $xsltproc->setParameter('', 'base_uri', str_replace("\\","/",realpath(preg_replace("/(\/|\\\\)[a-zA-Z0-9\-\._]+$/",'',$this->input))));
     $xsltproc->setParameter('', 'config_uri', str_replace("\\","/",$this->config));
     $xsltproc->setParameter('', 'configurableValues_uri', str_replace("\\", '/',$this->configurableValues));
     $xsltproc->setParameter('', 'csdb_path', $this->csdb_path ?? './');
@@ -149,4 +150,16 @@ class Transformator
     return $n . $u;
   }
   
+  /**
+   * akan emngambil format sesuai <icnVariation> yang pertama
+   */
+  public static function resolveIcnUriByImf(string $imfUri)
+  {
+    $IMFDoc = new \DOMDocument();
+    $IMFDoc->load($imfUri);
+    $path = preg_replace("/(\/|\\\\)[a-zA-Z0-9\-\._]+$/",'',$imfUri);
+    $icnCode = strtoupper(($IMFDoc->getElementsByTagName('imfCode')[0])->getAttribute('imfIdentIcn'));
+    $icnFileExtension = strtolower(($IMFDoc->getElementsByTagName('icnVariation')[0])->getAttribute('fileExtension'));
+    return realpath($path.DIRECTORY_SEPARATOR.'ICN-'.$icnCode.".".$icnFileExtension);
+  }
 }
