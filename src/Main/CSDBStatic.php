@@ -2,8 +2,6 @@
 
 namespace Ptdi\Mpub\Main;
 
-use function GuzzleHttp\choose_handler;
-
 class CSDBStatic
 {
   /**
@@ -241,13 +239,13 @@ class CSDBStatic
 
   public static function resolve_imfIdent($imfIdent = null, $prefix = 'IMF-', $format = '.xml')
   {
-    if (empty($idents)) return '';
+    if (empty($imfIdent)) return '';
     if (is_array($imfIdent)) {
       $imfIdent = $imfIdent[0];
     }
     $imfCode = $imfIdent->getElementsByTagName('imfCode')[0]->getAttribute('imfIdentIcn');
     $issueInfo = ($if = self::resolve_issueInfo($imfIdent->getElementsByTagName('issueInfo')[0])) ? "_" . $if : '';
-
+    
     return strtoupper($prefix . $imfCode . $issueInfo) . $format;
   }
 
@@ -763,10 +761,78 @@ class CSDBStatic
         return self::decode_pmIdent($filename, $ref);
         break;
       case 'ICN-':
-        return self::decode_infoEntityIdent($filename, $ref);
+        return self::decode_infoEntityIdent($filename);
+        break;
+      case 'IMF-':
+        return self::decode_imfIdent($filename);
         break;
     }
     return array();
+  }
+
+  public static function decode_imfIdent(string $filename, $ref = false) :array
+  {
+    // IMF-0001Z-00011-001-01_000-01.xml
+    $prefix = 'IMF-';
+    if (substr($filename, 0, 4) === 'IMF-') {
+      $imfIdentIcn = substr($filename, 4); // 0001Z-00014-002-01_000-01.xml gak ada lg prefix nya
+    }
+    $imfIdentIcn = str_replace('.xml', '', $imfIdentIcn); // 0001Z-00014-002-01_000-01 gak ada lagi extension atau format atau notasi nya
+    list($imfIdentIcn, $issueInfo) = explode("_",$imfIdentIcn); // $imfIdentIcn = "0001Z-00014-002-01"; $issueInfo = "000-01";
+    list($issueNumber, $inWork) =  explode("-", $issueInfo);
+    $extension = '.xml';
+
+    $code_array = explode('-', $imfIdentIcn);
+    $data = [];
+
+    $data['prefix'] = $prefix;
+    $data['extension'] = $extension;
+    $data['imfCode'] = [
+      'imfIdentIcn' => $imfIdentIcn
+    ];
+    $data['issueInfo'] = [
+      'issueNumber' => $issueNumber,
+      'inWork' => $inWork,
+    ];
+    if (($l = count($code_array)) == 4) {
+      $data['infoEntityIdent'] =  [
+        "cageCode" => $code_array[0],
+        "uniqueIdentifier" => $code_array[1],
+        "issueNumber" => $code_array[2],
+        "securityClassification" => $code_array[3],
+      ];
+    } elseif ($l == 9) {
+      $data['infoEntityIdent'] = [
+        "modelIdentCode" => $code_array[0],
+        "systemDiffCode" => $code_array[1],
+        "snsCode" => $code_array[2],
+        "responsiblePartnerCompanyCode" => $code_array[3],
+        "originatorCompanyCode" => $code_array[4],
+        "uniqueIdentifier" => $code_array[5],
+        'variantCode' => $code_array[6],
+        'issueNumber' => $code_array[7],
+        "securityClassification" => $code_array[8],
+      ];
+    }
+
+    $ref = '';
+    $xml_string = function ($data = []) use ($ref, $imfIdentIcn, $issueNumber, $inWork) {
+      $d = [];
+      array_walk($data['imfCode'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+      array_walk($data['issueInfo'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+      $ident = "<imf{$ref}Ident><imfCode{$ref}Ident imfIdentIcn={$imfIdentIcn}/>";      
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= '<issueInfo issueNumber="'.$issueNumber.'" inWork="'.$inWork.'"/>';
+      }
+      $ident .= "</imf{$ref}Ident>";
+      return $ref ? "<imf{$ref}>$ident</imf{$ref}>" : $ident;
+    };
+    $data['xml_string'] = $xml_string($data);
+    return $data;
   }
 
   /**

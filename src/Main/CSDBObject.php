@@ -1106,7 +1106,7 @@ class CSDBObject
     if ($this->document instanceof \DOMDocument) {
       $initial = $this->getInitial();
       $domXpath = new \DOMXPath($this->document);
-      $ident = $domXpath->evaluate("identAndStatusSection/{$initial}Address/{$initial}Ident");
+      $ident = $domXpath->evaluate("//{$initial}Address/{$initial}Ident");
       if ($ident[0]) {
         // go to function resolve_dmlIdent, resolve_pmIdent, resolve_dmIdent, resolve_imfIdent
         $docIdent = call_user_func(CSDBStatic::class . "::resolve_" . $initial . "Ident", [$ident[0]]); //  argument#0 domElement / array, argument#1 prefix, argument#2 format
