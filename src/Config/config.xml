@@ -10,7 +10,7 @@
       <path product-name="assets">../Transformer/xsl/pdf/assets</path>
     </method>
     <method type="html">
-      <path product-name="*">./index.xsl</path>
+      <path product-name="*">../Transformer/xsl/html/Main.xsl</path>
     </method>
   </output>
   <layout type="pdf" master-name="default-A4L" length-unit="cm" area-unit="pt" width="29.7" height="21" default-font-size="11" cgmark-offset="0.5" start-indent="1.5" orientation="land">

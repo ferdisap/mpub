@@ -1707,7 +1707,7 @@ class CSDBObject
    * </figure> 
    * <internalRef internalRefTargetType="irtt51" internalRefId="fig-001-gra-001-hot-001">tes hotspot</internalRef>
    */
-  public function getEntityIdentFromId(string $id, $return = 'string') :array
+  public function getEntityIdentFromId(string $id, $return = 'string') :array|string
   {
     if(!$this->document) return [];
     $domXpath = new \DOMXPath($this->document);

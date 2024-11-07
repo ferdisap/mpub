@@ -77,24 +77,24 @@ final class PdfTest extends TestCase
   //   }
   // }
 
-  // public function testProdTransformToFo_fromCSDBObjectClass()
-  // {
-  //   $csdbFile = str_replace("\\",'/',__DIR__)."/../assets/tests/{$this->file1}";
-  //   $xslFile = str_replace("\\",'/',__DIR__)."/../src/Transformer/xsl/pdf/CN235/Main.xsl";
-  //   $outputFile = str_replace("\\",'/',__DIR__)."/../assets/tests/fo/{$this->file1}";
+  public function testProdTransformToFo_fromCSDBObjectClass()
+  {
+    $csdbFile = str_replace("\\",'/',__DIR__)."/../assets/tests/{$this->file1}";
+    $xslFile = str_replace("\\",'/',__DIR__)."/../src/Transformer/xsl/pdf/CN235/Main.xsl";
+    $outputFile = str_replace("\\",'/',__DIR__)."/../assets/tests/fo/{$this->file1}";
 
-  //   $CSDBObject = new CSDBObject();
-  //   $CSDBObject->load($csdbFile);
-  //   $create = $CSDBObject->transform_to_fo($xslFile, $outputFile);
+    $CSDBObject = new CSDBObject();
+    $CSDBObject->load($csdbFile);
+    $create = $CSDBObject->transform_to_fo($xslFile, $outputFile);
 
-  //   if($create) {
-  //     self::$fo_file = $outputFile;
-  //     $this->assertTrue(true);
-  //   }
-  //   else {
-  //     $this->assertFalse(true);
-  //   }
-  // }
+    if($create) {
+      self::$fo_file = $outputFile;
+      $this->assertTrue(true);
+    }
+    else {
+      $this->assertFalse(true);
+    }
+  }
 
   // public function testProdCreatePdf()
   // {

@@ -50,7 +50,7 @@ class Pdf extends Transformator
   protected array $bookmarks = [];
 
   /**
-   * @param string $input berupa uri, eg: xsl fo, belum bisa csdb object langsung
+   * @param string $input berupa uri, eg: xsl fo, belum bisa csdb object langsung, atau bisa juga xsl file jika ingin transform csdb file ke xml fo
    * @param string $output berupa uri dengan extension pdf
    */
   public function __construct(public string $input, public string $output)
@@ -158,7 +158,8 @@ class Pdf extends Transformator
   }
 
   /**
-   * tes saja
+   * @param string $source adalah source of csdb xml file
+   * @param array $params
    */
   public function createFo(string $source, array $params = []): bool
   {
