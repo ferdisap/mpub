@@ -1469,7 +1469,7 @@ class CSDBStatic
   private static function decode_doctype(\DOMDocumentType $DOMDoctype, &$v)
   {
     $name = $DOMDoctype->name;
-    $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '[\s\S]+\]\>)([\s\S]+)/m';
+    $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '([\s\S]+\])?\>)([\s\S]+)/m'; // ${1} adalah match (all xmltext), ${2} is doctype, ${3} is doctype data inside '[]', ${4} adalah text xml from root element
     $str = ($DOMDoctype->parentNode->saveXML());
     $doctypeString = preg_replace($re, '${2}', $str);
     $v['DOCTYPE'] = [
