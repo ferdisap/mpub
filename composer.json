@@ -14,7 +14,8 @@
     }
   ],
   "require": {
-    "james-heinrich/getid3": "^1.9"
+    "james-heinrich/getid3": "^1.9",
+    "fileeye/mimemap": "^2.2"
   },
   "require-dev": {
     "symfony/var-dumper": "^6.3",

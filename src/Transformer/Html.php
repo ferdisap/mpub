@@ -42,6 +42,8 @@ class Html extends Transformator
     $sourceDoc->load($source);
     // $xsltproc = parent::makeProcessor(array_merge($params,['base_uri' => realpath($sourceDoc->baseURI)]));
     $xsltproc = parent::makeProcessor($params);
+    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => self::class . "::$name", get_class_methods(self::class)))());
+    $xsltproc->registerPHPFunctions();
     
     if(file_exists($this->output)) unlink($this->output);
     return $xsltproc->transformToUri($sourceDoc, $this->output) && file_exists($this->output);
@@ -54,7 +56,14 @@ class Html extends Transformator
     $sourceDoc = new \DOMDocument();
     $sourceDoc->load($source);
     $xsltproc = parent::makeProcessor($params);
+    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => self::class . "::$name", get_class_methods(self::class)))());
+    $xsltproc->registerPHPFunctions();
     
-    return $xsltproc->transformToXml($sourceDoc);
+    return str_replace(' xmlns:php="http://php.net/xsl"','',$xsltproc->transformToXml($sourceDoc));
+  }
+
+  public function mimeByExt(string $ext){
+    $ext = new \FileEye\MimeMap\Extension($ext);
+    return $ext->getDefaultType();
   }
 }

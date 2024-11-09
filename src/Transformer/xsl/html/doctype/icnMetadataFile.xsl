@@ -37,14 +37,29 @@
 
   <!-- Harus ada @fileExtension -->
   <xsl:template match="icnVariation">
-    <xsl:variable name="icnFilename" select="concat('ICN-',php:function('strtoupper',string(//imfIdent/imfCode/@imfIdentIcn)),'.',@fileExtension)"/>
-
-    <div class="icnVariation">
-      <img src="s1000d:{$icnFilename}" usemap="#{$icnFilename}"/>
-      <xsl:apply-templates select="icnContents">
-        <xsl:with-param name="mapName" select="$icnFilename"/>
-      </xsl:apply-templates>
-    </div>
+    <xsl:variable name="mime" select="php:function('Ptdi\Mpub\Transformer\Html::mimeByExt', string(@fileExtension))"/>
+    <xsl:choose>
+      <xsl:when test="contains($mime, 'image')">
+        <xsl:call-template name="icnImage">
+          <xsl:with-param name="mime" select="$mime"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($mime, 'video')">
+        <xsl:call-template name="icnVideo">
+          <xsl:with-param name="mime" select="$mime"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($mime, 'audio')">
+        <xsl:call-template name="icnAudio">
+          <xsl:with-param name="mime" select="$mime"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="contains($mime, 'model')">
+        <xsl:call-template name="icnModel">
+          <xsl:with-param name="mime" select="$mime"/>
+        </xsl:call-template>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="icnContents">
@@ -59,10 +74,25 @@
   </xsl:template>
 
   <xsl:template match="icnObject">
-    <area id="{@icnObjectIdent}" coords="{@objectCoordinates}" alt="{@icnObjectName}"/>
+    <area id="{@icnObjectIdent}" coords="{@objectCoordinates}" shape="{@icnObjectType}" alt="{@icnObjectName}"/>
     <xsl:if test="boolean(parent::icnObject)">
       <xsl:apply-templates select="parent::icnObject"/>
     </xsl:if>
   </xsl:template>
+
+  <xsl:template name="icnImage">    
+    <xsl:param name="mime"/>
+    <xsl:variable name="icnFilename" select="concat('ICN-',php:function('strtoupper',string(//imfIdent/imfCode/@imfIdentIcn)),'.',@fileExtension)"/>      
+    <div class="icnVariation" mime="{$mime}">
+      <img src="s1000d:{$icnFilename}" usemap="#{$icnFilename}"/>
+      <xsl:apply-templates select="icnContents">
+        <xsl:with-param name="mapName" select="$icnFilename"/>
+      </xsl:apply-templates>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="icnVideo"></xsl:template>    
+  <xsl:template name="icnAudio"></xsl:template>    
+  <xsl:template name="icnModel"></xsl:template>    
   
 </xsl:transform>
