@@ -50,7 +50,7 @@ class CSDBObject
   /**
    *  bisa berupa getID3 array or \DOMDocument
    */
-  protected mixed $document = null;
+  protected \DOMDocument|ICNDocument|null $document = null;
 
   /**
    * @deprecated, karnea akan applicability sudah ada class nya sendiri
