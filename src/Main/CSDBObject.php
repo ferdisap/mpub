@@ -1006,8 +1006,9 @@ class CSDBObject
     // $doc->formatOutput = true;
 
     libxml_use_internal_errors(true);
-    $mime = file_exists($filename) ? mime_content_type($filename) : 'undefined';
-    if (str_contains($mime, 'text')) {
+    // $mime = file_exists($filename) ? mime_content_type($filename) : 'undefined';
+    $mime = file_exists($filename) ? \GuzzleHttp\Psr7\MimeType::fromFilename($filename) : 'undefined';
+    if (str_contains($mime, 'text') || str_contains($mime, 'xml')) {
       $dom = new \DOMDocument('1.0');
       // $dom->preserveWhiteSpace = $this->preserveWhiteSpace;
       $dom->preserveWhiteSpace = false;
