@@ -17,7 +17,8 @@ class Xsi implements GeneralValidationInterface
     if($document->documentElement){
       $this->schema = $this->document->documentElement->getAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'noNamespaceSchemaLocation');
       if(
-        str_contains($this->schema, 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/') 
+        // str_contains($this->schema, 'http://www.s1000d.org/S1000D_5-0/xml_schema_flat/') 
+        str_contains($this->schema, 'http://www.s1000d.org') 
         && substr($this->schema,-4) === '.xsd'
       ) $this->isReady = true;
     }
