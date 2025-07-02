@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE icnMetadataFile>
+<icnMetadataFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../src/Schema/icnmetadata.xsd">
+  <imfIdentAndStatusSection>
+    <imfAddress>
+      <imfIdent>
+        <imfCode imfIdentIcn="0001z-00012-001-01" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </imfIdent>
+      <imfAddressItems>
+        <icnTitle>GCS</icnTitle>
+        <legacyIdentGroup>
+          <legacyIdent legacyOrigin="ILLDB">Ill-2014-08-04_12345</legacyIdent>
+        </legacyIdentGroup>
+        <icnKeywordGroup>
+          <icnKeyword>Hawk</icnKeyword>
+          <icnKeyword>Cockpit</icnKeyword>
+        </icnKeywordGroup>
+      </imfAddressItems>
+    </imfAddress>
+    <imfStatus>
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0"
+              subSubSystemCode="0" assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D" />
+            <issueInfo issueNumber="000" inWork="01" />
+            <language languageIsoCode="en" countryIsoCode="EN" />
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified />
+        <unverified />
+        <unverified />
+      </qualityAssurance>
+    </imfStatus>
+  </imfIdentAndStatusSection>
+  <imfContent>
+    <icnVariation fileExtension="jpg">
+      <icnInfoItemGroup>
+        <icnInfoItem icnInfoItemType="iiit51">
+          <simplePara>image/jpeg</simplePara>
+        </icnInfoItem>
+        <icnInfoItem icnInfoItemType="iiit52">
+          <simplePara>500</simplePara>
+        </icnInfoItem>
+        <icnInfoItem icnInfoItemType="iiit54">
+          <simplePara>Tes Judul</simplePara>
+        </icnInfoItem>
+      </icnInfoItemGroup>
+      <icnContents>
+        <icnObjectGroup>
+          <!-- <icnObject icnObjectIdent="hot-001" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
+            <internalRef>aaa</internalRef>
+            <internalRef>bbb</internalRef>
+          </icnObject> -->
+          <icnObject icnObjectIdent="hot-001" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
+            <icnObject icnObjectIdent="hot-002" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
+
+            </icnObject>
+          </icnObject>
+        </icnObjectGroup>
+      </icnContents>
+    </icnVariation>
+  </imfContent>
+</icnMetadataFile>

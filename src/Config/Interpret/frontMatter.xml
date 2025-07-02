@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="frontMatterType" value="fm01">
+    <interpretation use="abbreviation">leop</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm02">
+    <interpretation use="abbreviation">leodm</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm03">
+    <interpretation use="abbreviation">highlights</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm04">
+    <interpretation use="abbreviation">highlights and updating instruction</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm05">
+    <interpretation use="abbreviation">publication list data modules</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm06">
+    <interpretation use="abbreviation">loi</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm07">
+    <interpretation use="abbreviation">loa</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm08">
+    <interpretation use="abbreviation">lot</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm09">
+    <interpretation use="abbreviation">los</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm10">
+    <interpretation use="abbreviation">tsr</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm11">
+    <interpretation use="abbreviation">lom</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm12">
+    <interpretation use="abbreviation">loasd</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm13">
+    <interpretation use="abbreviation">low</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm14">
+    <interpretation use="abbreviation">loc</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm15">
+    <interpretation use="abbreviation">lose</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm16">
+    <interpretation use="abbreviation">losu</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm17">
+    <interpretation use="abbreviation">losp</interpretation>
+  </attr>
+  <attr name="frontMatterType" value="fm18">
+    <interpretation use="abbreviation">lov</interpretation>
+  </attr>
+</root>

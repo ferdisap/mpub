@@ -2,32 +2,45 @@
 
 namespace Ptdi\Mpub\Main;
 
-use function GuzzleHttp\choose_handler;
-
 class CSDBStatic
 {
   /**
+   * @deprecated
+   * diganti/dipindahkan ke class Transformer/Pdf
+   * 
    * what masterName (@pmType) used currently of transformatting
    * mungkin nanti dipindahkan ke class CSDBObject saja
    */
   protected static string $PDF_MasterName = '';
 
+  /**
+   * @deprecated
+   * diganti/dipindahkan ke class Transformer/Pdf
+   */
   public static function get_PDF_MasterName()
   {
     return self::$PDF_MasterName;
   }
 
+  /**
+   * @deprecated
+   * diganti/dipindahkan ke class Transformer/Pdf
+   */
   public static function set_PDF_MasterName(string $text)
   {
     self::$PDF_MasterName = $text;
   }
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * digunakan agar tidak ada multiple masterName di xsl fo layout
    */
   protected static array $masterName = [];
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * digunakan sekalian untuk check apakah masterName sudah di tambahkan ke layout atau belum
    */
   public static function add_masterName(string $name)
@@ -42,6 +55,8 @@ class CSDBStatic
 
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * [
    *  'id-000' => [ 
    *    'text' => 'lorem ipsum',
@@ -55,6 +70,10 @@ class CSDBStatic
    */
   protected static array $bookmarks = [];
 
+  /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
+   */
   public static function fillBookmark(string $destination, string $text, string $parent = '')
   {
     self::$bookmarks[$destination] = [
@@ -64,6 +83,7 @@ class CSDBStatic
   }
 
   /**
+   * @deprecated dipindah ke Transformer\Pdf
    * @return \DOMDocument
    */
   public static function transformBookmark_to_xml()
@@ -74,19 +94,12 @@ class CSDBStatic
     $bookmarkTree_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-tree');
     $dom->appendChild($bookmarkTree_el);
 
-    $randomNS = hash('md2', rand(0, 10000));
-    $randomNS = "aaa" . substr($randomNS, 0, 10);
-    // $randomNS = 'randomNS123';
-    // $randomNS = 'c8ed21db4f';
-    // dd('aaa', $randomNS);
-
     while (!empty(self::$bookmarks)) {
       $keyfirst = array_key_first(self::$bookmarks);
 
       $parent = self::$bookmarks[$keyfirst]['parent'];
 
       $bookmark_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark');
-      $bookmark_el->setAttributeNS("$randomNS", "$randomNS:id", $keyfirst);
       $bookmarkTitle_el = $dom->createElementNS('http://www.w3.org/1999/XSL/Format', 'bookmark-title');
       $bookmark_el->setAttribute('internal-destination', $keyfirst);
       $bookmarkTitle_el->textContent = self::$bookmarks[$keyfirst]['text'];
@@ -97,8 +110,7 @@ class CSDBStatic
       if ($parent) {
         $domxpath = new \DOMXpath($dom);
         $domxpath->registerNamespace('fo', 'http://www.w3.org/1999/XSL/Format');
-        $domxpath->registerNamespace("randomNS", "randomNS");
-        $xpath_string = "//fo:bookmark[@$randomNS:id = '$parent']";
+        $xpath_string = "//fo:bookmark[@id = '$parent']";
         $e = $domxpath->query($xpath_string)[0];
         if ($e) {
           $e->appendChild($bookmark_el);
@@ -117,50 +129,19 @@ class CSDBStatic
     return DIRECTORY_SEPARATOR;
   }
 
-  // public static function resolve_ident($ident = null, $prefix = 'DMC-', $format = '.xml')
   public static function resolve_ident($ident = null, $prefix = '', $format = '.xml')
   {
     if (!$ident) return '';
     if (is_array($ident)) {
       $ident = $ident[0];
     }
-    
-    // dd($ident->nodeName);
-    switch ($ident->nodeName) {
-      case 'dmIdent'||'dmRef'||'dmRefIdent':
-        return self::resolve_dmIdent($ident, $prefix, $format);
-        break;
-      case 'pmIdent':
-        return self::resolve_pmIdent($ident, $prefix, $format);
-        break;
-      case 'pmRefIdent':
-        return self::resolve_pmIdent($ident, $prefix, $format);
-        break;
-      case 'externalPubRefIdent':
-        return self::resolve_externalPubRefIdent($ident, $prefix, $format);
-        break;
-      case 'dmlIdent':
-        return self::resolve_dmlIdent($ident, $prefix, $format);
-        break;
-      case 'dmlRefIdent':
-        return self::resolve_dmlIdent($ident, $prefix, $format);
-        break;
-      case 'ddnIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
-        break;
-      case 'ddnRefIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
-        break;
-      case 'commentIdent':
-        return self::resolve_ddnIdent($ident, $prefix, $format);
-        break;
-      case 'commentRefIdent':
-        return self::resolve_commentIdent($ident, $prefix, $format);
-        break;
-      default:
-        # code...
-        break;
-    }
+    $nodeName = $ident->nodeName;
+    if($nodeName === 'dmIdent'||$nodeName === 'dmRef'|| $nodeName === 'dmRefIdent') return self::resolve_dmIdent($ident, $prefix === 'auto' ? 'DMC-' : '', $format);
+    else if($nodeName === 'pmIdent'||$nodeName === 'pmRef'|| $nodeName === 'pmRefIdent') return self::resolve_pmIdent($ident, $prefix === 'auto' ? 'PMC-' : '', $format);
+    else if($nodeName === 'externalPubRefIdent') return self::resolve_externalPubRefIdent($ident, $prefix);
+    else if($nodeName === 'dmlIdent'||$nodeName === 'dmlRef'|| $nodeName === 'dmlRefIdent') return self::resolve_dmlIdent($ident, $prefix === 'auto' ? 'DML-' : '', $format);
+    else if($nodeName === 'ddnIdent'||$nodeName === 'ddnRef'|| $nodeName === 'ddnRefIdent') return self::resolve_ddnIdent($ident, $prefix === 'auto' ? 'DDN-' : '', $format);
+    else if($nodeName === 'commentIdent'||$nodeName === 'commentRef'|| $nodeName === 'commentRefIdent') return self::resolve_commentIdent($ident, $prefix === 'auto' ? 'COM-' : '', $format);
   }
 
   public static function resolve_title($title = null, $child = null)
@@ -258,13 +239,13 @@ class CSDBStatic
 
   public static function resolve_imfIdent($imfIdent = null, $prefix = 'IMF-', $format = '.xml')
   {
-    if (empty($idents)) return '';
+    if (empty($imfIdent)) return '';
     if (is_array($imfIdent)) {
       $imfIdent = $imfIdent[0];
     }
     $imfCode = $imfIdent->getElementsByTagName('imfCode')[0]->getAttribute('imfIdentIcn');
     $issueInfo = ($if = self::resolve_issueInfo($imfIdent->getElementsByTagName('issueInfo')[0])) ? "_" . $if : '';
-
+    
     return strtoupper($prefix . $imfCode . $issueInfo) . $format;
   }
 
@@ -691,7 +672,7 @@ class CSDBStatic
   }
 
   /**
-   * depreciated. diganti checkLevelByPrefix
+   * @deprecated diganti checkLevelByPrefix
    * minimum value of level is 0 (zero)
    * @return int
    */
@@ -710,12 +691,16 @@ class CSDBStatic
     return ($level < 0) ? (int) $minimum : (int) $level;
   }
 
+  /**
+   * @deprecated dipindah ke Transformator class
+   */
   public static function checkLevelByPrefix(string $prefix = '')
   {
     return count(explode('.', $prefix));
   }
 
   /**
+   * @deprecated dipindah ke Transformator class
    * checking index by sibling
    * @return int
    */
@@ -736,6 +721,7 @@ class CSDBStatic
   }
 
   /**
+   * @deprecated dipindah ke Transformator class
    * @return int
    */
   public static function getPrefixNum(\DOMElement $element, $minimum = 0): string
@@ -762,6 +748,9 @@ class CSDBStatic
   {
     $prefix = substr($filename, 0, 4);
     switch ($prefix) {
+      case 'DDN-':
+        return self::decode_ddnIdent($filename, $ref);
+        break;
       case 'DMC-':
         return self::decode_dmIdent($filename, $ref);
         break;
@@ -772,10 +761,78 @@ class CSDBStatic
         return self::decode_pmIdent($filename, $ref);
         break;
       case 'ICN-':
-        return self::decode_infoEntityIdent($filename, $ref);
+        return self::decode_infoEntityIdent($filename);
+        break;
+      case 'IMF-':
+        return self::decode_imfIdent($filename);
         break;
     }
     return array();
+  }
+
+  public static function decode_imfIdent(string $filename, $ref = false) :array
+  {
+    // IMF-0001Z-00011-001-01_000-01.xml
+    $prefix = 'IMF-';
+    if (substr($filename, 0, 4) === 'IMF-') {
+      $imfIdentIcn = substr($filename, 4); // 0001Z-00014-002-01_000-01.xml gak ada lg prefix nya
+    }
+    $imfIdentIcn = str_replace('.xml', '', $imfIdentIcn); // 0001Z-00014-002-01_000-01 gak ada lagi extension atau format atau notasi nya
+    list($imfIdentIcn, $issueInfo) = explode("_",$imfIdentIcn); // $imfIdentIcn = "0001Z-00014-002-01"; $issueInfo = "000-01";
+    list($issueNumber, $inWork) =  explode("-", $issueInfo);
+    $extension = '.xml';
+
+    $code_array = explode('-', $imfIdentIcn);
+    $data = [];
+
+    $data['prefix'] = $prefix;
+    $data['extension'] = $extension;
+    $data['imfCode'] = [
+      'imfIdentIcn' => $imfIdentIcn
+    ];
+    $data['issueInfo'] = [
+      'issueNumber' => $issueNumber,
+      'inWork' => $inWork,
+    ];
+    if (($l = count($code_array)) == 4) {
+      $data['infoEntityIdent'] =  [
+        "cageCode" => $code_array[0],
+        "uniqueIdentifier" => $code_array[1],
+        "issueNumber" => $code_array[2],
+        "securityClassification" => $code_array[3],
+      ];
+    } elseif ($l == 9) {
+      $data['infoEntityIdent'] = [
+        "modelIdentCode" => $code_array[0],
+        "systemDiffCode" => $code_array[1],
+        "snsCode" => $code_array[2],
+        "responsiblePartnerCompanyCode" => $code_array[3],
+        "originatorCompanyCode" => $code_array[4],
+        "uniqueIdentifier" => $code_array[5],
+        'variantCode' => $code_array[6],
+        'issueNumber' => $code_array[7],
+        "securityClassification" => $code_array[8],
+      ];
+    }
+
+    $ref = '';
+    $xml_string = function ($data = []) use ($ref, $imfIdentIcn, $issueNumber, $inWork) {
+      $d = [];
+      array_walk($data['imfCode'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+      array_walk($data['issueInfo'], function ($v, $name) use (&$d) {
+        $d[$name] = ($v != '') ? ("{$name}=" . '"' . "$v" . '"') : '';
+      });
+      $ident = "<imf{$ref}Ident><imfCode{$ref}Ident imfIdentIcn={$imfIdentIcn}/>";      
+      if($d['issueNumber'] && $d['inWork']){
+        $ident .= '<issueInfo issueNumber="'.$issueNumber.'" inWork="'.$inWork.'"/>';
+      }
+      $ident .= "</imf{$ref}Ident>";
+      return $ref ? "<imf{$ref}>$ident</imf{$ref}>" : $ident;
+    };
+    $data['xml_string'] = $xml_string($data);
+    return $data;
   }
 
   /**
@@ -1236,6 +1293,9 @@ class CSDBStatic
     return $filename;
   }
 
+  /**
+   * @deprecated dipindah ke Transformator class
+   */
   public static function interpretDimension(string $unit): string
   {
     // <xsl:variable name="units" select="php:function('preg_replace', '/[0-9\.]+/' ,'', string(ancestor::tgroup/colspec[1]/@colwidth))"/>
@@ -1254,9 +1314,14 @@ class CSDBStatic
 
 
   /**
+   * @deprecated, tidak dipakai lagi karena sudah pakai FOP
    * khusus footnote yang marking nya number, bukan asterisk atay alpha
    */
   public static $footnotePositionStore = [];
+
+  /**
+   * @deprecated, tidak dipakai lagi karena sudah pakai FOP
+   */
   public static function next_footnotePosition(string $filename, bool $set = false): int
   {
     $totalIndex = count(self::$footnotePositionStore[$filename]);
@@ -1268,6 +1333,10 @@ class CSDBStatic
     if ($set) self::$footnotePositionStore[$filename][] = $no;
     return $no;
   }
+
+  /**
+   * @deprecated, tidak dipakai lagi karena sudah pakai FOP
+   */
   public static function add_footnotePosition(string $filename, int $no): void
   {
     self::$footnotePositionStore[$filename][] = $no;
@@ -1322,10 +1391,6 @@ class CSDBStatic
     return $ret;
   }
 
-  public static function tes($v){
-    (self::decode_element($v[0],$a));
-    return (json_encode($a));
-  }
   public static function simple_xml_to_json(\DOMDocument $DOMDocument){
     $arr = [];
     $childNodes = $DOMDocument->childNodes;
@@ -1404,7 +1469,7 @@ class CSDBStatic
   private static function decode_doctype(\DOMDocumentType $DOMDoctype, &$v)
   {
     $name = $DOMDoctype->name;
-    $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '[\s\S]+\]\>)([\s\S]+)/m';
+    $re = '/(<\?xml[\s\S]+\?>)[\s\S](<!DOCTYPE\s' . $name . '([\s\S]+\])?\>)([\s\S]+)/m'; // ${1} adalah match (all xmltext), ${2} is doctype, ${3} is doctype data inside '[]', ${4} adalah text xml from root element
     $str = ($DOMDoctype->parentNode->saveXML());
     $doctypeString = preg_replace($re, '${2}', $str);
     $v['DOCTYPE'] = [

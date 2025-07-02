@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="pmType" value="pt01">
+    <interpretation use="abbreviation">cmm</interpretation>
+  </attr>
+  <attr name="pmType" value="pt02">
+    <interpretation use="abbreviation">ipd</interpretation>
+  </attr>
+  <attr name="pmType" value="pt03">
+    <interpretation use="abbreviation">sb</interpretation>
+  </attr>
+  <attr name="pmType" value="pt51">
+    <interpretation use="abbreviation">poh</interpretation>
+  </attr>
+  <attr name="pmType" value="pt52">
+    <interpretation use="abbreviation">maintPlanning</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt01">
+    <interpretation use="abbreviation">TP</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt02">
+    <interpretation use="abbreviation">CONF</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt03">
+    <interpretation use="abbreviation">COPY</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt04">
+    <interpretation use="abbreviation">ADMIN</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt05">
+    <interpretation use="abbreviation">SAFE</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt06">
+    <interpretation use="abbreviation">LOEDM</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt07">
+    <interpretation use="abbreviation">CR</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt08">
+    <interpretation use="abbreviation">HIGH</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt09">
+    <interpretation use="abbreviation">LOA</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt10">
+    <interpretation use="abbreviation">LOT</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt11">
+    <interpretation use="abbreviation">LOS</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt12">
+    <interpretation use="abbreviation">TSR</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt13">
+    <interpretation use="abbreviation">TOC</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt14">
+    <interpretation use="abbreviation">LOI</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt15">
+    <interpretation use="abbreviation">LOTBL</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt16">
+    <interpretation use="abbreviation">LOASD</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt17">
+    <interpretation use="abbreviation">LOSUP</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt18">
+    <interpretation use="abbreviation">LOSE</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt19">
+    <interpretation use="abbreviation">LOSU</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt20">
+    <interpretation use="abbreviation">LOSP</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt21">
+    <interpretation use="abbreviation">INTRO</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt22">
+    <interpretation use="abbreviation">FUNC</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt23">
+    <interpretation use="abbreviation">DESC</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt24">
+    <interpretation use="abbreviation">SCHEM</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt25">
+    <interpretation use="abbreviation">MAINT</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt26">
+    <interpretation use="abbreviation">RI</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt27">
+    <interpretation use="abbreviation">TS</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt28">
+    <interpretation use="abbreviation">SERVC</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt29">
+    <interpretation use="abbreviation">TEST</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt30">
+    <interpretation use="abbreviation">DIS</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt31">
+    <interpretation use="abbreviation">REP</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt32">
+    <interpretation use="abbreviation">ASSY</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt33">
+    <interpretation use="abbreviation">STORE</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt34">
+    <interpretation use="abbreviation">IPD</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt51">
+    <interpretation use="abbreviation">Structure Inspection Program</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt52">
+    <interpretation use="abbreviation">System And Powerplant Inspection Program</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt53">
+    <interpretation use="abbreviation">Zonal Inspection Program</interpretation>
+  </attr>
+  <attr name="pmEntryType" value="pmt54">
+    <interpretation use="abbreviation">Time Limit Program</interpretation>
+  </attr>
+  <!-- seperti AMM CHP5 CN235 chapter 05-20-20 -->
+  <!-- seperti AMM CHP5 CN235 chapter 05-20-10 -->
+  <!-- seperti AMM CHP5 CN235 chapter 05-20-30 -->
+  <!-- seperti AMM CHP5 CN235 chapter 05-10-10 -->
+</root>

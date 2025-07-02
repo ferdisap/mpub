@@ -13,6 +13,9 @@ namespace Ptdi\Mpub\Fop;
  * ini akan lama karena pdf yang sudah dibuat akan diwrite ke disk oleh java, kemudian diread (load) kembali oleh ram
  */
 
+ /**
+  * @deprecated
+  */
 class Fop
 {
   public static bool $autodelete = true;
@@ -25,15 +28,19 @@ class Fop
   public static function FO_to_PDF(string $inputName, string $outputName = '')
   {
     if($outputName === ''){
-      $outputName = __DIR__. DIRECTORY_SEPARATOR. 'generated'. DIRECTORY_SEPARATOR. rand(100,999) . 'pdf';
+      $outputName = __DIR__. DIRECTORY_SEPARATOR. 'generated'. DIRECTORY_SEPARATOR. rand(100,999) . '.pdf';
       self::$autodelete = true;
     }
     // tidak perlu lagi casting windows path to unix path
     $inputName = self::getRelativePath(__DIR__, $inputName);
     $outputName = self::getRelativePath(__DIR__, $outputName);
-
+    
+    // $inputName = "examples/embedding/xml/fo/helloworld.fo";
+    $is_OS_Windows = PHP_OS === 'WINNT' || PHP_OS === 'Windows' || PHP_OS === 'WIN32';
+    $command = ($is_OS_Windows ? "fop" : './fop') . " -c conf/fop.xconf -fo $inputName -pdf $outputName";
     chdir(__DIR__);
-    shell_exec("fop -c conf/fop.xconf -fo $inputName -pdf $outputName");
+    shell_exec($command);
+    
     
     try {
       $output = file_get_contents($outputName);

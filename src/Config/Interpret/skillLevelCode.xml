@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="skillLevelCode" value="sk01">
+    <interpretation use="extension">Basic</interpretation>
+  </attr>
+  <attr name="skillLevelCode" value="sk02">
+    <interpretation use="extension">Intermediate</interpretation>
+  </attr>
+  <attr name="skillLevelCode" value="sk03">
+    <interpretation use="extension">Advanced</interpretation>
+  </attr>
+</root>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="crewStepCondition" value="csc01">
+    <interpretation use="extension">Equipment is installed or available</interpretation>
+  </attr>
+  <attr name="crewStepCondition" value="csc02">
+    <interpretation use="extension">A detailed procedure for the step is located in the performance section of the condensed checklists</interpretation>
+  </attr>
+  <attr name="crewStepCondition" value="csc03">
+    <interpretation use="extension">Performance of the step is mandatory for all through-flights used for combat/tactical operations</interpretation>
+  </attr>
+  <attr name="crewStepCondition" value="csc04">
+    <interpretation use="extension">A step that is mandatory for night flights</interpretation>
+  </attr>
+  <attr name="crewStepCondition" value="csc05">
+    <interpretation use="extension">A task or step required by the operator's manual</interpretation>
+  </attr>
+</root>

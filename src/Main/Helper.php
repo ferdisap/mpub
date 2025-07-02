@@ -130,7 +130,9 @@ class Helper
 
     // create space
     $keys = array_keys($keywords);
-    $createSpace = function ($k, $space = '', $cb) use ($keywords, $keys) {
+    // deprecated jika $space value sudah di deklarasikan di fungsi
+    // $createSpace = function ($k, $space = '', $cb) use ($keywords, $keys) {
+    $createSpace = function ($k, $space, $cb) use ($keywords, $keys) {
       // create space
       $queryArr = $keywords[$keys[$k]];
       $l = count($queryArr);
@@ -275,7 +277,7 @@ class Helper
    * $xml = $xml->whereRaw($query[0], $query[1]);
    * $xml->get();
    */
-  public static function generateWhereRawRawQueryExtractValueXML(array $searchKey = [], string $table, string $storage)
+  public static function generateWhereRawRawQueryExtractValueXML(array $searchKey, string $table, string $storage)
   {
     // contoh output tidak di binded
     // $query = "SELECT `filename` FROM `{$table}` AS `object` WHERE `object`.`storage` = '{$storage}' AND ExtractValue(@xml := (SELECT `{$table}`.`xml` FROM `$table` WHERE `{$table}`.`filename` = `object`.`filename`), '{$xpath}') <> ''";
@@ -384,6 +386,17 @@ class Helper
   /**
    * $casting mustbe assoc array [$old => $new]; Kalau pada dasarnya sudah ada $new, maka tidak akan di merger atau di replace. Setiap yang sudah di casting akan di hapus dari dasar (return array nya)
    * $casting key adalah column dataabse
+   * 
+   * * CONTOH:
+   * $request ?sc=DMC-...
+   * $keywords = Helper::explodeSearchKeyAndValue($request->get('sc'), 'filename');
+   * default key adalah filename
+   * 
+   * CONTOH:
+   * $request ?sc=path::csdb/amm
+   * $keywords = Helper::explodeSearchKeyAndValue($request->get('sc'), 'filename');
+   * default key adalah filename, namun diset menajdi path   * 
+   * 
    * @return Array
    */
   public static function explodeSearchKeyAndValue(mixed $key, string $defaultKey = '', array $casting = []): array
@@ -398,7 +411,7 @@ class Helper
       unset($m[$i]);
     }
 
-    
+
     // casting
     $ret = (!empty($m) ? $m : ($key ? [$key] : []));
     if (!empty($casting)) {
@@ -410,8 +423,8 @@ class Helper
       // yang tidak ada key nya akan digabung ke key sebelumnya
       $keys = array_keys($ret);
       foreach ($keys as $i => $key) {
-        if(!$key && $ret[$keys[$i-1]]){
-          $ret[$keys[$i-1]] = array_merge($ret[$keys[$i-1]],$ret[$key]);
+        if (!$key && $ret[$keys[$i - 1]]) {
+          $ret[$keys[$i - 1]] = array_merge($ret[$keys[$i - 1]], $ret[$key]);
           unset($ret[$key]);
         }
       }
@@ -769,7 +782,6 @@ class Helper
   }
 
   /**
-   * DEPRECIATED. Dipindah ke ./Main/Helper class
    * untuk mendapatkan child element
    * @param \DOMElement $element
    * @param array $exclude
@@ -840,5 +852,106 @@ class Helper
   {
     json_decode($string);
     return json_last_error() === JSON_ERROR_NONE;
+  }
+
+  /**
+   * diambil dari @test_assert di CSDBObject.php
+   * breakApplicPropertyValues()
+   * $applicPropertyValues = "N071|N001N005`N010|N015throughN020|N020|N030~N035|N001~N005~N010";
+   * $regex[0] untuk match ->N030~N035<- ->N001~N005~N010<-
+   * $regex[1] untuk match ->N071<- ->N015throughN020<- ->N020<-
+   * semua value yang akan di cek terhadap @valuePattern (jika @valueDataType is string) ada dalam match-group ke 1(index ke 1) atau 2 atau 3
+   * jika range (tilde) maka $start = group 1; $end = group 2
+   * jika singe value maka group 3
+   */
+  public static function range(string $applicPropertyValues, string $pattern = '', string $valueDataType = '')
+  {
+    $values_generated = array();
+    $regex = ["([A-Za-z0-9\-\/]+)~([A-Za-z0-9\-\/]+)(?:[~`!@#$%^&*()\-_+={}\[\]\\;:'" . '",<.>\/? A-Za-z0-9]+)*', "|", "(?<![`~!@#$%^&*()-_=+{}\[\]\\;;'" . '",<.>\/? ])([A-Za-z0-9\-\/]+)(?![`~!@#$%^&*()-_=+{}\[\]\\;;' . "',<.>\/? ])"]; // https://regex101.com/r/vKhlJB/3 account ferdisaptoko@gmail.com
+    $regex = "/" . implode($regex) . "/";
+    preg_match_all($regex, $applicPropertyValues, $matches, PREG_SET_ORDER, 0); // matches1 = "N003~N005", matches2 = "N010~N015"
+    foreach ($matches as $values) {
+      // get start value for iterating
+      $start = null;
+      $end = null;
+      $singleValue = null;
+      if ($valueDataType != 'string') {
+        $start = $values[1];
+        $end = $values[2];
+        $singleValue = (isset($values[3]) and $values[3]) ? $values[3] : null;
+      } else {
+        if (!empty($pattern)) { // jika mau di iterate
+          preg_match_all($pattern, $values[1], $matches, PREG_SET_ORDER);
+          $start = isset($matches[0][0]) ? $matches[0][1] : null;
+          preg_match_all($pattern, $values[2], $matches, PREG_SET_ORDER);
+          $end = isset($matches[0][0]) ? $matches[0][1] : null;
+          if ((isset($values[3]) and $values[3])) {
+            preg_match_all($pattern, $values[2], $matches, PREG_SET_ORDER);
+            $singleValue = isset($matches[0][0]) ? $matches[0][1] : null;
+          }
+        }
+      }
+      if ($start and $end) {
+        $l = strlen($start);
+        if ($l !== strlen((int)$start)) {
+          try {
+            str_increment($start);
+            str_decrement($start); // agar jumlah digit / strlen nya sama
+          } catch (\Throwable $e) {
+            $start++;
+            $start--;
+          }
+          while ($start <= $end) {
+            // $values_generated[] = $start;
+            $values_generated[] = str_pad($start, $l, '0', STR_PAD_LEFT);
+            $start++;
+          };
+        } else {
+          $range = range($start, $end);
+          foreach ($range as $v) ($values_generated[] = str_pad($v, $l, '0', STR_PAD_LEFT));
+        }
+      }
+      if ($singleValue) {
+        $values_generated[] = $singleValue;
+      }
+    }
+    return $values_generated;
+  }
+
+  /**
+   * ending is relativePath + '/'
+   * digunakan di Fop\Pdf
+   */
+  public static function getRelativePath(string $from, string $to): string
+  {
+    // some compatibility fixes for Windows paths
+    $from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
+    $to   = is_dir($to)   ? rtrim($to, '\/') . '/'   : $to;
+    $from = str_replace('\\', '/', $from);
+    $to   = str_replace('\\', '/', $to);
+
+    $from     = explode('/', $from);
+    $to       = explode('/', $to);
+    $relPath  = $to;
+
+    foreach ($from as $depth => $dir) {
+      // find first non-matching dir
+      if ($dir === $to[$depth]) {
+        // ignore this directory
+        array_shift($relPath);
+      } else {
+        // get number of remaining dirs to $from
+        $remaining = count($from) - $depth;
+        if ($remaining > 1) {
+          // add traversals up to first matching dir
+          $padLength = (count($relPath) + $remaining - 1) * -1;
+          $relPath = array_pad($relPath, $padLength, '..');
+          break;
+        } else {
+          $relPath[0] = './' . $relPath[0];
+        }
+      }
+    }
+    return implode('/', $relPath);
   }
 }
