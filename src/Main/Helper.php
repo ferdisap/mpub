@@ -848,6 +848,17 @@ class Helper
     }
   }
 
+  public static function getHotspotShape(string $coords)
+  {
+    $length = count(explode(",", $coords));
+    if($length === 3){
+      return 'circle';
+    }
+    else {
+      return 'poly';
+    }
+  }
+
   public static function isJsonString(mixed $string)
   {
     json_decode($string);

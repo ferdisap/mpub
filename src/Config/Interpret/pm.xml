@@ -16,6 +16,9 @@
   <attr name="pmType" value="pt52">
     <interpretation use="abbreviation">maintPlanning</interpretation>
   </attr>
+  <attr name="pmType" value="pt53">
+    <interpretation use="abbreviation">loap</interpretation>
+  </attr>
   <attr name="pmEntryType" value="pmt01">
     <interpretation use="abbreviation">TP</interpretation>
   </attr>

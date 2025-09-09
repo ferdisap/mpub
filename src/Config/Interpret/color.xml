@@ -74,6 +74,12 @@
   </attr>
 
   <!-- configurable value below -->
+  <attr name="color" value="co61">
+    <interpretation use="css">
+      <style key="background-color" value="yellow"/>
+      <style key="color" value="black"/>      
+    </interpretation>
+  </attr>
   <attr name="color" value="co62">
     <interpretation use="css">
       <style key="background-color" value="yellow"/>

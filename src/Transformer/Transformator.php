@@ -18,11 +18,11 @@ class Transformator
 
   public static function config_uri()
   {
-    return str_replace(' ', '%20', 'file:/'.str_replace("\\","/",realpath(__DIR__.'/../Config/config.xml'))); // sama dengan baseURI DOMDocument
+    return str_replace(' ', '%20', 'file:/' . str_replace("\\", "/", realpath(__DIR__ . '/../Config/config.xml'))); // sama dengan baseURI DOMDocument
   }
   public static function configurableValues_uri()
   {
-    return str_replace(' ', '%20', 'file:/'.str_replace("\\","/",realpath(__DIR__.'/../Config/configurableValues.xml'))); // sama dengan baseURI DOMDocument
+    return str_replace(' ', '%20', 'file:/' . str_replace("\\", "/", realpath(__DIR__ . '/../Config/configurableValues.xml'))); // sama dengan baseURI DOMDocument
   }
 
   /**
@@ -32,7 +32,7 @@ class Transformator
    */
   // public function createFo(array $params, array $fn = []): string
   // public function createFo(string $source, array $params = []): bool
-  public function makeProcessor(array $params = []) :\XSLTProcessor
+  public function makeProcessor(array $params = []): \XSLTProcessor
   {
     $xsl = new \DOMDocument();
     $xsl->load($this->input);
@@ -41,22 +41,22 @@ class Transformator
     $xsltproc->importStylesheet($xsl);
 
     // hindari pemakaian fungsi CSDBObject pada xsl file karena sekarang di pusatkan di sini
-    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => CSDBStatic::class . "::$name", get_class_methods(CSDBStatic::class)))());
-    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => Helper::class . "::$name", get_class_methods(Helper::class)))());
-    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => self::class . "::$name", get_class_methods(self::class)))());
-    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => get_class($this) . "::$name", get_class_methods(get_class($this))))());
-    $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => CSDBObject::class . "::$name", get_class_methods(CSDBObject::class)))());
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => CSDBStatic::class . "::$name", get_class_methods(CSDBStatic::class)))());
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => Helper::class . "::$name", get_class_methods(Helper::class)))());
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => self::class . "::$name", get_class_methods(self::class)))());
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => get_class($this) . "::$name", get_class_methods(get_class($this))))());
+    $xsltproc->registerPHPFunctions((fn() => array_map(fn($name) => CSDBObject::class . "::$name", get_class_methods(CSDBObject::class)))());
     // $xsltproc->registerPHPFunctions((fn () => array_map(fn ($name) => $this->CSDBObject::class . "::$name", get_class_methods($this->CSDBObject::class)))());
     $xsltproc->registerPHPFunctions();
+
+    // $xsltproc->setParameter('', 'base_uri', str_replace("\\","/",realpath(preg_replace("/(\/|\\\\)[a-zA-Z0-9\-\._]+$/",'',$this->input))));
+    $xsltproc->setParameter('', 'config_uri', str_replace("\\", "/", $this->config));
+    $xsltproc->setParameter('', 'configurableValues_uri', str_replace("\\", '/', $this->configurableValues));
+    $xsltproc->setParameter('', 'csdb_path', $this->csdb_path ?? './');
 
     foreach ($params as $key => $param) {
       $xsltproc->setParameter('', $key, $param);
     }
-
-    // $xsltproc->setParameter('', 'base_uri', str_replace("\\","/",realpath(preg_replace("/(\/|\\\\)[a-zA-Z0-9\-\._]+$/",'',$this->input))));
-    $xsltproc->setParameter('', 'config_uri', str_replace("\\","/",$this->config));
-    $xsltproc->setParameter('', 'configurableValues_uri', str_replace("\\", '/',$this->configurableValues));
-    $xsltproc->setParameter('', 'csdb_path', $this->csdb_path ?? './');
 
     return $xsltproc;
     // $sourceDoc = new \DOMDocument();
@@ -69,21 +69,21 @@ class Transformator
    * @param string $name adalah nama attribute eg: 'pmType'
    * @param string $value adalah value attribute eg:'pt01'
    */
-  public function interpret(string $name, string $value) :string
+  public function interpret(string $name, string $value): string
   {
     $config = new \DOMDocument();
     $config->load($this->configurableValues);
     $domXpath = new \DOMXPath($config);
 
     $interpretValue = '';
-    
+
     $arg_list = func_get_args();
     $use_i = 2;
     $use = $arg_list[$use_i] ?? 'default';
-    while(!($interpretValue = $domXpath->evaluate("string(//attr[@name='$name' and @value='$value']/interpretation[@use='$use'])"))){
+    while (!($interpretValue = $domXpath->evaluate("string(//attr[@name='$name' and @value='$value']/interpretation[@use='$use'])"))) {
       $use_i += 1;
       $use = $arg_list[$use_i];
-      if(!$use) break;
+      if (!$use) break;
     }
     return $interpretValue ? $interpretValue : '';
   }
@@ -149,7 +149,7 @@ class Transformator
     }
     return $n . $u;
   }
-  
+
   /**
    * akan emngambil format sesuai <icnVariation> yang pertama
    */
@@ -157,9 +157,9 @@ class Transformator
   {
     $IMFDoc = new \DOMDocument();
     $IMFDoc->load($imfUri);
-    $path = preg_replace("/(\/|\\\\)[a-zA-Z0-9\-\._]+$/",'',$imfUri);
+    $path = preg_replace("/(\/|\\\\)[a-zA-Z0-9\-\._]+$/", '', $imfUri);
     $icnCode = strtoupper(($IMFDoc->getElementsByTagName('imfCode')[0])->getAttribute('imfIdentIcn'));
     $icnFileExtension = strtolower(($IMFDoc->getElementsByTagName('icnVariation')[0])->getAttribute('fileExtension'));
-    return realpath($path.DIRECTORY_SEPARATOR.'ICN-'.$icnCode.".".$icnFileExtension);
+    return realpath($path . DIRECTORY_SEPARATOR . 'ICN-' . $icnCode . "." . $icnFileExtension);
   }
 }

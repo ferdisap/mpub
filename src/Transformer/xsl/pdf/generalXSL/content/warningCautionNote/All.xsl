@@ -56,13 +56,13 @@
   <xsl:template name="add_warning">
     <xsl:param name="id" select="@warningRefs"/>
     <xsl:if test="$id">
-      <xsl:apply-templates select="//warningAndCautions/warning[@id = $id]"/>
+      <xsl:apply-templates select="//warning[@id = $id]"/>
     </xsl:if>
   </xsl:template>
   <xsl:template name="add_caution">
     <xsl:param name="id" select="@cautionRefs"/>
     <xsl:if test="$id">
-      <xsl:apply-templates select="//warningAndCautions/caution[@id = $id]"/>
+      <xsl:apply-templates select="//caution[@id = $id]"/>
     </xsl:if>
   </xsl:template>
 

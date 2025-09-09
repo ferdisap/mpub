@@ -64,11 +64,12 @@
             <internalRef>aaa</internalRef>
             <internalRef>bbb</internalRef>
           </icnObject> -->
-          <icnObject icnObjectIdent="hot-001" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
-            <icnObject icnObjectIdent="hot-002" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
-
-            </icnObject>
-          </icnObject>
+          <!-- <icnObject icnObjectIdent="hot-001" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
+              <icnObject icnObjectIdent="hot-002" objectCoordinates="130,147,130,228,6,219,59,107" icnObjectName="Percobaan hostpot atau icnObject">
+          </icnObject> -->
+          <icnObject icnObjectIdent="foo" objectCoordinates="109,68,170,68,170,117,109,117,109,68" icnObjectName="Percobaan hostpot atau icnObject" />
+          <icnObject icnObjectIdent="hot-002" objectCoordinates="199,121,279,121,279,187,199,187,199,121" icnObjectName="Percobaan hostpot atau icnObject" />
+          <icnObject icnObjectIdent="hot-003" objectCoordinates="341,117,488,117,488,222,341,222,341,117" icnObjectName="Percobaan hostpot atau icnObject" />
         </icnObjectGroup>
       </icnContents>
     </icnVariation>
