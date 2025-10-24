@@ -241,7 +241,9 @@
           <para>Temporary Revisions are issued when this book must be revised between the regular
             formal revisions. They are issued on yellow paper and recorded on the Log of Temporary
             Revisions. Temporary Revisions should normally be put at the front of this book. Apart
-            from Section 9 Temporary Revision which should be put in front of the applicable
+            from Section 9 <footnote>
+              <para>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem excepturi magnam dolorem, possimus in vero amet beatae tempora numquam saepe!</para>
+            </footnote> Temporary Revision which should be put in front of the applicable
             supplement.</para>
           <para>Temporary Revision must only be removed from this book when instructed to do so by
             the Change Highlights of the next issue of a formal revision, when superseded by another

@@ -28,11 +28,13 @@ class Applicability
     }
     if ($useDisplayText) {
       if ($applic->firstElementChild->tagName === 'displayText') {
-        $displayText = '';
+        $displayText = [];
         foreach ($applic->firstElementChild->childNodes as $simplePara) {
-          $displayText .= ', ' . $simplePara->textContent;
+          if (preg_match("/[A-Z0-9]/", $simplePara->textContent)) {
+            array_push($displayText, $simplePara->textContent);
+          }
         }
-        return ltrim($displayText, ', ');
+        return join(', ', $displayText);
       }
       if ($useDisplayText === 1) {
         return '';
@@ -76,7 +78,7 @@ class Applicability
       $CCTFilename = CSDBStatic::resolve_dmIdent($dmRefIdent);
       $this->CCTdoc->load($path . DIRECTORY_SEPARATOR . $CCTFilename);
       // echo $CCTFilename . PHP_EOL;
-      
+
       // $dmRefIdent = $domxpath->evaluate("//content/descendant::productCrossRefTableRef/descendant::dmRefIdent")[0];
       // $PCTFilename = CSDBStatic::resolve_dmIdent($dmRefIdent);
       // $this->PCTdoc->load($path . DIRECTORY_SEPARATOR . $PCTFilename);
@@ -369,7 +371,7 @@ class Applicability
     $failtext = '';
 
     if ($andOr === 'and') {
-      $isFail = array_filter($resolved, (fn ($r) => isset($r['%STATUS']) and $r['%STATUS']  === 'fail' ? $r : false));
+      $isFail = array_filter($resolved, (fn($r) => isset($r['%STATUS']) and $r['%STATUS']  === 'fail' ? $r : false));
       if (!empty($isFail)) {
         return ['text' => '', 'andOr' => $andOr, 'children' => $resolved];
       }

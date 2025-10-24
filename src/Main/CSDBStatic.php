@@ -153,10 +153,10 @@ class CSDBStatic
     switch ($title->nodeName) {
       case 'dmTitle':
         return self::resolve_dmTitle($title, $child);
-        break;
       case 'pmTitle':
         return self::resolve_pmTitle($title);
-        break;
+      case 'icnTitle':
+        return $title->nodeValue;
       default:
         # code...
         break;

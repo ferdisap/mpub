@@ -3,6 +3,9 @@
 namespace Ptdi\Mpub\Main;
 use Countable;
 
+/**
+ * @deprecated diganti dengan CError
+ */
 class CSDBError implements Countable{
   
   ########### NEW CODE below ###########

@@ -9,7 +9,9 @@ use Ptdi\Mpub\Transformer\Pdf as TransformerPdf;
 use Ptdi\Mpub\Transformer\Transformator;
 use Serializable;
 
-// class CSDBObject implements JsonSerializable
+/**
+ * @deprecated diganti dengan CObject
+ */
 class CSDBObject
 // implements Serializable
 {

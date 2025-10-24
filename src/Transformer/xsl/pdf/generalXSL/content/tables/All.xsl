@@ -289,7 +289,8 @@
         <xsl:with-param name="colsep" select="$colsep"/>
       </xsl:call-template>
 
-      <xsl:if test="@morerows"><xsl:attribute name="number-rows-spanned"><xsl:value-of select="string(@morerows)"/></xsl:attribute></xsl:if>
+      <!-- <xsl:if test="@morerows"><xsl:attribute name="number-rows-spanned"><xsl:value-of select="string(@morerows)"/></xsl:attribute></xsl:if> -->
+      <xsl:if test="@morerows"><xsl:attribute name="number-rows-spanned"><xsl:value-of select="number(@morerows) + 1"/></xsl:attribute></xsl:if>
 
       <xsl:if test="@spanname">
         <xsl:variable name="numberColumnsSpanned">
