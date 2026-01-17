@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+  elementFormDefault="qualified">
+  <xs:element name="config" type="configElemType"/>
+  <xs:complexType name="configElemType">
+    <xs:sequence>
+      <xs:element name="output" type="outputElemType"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="layout" type="layoutElemType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="outputElemType">
+    <xs:sequence>
+      <xs:element name="method" type="methodElemType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="layoutElemType">
+    <xs:choice>
+      <xs:element name="simple-page-master" type="simplePageMasterElemType" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:choice>
+    <xs:attribute name="master-name" use="required" type="xs:string"/>
+    <xs:attribute ref="type" use="required"/>
+    <xs:attribute name="length-unit" type="lengthUnitAttType"/>
+    <xs:attribute name="area-unit" type="areaUnitAttType"/>
+    <xs:attribute name="width" use="required" type="xs:double"/>
+    <xs:attribute name="height" use="required" type="xs:double"/>
+    <xs:attribute name="default-font-size" type="xs:integer"/>
+    <xs:attribute name="cgmark-offset" use="required" type="xs:double"/>
+    <xs:attribute name="start-indent" use="required" type="xs:double"/>
+    <xs:attribute name="orientation" type="orientationAttType"/>
+  </xs:complexType>
+  <xs:complexType name="simplePageMasterElemType">
+    <xs:sequence>
+      <!-- for odd -->
+      <xs:element name="master-name_for_odd" type="xs:string"/>
+      <xs:element name="margin-top_for_odd" type="xs:double"/>
+      <xs:element name="margin-bottom_for_odd" type="xs:double"/>
+      <xs:element name="margin-left_for_odd" type="xs:double"/>
+      <xs:element name="margin-right_for_odd" type="xs:double"/>
+      <xs:element name="margin-top_for_odd_body" type="xs:double"/>
+      <xs:element name="margin-bottom_for_odd_body" type="xs:double"/>
+      <xs:element name="margin-left_for_odd_body" type="xs:double"/>
+      <xs:element name="margin-right_for_odd_body" type="xs:double"/>
+      <xs:element name="extent_for_odd_header" type="xs:double"/>
+      <xs:element name="extent_for_odd_footer" type="xs:double"/>
+      <!-- for even -->
+      <xs:element name="master-name_for_even" type="xs:string"/>
+      <xs:element name="margin-top_for_even" type="xs:double"/>
+      <xs:element name="margin-bottom_for_even" type="xs:double"/>
+      <xs:element name="margin-left_for_even" type="xs:double"/>
+      <xs:element name="margin-right_for_even" type="xs:double"/>
+      <xs:element name="margin-top_for_even_body" type="xs:double"/>
+      <xs:element name="margin-bottom_for_even_body" type="xs:double"/>
+      <xs:element name="margin-left_for_even_body" type="xs:double"/>
+      <xs:element name="margin-right_for_even_body" type="xs:double"/>
+      <xs:element name="extent_for_even_header" type="xs:double"/>
+      <xs:element name="extent_for_even_footer" type="xs:double"/>
+      <!-- for left blank -->
+      <xs:element name="master-name_for_leftBlank" type="xs:string"/>
+      <xs:element name="margin-top_for_leftBlank" type="xs:double"/>
+      <xs:element name="margin-bottom_for_leftBlank" type="xs:double"/>
+      <xs:element name="margin-left_for_leftBlank" type="xs:double"/>
+      <xs:element name="margin-right_for_leftBlank" type="xs:double"/>
+      <xs:element name="margin-top_for_leftBlank_body" type="xs:double"/>
+      <xs:element name="margin-bottom_for_leftBlank_body" type="xs:double"/>
+      <xs:element name="margin-left_for_leftBlank_body" type="xs:double"/>
+      <xs:element name="margin-right_for_leftBlank_body" type="xs:double"/>
+      <xs:element name="extent_for_leftBlank_header" type="xs:double"/>
+      <xs:element name="extent_for_leftBlank_footer" type="xs:double"/>
+      <!-- for region name -->
+      <xs:element name="region-name_for_body" type="xs:string"/>
+      <xs:element name="region-name_for_bodyLeftBlank" type="xs:string"/>
+      <xs:element name="region-name_for_headerOdd" type="xs:string"/>
+      <xs:element name="region-name_for_footerOdd" type="xs:string"/>
+      <xs:element name="region-name_for_headerEven" type="xs:string"/>
+      <xs:element name="region-name_for_footerEven" type="xs:string"/>
+      <xs:element name="region-name_for_headerLeftBlank" type="xs:string"/>
+      <xs:element name="region-name_for_footerLeftBlank" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="lengthUnitAttType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="cm"/>
+      <xs:enumeration value="mm"/>
+      <xs:enumeration value="%"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="areaUnitAttType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="pt"/>
+      <xs:enumeration value="px"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="orientationAttType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="land"/>
+      <xs:enumeration value="port"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="methodElemType">
+    <xs:sequence>
+      <xs:element name="path" type="pathElemType" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute ref="type" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="pathElemType" mixed="true">
+    <xs:attribute name="product-name" use="required"/>
+  </xs:complexType>
+  <xs:attribute name="type">
+    <xs:simpleType>
+      <xs:restriction base="xs:NMTOKEN">
+        <xs:enumeration value="pdf"/>
+        <xs:enumeration value="html"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  
+</xs:schema>

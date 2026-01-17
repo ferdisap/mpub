@@ -13,6 +13,9 @@ namespace Ptdi\Mpub\Fop;
  * ini akan lama karena pdf yang sudah dibuat akan diwrite ke disk oleh java, kemudian diread (load) kembali oleh ram
  */
 
+ /**
+  * @deprecated
+  */
 class Fop
 {
   public static bool $autodelete = true;

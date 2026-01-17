@@ -2,6 +2,9 @@
 
 namespace Ptdi\Mpub\Main;
 
+/**
+ * @deprecated
+ */
 class CSDBValidator{
 
   protected CSDBObject $validatee;

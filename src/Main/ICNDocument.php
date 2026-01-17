@@ -52,6 +52,6 @@ class ICNDocument
 
   public function getURI()
   {
-    return $this->path . "/". $this->filename;
+    return realpath($this->fileinfo['filenamepath']);
   }
 }

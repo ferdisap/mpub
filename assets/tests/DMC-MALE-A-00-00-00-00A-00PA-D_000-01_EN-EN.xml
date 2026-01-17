@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../mpub/src/Schema/prdcrossreftable.xsd">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="MALE" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="00P" infoCodeVariant="A" itemLocationCode="D" />
+        <language languageIsoCode="en" countryIsoCode="EN" />
+        <issueInfo issueNumber="000" inWork="01" />
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate day="01" month="01" year="2016" />
+        <dmTitle>
+          <techName>MALE</techName>
+          <infoName>Product Cross Reference Table</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus issueType="new">
+      <security securityClassification="01" />
+      <responsiblePartnerCompany enterpriseCode="0001Z">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator enterpriseCode="SI">
+        <enterpriseName>PT Dirgantara Indonesia</enterpriseName>
+      </originator>
+      <applicCrossRefTableRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="N219" systemDiffCode="A"
+              systemCode="00" subSystemCode="0" subSubSystemCode="0"
+              assyCode="00" disassyCode="00" disassyCodeVariant="A"
+              infoCode="00W" infoCodeVariant="A" itemLocationCode="D" />
+              <issueInfo issueNumber="000" inWork="01" />
+          </dmRefIdent>
+        </dmRef>
+      </applicCrossRefTableRef>
+      <applic>
+        <!-- <displayText>
+          <simplePara>N219 All</simplePara>
+        </displayText> -->
+        <!-- <assert applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValues="N219"/> -->
+        <assert applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValues="N001~N005|N007~N009"/>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <dmCode modelIdentCode="MALE" systemDiffCode="A" systemCode="00" subSystemCode="0" subSubSystemCode="0" assyCode="0000" disassyCode="00" disassyCodeVariant="A" infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+						<issueInfo issueNumber="001" inWork="00"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <firstVerification verificationType="tabtop" />
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <productCrossRefTable>
+      <product>
+        <assign applicPropertyIdent="aircraft" applicPropertyType="prodattr" applicPropertyValue="N219"/>
+        <assign applicPropertyIdent="serialnumber" applicPropertyType="prodattr" applicPropertyValue="N001"/>
+        <assign applicPropertyIdent="SB" applicPropertyType="condition" applicPropertyValue="PRE" />
+      </product>
+    </productCrossRefTable>
+  </content>
+
+</dmodule>

@@ -8,6 +8,7 @@ use Ptdi\Mpub\Main\CSDBValidator;
 use Ptdi\Mpub\Main\XSIValidator;
 
 /**
+ * @deprecated, karena secara spesifikasi tidak ada istilah 'validate by DMRL' harus
  * Cara pakainya yaitu
  * 1. create instance DMRLValidator();
  * 2. setEntries();

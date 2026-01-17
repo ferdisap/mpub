@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="skillType" value="st01">
+    <interpretation use="abbreviation">AIRPL</interpretation>
+  </attr>
+  <attr name="skillType" value="st02">
+    <interpretation use="abbreviation">ELEC</interpretation>
+  </attr>
+  <attr name="skillType" value="st03">
+    <interpretation use="abbreviation">AVION</interpretation>
+  </attr>
+  <attr name="skillType" value="st04">
+    <interpretation use="abbreviation">ENGIN</interpretation>
+  </attr>
+</root>

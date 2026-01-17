@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="root" type="rootElemType"/>
+  <xs:complexType name="rootElemType">
+    <xs:sequence>
+      <xs:element ref="attr" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="attr" type="attrElemType"/>
+  <xs:complexType name="attrElemType">
+    <xs:sequence>
+      <xs:element ref="interpretation" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:element name="interpretation" type="interPretationElemType"/>
+  <xs:complexType name="interPretationElemType" mixed="true">
+    <xs:choice minOccurs="0">
+      <xs:element ref="style" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:choice>
+    <xs:attribute ref="use" use="required"/>
+    <xs:attribute name="context" use="optional" type="xs:anyURI"/>
+  </xs:complexType>
+  <xs:element name="style" type="styleElemType"/>
+  <xs:complexType name="styleElemType">
+    <!-- <xs:sequence>
+      <xs:element name="key"/>
+      <xs:element name="value"/>
+    </xs:sequence> -->
+    <xs:attribute name="key" use="required" type="xs:string"/>
+    <xs:attribute name="value" use="required" type="xs:string"/>
+  </xs:complexType>
+  <xs:attribute name="use" type="useAttType"/>
+  <xs:simpleType name="useAttType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="default"/>
+      <xs:enumeration value="abbreviation"/>
+      <xs:enumeration value="extension"/>
+      <xs:enumeration value="code"/>
+      <xs:enumeration value="css"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

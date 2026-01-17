@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="internalRefTargetType" value="irtt01">
+    <interpretation use="extension">figure</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt02">
+    <interpretation use="extension">table</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt03">
+    <interpretation use="extension">multimedia</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt04">
+    <interpretation use="extension">supply</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt05">
+    <interpretation use="extension">support Equipment</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt06">
+    <interpretation use="extension">spare</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt07">
+    <interpretation use="extension">para</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt08">
+    <interpretation use="extension">step</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt10">
+    <interpretation use="extension">multimedia</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt11">
+    <interpretation use="extension">zone</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt14">
+    <interpretation use="extension">work area</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt15">
+    <interpretation use="extension">SB</interpretation>
+  </attr>
+  <attr name="internalRefTargetType" value="irtt16">
+    <interpretation use="extension">access</interpretation>
+  </attr>
+</root>

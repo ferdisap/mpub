@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="enterpriseCode" value="0001Z">
+    <interpretation use="abbreviation">PTDI</interpretation>
+    <interpretation use="extension">PT. Dirgantara Indonesia1</interpretation>
+  </attr>
+  <attr name="commentPriorityCode" value="cp01">
+    <interpretation use="extension">Routine</interpretation>
+  </attr>
+  <attr name="commentPriorityCode" value="cp02">
+    <interpretation use="extension">Emergency</interpretation>
+  </attr>
+  <attr name="commentPriorityCode" value="cp03">
+    <interpretation use="extension">Safety critical</interpretation>
+  </attr>
+  <attr name="responseType" value="rt01">
+    <interpretation use="extension">Accepted</interpretation>
+  </attr>
+  <attr name="responseType" value="rt02">
+    <interpretation use="extension">Pending</interpretation>
+  </attr>
+  <attr name="responseType" value="rt03">
+    <interpretation use="extension">Partly</interpretation>
+  </attr>
+  <attr name="responseType" value="rt04">
+    <interpretation use="extension">Rejected</interpretation>
+  </attr>
+</root>

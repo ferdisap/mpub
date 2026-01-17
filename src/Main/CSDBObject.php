@@ -4,12 +4,17 @@ namespace Ptdi\Mpub\Main;
 
 use DOMDocument;
 use JsonSerializable;
+// use Ptdi\Mpub\Fop\Pdf;
+use Ptdi\Mpub\Transformer\Pdf as TransformerPdf;
+use Ptdi\Mpub\Transformer\Transformator;
 use Serializable;
 
-class CSDBObject implements JsonSerializable
+/**
+ * @deprecated diganti dengan CObject
+ */
+class CSDBObject
 // implements Serializable
 {
-
   protected string $version = "5.0";
 
   public bool $preserveWhiteSpace = false;
@@ -18,17 +23,24 @@ class CSDBObject implements JsonSerializable
   protected string $filename = '';
 
   /**
-   * depreciated. Ini bisa diganti dengan mudah oleh doctype setiap document XML
+   * biasanya kan di setiap document ada dmRef, pmRef. Nah {dm}Ref dm nya adalah initial
    */
   protected string $initial = '';
 
   protected string $path = '';
   protected array $breakDownURI = [];
 
+  /**
+   * @deprecated, karnea akan Validation sudah ada class nya sendiri
+   */
   public bool $XSIValidationResult = false; // sepertinya ini deprecated saja karena ga dipakai
+  /**
+   * @deprecated, karnea akan Validation sudah ada class nya sendiri
+   */
   public bool $BREXValidationResult = false; // sepertinya ini deprecated saja karena ga dipakai
 
   /**
+   * @deprecated, karnea akan transformation sudah ada class nya sendiri
    * dipakai di CsdbServiceController untuk transform
    * dipakai di setiap model, khususnya comment untuk createXML
    * nanti diubah mungkin berbeda antara pdf dan html meskupun harusnya SAMA. 
@@ -40,23 +52,39 @@ class CSDBObject implements JsonSerializable
   /**
    *  bisa berupa getID3 array or \DOMDocument
    */
-  protected mixed $document = null;
+  protected \DOMDocument|ICNDocument|null $document = null;
 
+  /**
+   * @deprecated, karnea akan applicability sudah ada class nya sendiri
+   */
   protected \DOMDocument $ACTdoc;
+  /**
+   * @deprecated, karnea akan applicability sudah ada class nya sendiri
+   */
   protected \DOMDocument $CCTdoc;
+  /**
+   * @deprecated, karnea akan applicability sudah ada class nya sendiri
+   */
   protected \DOMDocument $PCTdoc;
 
   /**
+   * @deprecated, karnea akan transformation sudah ada class nya sendiri
    * sejauh ini pmEntryTitle digunakan di header PDF
    */
   protected string $pmEntryTitle = '';
   
   /**
+   * @deprecated, karnea akan transformation sudah ada class nya sendiri
    * what entryType (@pmEntryType) used currently of transformatting
    * digunakan maintPlanning (scheduleXsd) karena table-table nya beda style. Mungkin akan digunakan di schema lainnya nanti
    * value string sebaiknya bukan berupa S1000D standard attribute value, melainkan sudah di interpretasikan, misal pmt01 adalah 'TP' atau 'Title Page'
    */
   protected string $pmEntryType = '';
+
+  /**
+   * CSDBError
+   */
+  public CSDBError $errors;
 
   /**
    * @param string $filename include absolute path
@@ -67,6 +95,7 @@ class CSDBObject implements JsonSerializable
     $this->ACTdoc = new DOMDocument();
     $this->CCTdoc = new DOMDocument();
     $this->PCTdoc = new DOMDocument();
+    $this->errors = new CSDBError();
   }
 
   public function setConfigXML($filename)
@@ -97,7 +126,7 @@ class CSDBObject implements JsonSerializable
     if(($this->document instanceof \DOMDocument) AND ($this->document->doctype) AND in_array($this->document->doctype->nodeName, ['dmodule', 'pm', 'dml', 'icnmetadata', 'ddn', 'comment'])){
       return true;
     } else {
-      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 's1000d_doctype', "document must be be S1000D standard type.");
+      $this->errors->set('s1000d_doctype', ['document must be be S1000D standard type.']);
       return false;
     }
   }
@@ -979,8 +1008,9 @@ class CSDBObject implements JsonSerializable
     // $doc->formatOutput = true;
 
     libxml_use_internal_errors(true);
-    $mime = file_exists($filename) ? mime_content_type($filename) : 'undefined';
-    if (str_contains($mime, 'text')) {
+    // $mime = file_exists($filename) ? mime_content_type($filename) : 'undefined';
+    $mime = file_exists($filename) ? \GuzzleHttp\Psr7\MimeType::fromFilename($filename) : 'undefined';
+    if (str_contains($mime, 'text') || str_contains($mime, 'xml')) {
       $dom = new \DOMDocument('1.0');
       // $dom->preserveWhiteSpace = $this->preserveWhiteSpace;
       $dom->preserveWhiteSpace = false;
@@ -988,15 +1018,18 @@ class CSDBObject implements JsonSerializable
       $dom->formatOutput = true;
       @$dom->load($filename, LIBXML_PARSEHUGE);
       $errors = libxml_get_errors();
-      foreach ($errors as $e) {
-        CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'file_exist', CSDBError::display_xml_error($e));
+      if(count($errors)){
+        $this->errors->set('file_exist', []);
+        foreach ($errors as $e) {
+          $this->errors->append('file_exist', CSDBError::display_xml_error($e));
+        }
       }
       if(!$dom->documentElement) return false;
       $this->document = $dom;
       return true;
     } 
     elseif($mime === 'undefined'){
-      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'load', "Undefined mime content type or file doesn't exist");
+      $this->errors->set('load', ["Undefined mime content type or file doesn't exist."]);
       return false;
     }
     else {
@@ -1015,8 +1048,11 @@ class CSDBObject implements JsonSerializable
     $dom->formatOutput = $this->formatOutput;
     @$dom->loadXML($text, LIBXML_PARSEHUGE);
     $errors = libxml_get_errors();
-    foreach ($errors as $e) {
-      CSDBError::setError(!empty(CSDBError::$processId) ? CSDBError::$processId : 'file_exist', CSDBError::display_xml_error($e));
+    if(count($errors)){
+      $this->errors->set('file_exist', []);
+      foreach ($errors as $e) {
+        $this->errors->append('file_exist', CSDBError::display_xml_error($e));
+      }
     }
     if(!$dom->documentElement) return false;
     $this->document = $dom;
@@ -1073,7 +1109,7 @@ class CSDBObject implements JsonSerializable
     if ($this->document instanceof \DOMDocument) {
       $initial = $this->getInitial();
       $domXpath = new \DOMXPath($this->document);
-      $ident = $domXpath->evaluate("identAndStatusSection/{$initial}Address/{$initial}Ident");
+      $ident = $domXpath->evaluate("//{$initial}Address/{$initial}Ident");
       if ($ident[0]) {
         // go to function resolve_dmlIdent, resolve_pmIdent, resolve_dmIdent, resolve_imfIdent
         $docIdent = call_user_func(CSDBStatic::class . "::resolve_" . $initial . "Ident", [$ident[0]]); //  argument#0 domElement / array, argument#1 prefix, argument#2 format
@@ -1089,16 +1125,16 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
-   * DEPRECIATED. Karena $inital juga depreciated
-   * get and set Initial
+   * biasanya kan di setiap document ada dmRef, pmRef. Nah {dm}Ref dm nya adalah initial
+   * get and set Initial.
    * @return string
    */
   public function getInitial() :string
   {
     if ($this->document instanceof \DOMDocument) {
-      $initial = $this->document->doctype->nodeName;
-      // $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnmetadata' ? 'imf' : $initial);
-      $initial = $initial === 'dmodule' ? 'dm' : ($initial === 'icnMetadataFile' ? 'imf' : $initial);
+      if($this->document->doctype) $initial = $this->document->doctype->nodeName;
+      else $initial = $this->document->documentElement->nodeName;
+      $initial = $initial === 'dmodule' ? 'dm' : (($initial === 'icnMetadataFile' || $initial === 'icnmetadata' ) ? 'imf' : $initial);
       return $this->initial = $initial;
     }
   }
@@ -1194,7 +1230,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
-   * DEPRECIATED
+   * @deprecated
    */
   public function getStatus($child = ''): string
   {
@@ -1312,44 +1348,14 @@ class CSDBObject implements JsonSerializable
    */
   public function getApplicability(mixed $applic, bool $keppOneByOne = false, bool $useDisplayName = true ,int $useDisplayText = 2) :string
   {
-    if (empty($applic)) return '';
-    if (is_array($applic)) {
-      $applic = $applic[0];
-    }
-    if($useDisplayText){
-      if($applic->firstElementChild->tagName === 'displayText'){
-        $displayText = '';
-        foreach($applic->firstElementChild->childNodes as $simplePara){
-          $displayText .= ', ' . $simplePara->textContent;
-        }
-        return ltrim($displayText, ', ');
-      }
-      if($useDisplayText === 1){
-        return '';
-      }
-    }
-
-    // untuk assert
-    $arrayify = $this->arrayify_applic($applic, $keppOneByOne, $useDisplayName);
-    unset($arrayify['displayText']);
-    $arrayify[array_key_first($arrayify)]['text'] = ltrim($arrayify[array_key_first($arrayify)]['text'], "(");
-    $arrayify[array_key_first($arrayify)]['text'] = rtrim($arrayify[array_key_first($arrayify)]['text'], ")");
-    $text = $arrayify[array_key_first($arrayify)]['text'];
-    // $message = array_filter($arrayify[array_key_first($arrayify)]['children'], fn($c) => $c['%MESSAGE'] ?? false);
-    // output = $message = [
-    //   "%MESSAGE" => "ERROR: 'serialnumber' only contains N001-N004, N006-N010, N012-N015 and does not contains such N011, N016-N020",
-    //   "text" => "",
-    //   "%STATUS" => "fail",
-    //   "%APPLICPROPERTYTYPE" => "prodattr",
-    //   "%APPLICPROPERTYIDENT" => "serialnumber",
-    //   "%APPLICPROPERTYVALUES" => "N001~N004|N006~N020",
-    // ];
-    // output harusnya nanti bisa dibuat/ditambah ke static error CSDB;
-    // dd($text);
-    return $text; // return string "text". eg.: $arrayify = ["evaluate" => ["text" => string, 'andOr' => String, 'children' => array]];
+    $Applicability = new Applicability($this->document->baseURI);
+    $result = $Applicability->get($applic, $keppOneByOne, $useDisplayName, $useDisplayText);
+    if(count($Applicability->errors)) $this->errors->set('applicability', $Applicability->errors->get());
+    return $result;
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * @return array
    */
   private function arrayify_applic(\DOMElement $applic, $keepOneByOne = false, $useDisplayName = true) :array
@@ -1377,6 +1383,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * @return array containing ['text' => String, ...]
    */
   private function resolve_childApplic(\DOMElement $child, $keepOneByOne, $useDisplayName)
@@ -1403,6 +1410,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * saat ini, $PCT doc masih useless
    * kalau test fail, key 'text' akan di isi oleh <assert> text content dan status menjadi 'success'. Sehingga saat di <evaluate> akan true;
    * @param bool $keepOneByOne 
@@ -1640,6 +1648,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated dipindah ke Applicability.php
    * DEPRECIATED. Dipindah ke ./Main/Helper class
    * @return array ['text' => string, 'andOr' => String, 'children' => array contain evaluated child]
    */
@@ -1701,7 +1710,7 @@ class CSDBObject implements JsonSerializable
    * </figure> 
    * <internalRef internalRefTargetType="irtt51" internalRefId="fig-001-gra-001-hot-001">tes hotspot</internalRef>
    */
-  public function getEntityIdentFromId(string $id, $return = 'string') :array
+  public function getEntityIdentFromId(string $id, $return = 'string') :array|string
   {
     if(!$this->document) return [];
     $domXpath = new \DOMXPath($this->document);
@@ -1827,6 +1836,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated
    * @return bool
    */
   public function commit() :bool
@@ -1857,6 +1867,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated, transformation sudah ada class nya sendiri
    * helper function untuk crew.xsl
    * ini tidak bisa di pindah karena bukan static method
    * * sepertinya bisa dijadikan static, sehingga fungsinya lebih baik ditaruh di CsdbModel saja
@@ -1867,6 +1878,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated, transformation sudah ada class nya sendiri
    * helper function untuk crew.xsl
    * ini tidak bisa di pindah karena bukan static method
    * sepertinya bisa dijadikan static, sehingga fungsinya lebih baik ditaruh di CsdbModel saja
@@ -1877,6 +1889,7 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated, transformation sudah ada class nya sendiri
    * @param string $xslFile is absolute path of xsl file
    * @param array $params is associative array where is inclusion for XSL processor
    * @param string $output is 'html', 'pdf'
@@ -1922,12 +1935,45 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @param string $inputFile is absolute path of xsl file
+   * @param array $params is associative array where is inclusion for XSL processor
+   * @return string
+   */
+  public function transform_to_fo(string $inputFile, string $outputFile) :string
+  {
+    $pdf = new TransformerPdf(
+      input: $inputFile,
+      output: $outputFile
+    ); 
+    $pdf->config = Transformator::config_uri();
+    $pdf->configurableValues = Transformator::configurableValues_uri();
+    $pdf->CSDBObject = $this;
+    $create = $pdf->createFo($this->document->baseURI);
+    return $create ? $outputFile : '';
+  }
+
+  /**
+   * @param string $inputFile is absolute path of fo file
+   * @param string $outputFile is uri for pdf
+   * @return string
+   */
+  public function transform_to_pdf(string $inputFile, string $outputFile) :string
+  {
+    $pdf = new TransformerPdf(
+      input: $inputFile,
+      output: $outputFile
+    );
+    $create = $pdf->create();
+    return $create ? $outputFile : '';
+  }
+
+  /**
    * Nanti dipikirkan apakah cukup pakai BREX atau BREX nya perlu di transform ke ConfigXML.
    */
-  public function translateS1000DAttributeCodeToValue()
-  {
+  // public function translateS1000DAttributeCodeToValue()
+  // {
     
-  }
+  // }
 
   // public function transform_to_foxml(string $xslFile, array $params = [], string $output = 'html') :string
   // {
@@ -1960,6 +2006,8 @@ class CSDBObject implements JsonSerializable
   // fungsi autoGeneratedUniqueIdentifier for ICN
   
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * diperlukan untuk di XSL
    */
   public function set_pmEntryTitle(string $text)
@@ -1968,6 +2016,8 @@ class CSDBObject implements JsonSerializable
   }
 
   /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
    * diperlukan untuk di XSL
    */
   public function get_pmEntryTitle()
@@ -1975,24 +2025,38 @@ class CSDBObject implements JsonSerializable
     return $this->pmEntryTitle;
   }
 
+  /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
+   */
   public function get_pmEntryType()
   {
     return $this->pmEntryType;
   }
 
+  /**
+   * @deprecated
+   * dipindah ke Transformer\Pdf
+   */
   public function set_pmEntryType(string $text)
   {
     $this->pmEntryType = $text;
   }
 
+  // public function toPdf(string $input, string $output):bool
+  // {
+  //   $pdf = new Pdf($input,$output);
+  //   return $pdf->create();
+  // }
+
   /**
    * return URI of document
    */
-  public function jsonSerialize(): mixed
-  {
-    return ["URI"=>(($this->document instanceof \DOMDocument) && $this->document->baseURI ? $this->document->baseURI : (
-      ($this->document instanceof ICNDocument) && $this->document->filename ? $this->document->getURI() : ([])
-    ))];
-  }
+  // public function jsonSerialize(): mixed
+  // {
+  //   return ["URI"=>(($this->document instanceof \DOMDocument) && $this->document->baseURI ? $this->document->baseURI : (
+  //     ($this->document instanceof ICNDocument) && $this->document->filename ? $this->document->getURI() : ([])
+  //   ))];
+  // }
   
 }

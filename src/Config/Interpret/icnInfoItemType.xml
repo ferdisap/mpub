@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../assets/schemas/interpretation.xsd">
+  <attr name="icnInfoItemType" value="iiit01">
+    <interpretation use="default">Unspecified</interpretation>
+  </attr>
+  <attr name="icnInfoItemType" value="iiit02">
+    <interpretation use="default">Size (kb)</interpretation>
+  </attr>
+  <attr name="icnInfoItemType" value="iiit03">
+    <interpretation use="default">Size (kb)</interpretation>
+  </attr>
+  <attr name="icnInfoItemType" value="iiit04">
+    <interpretation use="default">Duration (s)</interpretation>
+  </attr>
+  <attr name="icnInfoItemType" value="iiit05">
+    <interpretation use="default">Width (mm)</interpretation>
+  </attr>
+  <attr name="icnInfoItemType" value="iiit06">
+    <interpretation use="default">Transcript</interpretation>
+  </attr>
+</root>
